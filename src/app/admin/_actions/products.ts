@@ -143,7 +143,7 @@ export default async function AddProduct(
     return {
       message: imageWarning
         ? "Item added — but the photo couldn't be saved (image storage isn't connected on this site)."
-        : "item added succefuly",
+        : "Menu item added.",
     };
   } catch (error) {
     console.error("AddProduct error:", error);
@@ -207,7 +207,7 @@ const categorySchema = z.object({ name: z.string().min(1) });
 export async function AddCategory(prevState: unknown, formData: FormData) {
   try {
     const result = categorySchema.safeParse(Object.fromEntries(formData.entries()));
-    if (!result.success) return { error: result.error.issues };
+    if (!result.success) return { message: "Please enter a category name." };
 
     function createSlug(str: string) {
       return str.toLowerCase().replace(/ /g, "-").replace(/[^\w-]+/g, "");
@@ -219,7 +219,7 @@ export async function AddCategory(prevState: unknown, formData: FormData) {
     revalidatePath("/");
     revalidateTag("categories");
     revalidatePath("/Menu");
-    return { message: "item added succefuly" };
+    return { message: "Category added." };
   } catch (error: any) {
     if (error.code === "P2002" && error.meta?.target?.includes("slug")) {
       return { message: "This name already exists. Please choose a different one." };

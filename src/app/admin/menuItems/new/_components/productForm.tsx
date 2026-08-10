@@ -12,7 +12,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
+import { formatCurrency } from "@/lib/formatters";
 import { Label } from "@radix-ui/react-label";
 import { Item } from "generated/prisma";
 import { Plus, ImageIcon } from "lucide-react";
@@ -33,6 +34,7 @@ export default function ProductForm({
     initialState,
   );
   const [categoryId, setCategoryId] = useState<string>(item?.typeId || "");
+  const [price, setPrice] = useState<string>(item ? (item.priceInCents / 100).toFixed(2) : "");
   const [isCaterable, setIsCaterable] = useState<boolean>(item?.isCaterable ?? false);
   const [preview, setPreview] = useState<string | null>(item?.image || null);
   const hiddenCategoryRef = useRef<HTMLInputElement>(null);
@@ -41,15 +43,15 @@ export default function ProductForm({
     if (hiddenCategoryRef.current) hiddenCategoryRef.current.value = categoryId;
   }, [categoryId]);
 
-  const { toast } = useToast();
   useEffect(() => {
     if (!state) return;
     const s = state as any;
     if (s.message) {
       const ok = /added|success|updated/i.test(String(s.message));
-      toast({ variant: ok ? "default" : "destructive", description: s.message });
+      if (ok) toast.success(s.message);
+      else toast.error(s.message);
     } else if (s.error) {
-      toast({ variant: "destructive", description: "Please check the highlighted fields and try again." });
+      toast.error("Please check the highlighted fields and try again.");
     }
   }, [state]);
 
@@ -84,12 +86,19 @@ export default function ProductForm({
                 step="0.01"
                 id="price"
                 name="price"
-                defaultValue={item ? (item.priceInCents / 100).toFixed(2) : ""}
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
                 placeholder="0.00"
                 className="pl-7"
               />
             </div>
-            <p className="text-xs text-stone-400">In dollars — e.g. 12.99</p>
+            {price && Number(price) > 0 ? (
+              <p className="text-xs text-stone-500">
+                Customers pay <span className="font-semibold text-stone-700">{formatCurrency(Number(price))}</span>
+              </p>
+            ) : (
+              <p className="text-xs text-stone-400">In dollars — e.g. 12.99</p>
+            )}
           </div>
         </div>
 
@@ -186,11 +195,11 @@ export default function ProductForm({
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
-          <Button variant="mainButton" disabled={pending || !categoryId} type="submit">
+          <Button variant="mainButton" size="md" disabled={pending || !categoryId} type="submit">
             {pending ? "Saving…" : item ? "Save changes" : "Add item"}
           </Button>
           <Link href="/admin/menuItems">
-            <Button type="button" variant="outline">Back to items</Button>
+            <Button type="button" variant="outline" size="md">Back to items</Button>
           </Link>
           {!categoryId && <span className="text-xs text-stone-400">Pick a category to save.</span>}
         </div>
