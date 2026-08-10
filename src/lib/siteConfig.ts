@@ -7,9 +7,9 @@
 // still exists, it is simply not linked.
 const FEATURES = {
   catering: true,
-  giftCard: false,
+  giftCard: true,
   rewards: true,
-  blog: false,
+  blog: true,
 };
 
 type FeatureKey = keyof typeof FEATURES;
@@ -37,12 +37,12 @@ const pickLink = ({ label, href }: NavLink) => ({ label, href });
 
 export const SITE_CONFIG = {
   // Brand
-  name: "Tin Tin Persian Food Truck",
-  tagline: "Persian Street Food | Kabobs & Late-Night Bites",
+  name: "Burnin Bird",
+  tagline: "Burnin Bird",
   subTagline:
     "wraps, and bowls cooked fresh daily in Houston, TX.",
-  legalName: "Tin Tin Persian Food Truck LLC",
-  trademark: "Tin Tin",
+  legalName: "Burnin Bird",
+  trademark: "Burnin Bird",
 
   // Admin intro animation: "burger" (fast food) | "coffee" (café) | "pizza" (pizzeria)
   loaderStyle: "burger",
@@ -52,17 +52,17 @@ export const SITE_CONFIG = {
   menuCtaLabel: "Order now",
 
   // Contact & Location
-  address: "1325 Westheimer Rd, Houston, TX 77006",
-  street: "1325 Westheimer Rd",
-  city: "Houston",
-  state: "TX",
-  zip: "77006",
-  phone: "832-752-7383",
-  email: "hello@tintinhtx.com",
-  cateringEmail: "catering@tintinhtx.com",
+  address: "123 Main St, Your City, ST 00000",
+  street: "123 Main St",
+  city: "Your City",
+  state: "ST",
+  zip: "00000",
+  phone: "000-000-0000",
+  email: "hello@burnin-bird.com",
+  cateringEmail: "hello@burnin-bird.com",
   timezone: "America/Chicago",
-  lat: 29.7431,
-  lng: -95.3975,
+  lat: 0,
+  lng: 0,
   googleMapsUrl:
     "https://www.google.com/maps/search/?api=1&query=1325%20Westheimer%20Rd%2C%20Houston%2C%20TX%2077006",
 
@@ -74,10 +74,10 @@ export const SITE_CONFIG = {
   beholdFeedId: "",
 
   // SEO
-  siteUrl: "https://tintinhtx.com",
-  seoTitle: "Tin Tin Persian Food Truck | Authentic Persian Food in Houston, TX",
+  siteUrl: "https://burnin-bird.vercel.app",
+  seoTitle: "Burnin Bird",
   seoDescription:
-    "Tin Tin Persian Food Truck in Montrose, Houston. Serving fresh saffron kabobs, steak and chicken wraps, bowls, and late-night Persian street food.",
+    "Burnin Bird — order online.",
   seoKeywords: [
     "Tin Tin Persian Food Truck",
     "Persian Food Truck Houston",
