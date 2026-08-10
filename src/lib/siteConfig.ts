@@ -40,7 +40,7 @@ export const SITE_CONFIG = {
   name: "Burnin Bird Hot Chicken",
   tagline: "Halal Nashville Hot Chicken | Dupont Circle",
   subTagline:
-    "Hormone-free, 100% Halal hot chicken sandwiches, tenders & fries served fresh in Washington, DC.",
+    "",
   legalName: "Burnin Bird Hot Chicken LLC",
   trademark: "Burnin Bird",
 
