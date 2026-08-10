@@ -1,0 +1,35 @@
+import { Toaster } from "@/components/ui/sonner";
+import { AdminNav } from "./_components/nav";
+import LoadingScreen from "@/components/LoadingScreen";
+import db from "@/db/db";
+
+export const dynamic = "force-dynamic";
+
+export default async function Adminlayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  // Surfaced as a badge on the Catering nav item so pending requests are
+  // visible from any admin page, not just the dashboard. Resilient to a DB
+  // hiccup so the whole admin doesn't 500 on a transient outage.
+  let newCateringCount = 0;
+  try {
+    newCateringCount = await db.cateringRequest.count({ where: { status: "new" } });
+  } catch {
+    newCateringCount = 0;
+  }
+
+  return (
+    <div className="min-h-screen bg-stone-50 md:flex">
+      {/* One-time burger splash on a fresh admin load (login / refresh). It plays
+          once and unmounts; per-page loading uses the skeletons only. */}
+      <LoadingScreen />
+      <AdminNav newCateringCount={newCateringCount} />
+      <main id="main-content" className="min-w-0 flex-1 overflow-auto pt-14 md:pt-0">
+        {children}
+      </main>
+      <Toaster expand richColors closeButton duration={6000} />
+    </div>
+  );
+}

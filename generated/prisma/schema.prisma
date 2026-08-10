@@ -1,0 +1,240 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum AdminStatus {
+  PENDING_VERIFICATION
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+}
+
+model Admin {
+  id                         String      @id @default(uuid())
+  name                       String
+  email                      String      @unique
+  pendingEmail               String?
+  passwordHash               String
+  status                     AdminStatus @default(PENDING_VERIFICATION)
+  emailVerifiedAt            DateTime?
+  verificationToken          String?     @unique
+  verificationTokenExpiresAt DateTime?
+  approvedById               String?
+  approvedAt                 DateTime?
+  createdAt                  DateTime    @default(now())
+  updatedAt                  DateTime    @updatedAt
+}
+
+model Item {
+  id                     String      @id @default(uuid())
+  name                   String
+  description            String?
+  priceInCents           Int
+  slug                   String      @unique
+  isAvailableForPurchase Boolean     @default(true)
+  featured               Boolean     @default(false)
+  image                  String?
+  typeId                 String
+  type                   Types       @relation(fields: [typeId], references: [id], onDelete: Restrict)
+  orders                 Order[]
+  isCaterable            Boolean     @default(false)
+  cateringDescription    String?
+  cateringPriceInCents   Int?
+  sideGroups             SideGroup[]
+}
+
+model User {
+  id        String   @id @default(uuid()) @map("_id")
+  email     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orders    Order[]
+}
+
+model Types {
+  id        String   @id @default(uuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  items     Item[]
+}
+
+model Location {
+  id        String   @id @default(uuid())
+  name      String
+  lat       Float
+  lng       Float
+  createdAt DateTime @default(now())
+}
+
+model Post {
+  id          String   @id @default(uuid()) @map("_id")
+  title       String
+  description String
+  content     String?
+  image       String
+  createdAt   DateTime @default(now())
+}
+
+model Partner {
+  id        String   @id @default(cuid())
+  name      String
+  role      String
+  bio       String[]
+  image     String?
+  order     Int      @default(0)
+  accent    String   @default("#c85a1e")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Order {
+  id               String   @id @default(uuid()) @map("_id")
+  pricePaidInCents Int
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  userId           String
+  productId        String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product          Item     @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Cart {
+  id        String     @id @default(uuid())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  items     CartItem[]
+  status    String     @default("open") // open/completed/abandoned
+}
+
+model CartItem {
+  id        String  @id @default(uuid())
+  image     String?
+  productId String?
+  name      String?
+  orderType String?
+
+  pickupDay  DateTime?
+  pickupTime String?
+
+  // Delivery fields (DoorDash / Uber / etc)
+  deliveryAddress String?
+  deliveryLat     Float?
+  deliveryLng     Float?
+  deliveryPlaceId String?
+  apt             String?
+  instructions    String?
+  customerName    String?
+  customerPhone   String?
+
+  price    Int?
+  quantity Int?
+  cartId   String
+  cart     Cart           @relation(fields: [cartId], references: [id])
+  sides    CartItemSide[]
+}
+
+enum SideGroupType {
+  RECOMMENDED
+  NO
+  EXTRA
+  SPICE
+  SIDE
+}
+
+model SideGroup {
+  id        String        @id @default(uuid())
+  itemId    String
+  title     String // e.g. "Burger No", "Extra Sauce"
+  type      SideGroupType
+  required  Boolean       @default(false)
+  maxSelect Int? // null = unlimited
+
+  item    Item         @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  options SideOption[]
+
+  createdAt DateTime @default(now())
+}
+
+model SideOption {
+  id           String    @id @default(uuid())
+  sideGroupId  String
+  label        String // "No Pickles", "Golden Ranch"
+  priceInCents Int? // null = free
+  linkedItemId String? // for Recommended Sides (points to Item)
+  sideGroup    SideGroup @relation(fields: [sideGroupId], references: [id], onDelete: Cascade)
+}
+
+model CartItemSide {
+  id           String   @id @default(uuid())
+  cartItemId   String
+  sideGroupId  String
+  optionId     String
+  label        String
+  priceInCents Int? // snapshot price at order time
+  cartItem     CartItem @relation(fields: [cartItemId], references: [id], onDelete: Cascade)
+}
+
+model GalleryImage {
+  id        String   @id @default(cuid())
+  url       String
+  alt       String   @default("")
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  name      String
+  review    String
+  avatar    String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model BusinessHours {
+  id        String   @id @default(cuid())
+  day       String // "Sunday", "Monday", etc.
+  dayIndex  Int // 0=Sunday, 1=Monday, ..., 6=Saturday
+  open      Int? // 24h hour number, null = closed
+  close     Int? // 24h hour number, null = closed
+  updatedAt DateTime @updatedAt
+
+  @@unique([dayIndex])
+}
+
+model CateringRequest {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String
+  eventType String
+  date      String
+  guests    String
+  notes     String?
+  status    String   @default("new") // "new" | "contacted" | "confirmed" | "declined"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SiteImage {
+  id        String   @id @default(cuid())
+  key       String   @unique // "home_hero" | "story_hero" | "story_origin" | "story_closing"
+  url       String
+  label     String // human-readable label for admin UI
+  updatedAt DateTime @updatedAt
+}
+
+model SiteSetting {
+  key       String   @id // "theme_color" | "logo_url"
+  value     String
+  updatedAt DateTime @default(now()) @updatedAt
+}
