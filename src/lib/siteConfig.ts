@@ -7,9 +7,9 @@
 // still exists, it is simply not linked.
 const FEATURES = {
   catering: true,
-  giftCard: true,
+  giftCard: false,
   rewards: true,
-  blog: true,
+  blog: false,
 };
 
 type FeatureKey = keyof typeof FEATURES;
@@ -37,11 +37,11 @@ const pickLink = ({ label, href }: NavLink) => ({ label, href });
 
 export const SITE_CONFIG = {
   // Brand
-  name: "Burnin Bird",
-  tagline: "Burnin Bird",
+  name: "Burnin Bird Hot Chicken",
+  tagline: "Halal Nashville Hot Chicken | Dupont Circle",
   subTagline:
-    "wraps, and bowls cooked fresh daily in Houston, TX.",
-  legalName: "Burnin Bird",
+    "Hormone-free, 100% Halal hot chicken sandwiches, tenders & fries served fresh in Washington, DC.",
+  legalName: "Burnin Bird Hot Chicken LLC",
   trademark: "Burnin Bird",
 
   // Admin intro animation: "burger" (fast food) | "coffee" (café) | "pizza" (pizzeria)
@@ -52,82 +52,82 @@ export const SITE_CONFIG = {
   menuCtaLabel: "Order now",
 
   // Contact & Location
-  address: "123 Main St, Your City, ST 00000",
-  street: "123 Main St",
-  city: "Your City",
-  state: "ST",
-  zip: "00000",
-  phone: "000-000-0000",
-  email: "hello@burnin-bird.com",
-  cateringEmail: "hello@burnin-bird.com",
-  timezone: "America/Chicago",
-  lat: 0,
-  lng: 0,
+  address: "1829 M St NW, Washington, DC 20036",
+  street: "1829 M St NW",
+  city: "Washington",
+  state: "DC",
+  zip: "20036",
+  phone: "",
+  email: "hello@burninbirddc.com",
+  cateringEmail: "catering@burninbirddc.com",
+  timezone: "America/New_York",
+  lat: 38.9054,
+  lng: -77.0426,
   googleMapsUrl:
-    "https://www.google.com/maps/search/?api=1&query=1325%20Westheimer%20Rd%2C%20Houston%2C%20TX%2077006",
+    "https://www.google.com/maps/search/?api=1&query=1829%20M%20St%20NW%2C%20Washington%2C%20DC%2020036",
 
   // Social
-  instagram: "tintinhtx",
-  instagramUrl: "https://www.instagram.com/tintinhtx/",
+  instagram: "burninbirddc",
+  instagramUrl: "https://www.instagram.com/burninbirddc/",
   facebookUrl: "",
   tiktokUrl: "",
   beholdFeedId: "",
 
   // SEO
-  siteUrl: "https://burnin-bird.vercel.app",
-  seoTitle: "Burnin Bird",
+  siteUrl: "https://burninbirddc.com",
+  seoTitle: "Burnin Bird Hot Chicken | Halal Nashville Hot Chicken in Washington, DC",
   seoDescription:
-    "Burnin Bird — order online.",
+    "Burnin Bird Hot Chicken in Dupont Circle, Washington DC. Serving 100% Halal, hormone-free Nashville hot chicken sandwiches, tenders, loaded fries, and late-night eats.",
   seoKeywords: [
-    "Tin Tin Persian Food Truck",
-    "Persian Food Truck Houston",
-    "Persian Food Houston",
-    "Kabobs Houston TX",
-    "Late Night Food Montrose Houston",
-    "Halal Food Truck Houston",
-    "Saffron Lemonade Houston",
-    "Beef Tenderloin Kabob Houston",
+    "Burnin Bird Hot Chicken",
+    "Hot Chicken DC",
+    "Halal Hot Chicken Washington DC",
+    "Dupont Circle Halal Food",
+    "Nashville Hot Chicken Sandwich",
+    "Hot Honey Chicken DC",
+    "Late Night Food Dupont Circle",
+    "Halal Fast Food Washington DC",
   ],
   ogImage: "/general/generalPages/mainImage.jpg",
 
   // Structured-data / business info (used in JSON-LD)
-  cuisines: ["Persian", "Middle Eastern", "Halal", "Grill"],
+  cuisines: ["American", "Hot Chicken", "Halal", "Fast Food"],
   priceRange: "$$",
 
-  // Colors (Tailwind hex values - vibrant yellow & charcoal inspired by logo)
-  primaryColor: "#eab308",
-  secondaryColor: "#1f2937",
-  accentColor: "#d97706",
+  // Colors (Tailwind hex values - inspired by fiery orange & deep charcoal logo)
+  primaryColor: "#f97316",
+  secondaryColor: "#111827",
+  accentColor: "#ef4444",
 
   // Hours (used for open/closed status) - hour values are 24h local time
-  // Daily 11 AM - 12 AM | Fri & Sat till 2 AM
+  // Open Daily 11 AM - 11 PM / Late Night
   hours: [
-    { day: "Sunday", open: 11, close: 24 },
-    { day: "Monday", open: 11, close: 24 },
-    { day: "Tuesday", open: 11, close: 24 },
-    { day: "Wednesday", open: 11, close: 24 },
-    { day: "Thursday", open: 11, close: 24 },
-    { day: "Friday", open: 11, close: 2 },
-    { day: "Saturday", open: 11, close: 2 },
+    { day: "Sunday", open: 11, close: 23 },
+    { day: "Monday", open: 11, close: 23 },
+    { day: "Tuesday", open: 11, close: 23 },
+    { day: "Wednesday", open: 11, close: 23 },
+    { day: "Thursday", open: 11, close: 23 },
+    { day: "Friday", open: 11, close: 24 },
+    { day: "Saturday", open: 11, close: 24 },
   ] as { day: string; open: number | null; close: number | null }[],
 
   // Home page text sections
   home: {
-    heroHeadline: "Houston's Premier Persian Street Food",
-    heroSubHeadline: "Saffron-marinated kabobs, fresh wraps, bowls & late-night bites",
-    galleryTitle: "Tin Tin Persian Food Truck",
-    gallerySubtitle: "1325 Westheimer Rd, Houston, TX",
+    heroHeadline: "DC's Premier Halal Hot Chicken",
+    heroSubHeadline: "100% Halal, hormone-free chicken fried crisp with custom heat levels",
+    galleryTitle: "Burnin Bird Hot Chicken",
+    gallerySubtitle: "1829 M St NW (Dupont Circle), Washington, DC",
     distinctiveFeatures: [
       {
-        title: "Cooked Fresh Daily, Never Frozen",
+        title: "100% Halal & Hormone Free Chicken",
         description:
-          "Traditional family recipes using saffron-marinated chicken, beef tenderloin, ground beef, and fresh veggies grilled low and fast over open heat.",
+          "We take pride in serving high-quality, hormone-free chicken tenders and breasts, prepared fresh daily and fried to crispy perfection.",
         image: "/general/generalPages/enjoy.jpg",
       },
       {
-        title: "Persian Street Food Experience",
+        title: "Custom Heat Levels & Signature Sauces",
         description:
-          "Enjoy signature sandwiches, hearty rice & salad bowls, house-made sauces (Hermez, Sari, Kashk), and our famous Saffron Lemonade (The Nasrin).",
+          "Choose your spice level from No Heat to Burnin, served with our house sauces, whipped honey butter, hot honey, or signature coleslaw.",
         image: "/general/generalPages/vibe.jpg",
       },
     ],
@@ -139,29 +139,29 @@ export const SITE_CONFIG = {
     ],
     faq: [
       {
-        question: "Where is Tin Tin Persian Food Truck located?",
+        question: "Where is Burnin Bird Hot Chicken located?",
         answer:
-          "We are located at 1325 Westheimer Rd, Houston, TX 77006 in the heart of Montrose.",
+          "We are located at 1829 M St NW in Dupont Circle, Washington, DC 20036.",
       },
       {
-        question: "Is your menu Halal?",
+        question: "Is your menu 100% Halal?",
         answer:
-          "Yes! We offer 100% Halal options across our kabob wraps, bowls, and specialties.",
+          "Yes! All of our chicken is 100% Halal and hormone-free.",
       },
       {
-        question: "What are your most popular menu items?",
+        question: "What are your signature menu items?",
         answer:
-          "Our fan favorites include the Tehran (Saffron Chicken Wrap), Isfahan (Ground Beef Wrap), Tabriz (Steak Wrap), Steak & Fries Bowl, and our signature Saffron Lemonade (The Nasrin).",
+          "Our fan favorites include the Classic Nashville Sandwich, Hot Honey Sandwich, Honey Butter Sandwich, Tenders Combo, and Fry Bowls.",
       },
       {
-        question: "Do you offer catering for private events?",
+        question: "What heat levels do you offer?",
         answer:
-          "Yes, we provide catering services for private parties, corporate events, and special gatherings. Reach out to us directly for inquiries.",
+          "We offer 5 spice levels: No Heat, Mild, Medium, Hot, and Burnin.",
       },
       {
-        question: "What are your late-night hours?",
+        question: "What are your hours?",
         answer:
-          "We are open daily from 11:00 AM to 12:00 AM midnight, and extend late night until 2:00 AM on Fridays and Saturdays.",
+          "We are open daily from 11:00 AM until late night.",
       },
     ],
   },
@@ -175,7 +175,7 @@ export const SITE_CONFIG = {
   // Footer
   footer: {
     get copyright() {
-      return `© ${new Date().getFullYear()} Tin Tin Persian Food Truck. All rights reserved.`;
+      return `© ${new Date().getFullYear()} Burnin Bird Hot Chicken. All rights reserved.`;
     },
     links: ALL_FOOTER_LINKS.filter(enabled).map(pickLink),
   },
