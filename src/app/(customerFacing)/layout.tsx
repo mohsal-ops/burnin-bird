@@ -8,6 +8,7 @@ import { SITE_CONFIG } from "@/lib/siteConfig";
 import { getLogoUrl } from "@/lib/siteSettings";
 import VisitAlert from "./_components/VisitAlert";
 import LoadingScreen from "@/components/LoadingScreen";
+import TrialPopup from "./_components/TrialPopup";
 
 export default async function Customerlayout({
   children,
@@ -23,6 +24,7 @@ export default async function Customerlayout({
       {/* One-time branded intro on the public site (once per browser session) */}
       <LoadingScreen />
       <VisitAlert />
+      <TrialPopup />
       <main className="flex relative flex-col w-full  pb- ">
         <div className="fixed top-0 left-0 right-0 z-50">
           <TopNavBar initialCartId={cartId} logoUrl={logoUrl} />

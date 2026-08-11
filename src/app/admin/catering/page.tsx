@@ -1,10 +1,13 @@
 import db from "@/db/db";
 import PageHeader from "../_components/pageHeader";
 import CateringInbox from "./_components/CateringInbox";
+import { getAccess } from "@/lib/getAccess";
+import PreviewSectionNote from "../_components/PreviewSectionNote";
 
 export const dynamic = "force-dynamic";
 
 export default async function CateringPage() {
+  const access = await getAccess();
   const [requests, newCount] = await Promise.all([
     db.cateringRequest.findMany({ orderBy: { createdAt: "desc" } }),
     db.cateringRequest.count({ where: { status: "new" } }),
@@ -21,6 +24,12 @@ export default async function CateringPage() {
             </span>
           )}
         </div>
+        {access.mode === "preview" && (
+          <PreviewSectionNote>
+            Catering inquiries land here with all the details — instead of getting
+            buried in your Instagram DMs where they&apos;re easy to lose.
+          </PreviewSectionNote>
+        )}
         <CateringInbox requests={requests} />
       </div>
     </div>

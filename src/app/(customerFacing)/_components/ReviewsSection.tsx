@@ -11,6 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FaStar } from "react-icons/fa6";
 import { X } from "lucide-react";
 import PageHeader from "./PageHeader";
+import LogoDriftBackground from "./LogoDriftBackground";
 
 export type ReviewData = { name: string; review: string; avatar: string };
 
@@ -93,14 +94,15 @@ export function ReviewsSection({ reviews }: { reviews: ReviewData[] }) {
   if (!reviews?.length) return null;
 
   return (
-    <section className="flex w-full flex-col items-center gap-8 rounded-4xl bg-gray-100 p-6 md:w-[85vw] md:p-10">
-      <div className="text-center">
+    <section className="relative overflow-hidden flex w-full flex-col items-center gap-8 rounded-4xl bg-gray-100 p-6 md:w-[85vw] md:p-10">
+      <LogoDriftBackground className="rounded-4xl" veilClassName="bg-gray-100/80" />
+      <div className="relative z-10 text-center">
         <PageHeader>What our guests are saying</PageHeader>
       </div>
 
       {/* Adaptive + centered: cards keep a natural width and wrap, so 3 look
           balanced and any number the owner adds stays tidy (never forced to 5). */}
-      <div className="flex w-full max-w-6xl flex-wrap justify-center gap-6">
+      <div className="relative z-10 flex w-full max-w-6xl flex-wrap justify-center gap-6">
         {reviews.map((rev, i) => (
           <div
             key={i}

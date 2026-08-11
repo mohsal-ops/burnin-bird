@@ -361,3 +361,11 @@ html body[data-scroll-locked] {
 .read-the-docs {
   color: #888;
 }
+
+/* Drifting logo watermark background (LogoDriftBackground.tsx). */
+@keyframes logoDrift {
+  from { transform: translate(0, 0); }
+  to { transform: translate(-90px, 90px); }
+}
+.logo-drift { animation: logoDrift 14s linear infinite; will-change: transform; }
+@media (prefers-reduced-motion: reduce) { .logo-drift { animation: none; } }

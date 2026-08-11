@@ -1,10 +1,12 @@
 "use server";
+import { assertWritable } from "@/lib/previewGuard";
 
 import db from "@/db/db";
 import { getCurrentAdmin } from "@/lib/getCurrentAdmin";
 import { revalidatePath } from "next/cache";
 
 export async function approveAdmin(adminId: string) {
+  await assertWritable();
   const currentAdmin = await getCurrentAdmin();
   if (!currentAdmin) throw new Error("Unauthorized");
 
@@ -21,6 +23,7 @@ export async function approveAdmin(adminId: string) {
 }
 
 export async function rejectAdmin(adminId: string) {
+  await assertWritable();
   const currentAdmin = await getCurrentAdmin();
   if (!currentAdmin) throw new Error("Unauthorized");
 
@@ -35,6 +38,7 @@ export async function rejectAdmin(adminId: string) {
 // Only the FIRST admin (the owner — the earliest-created account) may remove
 // other team members. Guards on the server so it can't be called by anyone else.
 export async function removeAdmin(adminId: string) {
+  await assertWritable();
   const currentAdmin = await getCurrentAdmin();
   if (!currentAdmin) throw new Error("Unauthorized");
 

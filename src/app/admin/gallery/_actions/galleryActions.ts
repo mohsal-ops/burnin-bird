@@ -1,4 +1,5 @@
 "use server";
+import { assertWritable } from "@/lib/previewGuard";
 
 import db from "@/db/db";
 import { revalidatePath } from "next/cache";
@@ -47,6 +48,7 @@ export async function addGalleryImage(
   prevState: unknown,
   formData: FormData
 ): Promise<ActionResult> {
+  await assertWritable();
   const files = formData
     .getAll("image")
     .filter((f): f is File => f instanceof File && f.size > 0);
@@ -101,6 +103,7 @@ export async function addGalleryImage(
 }
 
 export async function deleteGalleryImage(id: string): Promise<ActionResult> {
+  await assertWritable();
   const image = await db.galleryImage.findUnique({ where: { id } });
   if (!image) return { error: "Image not found." };
 
@@ -113,6 +116,7 @@ export async function deleteGalleryImage(id: string): Promise<ActionResult> {
 }
 
 export async function reorderGalleryImages(ids: string[]): Promise<ActionResult> {
+  await assertWritable();
   await Promise.all(
     ids.map((id, index) =>
       db.galleryImage.update({ where: { id }, data: { order: index } })

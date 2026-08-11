@@ -13,7 +13,7 @@ import HomeFeaturedSkeleton from "./_skeletons/HomeFeaturedSkeleton";
 import db from "@/db/db";
 import { getBusinessHours } from "@/lib/getHours";
 import { getSiteImage } from "@/lib/getSiteImages";
-import { getSiteText } from "@/lib/siteSettings";
+import { getLogoUrl, getSiteText } from "@/lib/siteSettings";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import {
   TopSection,
@@ -139,12 +139,14 @@ export default async function Home() {
     featureBreakfast,
     featureComfort,
     homeText,
+    logoUrl,
   ] = await Promise.all([
     getSiteImage("home_hero"),
     getSiteImage("home_order"),
     getSiteImage("home_feature_1"),
     getSiteImage("home_feature_2"),
     getSiteText(),
+    getLogoUrl(),
   ]);
 
   return (
@@ -154,6 +156,7 @@ export default async function Home() {
         heroImage={heroImage}
         headline={homeText.headline}
         subheadline={homeText.subheadline}
+        logoUrl={logoUrl}
       />
       <SectionDivider />
       <Suspense fallback={<HomeFeaturedSkeleton />}>

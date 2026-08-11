@@ -1,4 +1,5 @@
 "use server";
+import { assertWritable } from "@/lib/previewGuard";
 
 import { z } from "zod";
 import db from "@/db/db";
@@ -90,6 +91,7 @@ export default async function AddProduct(
   prevState: unknown,
   formData: FormData
 ) {
+  await assertWritable();
   try {
     const result = addSchema.safeParse(Object.fromEntries(formData.entries()));
     if (!result.success) {
@@ -157,6 +159,7 @@ export async function updateProduct(
   prevState: unknown,
   formData: FormData
 ) {
+  await assertWritable();
   const result = editSchema.safeParse(Object.fromEntries(formData.entries()));
   if (!result.success) {
     const first = result.error.issues[0];
@@ -205,6 +208,7 @@ export async function updateProduct(
 const categorySchema = z.object({ name: z.string().min(1) });
 
 export async function AddCategory(prevState: unknown, formData: FormData) {
+  await assertWritable();
   try {
     const result = categorySchema.safeParse(Object.fromEntries(formData.entries()));
     if (!result.success) return { message: "Please enter a category name." };
@@ -230,6 +234,7 @@ export async function AddCategory(prevState: unknown, formData: FormData) {
 
 // ── Item status toggles ──────────────────────────────────────────────────────
 export async function toglleAvalability(id: string, isAvailableForPurchase: boolean) {
+  await assertWritable();
   await db.item.update({ where: { id }, data: { isAvailableForPurchase } });
   revalidatePath("/");
   revalidatePath("/Menu");
@@ -238,6 +243,7 @@ export async function toglleAvalability(id: string, isAvailableForPurchase: bool
 }
 
 export async function toglleFeaturing(id: string, isFeatured: boolean) {
+  await assertWritable();
   await db.item.update({ where: { id }, data: { featured: isFeatured } });
   revalidatePath("/");
   revalidateTag("featured-products");
@@ -246,6 +252,7 @@ export async function toglleFeaturing(id: string, isFeatured: boolean) {
 }
 
 export async function DeleteMenuItem(id: string) {
+  await assertWritable();
   const item = await db.item.findUnique({ where: { id } });
   if (item?.image) await deleteImage(item.image);
   await db.item.delete({ where: { id } });
@@ -256,6 +263,7 @@ export async function DeleteMenuItem(id: string) {
 }
 
 export async function DeleteCategory(id: string) {
+  await assertWritable();
   await db.types.delete({ where: { id } });
   revalidatePath("/");
   revalidatePath("/Menu");
@@ -267,6 +275,7 @@ export async function DeleteCategory(id: string) {
 // order) in the "category_order" SiteSetting — no schema change needed. The
 // website reads this to order categories on the Menu.
 export async function reorderCategories(orderedIds: string[]) {
+  await assertWritable();
   await db.siteSetting.upsert({
     where: { key: "category_order" },
     update: { value: JSON.stringify(orderedIds) },
@@ -292,6 +301,7 @@ type SideGroupInput = {
 };
 
 export async function addItemSides(itemId: string, groups: SideGroupInput[]) {
+  await assertWritable();
   try {
     await db.sideGroup.deleteMany({ where: { itemId } });
 
@@ -341,6 +351,7 @@ const SAMPLE_ITEMS = [
 ];
 
 export async function seedSampleMenu() {
+  await assertWritable();
   try {
     const cat = await db.types.upsert({
       where: { slug: SAMPLE_CAT_SLUG },
@@ -377,6 +388,7 @@ export async function seedSampleMenu() {
 }
 
 export async function clearSampleMenu() {
+  await assertWritable();
   try {
     const cat = await db.types.findUnique({ where: { slug: SAMPLE_CAT_SLUG } });
     if (!cat) return { message: "No sample menu to remove." };

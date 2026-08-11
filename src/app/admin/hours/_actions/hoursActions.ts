@@ -1,4 +1,5 @@
 "use server";
+import { assertWritable } from "@/lib/previewGuard";
 import db from "@/db/db";
 import { revalidatePath } from "next/cache";
 
@@ -15,6 +16,7 @@ const DAY_NAMES = [
 export async function updateBusinessHours(
   hours: { dayIndex: number; open: number | null; close: number | null }[],
 ) {
+  await assertWritable();
   for (const h of hours) {
     // upsert so a day that doesn't exist yet is created instead of throwing
     await db.businessHours.upsert({

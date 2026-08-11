@@ -1,4 +1,5 @@
 "use server";
+import { assertWritable } from "@/lib/previewGuard";
 
 import { z } from "zod";
 import fs from "node:fs/promises";
@@ -33,6 +34,7 @@ export default async function AddPost(
   _prevState: ActionResult,
   formData: FormData
 ): Promise<ActionResult> {
+  await assertWritable();
   try {
     const raw = Object.fromEntries(formData.entries());
     const parsed = DataSchema.safeParse(raw);
@@ -97,6 +99,7 @@ export default async function AddPost(
 
 
 export async function deletePost(id: string) {
+  await assertWritable();
   try {
     await db.post.delete({
       where: { id },

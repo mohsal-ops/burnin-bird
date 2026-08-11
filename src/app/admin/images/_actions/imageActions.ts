@@ -1,4 +1,5 @@
 "use server";
+import { assertWritable } from "@/lib/previewGuard";
 import db from "@/db/db";
 import { revalidatePath } from "next/cache";
 
@@ -22,6 +23,7 @@ async function saveImage(file: File): Promise<string> {
 }
 
 export async function updateSiteImage(key: string, formData: FormData) {
+  await assertWritable();
   const file = formData.get("image") as File;
   if (!file || file.size === 0) return { error: "No file provided" };
   if (!file.type.startsWith("image/")) return { error: "Invalid image file" };
@@ -37,6 +39,7 @@ export async function updateSiteImage(key: string, formData: FormData) {
 
     revalidatePath("/");
     revalidatePath("/story");
+    revalidatePath("/catering");
     revalidatePath("/admin/images");
     return { ok: true, url };
   } catch (error) {

@@ -1,6 +1,9 @@
 import { Toaster } from "@/components/ui/sonner";
 import { AdminNav } from "./_components/nav";
 import LoadingScreen from "@/components/LoadingScreen";
+import PreviewBanner from "./_components/PreviewBanner";
+import PreviewCallCta from "./_components/PreviewCallCta";
+import { getAccess } from "@/lib/getAccess";
 import db from "@/db/db";
 
 export const dynamic = "force-dynamic";
@@ -10,6 +13,8 @@ export default async function Adminlayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const access = await getAccess();
+
   // Surfaced as a badge on the Catering nav item so pending requests are
   // visible from any admin page, not just the dashboard. Resilient to a DB
   // hiccup so the whole admin doesn't 500 on a transient outage.
@@ -21,15 +26,18 @@ export default async function Adminlayout({
   }
 
   return (
-    <div className="min-h-screen bg-stone-50 md:flex">
-      {/* One-time burger splash on a fresh admin load (login / refresh). It plays
-          once and unmounts; per-page loading uses the skeletons only. */}
-      <LoadingScreen />
-      <AdminNav newCateringCount={newCateringCount} />
-      <main id="main-content" className="min-w-0 flex-1 overflow-auto pt-14 md:pt-0">
-        {children}
-      </main>
-      <Toaster expand richColors closeButton duration={6000} />
+    <div className="min-h-screen bg-stone-50">
+      {access.mode === "preview" && <PreviewBanner />}
+      <div className="md:flex">
+        {/* One-time branded splash on a fresh admin load. */}
+        <LoadingScreen />
+        <AdminNav newCateringCount={newCateringCount} />
+        <main id="main-content" className="min-w-0 flex-1 overflow-auto pt-14 md:pt-0">
+          {children}
+        </main>
+        <Toaster expand richColors closeButton duration={6000} />
+      </div>
+      {access.mode === "preview" && <PreviewCallCta />}
     </div>
   );
 }

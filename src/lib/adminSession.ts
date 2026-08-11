@@ -80,3 +80,59 @@ export async function verifyAdminSessionToken(
     return null;
   }
 }
+
+// ── Read-only preview tokens ────────────────────────────────────────────────
+// Same signed-HMAC scheme (reuses ADMIN_SECRET), but the payload carries a
+// `preview` flag instead of an admin id — it grants VIEW access to /admin only.
+// Writes are blocked by assertWritable() (src/lib/previewGuard.ts). Long-lived
+// so the link stays reachable; clicking the link again just refreshes it.
+const PREVIEW_TTL_MS = 1000 * 60 * 60 * 24 * 90; // 90 days
+
+export async function createPreviewToken(): Promise<string> {
+  const secret = process.env.ADMIN_SECRET;
+  if (!secret) throw new Error("ADMIN_SECRET is not configured");
+
+  const payloadBytes = encoder.encode(
+    JSON.stringify({ preview: true, exp: Date.now() + PREVIEW_TTL_MS }),
+  );
+  const payloadB64 = bytesToBase64Url(payloadBytes);
+
+  const key = await getSigningKey(secret);
+  const signature = await crypto.subtle.sign("HMAC", key, encoder.encode(payloadB64));
+  const sigB64 = bytesToBase64Url(new Uint8Array(signature));
+
+  return `${payloadB64}.${sigB64}`;
+}
+
+export async function verifyPreviewToken(
+  token: string | undefined | null,
+): Promise<{ preview: true } | null> {
+  if (!token) return null;
+  const secret = process.env.ADMIN_SECRET;
+  if (!secret) return null;
+
+  const [payloadB64, sigB64] = token.split(".");
+  if (!payloadB64 || !sigB64) return null;
+
+  try {
+    const key = await getSigningKey(secret);
+    const valid = await crypto.subtle.verify(
+      "HMAC",
+      key,
+      base64UrlToBytes(sigB64) as BufferSource,
+      encoder.encode(payloadB64),
+    );
+    if (!valid) return null;
+
+    const payload = JSON.parse(decoder.decode(base64UrlToBytes(payloadB64))) as {
+      preview?: boolean;
+      exp?: number;
+    };
+    if (payload.preview !== true || typeof payload.exp !== "number" || Date.now() > payload.exp) {
+      return null;
+    }
+    return { preview: true };
+  } catch {
+    return null;
+  }
+}

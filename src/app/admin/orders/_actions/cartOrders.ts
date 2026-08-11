@@ -1,4 +1,5 @@
 "use server";
+import { assertWritable } from "@/lib/previewGuard";
 
 import db from "@/db/db";
 import { revalidatePath } from "next/cache";
@@ -18,11 +19,13 @@ export async function getOrdersWithItems(status?: CartOrderStatus) {
 }
 
 export async function updateCartStatus(cartId: string, status: CartOrderStatus) {
+  await assertWritable();
   await db.cart.update({ where: { id: cartId }, data: { status } });
   revalidatePath("/admin/orders");
 }
 
 export async function deleteCart(cartId: string) {
+  await assertWritable();
   await db.cartItem.deleteMany({ where: { cartId } });
   await db.cart.delete({ where: { id: cartId } });
   revalidatePath("/admin/orders");

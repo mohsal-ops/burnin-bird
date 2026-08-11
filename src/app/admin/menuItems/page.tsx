@@ -15,8 +15,11 @@ import ActivateAndDesactivate, {
   DeleteItemComp,
   IsFeaturedOrNot,
 } from "./_components/productsActions";
+import { getAccess } from "@/lib/getAccess";
+import PreviewSectionNote from "../_components/PreviewSectionNote";
 
 export default async function Items() {
+  const access = await getAccess();
   const items = await db.item?.findMany();
   const itemAndTypeFunction = async (items: any[]) => {
     return await Promise.all(
@@ -52,6 +55,13 @@ export default async function Items() {
             </Button>
           </Link>
         </div>
+
+        {access.mode === "preview" && (
+          <PreviewSectionNote>
+            Every order placed through your own menu skips the 15–30% commission
+            DoorDash and Uber Eats take — that margin stays with you.
+          </PreviewSectionNote>
+        )}
 
         {/* Table card */}
         <div className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm">

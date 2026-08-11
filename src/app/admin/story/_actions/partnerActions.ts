@@ -1,4 +1,5 @@
 "use server";
+import { assertWritable } from "@/lib/previewGuard";
 
 import db from "@/db/db";
 import { revalidatePath } from "next/cache";
@@ -40,6 +41,7 @@ export async function updatePartner(
   prevState: unknown,
   formData: FormData
 ) {
+  await assertWritable();
   try {
     const raw = Object.fromEntries(formData.entries());
     const result = partnerSchema.safeParse(raw);
@@ -74,6 +76,7 @@ export async function updatePartner(
 
 // ── ADD new partner ───────────────────────────────────────────────────────────
 export async function addPartner(prevState: unknown, formData: FormData) {
+  await assertWritable();
   try {
     const raw = Object.fromEntries(formData.entries());
     const result = partnerSchema.safeParse(raw);
@@ -113,6 +116,7 @@ export async function addPartner(prevState: unknown, formData: FormData) {
 
 // ── DELETE partner ────────────────────────────────────────────────────────────
 export async function deletePartner(id: string) {
+  await assertWritable();
   try {
     await db.partner.delete({ where: { id } });
     revalidatePath("/admin/story");

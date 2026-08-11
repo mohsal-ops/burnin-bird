@@ -25,6 +25,10 @@ import { getBusinessHours, getOpenStatus } from "@/lib/getHours";
 import { getOwnerBriefing } from "@/lib/dashboardStats";
 import { formatCurrency } from "@/lib/formatters";
 import { SITE_CONFIG } from "@/lib/siteConfig";
+import { cookies } from "next/headers";
+import { getAccess } from "@/lib/getAccess";
+import { previewDemo } from "@/lib/previewDemo";
+import PreviewSavingsBanner from "./_components/PreviewSavingsBanner";
 
 const isUnlocked = true; // 🔒 flip to true when ready
 
@@ -121,11 +125,24 @@ function SEOTip({ done, text, action, href }: { done: boolean; text: string; act
 }
 
 export default async function Page() {
-  const [data, businessHours, briefing] = await Promise.all([
+  const access = await getAccess();
+  const [data, businessHours, rawBriefing] = await Promise.all([
     getDashboardData(),
     getBusinessHours(),
     getOwnerBriefing(),
   ]);
+
+  // In the read-only preview, swap the sparse real numbers for simulated order
+  // activity that reflects the estimated orders/day and grows across return
+  // visits. The real owner always sees their real numbers.
+  let briefing = rawBriefing;
+  if (access.mode === "preview") {
+    const jar = await cookies();
+    const sinceMs = Number(jar.get("admin_preview_since")?.value) || Date.now();
+    const daysSince = Math.max(0, Math.floor((Date.now() - sinceMs) / 86400000));
+    briefing = { ...rawBriefing, ...previewDemo(daysSince) };
+  }
+
   const houstonStatus = getOpenStatus(businessHours);
   const daysSincePost = data.latestPost
     ? Math.floor((Date.now() - new Date(data.latestPost.createdAt).getTime()) / 86400000)
@@ -184,6 +201,8 @@ export default async function Page() {
             </a>
           </div>
         </header>
+
+        {access.mode === "preview" && <PreviewSavingsBanner />}
 
         {/* ── TODAY - the money glance ── */}
         <div>

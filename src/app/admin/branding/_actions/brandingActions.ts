@@ -1,4 +1,5 @@
 "use server";
+import { assertWritable } from "@/lib/previewGuard";
 
 import db from "@/db/db";
 import { revalidatePath } from "next/cache";
@@ -24,6 +25,7 @@ async function saveImage(file: File): Promise<string> {
 }
 
 export async function updateThemeColor(color: string) {
+  await assertWritable();
   if (!/^#[0-9a-fA-F]{3,8}$/.test(color)) {
     return { error: "Please choose a valid color." };
   }
@@ -43,6 +45,7 @@ export async function updateThemeColor(color: string) {
 }
 
 export async function updateLogo(formData: FormData) {
+  await assertWritable();
   const file = formData.get("logo") as File;
   if (!file || file.size === 0) return { error: "No file provided" };
   if (!file.type.startsWith("image/")) return { error: "Invalid image file" };
@@ -65,6 +68,7 @@ export async function updateLogo(formData: FormData) {
 }
 
 export async function updateHomeText(headline: string, subheadline: string) {
+  await assertWritable();
   try {
     await Promise.all([
       db.siteSetting.upsert({

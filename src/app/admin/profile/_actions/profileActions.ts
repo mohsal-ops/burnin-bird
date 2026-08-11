@@ -1,4 +1,5 @@
 "use server";
+import { assertWritable } from "@/lib/previewGuard";
 
 import { randomBytes } from "crypto";
 import db from "@/db/db";
@@ -12,6 +13,7 @@ const EMAIL_CHANGE_TOKEN_TTL_MS = 1000 * 60 * 60 * 24; // 24h
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function updateName(name: string) {
+  await assertWritable();
   const admin = await getCurrentAdmin();
   if (!admin) throw new Error("Unauthorized");
 
@@ -24,6 +26,7 @@ export async function updateName(name: string) {
 }
 
 export async function requestEmailChange(newEmail: string) {
+  await assertWritable();
   const admin = await getCurrentAdmin();
   if (!admin) throw new Error("Unauthorized");
 
@@ -67,6 +70,7 @@ export async function requestEmailChange(newEmail: string) {
 }
 
 export async function changePassword(currentPassword: string, newPassword: string) {
+  await assertWritable();
   const admin = await getCurrentAdmin();
   if (!admin) throw new Error("Unauthorized");
 

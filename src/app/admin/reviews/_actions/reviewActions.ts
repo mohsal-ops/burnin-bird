@@ -1,4 +1,5 @@
 "use server";
+import { assertWritable } from "@/lib/previewGuard";
 
 import db from "@/db/db";
 import { revalidatePath } from "next/cache";
@@ -13,6 +14,7 @@ export async function addReview(
   prevState: unknown,
   formData: FormData
 ): Promise<ActionResult> {
+  await assertWritable();
   const name = String(formData.get("name") ?? "").trim();
   const review = String(formData.get("review") ?? "").trim();
   const avatar = String(formData.get("avatar") ?? "").trim();
@@ -46,6 +48,7 @@ export async function updateReview(
   prevState: unknown,
   formData: FormData
 ): Promise<ActionResult> {
+  await assertWritable();
   const name = String(formData.get("name") ?? "").trim();
   const review = String(formData.get("review") ?? "").trim();
   const avatar = String(formData.get("avatar") ?? "").trim();
@@ -69,6 +72,7 @@ export async function updateReview(
 }
 
 export async function deleteReview(id: string): Promise<ActionResult> {
+  await assertWritable();
   await db.review.delete({ where: { id } });
   revalidatePath("/");
   revalidatePath("/admin/reviews");
@@ -76,6 +80,7 @@ export async function deleteReview(id: string): Promise<ActionResult> {
 }
 
 export async function reorderReviews(ids: string[]): Promise<ActionResult> {
+  await assertWritable();
   await Promise.all(
     ids.map((id, index) => db.review.update({ where: { id }, data: { order: index } }))
   );

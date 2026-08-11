@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifyAdminSessionToken } from "./adminSession";
 
 export const ADMIN_COOKIE_NAME = "admin_session";
+// Read-only "preview" session (outreach leads). Separate cookie so it can never
+// be mistaken for a real credentialed session.
+export const PREVIEW_COOKIE_NAME = "admin_preview";
 
 /** Returns the signed-in admin's id, or null if the session cookie is missing/invalid/expired. */
 export async function getAdminIdFromRequest(req: NextRequest): Promise<string | null> {
