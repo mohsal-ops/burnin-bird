@@ -27,6 +27,7 @@ import { formatCurrency } from "@/lib/formatters";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { cookies } from "next/headers";
 import { getAccess } from "@/lib/getAccess";
+import { getLogoUrl } from "@/lib/siteSettings";
 import { previewDemo } from "@/lib/previewDemo";
 import PreviewSavingsBanner from "./_components/PreviewSavingsBanner";
 
@@ -126,10 +127,11 @@ function SEOTip({ done, text, action, href }: { done: boolean; text: string; act
 
 export default async function Page() {
   const access = await getAccess();
-  const [data, businessHours, rawBriefing] = await Promise.all([
+  const [data, businessHours, rawBriefing, logoUrl] = await Promise.all([
     getDashboardData(),
     getBusinessHours(),
     getOwnerBriefing(),
+    getLogoUrl(),
   ]);
 
   // In the read-only preview, swap the sparse real numbers for simulated order
@@ -178,7 +180,7 @@ export default async function Page() {
         <header className="bg-white rounded-2xl border border-stone-200 shadow-sm p-5 flex flex-col sm:flex-row sm:items-center gap-4">
           <div className="flex items-center gap-4 flex-1 min-w-0">
             <div className="w-12 h-12 rounded-full bg-stone-50 border border-stone-100 flex items-center justify-center shrink-0 overflow-hidden">
-              <Image src={Logo} alt={`${SITE_CONFIG.name} logo`} width={40} height={40} className="w-full h-full rounded-full object-cover" />
+              <Image src={logoUrl || Logo} alt={`${SITE_CONFIG.name} logo`} width={40} height={40} className="w-full h-full rounded-full object-cover" />
             </div>
             <div className="min-w-0">
               <p className="text-xs text-stone-400">{todayLabel}</p>

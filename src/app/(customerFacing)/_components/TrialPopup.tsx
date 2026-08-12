@@ -9,8 +9,8 @@ import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { getOutreach, formatUsd, savingsBreakdown } from "@/lib/outreach";
+import { isTrialDismissed, markTrialDismissed, markTrialSeen } from "@/lib/trialPopupSession";
 
-const DISMISS_KEY = "vega:trialPopupDismissed";
 const SHOW_AFTER_MS = 7000;
 
 export default function TrialPopup() {
@@ -19,12 +19,12 @@ export default function TrialPopup() {
 
   useEffect(() => {
     if (!o.enabled) return;
-    try {
-      if (sessionStorage.getItem(DISMISS_KEY)) return;
-    } catch {
-      /* ignore */
-    }
-    const t = setTimeout(() => setOpen(true), SHOW_AFTER_MS);
+    if (isTrialDismissed()) return;
+    const t = setTimeout(() => {
+      setOpen(true);
+      // Mark it seen so the floating dashboard bubble can appear (and persist).
+      markTrialSeen();
+    }, SHOW_AFTER_MS);
     return () => clearTimeout(t);
   }, [o.enabled]);
 
@@ -32,11 +32,7 @@ export default function TrialPopup() {
 
   const dismiss = () => {
     setOpen(false);
-    try {
-      sessionStorage.setItem(DISMISS_KEY, "1");
-    } catch {
-      /* ignore */
-    }
+    markTrialDismissed();
   };
 
   const { annualSavings } = savingsBreakdown();

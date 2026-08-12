@@ -4,6 +4,7 @@ import LoadingScreen from "@/components/LoadingScreen";
 import PreviewBanner from "./_components/PreviewBanner";
 import PreviewCallCta from "./_components/PreviewCallCta";
 import { getAccess } from "@/lib/getAccess";
+import { getLogoUrl } from "@/lib/siteSettings";
 import db from "@/db/db";
 
 export const dynamic = "force-dynamic";
@@ -13,7 +14,7 @@ export default async function Adminlayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const access = await getAccess();
+  const [access, logoUrl] = await Promise.all([getAccess(), getLogoUrl()]);
 
   // Surfaced as a badge on the Catering nav item so pending requests are
   // visible from any admin page, not just the dashboard. Resilient to a DB
@@ -31,7 +32,7 @@ export default async function Adminlayout({
       <div className="md:flex">
         {/* One-time branded splash on a fresh admin load. */}
         <LoadingScreen />
-        <AdminNav newCateringCount={newCateringCount} />
+        <AdminNav newCateringCount={newCateringCount} logoUrl={logoUrl} />
         <main id="main-content" className="min-w-0 flex-1 overflow-auto">
           {children}
         </main>
