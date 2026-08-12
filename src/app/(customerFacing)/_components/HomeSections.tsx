@@ -39,7 +39,7 @@ export function TopSection({
 }) {
   return (
     <div className="flex relative overflow-hidden h-svh w-full sm:w-[85%] flex-col sm:flex-row bg-stone-300 sm:rounded-3xl sm:p-2">
-      <LogoDriftBackground  veilClassName="bg-white/80" className="sm:rounded-3xl" />
+      <LogoDriftBackground  veilClassName="bg-white/90" className="sm:rounded-3xl" />
       <div className="sm:relative absolute z-30 bottom-20 flex flex-col gap-6 items-start h-full sm:justify-center justify-end mt-10 md:mb-20 md:w-1/2 p-5 md:p-12">
          <Image
           alt={`${SITE_CONFIG.name} logo`}
