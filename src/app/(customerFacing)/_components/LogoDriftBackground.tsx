@@ -10,17 +10,15 @@
 // /general/logo/logo-drift.png. The baked-in padding is what creates the even
 // gap between logos, which a raw edge-to-edge logo can't (especially one with an
 
-import { StaticImageData } from "next/image";
+import Logo from "@/../public/general/logo/logo.png";
 
 // opaque background). `tile` sets the cell size, so a bigger value = more space.
 export default function LogoDriftBackground({
-  logoUrl,
   veilClassName = "bg-white/85",
   opacity = 0.9,
   className = "",
   tile = 150,
 }: {
-  logoUrl:  StaticImageData;
   veilClassName?: string;
   opacity?: number;
   className?: string;
@@ -37,7 +35,7 @@ export default function LogoDriftBackground({
         className="logo-drift absolute"
         style={{
           inset: "-25%",
-          backgroundImage: `url(${logoUrl})`,
+          backgroundImage: `url(${Logo.src})`,
           backgroundRepeat: "repeat",
           backgroundSize: `${tile}px ${tile}px`,
           opacity,
