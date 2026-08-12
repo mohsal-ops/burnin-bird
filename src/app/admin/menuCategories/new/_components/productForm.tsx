@@ -34,7 +34,7 @@ export default function ProductForm({ item }: { item: Item | null }) {
         <div>
           <h2 className="text-lg font-bold text-stone-900">New category</h2>
           <p className="text-sm text-stone-500">
-            Group your menu items — e.g. Pizzas, Pastas, Drinks.
+            Group your menu items, e.g. Pizzas, Pastas, Drinks.
           </p>
         </div>
       </div>

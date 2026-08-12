@@ -266,8 +266,9 @@ export function AdminNav({ newCateringCount = 0 }: { newCateringCount?: number }
         <SidebarBody pathname={pathname} newCateringCount={newCateringCount} />
       </aside>
 
-      {/* Mobile top bar */}
-      <div className="fixed inset-x-0 top-0 z-40 flex h-14 items-center justify-between border-b border-stone-800 bg-stone-900 px-3 text-white md:hidden">
+      {/* Mobile top bar — sticky (in flow) so it sits below the preview banner
+          instead of overlapping it; sticks to the top on scroll. */}
+      <div className="sticky top-0 z-40 flex h-14 items-center justify-between border-b border-stone-800 bg-stone-900 px-3 text-white md:hidden">
         <button
           aria-label="Open menu"
           onClick={() => setMobileOpen(true)}

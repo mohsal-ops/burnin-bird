@@ -97,7 +97,7 @@ export default function ProductForm({
                 Customers pay <span className="font-semibold text-stone-700">{formatCurrency(Number(price))}</span>
               </p>
             ) : (
-              <p className="text-xs text-stone-400">In dollars — e.g. 12.99</p>
+              <p className="text-xs text-stone-400">In dollars, e.g. 12.99</p>
             )}
           </div>
         </div>

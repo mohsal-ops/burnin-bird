@@ -26,7 +26,7 @@ export default async function CateringPage() {
         </div>
         {access.mode === "preview" && (
           <PreviewSectionNote>
-            Catering inquiries land here with all the details — instead of getting
+            Catering inquiries land here with all the details instead of getting
             buried in your Instagram DMs where they&apos;re easy to lose.
           </PreviewSectionNote>
         )}

@@ -26,7 +26,7 @@ const DEFAULTS: OutreachConfig = {
   discountedPrice: 1200,
   discountReason: "review",
   trialLengthDays: 14,
-  calendlyUrl: "",
+  calendlyUrl: "https://calendly.com/popdeveloper54/10-minute-meet",
   savings: { estimatedOrdersPerDay: 20, avgOrderValue: 25, commissionPct: 30 },
 };
 

@@ -11,7 +11,7 @@ import { SITE_CONFIG } from "@/lib/siteConfig";
 import { getOutreach, formatUsd, savingsBreakdown } from "@/lib/outreach";
 
 const DISMISS_KEY = "vega:trialPopupDismissed";
-const SHOW_AFTER_MS = 5000;
+const SHOW_AFTER_MS = 7000;
 
 export default function TrialPopup() {
   const o = getOutreach();

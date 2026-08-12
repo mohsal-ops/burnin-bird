@@ -59,7 +59,7 @@ export default async function Items() {
         {access.mode === "preview" && (
           <PreviewSectionNote>
             Every order placed through your own menu skips the 15–30% commission
-            DoorDash and Uber Eats take — that margin stays with you.
+            DoorDash and Uber Eats take that margin and it stays with you.
           </PreviewSectionNote>
         )}
 
