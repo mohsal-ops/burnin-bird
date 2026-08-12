@@ -219,30 +219,49 @@ export default function LoadingScreen({
     setPlay(true);
   }, [keepLooping]);
 
-  // assemble → hold (shine + gentle float), then fade out once the page loads.
+  // assemble → hold (shine) → gentle float. The intro is allowed to leave only
+  // once it has BOTH played its full minimum cycle AND the page has loaded — so
+  // a fast load never cuts the animation short.
   useEffect(() => {
     if (!play) return;
     const push = (fn: () => void, ms: number) => timers.current.push(setTimeout(fn, ms));
 
+    // Full choreography: assemble (~1s) → shine (~0.6s) → a beat of float.
+    const MIN_SHOW_MS = 2600;
+
     push(() => setPhase("hold"), 1000);
 
     let exited = false;
-    const finish = () => {
+    const leave = () => {
       if (exited || keepLooping) return;
       exited = true;
-      // hold the assembled dish a beat, then fade
-      push(() => {
-        setPhase("fadeOut");
-        push(() => setMounted(false), 520);
-      }, 900);
+      setPhase("fadeOut");
+      push(() => setMounted(false), 520);
     };
-    const cap = setTimeout(finish, 6000);
-    if (document.readyState === "complete") finish();
-    else window.addEventListener("load", finish);
+
+    let loaded = document.readyState === "complete";
+    let minDone = false;
+    const maybeLeave = () => {
+      if (loaded && minDone) leave();
+    };
+
+    const onLoad = () => {
+      loaded = true;
+      maybeLeave();
+    };
+    if (!keepLooping && !loaded) window.addEventListener("load", onLoad);
+
+    push(() => {
+      minDone = true;
+      maybeLeave();
+    }, MIN_SHOW_MS);
+
+    // Safety net: never hang past this even if `load` never fires.
+    const cap = setTimeout(leave, 8000);
 
     return () => {
       clearTimeout(cap);
-      window.removeEventListener("load", finish);
+      window.removeEventListener("load", onLoad);
       timers.current.forEach(clearTimeout);
       timers.current = [];
     };
