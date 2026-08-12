@@ -34,7 +34,7 @@ export default function LogoDriftBackground({
       <div
         className="logo-drift absolute"
         style={{
-          inset: "-25%",
+          inset: "-30%",
           backgroundImage: `url(${Logo.src})`,
           backgroundRepeat: "repeat",
           backgroundSize: `${tile}px ${tile}px`,
