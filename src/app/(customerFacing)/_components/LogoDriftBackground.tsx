@@ -17,7 +17,7 @@ export default function LogoDriftBackground({
   veilClassName = "bg-white/85",
   opacity = 0.9,
   className = "",
-  tile = 150,
+  tile = 100,
 }: {
   veilClassName?: string;
   opacity?: number;
