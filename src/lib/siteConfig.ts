@@ -106,7 +106,7 @@ export const SITE_CONFIG = {
   outreach: {
     enabled: true,
     fullPrice: 2600,
-    discountedPrice: 1200,
+    discountedPrice: 399,
     discountReason: "review",
     trialLengthDays: 14,
     calendlyUrl: "https://calendly.com/popdeveloper54/10-minute-meet",
