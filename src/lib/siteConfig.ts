@@ -110,7 +110,7 @@ export const SITE_CONFIG = {
     discountReason: "review",
     trialLengthDays: 14,
     calendlyUrl: "https://calendly.com/popdeveloper54/10-minute-meet",
-    savings: { estimatedOrdersPerDay: 20, avgOrderValue: 25, commissionPct: 30 },
+    savings: { estimatedOrdersPerDay: 20, avgOrderValue: 25, commissionPct: 20 },
   },
 
   // Hours (used for open/closed status) - hour values are 24h local time
