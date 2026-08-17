@@ -162,6 +162,7 @@ model SideGroup {
   type      SideGroupType
   required  Boolean @default(false)
   maxSelect Int?                 // null = unlimited
+  order     Int @default(0)      // owner-controlled display order
 
   item      Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
   options   SideOption[]
@@ -175,6 +176,7 @@ model SideOption {
   label       String            // "No Pickles", "Golden Ranch"
   priceInCents Int?             // null = free
   linkedItemId String?          // for Recommended Sides (points to Item)
+  order        Int @default(0)  // display order within the group
   sideGroup   SideGroup @relation(fields: [sideGroupId], references: [id], onDelete: Cascade)
 }
 

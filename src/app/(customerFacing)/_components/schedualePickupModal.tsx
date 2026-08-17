@@ -17,7 +17,7 @@ import { useRouter } from "next/navigation";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { useCart } from "@/app/providers/CartProvider";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Prisma, SideGroup, SideGroupType } from "generated/prisma";
+import { Prisma } from "generated/prisma";
 import { PickupDetailsContent } from "./pickupTimeandDay";
 
 /* ---------------- Types ---------------- */
@@ -102,17 +102,13 @@ function AddProductCard({
   invalidGroupIds: string[];
   finalPrice: number;
 }) {
-  const order: Record<SideGroupType, number> = {
-    NO: 1,
-    SPICE: 2,
-    RECOMMENDED: 3,
-    SIDE: 4,
-    EXTRA: 5, // ← include ALL enum values
-  };
-
-  const orderedGroups = [...product.sideGroups].sort(
-    (a: SideGroup, b: SideGroup) => order[a.type] - order[b.type],
-  );
+  // Required groups first (DoorDash order), then by the owner-set display order.
+  const isReq = (g: SideGroupWithOptions) => g.type === "SIDE" || g.required;
+  const ord = (x: { order?: number }) => x.order ?? 0;
+  const orderedGroups = [...product.sideGroups].sort((a, b) => {
+    const r = (isReq(a) ? 0 : 1) - (isReq(b) ? 0 : 1);
+    return r !== 0 ? r : ord(a) - ord(b);
+  });
   return (
     <div className="animate-in fade-in-50 duration-300">
       <div className="border rounded-2xl shadow-sm p-4 space-y-4 bg-white">
@@ -164,8 +160,11 @@ function AddProductCard({
         {orderedGroups.map((group) => {
           const isSide = group.type === "SIDE";
           const isRequired = isSide || group.required;
-          const isSatisfied = (selectedSides[group.id]?.length ?? 0) > 0;
+          const selCount = selectedSides[group.id]?.length ?? 0;
+          const isSatisfied = selCount > 0;
+          const atCap = !!group.maxSelect && selCount >= group.maxSelect;
           const isInvalid = invalidGroupIds.includes(group.id);
+          const opts = [...group.options].sort((a, b) => ord(a) - ord(b));
           return (
           <div
             key={group.id}
@@ -174,7 +173,14 @@ function AddProductCard({
             }`}
           >
             <div>
-              <p className="font-medium">{group.title}</p>
+              <p className="font-medium">
+                {group.title}
+                {!isRequired && (
+                  <span className="ml-1 text-sm font-normal text-muted-foreground">
+                    (Optional)
+                  </span>
+                )}
+              </p>
               <p
                 className={`text-xs font-medium ${
                   isRequired
@@ -184,10 +190,8 @@ function AddProductCard({
                     : "text-muted-foreground"
                 }`}
               >
-                {isRequired ? "Required" : "Optional"} ·{" "}
-                {group.maxSelect
-                  ? `Select up to ${group.maxSelect}`
-                  : "Choose any"}
+                {isRequired ? "Required" : "Optional"}
+                {group.maxSelect ? ` · Select up to ${group.maxSelect}` : ""}
               </p>
             </div>
 
@@ -203,7 +207,7 @@ function AddProductCard({
                   }))
                 }
               >
-                {group.options.map((opt) => (
+                {opts.map((opt) => (
                   <div
                     key={opt.id}
                     className="flex items-center justify-between border-b py-3"
@@ -212,20 +216,29 @@ function AddProductCard({
                       <RadioGroupItem value={opt.id} />
                       {opt.label}
                     </Label>
+                    {opt.priceInCents ? (
+                      <span className="text-xs text-muted-foreground ml-2">
+                        +{formatCurrency(opt.priceInCents / 100)}
+                      </span>
+                    ) : null}
                   </div>
                 ))}
               </RadioGroup>
             ) : (
-              /* CHECKBOX (No / Recommended) */
-              group.options.map((opt) => {
+              /* CHECKBOX (multi-select, capped at maxSelect) */
+              opts.map((opt) => {
                 const checked =
                   selectedSides[group.id]?.includes(opt.id) ?? false;
+                const disabled = atCap && !checked;
 
                 return (
                   <div
                     key={opt.id}
-                    className="flex items-center justify-between border-b py-3"
+                    className={`flex items-center justify-between border-b py-3 ${
+                      disabled ? "opacity-40" : "cursor-pointer"
+                    }`}
                     onClick={() => {
+                      if (disabled) return;
                       setSelectedSides((prev) => {
                         const current = prev[group.id] || [];
                         let next = current;
@@ -246,15 +259,15 @@ function AddProductCard({
                     }}
                   >
                     <Label className="flex items-center gap-3">
-                      <Checkbox checked={checked} />
+                      <Checkbox checked={checked} disabled={disabled} />
                       {opt.label}
                     </Label>
 
-                    {opt.priceInCents && (
+                    {opt.priceInCents ? (
                       <span className="text-xs text-muted-foreground ml-2">
                         +{formatCurrency(opt.priceInCents / 100)}
                       </span>
-                    )}
+                    ) : null}
                   </div>
                 );
               })
@@ -340,13 +353,8 @@ export default function SchedulePickupDialog({
       .map((group) => group.id);
 
   const handleAddToCart = async () => {
-    const missing = getMissingRequiredGroupIds();
-    if (missing.length > 0) {
-      setInvalidGroupIds(missing);
-      toast("Please select the required options before adding to cart");
-      setTimeout(() => setInvalidGroupIds([]), 500);
-      return;
-    }
+    // The button is disabled while required groups are unsatisfied; guard anyway.
+    if (getMissingRequiredGroupIds().length > 0) return;
 
     setIsLoading(true);
     try {
@@ -409,17 +417,28 @@ export default function SchedulePickupDialog({
         </div>
 
         <DialogFooter className="p-3">
-          {step === "addCard" && (
-            <Button
-              size="md"
-              variant="mainButton"
-              className="w-full"
-              onClick={handleAddToCart}
-              disabled={isLoading}
-            >
-              {isLoading ? "Adding..." : "Add to Cart"}
-            </Button>
-          )}
+          {step === "addCard" &&
+            (() => {
+              const missingCount = getMissingRequiredGroupIds().length;
+              const totalStr = formatCurrency((finalPrice * quantity) / 100);
+              return (
+                <Button
+                  size="md"
+                  variant="mainButton"
+                  className="w-full"
+                  onClick={handleAddToCart}
+                  disabled={isLoading || missingCount > 0}
+                >
+                  {isLoading
+                    ? "Adding..."
+                    : missingCount > 0
+                      ? `Make ${missingCount} required selection${
+                          missingCount > 1 ? "s" : ""
+                        } - ${totalStr}`
+                      : `Add to Cart · ${totalStr}`}
+                </Button>
+              );
+            })()}
         </DialogFooter>
       </DialogContent>
     </Dialog>

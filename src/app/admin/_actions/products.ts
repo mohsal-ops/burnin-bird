@@ -336,6 +336,79 @@ export async function addItemSides(itemId: string, groups: SideGroupInput[]) {
   }
 }
 
+// ── Modifier groups (generic owner-managed) ──────────────────────────────────
+// Replaces ALL modifier groups for an item with the given ordered set (the admin
+// UI always sends the full list). Persists `order` on groups + options and
+// enforces that a required group has at least one real option.
+type ModifierGroupInput = {
+  title: string;
+  type: "RECOMMENDED" | "NO" | "EXTRA" | "SPICE" | "SIDE";
+  required?: boolean;
+  maxSelect?: number | null;
+  order?: number;
+  options: {
+    label?: string;
+    priceInCents?: number | null;
+    linkedItemId?: string | null;
+    order?: number;
+  }[];
+};
+
+export async function saveItemModifiers(itemId: string, groups: ModifierGroupInput[]) {
+  await assertWritable();
+
+  // Validate before touching the DB.
+  for (const g of groups) {
+    if (!(g.title ?? "").trim()) {
+      return { error: "Every modifier group needs a title." };
+    }
+    const realOptions = (g.options ?? []).filter((o) => (o.label ?? "").trim().length > 0);
+    if ((g.required ?? false) && realOptions.length === 0) {
+      return {
+        error: `"${g.title.trim()}" is marked required, so it needs at least one option.`,
+      };
+    }
+  }
+
+  try {
+    await db.sideGroup.deleteMany({ where: { itemId } });
+
+    for (let gi = 0; gi < groups.length; gi++) {
+      const group = groups[gi];
+      const realOptions = (group.options ?? []).filter((o) => (o.label ?? "").trim().length > 0);
+      if (realOptions.length === 0) continue; // drop empty (optional) groups
+      await db.sideGroup.create({
+        data: {
+          itemId,
+          title: group.title.trim(),
+          type: group.type,
+          required: group.required ?? false,
+          maxSelect: group.maxSelect ?? null,
+          order: group.order ?? gi,
+          options: {
+            create: realOptions.map((opt, oi) => ({
+              label: (opt.label ?? "").trim(),
+              priceInCents: opt.priceInCents ?? null,
+              linkedItemId: opt.linkedItemId ?? null,
+              order: opt.order ?? oi,
+            })),
+          },
+        },
+      });
+    }
+
+    revalidatePath("/admin");
+    revalidatePath("/admin/menuItems");
+    revalidatePath(`/admin/menuItems/${itemId}/edit`);
+    revalidatePath("/Menu");
+    revalidateTag("products");
+    return { ok: true, message: "Modifiers saved." };
+  } catch (error) {
+    console.error("saveItemModifiers error:", error);
+    return { error: String(error) };
+  }
+}
+
 // ── Sample / demo menu ─────────────────────────────────────────────────────────
 // Lets the owner load a few ready-made products with one click so they can try
 // the whole ordering flow, then remove them. All grouped under one category so
