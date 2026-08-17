@@ -238,6 +238,7 @@ exports.Prisma.SideGroupScalarFieldEnum = {
   type: 'type',
   required: 'required',
   maxSelect: 'maxSelect',
+  order: 'order',
   createdAt: 'createdAt'
 };
 
@@ -246,7 +247,8 @@ exports.Prisma.SideOptionScalarFieldEnum = {
   sideGroupId: 'sideGroupId',
   label: 'label',
   priceInCents: 'priceInCents',
-  linkedItemId: 'linkedItemId'
+  linkedItemId: 'linkedItemId',
+  order: 'order'
 };
 
 exports.Prisma.CartItemSideScalarFieldEnum = {

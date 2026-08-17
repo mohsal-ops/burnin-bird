@@ -428,146 +428,65 @@ type SampleGroup = {
 type SampleItem = { name: string; description: string; price: number; groups?: SampleGroup[] };
 type SampleCategory = { name: string; items: SampleItem[] };
 
-export type SampleCuisine = "burger" | "pizza" | "persian";
+export type SampleCuisine = "burger" | "pizza";
 
-const SIZE_GROUP: SampleGroup = {
-  title: "Size",
-  type: "EXTRA",
-  required: true,
-  maxSelect: 1,
-  options: [{ label: 'Small 10"' }, { label: 'Medium 14"', price: 3 }, { label: 'Large 18"', price: 6 }],
-};
-const SPICE_GROUP: SampleGroup = {
-  title: "Spice level",
-  type: "SPICE",
-  required: true,
-  maxSelect: 1,
-  options: [{ label: "Mild" }, { label: "Medium" }, { label: "Hot" }],
-};
-
+// Static starter menus lifted from real client sites so a new owner opens with a
+// realistic, cuisine-appropriate menu: "burger" = Burgers & Chicken (from the
+// burnin site), "pizza" = Pizza (from the pizza-gallery site). Kept faithful to
+// the source menus (no invented modifier groups); owners add modifiers via the
+// item editor.
 const SAMPLE_MENUS: Record<SampleCuisine, { label: string; categories: SampleCategory[] }> = {
   burger: {
     label: "Burgers & Chicken",
     categories: [
-      {
-        name: "Burgers",
-        items: [
-          {
-            name: "Classic Cheeseburger",
-            description: "Sample item — beef patty, lettuce, tomato, house sauce.",
-            price: 9.99,
-            groups: [
-              { title: "Choose your cheese", type: "EXTRA", required: true, maxSelect: 1,
-                options: [{ label: "American" }, { label: "Cheddar" }, { label: "Swiss" }] },
-              { title: "Add extras", type: "EXTRA", required: false, maxSelect: null,
-                options: [{ label: "Bacon", price: 2 }, { label: "Fried egg", price: 1.5 }, { label: "Avocado", price: 2 }] },
-            ],
-          },
-          { name: "Bacon Double", description: "Sample item — two patties, bacon, cheddar.", price: 12.99 },
-        ],
-      },
-      {
-        name: "Chicken",
-        items: [
-          {
-            name: "Crispy Chicken Sandwich",
-            description: "Sample item — buttermilk-fried chicken, pickles.",
-            price: 10.49,
-            groups: [SPICE_GROUP],
-          },
-          {
-            name: "Chicken Tenders (4 pc)",
-            description: "Sample item — crispy tenders with a dip.",
-            price: 8.99,
-            groups: [
-              { title: "Dipping sauces", type: "RECOMMENDED", required: false, maxSelect: 2,
-                options: [{ label: "Ranch" }, { label: "BBQ" }, { label: "Honey mustard" }, { label: "Buffalo" }] },
-            ],
-          },
-        ],
-      },
-      {
-        name: "Sides & Drinks",
-        items: [
-          { name: "Crispy Fries", description: "Sample item — golden and salted.", price: 3.99 },
-          { name: "Soft Drink", description: "Sample item — your choice of soda.", price: 2.49 },
-        ],
-      },
+      { name: "Sandwiches", items: [
+        { name: "Classic Nashville", price: 12.99, description: "Two crispy fried chicken breasts dipped in our signature Nashville hot oil, topped with house sauce, coleslaw & pickles." },
+        { name: "Honey Butter", price: 12.99, description: "Two crispy fried chicken breasts in Nashville hot oil, topped with whipped honey butter & melted cheddar." },
+        { name: "The Buffalo", price: 12.99, description: "Two crispy fried chicken breasts in Nashville hot oil, topped with buffalo sauce, ranch & melted cheddar." },
+      ] },
+      { name: "Jr. Sandwiches", items: [
+        { name: "Jr. Classic Nashville", price: 8.99, description: "One crispy fried chicken breast in Nashville hot oil, topped with house sauce, coleslaw & pickles." },
+      ] },
+      { name: "Jumbo Tenders", items: [
+        { name: "3 Piece Jumbo Tenders", price: 13.99, description: "Three jumbo tenders in our signature Nashville hot oil; served with pickles." },
+      ] },
+      { name: "Wings", items: [
+        { name: "5 Piece Wings", price: 7.99, description: "Five crispy wings tossed in our signature seasoning." },
+      ] },
+      { name: "Bowls", items: [
+        { name: "Loaded Mac & Cheese", price: 13.99, description: "Creamy mac & cheese topped with two chopped fried chicken breasts, house sauce, pickles & melted cheese." },
+      ] },
+      { name: "Extras", items: [
+        { name: "Single Breast", price: 4.99, description: "One crispy fried chicken breast." },
+      ] },
+      { name: "Drinks", items: [
+        { name: "Orange Crush", price: 2.99, description: "Chilled can." },
+        { name: "Starry", price: 2.99, description: "Chilled can." },
+      ] },
+      { name: "Milkshakes", items: [
+        { name: "Chocolate Milkshake", price: 8.99, description: "Thick, hand-spun chocolate milkshake." },
+      ] },
     ],
   },
   pizza: {
     label: "Pizza",
     categories: [
-      {
-        name: "Pizzas",
-        items: [
-          {
-            name: "Margherita",
-            description: "Sample item — fresh mozzarella, tomato, basil.",
-            price: 12.99,
-            groups: [
-              SIZE_GROUP,
-              { title: "Extra toppings", type: "EXTRA", required: false, maxSelect: null,
-                options: [{ label: "Pepperoni", price: 2 }, { label: "Mushrooms", price: 1.5 }, { label: "Extra cheese", price: 2 }, { label: "Olives", price: 1.5 }] },
-            ],
-          },
-          { name: "Pepperoni", description: "Sample item — loaded pepperoni, mozzarella.", price: 14.99, groups: [SIZE_GROUP] },
-        ],
-      },
-      {
-        name: "Sides",
-        items: [
-          { name: "Garlic Knots", description: "Sample item — six knots, marinara.", price: 5.49 },
-          { name: "Caesar Salad", description: "Sample item — romaine, parmesan, croutons.", price: 7.99 },
-        ],
-      },
-      {
-        name: "Drinks",
-        items: [{ name: "Soft Drink", description: "Sample item — your choice of soda.", price: 2.49 }],
-      },
-    ],
-  },
-  persian: {
-    label: "Persian",
-    categories: [
-      {
-        name: "Wraps",
-        items: [
-          {
-            name: "Chicken Kabob Wrap",
-            description: "Sample item — saffron chicken, grilled veg, house sauce.",
-            price: 10.99,
-            groups: [
-              SPICE_GROUP,
-              { title: "Add-ons", type: "EXTRA", required: false, maxSelect: null,
-                options: [{ label: "Extra sauce", price: 1 }, { label: "Grilled onions", price: 1 }] },
-            ],
-          },
-          { name: "Beef Koobideh Wrap", description: "Sample item — seasoned ground beef kabob.", price: 11.99 },
-        ],
-      },
-      {
-        name: "Bowls",
-        items: [
-          {
-            name: "Chicken Bowl",
-            description: "Sample item — saffron chicken over your base.",
-            price: 12.99,
-            groups: [
-              { title: "Choose a base", type: "EXTRA", required: true, maxSelect: 1,
-                options: [{ label: "Saffron rice" }, { label: "Salad" }, { label: "Half & half" }] },
-            ],
-          },
-          { name: "Steak Bowl", description: "Sample item — grilled steak, sumac onions.", price: 14.99 },
-        ],
-      },
-      {
-        name: "Sides & Drinks",
-        items: [
-          { name: "Hummus & Pita", description: "Sample item — creamy hummus, warm pita.", price: 5.49 },
-          { name: "Saffron Lemonade", description: "Sample item — house saffron-rose lemonade.", price: 3.99 },
-        ],
-      },
+      { name: "Pizzas", items: [
+        { name: "Basquiat BBQ Chicken", price: 32.5, description: "BBQ sauce, halal chicken, caramelized onions, red bell peppers, and mozzarella." },
+        { name: "Mona Lisa Margherita", price: 27.5, description: "Fresh mozzarella, vine-ripened tomatoes, basil, and olive oil." },
+        { name: "Picasso Pepperoni", price: 31.25, description: "Halal pepperoni, mozzarella, and red sauce — bold, abstract, unforgettable." },
+        { name: "The Blank Canvas", price: 27, description: "Classic cheese pizza — simple, timeless, and perfectly balanced." },
+        { name: "The Starry Night", price: 31.25, description: "Grilled halal chicken and sauteed mushrooms over creamy halal vodka sauce, finished with mozzarella and fresh basil." },
+      ] },
+      { name: "Combo Deals", items: [
+        { name: "Two 18 Inch Pizzas Combo", price: 125, description: "Two 18-inch pizzas, 12-piece wings and 2 fries." },
+      ] },
+      { name: "Sides", items: [
+        { name: "Fries", price: 7, description: "Crispy golden fries." },
+      ] },
+      { name: "Drinks", items: [
+        { name: "Can Soda", price: 2, description: "Choice of cola, diet cola, or lemon-lime soda." },
+      ] },
     ],
   },
 };
