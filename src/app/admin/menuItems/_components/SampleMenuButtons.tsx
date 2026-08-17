@@ -1,35 +1,55 @@
 "use client";
 
-import { useTransition } from "react";
+import { useTransition, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { toast } from "@/hooks/use-toast";
-import { seedSampleMenu, clearSampleMenu } from "@/app/admin/_actions/products";
+import { toast } from "sonner";
+import { seedSampleMenu, clearSampleMenu, type SampleCuisine } from "@/app/admin/_actions/products";
+
+const CUISINES: { key: SampleCuisine; label: string }[] = [
+  { key: "burger", label: "Burgers & Chicken" },
+  { key: "pizza", label: "Pizza" },
+  { key: "persian", label: "Persian" },
+];
 
 export default function SampleMenuButtons() {
   const [pending, start] = useTransition();
+  const [busy, setBusy] = useState<string | null>(null);
   const router = useRouter();
 
-  const run = (fn: () => Promise<{ message: string }>) =>
+  const run = (label: string, fn: () => Promise<{ message: string }>) => {
+    setBusy(label);
     start(async () => {
       const res = await fn();
-      toast({ description: res.message });
+      toast(res.message);
       router.refresh();
+      setBusy(null);
     });
+  };
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <Button variant="outline" disabled={pending} onClick={() => run(seedSampleMenu)}>
-        {pending ? "Working…" : "Load sample menu"}
-      </Button>
+      <span className="text-sm text-stone-500">Load a sample menu:</span>
+      {CUISINES.map((c) => (
+        <Button
+          key={c.key}
+          variant="outline"
+          size="sm"
+          disabled={pending}
+          onClick={() => run(c.key, () => seedSampleMenu(c.key))}
+        >
+          {busy === c.key ? "Loading…" : c.label}
+        </Button>
+      ))}
       <Button
         variant="ghost"
+        size="sm"
         disabled={pending}
         onClick={() => {
-          if (confirm("Remove the sample demo items?")) run(clearSampleMenu);
+          if (confirm("Remove the sample menu items?")) run("clear", clearSampleMenu);
         }}
       >
-        Remove sample
+        {busy === "clear" ? "Removing…" : "Remove sample"}
       </Button>
     </div>
   );

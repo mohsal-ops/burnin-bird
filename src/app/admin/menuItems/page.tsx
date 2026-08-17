@@ -17,6 +17,7 @@ import ActivateAndDesactivate, {
 } from "./_components/productsActions";
 import { getAccess } from "@/lib/getAccess";
 import PreviewSectionNote from "../_components/PreviewSectionNote";
+import SampleMenuButtons from "./_components/SampleMenuButtons";
 
 export default async function Items() {
   const access = await getAccess();
@@ -37,6 +38,9 @@ export default async function Items() {
     );
   };
   const data = await itemAndTypeFunction(items);
+  // Show the sample-menu loader while onboarding (empty menu) or while a sample
+  // set is loaded (so it can be removed/switched).
+  const hasSample = (await db.types.count({ where: { slug: { startsWith: "sample-" } } })) > 0;
 
   return (
     <div className="lg:flex justify-center">
@@ -55,6 +59,8 @@ export default async function Items() {
             </Button>
           </Link>
         </div>
+
+        {(data.length === 0 || hasSample) && <SampleMenuButtons />}
 
         {access.mode === "preview" && (
           <PreviewSectionNote>

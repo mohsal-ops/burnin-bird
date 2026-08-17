@@ -413,47 +413,227 @@ export async function saveItemModifiers(itemId: string, groups: ModifierGroupInp
 // Lets the owner load a few ready-made products with one click so they can try
 // the whole ordering flow, then remove them. All grouped under one category so
 // they're easy to clear.
-const SAMPLE_CAT_SLUG = "sample-menu-demo";
-const SAMPLE_ITEMS = [
-  { name: "Classic Cheeseburger", description: "Sample item — beef patty, cheese, lettuce, tomato.", price: 9.99 },
-  { name: "Margherita Pizza", description: "Sample item — fresh mozzarella, tomato, basil.", price: 12.99 },
-  { name: "Caesar Salad", description: "Sample item — romaine, parmesan, croutons.", price: 7.99 },
-  { name: "Crispy Fries", description: "Sample item — golden and salted.", price: 3.99 },
-  { name: "Chocolate Brownie", description: "Sample item — warm and fudgy.", price: 4.99 },
-  { name: "Soft Drink", description: "Sample item — your choice of soda.", price: 2.49 },
-];
+// Every sample category + item is slugged "sample-…" so clearSampleMenu can drop
+// the whole set no matter which cuisine was loaded.
+const SAMPLE_SLUG_PREFIX = "sample-";
 
-export async function seedSampleMenu() {
+type SampleOpt = { label: string; price?: number }; // dollars; omit = free
+type SampleGroup = {
+  title: string;
+  type: "EXTRA" | "RECOMMENDED" | "NO" | "SPICE" | "SIDE";
+  required?: boolean;
+  maxSelect?: number | null;
+  options: SampleOpt[];
+};
+type SampleItem = { name: string; description: string; price: number; groups?: SampleGroup[] };
+type SampleCategory = { name: string; items: SampleItem[] };
+
+export type SampleCuisine = "burger" | "pizza" | "persian";
+
+const SIZE_GROUP: SampleGroup = {
+  title: "Size",
+  type: "EXTRA",
+  required: true,
+  maxSelect: 1,
+  options: [{ label: 'Small 10"' }, { label: 'Medium 14"', price: 3 }, { label: 'Large 18"', price: 6 }],
+};
+const SPICE_GROUP: SampleGroup = {
+  title: "Spice level",
+  type: "SPICE",
+  required: true,
+  maxSelect: 1,
+  options: [{ label: "Mild" }, { label: "Medium" }, { label: "Hot" }],
+};
+
+const SAMPLE_MENUS: Record<SampleCuisine, { label: string; categories: SampleCategory[] }> = {
+  burger: {
+    label: "Burgers & Chicken",
+    categories: [
+      {
+        name: "Burgers",
+        items: [
+          {
+            name: "Classic Cheeseburger",
+            description: "Sample item — beef patty, lettuce, tomato, house sauce.",
+            price: 9.99,
+            groups: [
+              { title: "Choose your cheese", type: "EXTRA", required: true, maxSelect: 1,
+                options: [{ label: "American" }, { label: "Cheddar" }, { label: "Swiss" }] },
+              { title: "Add extras", type: "EXTRA", required: false, maxSelect: null,
+                options: [{ label: "Bacon", price: 2 }, { label: "Fried egg", price: 1.5 }, { label: "Avocado", price: 2 }] },
+            ],
+          },
+          { name: "Bacon Double", description: "Sample item — two patties, bacon, cheddar.", price: 12.99 },
+        ],
+      },
+      {
+        name: "Chicken",
+        items: [
+          {
+            name: "Crispy Chicken Sandwich",
+            description: "Sample item — buttermilk-fried chicken, pickles.",
+            price: 10.49,
+            groups: [SPICE_GROUP],
+          },
+          {
+            name: "Chicken Tenders (4 pc)",
+            description: "Sample item — crispy tenders with a dip.",
+            price: 8.99,
+            groups: [
+              { title: "Dipping sauces", type: "RECOMMENDED", required: false, maxSelect: 2,
+                options: [{ label: "Ranch" }, { label: "BBQ" }, { label: "Honey mustard" }, { label: "Buffalo" }] },
+            ],
+          },
+        ],
+      },
+      {
+        name: "Sides & Drinks",
+        items: [
+          { name: "Crispy Fries", description: "Sample item — golden and salted.", price: 3.99 },
+          { name: "Soft Drink", description: "Sample item — your choice of soda.", price: 2.49 },
+        ],
+      },
+    ],
+  },
+  pizza: {
+    label: "Pizza",
+    categories: [
+      {
+        name: "Pizzas",
+        items: [
+          {
+            name: "Margherita",
+            description: "Sample item — fresh mozzarella, tomato, basil.",
+            price: 12.99,
+            groups: [
+              SIZE_GROUP,
+              { title: "Extra toppings", type: "EXTRA", required: false, maxSelect: null,
+                options: [{ label: "Pepperoni", price: 2 }, { label: "Mushrooms", price: 1.5 }, { label: "Extra cheese", price: 2 }, { label: "Olives", price: 1.5 }] },
+            ],
+          },
+          { name: "Pepperoni", description: "Sample item — loaded pepperoni, mozzarella.", price: 14.99, groups: [SIZE_GROUP] },
+        ],
+      },
+      {
+        name: "Sides",
+        items: [
+          { name: "Garlic Knots", description: "Sample item — six knots, marinara.", price: 5.49 },
+          { name: "Caesar Salad", description: "Sample item — romaine, parmesan, croutons.", price: 7.99 },
+        ],
+      },
+      {
+        name: "Drinks",
+        items: [{ name: "Soft Drink", description: "Sample item — your choice of soda.", price: 2.49 }],
+      },
+    ],
+  },
+  persian: {
+    label: "Persian",
+    categories: [
+      {
+        name: "Wraps",
+        items: [
+          {
+            name: "Chicken Kabob Wrap",
+            description: "Sample item — saffron chicken, grilled veg, house sauce.",
+            price: 10.99,
+            groups: [
+              SPICE_GROUP,
+              { title: "Add-ons", type: "EXTRA", required: false, maxSelect: null,
+                options: [{ label: "Extra sauce", price: 1 }, { label: "Grilled onions", price: 1 }] },
+            ],
+          },
+          { name: "Beef Koobideh Wrap", description: "Sample item — seasoned ground beef kabob.", price: 11.99 },
+        ],
+      },
+      {
+        name: "Bowls",
+        items: [
+          {
+            name: "Chicken Bowl",
+            description: "Sample item — saffron chicken over your base.",
+            price: 12.99,
+            groups: [
+              { title: "Choose a base", type: "EXTRA", required: true, maxSelect: 1,
+                options: [{ label: "Saffron rice" }, { label: "Salad" }, { label: "Half & half" }] },
+            ],
+          },
+          { name: "Steak Bowl", description: "Sample item — grilled steak, sumac onions.", price: 14.99 },
+        ],
+      },
+      {
+        name: "Sides & Drinks",
+        items: [
+          { name: "Hummus & Pita", description: "Sample item — creamy hummus, warm pita.", price: 5.49 },
+          { name: "Saffron Lemonade", description: "Sample item — house saffron-rose lemonade.", price: 3.99 },
+        ],
+      },
+    ],
+  },
+};
+
+export async function seedSampleMenu(cuisine: SampleCuisine = "burger") {
   await assertWritable();
+  const menu = SAMPLE_MENUS[cuisine];
+  if (!menu) return { message: "Unknown sample menu." };
   try {
-    const cat = await db.types.upsert({
-      where: { slug: SAMPLE_CAT_SLUG },
-      update: {},
-      create: { name: "Sample Menu (demo)", slug: SAMPLE_CAT_SLUG },
-    });
     let added = 0;
-    for (let i = 0; i < SAMPLE_ITEMS.length; i++) {
-      const s = SAMPLE_ITEMS[i];
-      const slug = `sample-${slugify(s.name)}`;
-      if (await db.item.findUnique({ where: { slug } })) continue;
-      await db.item.create({
-        data: {
-          name: s.name,
-          description: s.description,
-          priceInCents: Math.round(s.price * 100),
-          slug,
-          typeId: cat.id,
-          isAvailableForPurchase: true,
-          featured: i < 3,
-        },
+    let featuredCount = 0;
+    for (const cat of menu.categories) {
+      const catSlug = `${SAMPLE_SLUG_PREFIX}${slugify(cat.name)}`;
+      const type = await db.types.upsert({
+        where: { slug: catSlug },
+        update: {},
+        create: { name: cat.name, slug: catSlug },
       });
-      added++;
+      for (const item of cat.items) {
+        const slug = `${SAMPLE_SLUG_PREFIX}${slugify(item.name)}`;
+        if (await db.item.findUnique({ where: { slug } })) continue;
+        const created = await db.item.create({
+          data: {
+            name: item.name,
+            description: item.description,
+            priceInCents: Math.round(item.price * 100),
+            slug,
+            typeId: type.id,
+            isAvailableForPurchase: true,
+            featured: featuredCount < 3,
+          },
+        });
+        featuredCount++;
+        const groups = item.groups ?? [];
+        for (let gi = 0; gi < groups.length; gi++) {
+          const g = groups[gi];
+          await db.sideGroup.create({
+            data: {
+              itemId: created.id,
+              title: g.title,
+              type: g.type,
+              required: g.required ?? false,
+              maxSelect: g.maxSelect ?? null,
+              order: gi,
+              options: {
+                create: g.options.map((o, oi) => ({
+                  label: o.label,
+                  priceInCents: o.price == null ? null : Math.round(o.price * 100),
+                  order: oi,
+                })),
+              },
+            },
+          });
+        }
+        added++;
+      }
     }
     revalidatePath("/admin/menuItems");
     revalidatePath("/Menu");
     revalidatePath("/");
     revalidateTag("products");
-    return { message: added ? `Sample menu ready — ${added} item${added === 1 ? "" : "s"} added.` : "Sample menu already loaded." };
+    return {
+      message: added
+        ? `${menu.label} sample menu ready — ${added} item${added === 1 ? "" : "s"} added.`
+        : `${menu.label} sample menu already loaded.`,
+    };
   } catch (error) {
     console.error("seedSampleMenu error:", error);
     return { message: String(error) };
@@ -463,20 +643,22 @@ export async function seedSampleMenu() {
 export async function clearSampleMenu() {
   await assertWritable();
   try {
-    const cat = await db.types.findUnique({ where: { slug: SAMPLE_CAT_SLUG } });
-    if (!cat) return { message: "No sample menu to remove." };
-    const items = await db.item.findMany({ where: { typeId: cat.id } });
+    const cats = await db.types.findMany({ where: { slug: { startsWith: SAMPLE_SLUG_PREFIX } } });
+    if (cats.length === 0) return { message: "No sample menu to remove." };
     let removed = 0;
-    for (const it of items) {
-      try {
-        await db.item.delete({ where: { id: it.id } });
-        removed++;
-      } catch {
-        // Item was test-ordered (has an order) so it can't be deleted — just hide it.
-        await db.item.update({ where: { id: it.id }, data: { isAvailableForPurchase: false } }).catch(() => {});
+    for (const cat of cats) {
+      const items = await db.item.findMany({ where: { typeId: cat.id } });
+      for (const it of items) {
+        try {
+          await db.item.delete({ where: { id: it.id } });
+          removed++;
+        } catch {
+          // Item was test-ordered (has an order) so it can't be deleted — just hide it.
+          await db.item.update({ where: { id: it.id }, data: { isAvailableForPurchase: false } }).catch(() => {});
+        }
       }
+      await db.types.delete({ where: { id: cat.id } }).catch(() => {});
     }
-    await db.types.delete({ where: { id: cat.id } }).catch(() => {});
     revalidatePath("/admin/menuItems");
     revalidatePath("/Menu");
     revalidatePath("/");
