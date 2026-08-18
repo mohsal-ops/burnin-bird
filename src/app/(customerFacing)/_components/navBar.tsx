@@ -140,6 +140,11 @@ export function TopNavBar({
               );
             })}
           </div>
+          <Link href="/Menu">
+          <Button size="lg" variant="mainButton">
+            {SITE_CONFIG.menuCtaLabel}
+          </Button>
+        </Link>
           <div>
             <CartSideBar cartId={cartId} cartItems={cartItems} />
           </div>
