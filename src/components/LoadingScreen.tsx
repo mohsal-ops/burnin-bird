@@ -91,7 +91,6 @@ function FrontArt({ variant, phase }: { variant: Variant; phase: Phase }) {
           <path key={i} d={d} stroke="#121212" strokeWidth={1.5} fill="none" strokeLinecap="round"
             style={{ opacity: 0.45, animation: `steam 2.1s ease-in-out ${500 + i * 260}ms infinite` }} />
         ))}
-        <ellipse cx={60} cy={85} rx={27} ry={3.6} {...outline} style={{ ...svgLayer, animation: layerAnim(phase, 0) }} />
         <path d="M 42,44 L 78,44 L 74,74 Q 73,79 68,79 L 52,79 Q 47,79 46,74 Z"
           {...outline} style={{ ...svgLayer, animation: layerAnim(phase, 100) }} />
         <path d="M 78,50 Q 90,50 90,59 Q 90,68 78,67" {...outline} style={{ ...svgLayer, animation: layerAnim(phase, 180) }} />
