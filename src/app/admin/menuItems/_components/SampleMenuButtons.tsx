@@ -9,6 +9,7 @@ import { seedSampleMenu, clearSampleMenu, type SampleCuisine } from "@/app/admin
 const CUISINES: { key: SampleCuisine; label: string }[] = [
   { key: "burger", label: "Burgers & Chicken" },
   { key: "pizza", label: "Pizza" },
+  { key: "coffee", label: "Coffee Shop" },
 ];
 
 export default function SampleMenuButtons() {

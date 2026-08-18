@@ -428,7 +428,7 @@ type SampleGroup = {
 type SampleItem = { name: string; description: string; price: number; groups?: SampleGroup[] };
 type SampleCategory = { name: string; items: SampleItem[] };
 
-export type SampleCuisine = "burger" | "pizza";
+export type SampleCuisine = "burger" | "pizza" | "coffee";
 
 // Static starter menus lifted from real client sites so a new owner opens with a
 // realistic, cuisine-appropriate menu: "burger" = Burgers & Chicken (from the
@@ -486,6 +486,35 @@ const SAMPLE_MENUS: Record<SampleCuisine, { label: string; categories: SampleCat
       ] },
       { name: "Drinks", items: [
         { name: "Can Soda", price: 2, description: "Choice of cola, diet cola, or lemon-lime soda." },
+      ] },
+    ],
+  },
+  coffee: {
+    label: "Coffee Shop",
+    categories: [
+      { name: "Espresso", items: [
+        { name: "Espresso", price: 3, description: "A double shot of our house espresso." },
+        { name: "Cappuccino", price: 4.25, description: "Espresso with steamed milk and a thick layer of foam." },
+        { name: "Caffe Latte", price: 4.75, description: "Espresso with velvety steamed milk." },
+        { name: "Mocha", price: 5.25, description: "Espresso, chocolate, and steamed milk." },
+      ] },
+      { name: "Iced & Cold Brew", items: [
+        { name: "Cold Brew", price: 4.5, description: "Slow-steeped 18 hours — smooth and low-acid." },
+        { name: "Iced Americano", price: 4, description: "Espresso over ice and cold water." },
+        { name: "Dalgona Coffee Latte", price: 4.5, description: "Whipped coffee cloud over iced milk." },
+        { name: "Iced Vanilla Latte", price: 4.5, description: "Espresso, vanilla, and cold milk over ice." },
+      ] },
+      { name: "Matcha & Tea", items: [
+        { name: "Blue Lavender Matcha", price: 6.5, description: "Ceremonial matcha with butterfly-pea and lavender." },
+        { name: "Matcha Latte", price: 5.25, description: "Stone-ground matcha with steamed milk." },
+        { name: "Chai Latte", price: 4.75, description: "Spiced black tea with steamed milk." },
+      ] },
+      { name: "Other Drinks", items: [
+        { name: "Strawberry Milk", price: 4.5, description: "Fresh strawberry puree with cold milk." },
+      ] },
+      { name: "Pastries", items: [
+        { name: "Butter Croissant", price: 3.75, description: "Flaky, all-butter croissant." },
+        { name: "Blueberry Muffin", price: 3.5, description: "Moist muffin loaded with blueberries." },
       ] },
     ],
   },
