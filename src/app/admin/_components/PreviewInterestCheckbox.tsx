@@ -110,7 +110,7 @@ export default function PreviewInterestCheckbox({
             )}
           </span>
           <span className="text-sm font-medium leading-snug text-stone-700">
-            Yes — I want this live for my restaurant
+            Yes, I want this live for my restaurant
           </span>
         </label>
 
@@ -138,7 +138,7 @@ export default function PreviewInterestCheckbox({
   // ── Inline variant (primary dashboard CTA) — full-weight, whole-card clickable ──
   const label = checked
     ? "Got it! I'll reach out on Instagram shortly."
-    : "Yes — I want this live for my restaurant";
+    : "Yes, I want this live for my restaurant";
   const subline = checked
     ? "Consider it done — no call, no forms. (Tap to undo.)"
     : "One tap — I'll take it from here, no call needed.";
