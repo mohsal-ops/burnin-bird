@@ -13,6 +13,12 @@ export type OutreachConfig = {
   // INTERNAL follow-up tracking only — never surfaced as a countdown/deadline.
   trialLengthDays: number;
   calendlyUrl: string;
+  // One-click "yes, I'm interested" signal. `signalKey` is THIS client's project
+  // slug in the builder CRM; the checkbox only renders when it's set (per-client,
+  // like the outreach block itself). `signalEndpoint` is the builder's public
+  // interest API — the default fits every client, override only if it moves.
+  signalEndpoint: string;
+  signalKey: string;
   savings: {
     estimatedOrdersPerDay: number;
     avgOrderValue: number;
@@ -27,6 +33,8 @@ const DEFAULTS: OutreachConfig = {
   discountReason: "review",
   trialLengthDays: 14,
   calendlyUrl: "https://calendly.com/popdeveloper54/10-minute-meet",
+  signalEndpoint: "https://restaurant-websites-builder.vercel.app/api/interest",
+  signalKey: "",
   savings: { estimatedOrdersPerDay: 20, avgOrderValue: 25, commissionPct: 30 },
 };
 
