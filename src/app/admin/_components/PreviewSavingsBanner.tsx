@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { ChevronDown, Sparkles } from "lucide-react";
 import { savingsBreakdown, getOutreach, formatUsd } from "@/lib/outreach";
+import PreviewInterestCheckbox from "./PreviewInterestCheckbox";
 
 // Progressive-reveal headline for the preview dashboard: the savings number is
 // visible immediately, but the actual math is one click away — so a 10-second
@@ -91,20 +92,15 @@ export default function PreviewSavingsBanner() {
       )}
 
       {/* Primary CTA: appears only once the breakdown is expanded — the moment
-          the visitor has seen the strongest case. Understated, no urgency. */}
-      {open && o.calendlyUrl && (
-        <p className="mt-4 text-sm leading-relaxed text-stone-600">
-          Want this running for real?{" "}
-          <a
-            href={o.calendlyUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-semibold text-[#c85a1e] underline-offset-2 hover:underline"
-          >
-            Book a quick 15-min call
-          </a>{" "}
-          and I&apos;ll walk you through going live.
-        </p>
+          the visitor has seen the strongest case. The smallest possible next
+          step: one calm click, no urgency, no scheduling. */}
+      {open && (
+        <>
+          <p className="mt-4 text-sm leading-relaxed text-stone-600">
+            Want this running for real? One click and I&apos;ll take it from here.
+          </p>
+          <PreviewInterestCheckbox variant="inline" />
+        </>
       )}
     </div>
   );

@@ -110,6 +110,7 @@ export const SITE_CONFIG = {
     discountReason: "review",
     trialLengthDays: 14,
     calendlyUrl: "https://calendly.com/popdeveloper54/10-minute-meet",
+    signalKey: "burnin-bird",
     savings: { estimatedOrdersPerDay: 20, avgOrderValue: 25, commissionPct: 20 },
   },
 

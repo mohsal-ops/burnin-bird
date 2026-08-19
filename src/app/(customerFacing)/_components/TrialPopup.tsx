@@ -4,12 +4,13 @@
 // no countdown, no fake spot-counter, no expiry/takedown copy. Shows both the
 // real value and the discounted price, an honest reason for the discount, and
 // real scarcity (I take on a handful at a time). Primary CTA opens the read-only
-// dashboard preview; an optional secondary link books a call.
+// dashboard preview; a low-friction secondary option signals interest in one click.
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { getOutreach, formatUsd, savingsBreakdown } from "@/lib/outreach";
 import { isTrialDismissed, markTrialDismissed, markTrialSeen } from "@/lib/trialPopupSession";
+import PreviewInterestCheckbox from "@/app/admin/_components/PreviewInterestCheckbox";
 
 const SHOW_AFTER_MS = 7000;
 
@@ -102,16 +103,7 @@ export default function TrialPopup() {
             See your dashboard →
           </a>
 
-          {o.calendlyUrl ? (
-            <a
-              href={o.calendlyUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-3 block text-center text-sm font-medium text-stone-500 underline-offset-2 hover:text-stone-700 hover:underline"
-            >
-              Prefer to talk it through? Book a quick call
-            </a>
-          ) : null}
+          <PreviewInterestCheckbox variant="inline" />
         </div>
       </div>
     </div>
