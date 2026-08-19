@@ -16,7 +16,7 @@ import { useState, useEffect, useRef } from "react";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 
 type Phase = "assemble" | "hold" | "fadeOut";
-type Variant = "burger" | "coffee" | "pizza";
+type Variant = "burger" | "coffee" | "pizza" | "bowl";
 
 const SESSION_KEY = "vega:introPlayed";
 const NAME = SITE_CONFIG.name;
@@ -27,13 +27,14 @@ const BRAND_DEEP = (SITE_CONFIG as { accentColor?: string }).accentColor || "#b8
 
 function resolveVariant(override?: Variant): Variant {
   const raw = override ?? (SITE_CONFIG as { loaderStyle?: string }).loaderStyle;
-  return raw === "coffee" || raw === "pizza" || raw === "burger" ? raw : "burger";
+  return raw === "coffee" || raw === "pizza" || raw === "burger" || raw === "bowl" ? raw : "burger";
 }
 
 const ACCENTS: Record<Variant, { fill: string; shine: string }> = {
   burger: { fill: "#FFB800", shine: "#FFB800" },
   coffee: { fill: "#4c8c5a", shine: "#7bb08a" },
   pizza: { fill: "#d94b2b", shine: "#e8834f" },
+  bowl: { fill: "#f0dcae", shine: "#e9c78a" },
 };
 
 // Shine lines radiating OUTWARD from around the dish (SVG uses overflow:visible).
@@ -104,6 +105,36 @@ function FrontArt({ variant, phase }: { variant: Variant; phase: Phase }) {
           <line x1={60} y1={42.6} x2={62.8} y2={43.8} />
           <line x1={60} y1={44} x2={57.6} y2={45} />
           <line x1={60} y1={44} x2={62.4} y2={45} />
+        </g>
+      </svg>
+    );
+  }
+
+  if (variant === "bowl") {
+    return (
+      <svg width="92" viewBox="0 0 120 100" fill="none" style={{ overflow: "visible" }}>
+        {shine}
+        {/* Steam rising off the rice */}
+        {["M 52,49 Q 48,42 52,36 Q 56,29 52,22", "M 60,50 Q 56,42 60,35 Q 64,27 60,19", "M 68,49 Q 64,43 68,37 Q 72,30 68,24"].map((d, i) => (
+          <path key={i} d={d} stroke="#121212" strokeWidth={1.5} fill="none" strokeLinecap="round"
+            style={{ opacity: 0.45, animation: `steam 2.1s ease-in-out ${500 + i * 260}ms infinite` }} />
+        ))}
+        {/* Foot */}
+        <ellipse cx={60} cy={84} rx={11} ry={2.6} {...outline} style={{ ...svgLayer, animation: layerAnim(phase, 0) }} />
+        {/* Bowl body */}
+        <path d="M 33,60 Q 60,89 87,60" {...outline} style={{ ...svgLayer, animation: layerAnim(phase, 100) }} />
+        {/* Rim */}
+        <ellipse cx={60} cy={60} rx={27} ry={5} {...outline} style={{ ...svgLayer, animation: layerAnim(phase, 180) }} />
+        {/* Rice mound */}
+        <path d="M 37,59 Q 40,50 47,53 Q 51,44 59,49 Q 65,43 71,49 Q 78,49 82,55 Q 85,56 83,59 Z"
+          fill={accent.fill} stroke="#121212" strokeWidth={1.6} strokeLinejoin="round"
+          style={{ ...svgLayer, animation: layerAnim(phase, 240) }} />
+        {/* Garnish bits */}
+        <g style={{ ...svgLayer, animation: popAnim(phase, 520) }}>
+          <ellipse cx={52} cy={51} rx={2.4} ry={1.4} fill="#4c8c5a" />
+          <ellipse cx={64} cy={49} rx={2} ry={1.8} fill="#d94b2b" />
+          <ellipse cx={58} cy={53} rx={1.8} ry={1.8} fill="#e0a63c" />
+          <ellipse cx={72} cy={53} rx={2.1} ry={1.3} fill="#4c8c5a" />
         </g>
       </svg>
     );

@@ -425,10 +425,10 @@ type SampleGroup = {
   maxSelect?: number | null;
   options: SampleOpt[];
 };
-type SampleItem = { name: string; description: string; price: number; groups?: SampleGroup[] };
+type SampleItem = { name: string; description: string; price: number; image?: string; groups?: SampleGroup[] };
 type SampleCategory = { name: string; items: SampleItem[] };
 
-export type SampleCuisine = "burger" | "pizza" | "coffee";
+export type SampleCuisine = "burger" | "pizza" | "coffee" | "bowl";
 
 // Static starter menus lifted from real client sites so a new owner opens with a
 // realistic, cuisine-appropriate menu: "burger" = Burgers & Chicken (from the
@@ -518,6 +518,40 @@ const SAMPLE_MENUS: Record<SampleCuisine, { label: string; categories: SampleCat
       ] },
     ],
   },
+  bowl: {
+    label: "Bowls & Plates",
+    categories: [
+      { name: "Signature Bowls", items: [
+        { name: "Chargrilled Chicken Bowl", price: 11.99, image: "/samples/bowl-chicken.jpg", description: "Chargrilled chicken over seasoned rice with crisp lettuce, tomato, house white sauce & a drizzle of hot sauce." },
+        { name: "Sweet Chili Chicken Bowl", price: 12.49, image: "/samples/bowl-chili-chicken.jpg", description: "Wok-tossed chicken in a sweet chili glaze over jasmine rice with peppers & fresh basil." },
+        { name: "Veggie Buddha Bowl", price: 10.99, image: "/samples/bowl-buddha.jpg", description: "Avocado, roasted sweet potato, chickpeas, red cabbage & greens over quinoa with a tahini drizzle." },
+      ] },
+      { name: "Rice Platters", items: [
+        { name: "Chicken & Rice Platter", price: 12.49, image: "/samples/bowl-rice.jpg", description: "Golden spiced rice with tender chicken, peas & peppers, finished with a squeeze of lemon." },
+        { name: "Butter Chicken Bowl", price: 12.99, image: "/samples/bowl-curry.jpg", description: "Creamy spiced butter chicken over fluffy basmati rice, topped with fresh cilantro." },
+        { name: "Grilled Salmon Plate", price: 15.99, image: "/samples/bowl-salmon.jpg", description: "Herb-grilled salmon with lemon couscous, green beans & roasted tomatoes." },
+        { name: "Lamb Over Rice", price: 13.99, description: "Seasoned lamb over yellow rice with a side salad & house white sauce." },
+      ] },
+      { name: "Fresh & Light", items: [
+        { name: "Mediterranean Salad Bowl", price: 9.99, image: "/samples/bowl-salad.jpg", description: "Crisp greens, olives, feta, carrots & walnuts tossed in a bright citrus vinaigrette." },
+        { name: "Garlic Noodle Bowl", price: 10.49, image: "/samples/bowl-noodle.jpg", description: "Stir-fried noodles with mixed vegetables & scallions in a savory garlic sauce." },
+      ] },
+      { name: "Sides", items: [
+        { name: "Falafel (5 pc)", price: 4.99, description: "Crispy chickpea falafel with tahini." },
+        { name: "House Fries", price: 3.99, description: "Golden seasoned fries." },
+        { name: "Hummus & Pita", price: 5.49, description: "Creamy hummus with warm pita." },
+      ] },
+      { name: "Drinks", items: [
+        { name: "Fresh Lemonade", price: 3.49, description: "House-squeezed, lightly sweet." },
+        { name: "Mango Lassi", price: 3.99, description: "Creamy yogurt & mango." },
+        { name: "Bottled Water", price: 1.99, description: "Chilled." },
+      ] },
+      { name: "Dessert", items: [
+        { name: "Carrot Halwa", price: 4.99, image: "/samples/bowl-halwa.jpg", description: "Warm carrot halwa with almonds & pistachios." },
+        { name: "Baklava (2 pc)", price: 4.49, description: "Flaky phyllo with honey & walnuts." },
+      ] },
+    ],
+  },
 };
 
 export async function seedSampleMenu(cuisine: SampleCuisine = "burger") {
@@ -544,6 +578,7 @@ export async function seedSampleMenu(cuisine: SampleCuisine = "burger") {
             priceInCents: Math.round(item.price * 100),
             slug,
             typeId: type.id,
+            image: item.image ?? null,
             isAvailableForPurchase: true,
             featured: featuredCount < 3,
           },

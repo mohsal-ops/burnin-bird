@@ -10,6 +10,7 @@ const CUISINES: { key: SampleCuisine; label: string }[] = [
   { key: "burger", label: "Burgers & Chicken" },
   { key: "pizza", label: "Pizza" },
   { key: "coffee", label: "Coffee Shop" },
+  { key: "bowl", label: "Bowls & Plates" },
 ];
 
 export default function SampleMenuButtons() {
