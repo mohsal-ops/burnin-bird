@@ -97,7 +97,7 @@ export default function PreviewSavingsBanner() {
       {open && (
         <>
           <p className="mt-4 text-sm leading-relaxed text-stone-600">
-            Want this running for real? One click and I&apos;ll take it from here.
+            Want this running for real?
           </p>
           <PreviewInterestCheckbox variant="inline" />
         </>
