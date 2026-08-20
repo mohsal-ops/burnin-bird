@@ -35,7 +35,7 @@ export async function rejectAdmin(adminId: string) {
   revalidatePath("/admin/team");
 }
 
-// Only the FIRST admin (the owner — the earliest-created account) may remove
+// Only the FIRST admin (the owner - the earliest-created account) may remove
 // other team members. Guards on the server so it can't be called by anyone else.
 export async function removeAdmin(adminId: string) {
   await assertWritable();

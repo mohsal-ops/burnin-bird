@@ -74,7 +74,7 @@ export default function TrialPopup() {
             few real restaurants&apos; hands than charge full price.
           </p>
 
-          {/* Both prices — real value vs. the offer */}
+          {/* Both prices - real value vs. the offer */}
           <div className="mt-5 flex items-baseline gap-3 rounded-2xl bg-stone-50 px-4 py-3">
             <span className="text-sm text-stone-400 line-through">
               {formatUsd(o.fullPrice)}
@@ -103,7 +103,7 @@ export default function TrialPopup() {
             See your dashboard →
           </a>
 
-          <PreviewInterestCheckbox variant="inline" />
+          <PreviewInterestCheckbox variant="inlineSoft" />
         </div>
       </div>
     </div>

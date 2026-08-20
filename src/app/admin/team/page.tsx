@@ -33,7 +33,7 @@ export default async function TeamPage() {
   const pending = admins.filter((a) => a.status === "PENDING_APPROVAL");
   const others = admins.filter((a) => a.status !== "PENDING_APPROVAL");
 
-  // The first admin (earliest created) is the owner — only they can remove others.
+  // The first admin (earliest created) is the owner - only they can remove others.
   const firstAdmin = admins[0];
   const isOwner = !!firstAdmin && currentAdmin.id === firstAdmin.id;
 

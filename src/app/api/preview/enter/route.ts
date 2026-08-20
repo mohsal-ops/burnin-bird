@@ -5,7 +5,7 @@ import { outreachEnabled } from "@/lib/outreach";
 
 // The trial popup's "See your dashboard" CTA lands here. It mints a read-only
 // preview token, drops it in a cookie, and sends the visitor into /admin. No
-// login, no account created — writes are blocked by assertWritable(). Clicking
+// login, no account created - writes are blocked by assertWritable(). Clicking
 // the original link again just refreshes the token, so the preview stays
 // reachable indefinitely.
 export const runtime = "nodejs";

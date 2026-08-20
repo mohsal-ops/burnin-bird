@@ -4,7 +4,7 @@
 // the read-only dashboard preview after they've closed the trial popup. It only
 // appears once the popup has been shown at least once (so it never spoils the
 // popup), then persists for the rest of the session across page navigation.
-// Mounted in the customer layout only — never on /admin. Same destination as the
+// Mounted in the customer layout only - never on /admin. Same destination as the
 // popup's "See your dashboard" CTA.
 import { useEffect, useState } from "react";
 import { LayoutDashboard } from "lucide-react";

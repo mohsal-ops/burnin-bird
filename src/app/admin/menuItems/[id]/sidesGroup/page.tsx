@@ -29,7 +29,7 @@ export default async function SidesGroupPage({
 
   return (
     <div className="flex flex-col gap-3 md:ml-44">
-      <p className="text-3xl">{item.name} — Modifiers</p>
+      <p className="text-3xl">{item.name} - Modifiers</p>
       <ModifierGroupsManager itemId={item.id} initialGroups={item.sideGroups} allItems={allItems} />
     </div>
   );

@@ -8,7 +8,7 @@
 // client: "burger" (fast food), "coffee" (a matcha / latte cup), or "pizza".
 // Unknown values fall back to "burger" so template-sync is always safe.
 //
-// Plays ONCE PER BROWSER SESSION (sessionStorage) — refreshing or moving
+// Plays ONCE PER BROWSER SESSION (sessionStorage) - refreshing or moving
 // between pages in the same session won't replay it (production only; in dev it
 // always plays so it's easy to iterate).
 
@@ -250,7 +250,7 @@ export default function LoadingScreen({
   }, [keepLooping]);
 
   // assemble → hold (shine) → gentle float. The intro is allowed to leave only
-  // once it has BOTH played its full minimum cycle AND the page has loaded — so
+  // once it has BOTH played its full minimum cycle AND the page has loaded - so
   // a fast load never cuts the animation short.
   useEffect(() => {
     if (!play) return;
@@ -347,7 +347,7 @@ export default function LoadingScreen({
           }}
         />
 
-        {/* Dish — assembles, then gently floats up and down */}
+        {/* Dish - assembles, then gently floats up and down */}
         <div
           style={{
             display: "flex",

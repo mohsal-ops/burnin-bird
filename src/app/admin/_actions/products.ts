@@ -110,7 +110,7 @@ export default async function AddProduct(
     let n = 1;
     while (await db.item.findUnique({ where: { slug } })) slug = `${base}-${++n}`;
 
-    // Handle image — never let a storage hiccup block saving the item.
+    // Handle image - never let a storage hiccup block saving the item.
     const file = data.image;
     const isValidImage = file && file.size > 0 && file.type.startsWith("image/");
     let image: string | null = null;
@@ -144,7 +144,7 @@ export default async function AddProduct(
     revalidateTag("products");
     return {
       message: imageWarning
-        ? "Item added — but the photo couldn't be saved (image storage isn't connected on this site)."
+        ? "Item added, but the photo couldn't be saved (image storage isn't connected on this site)."
         : "Menu item added.",
     };
   } catch (error) {
@@ -272,7 +272,7 @@ export async function DeleteCategory(id: string) {
 }
 
 // Persist the owner-chosen category order (array of category ids, in display
-// order) in the "category_order" SiteSetting — no schema change needed. The
+// order) in the "category_order" SiteSetting - no schema change needed. The
 // website reads this to order categories on the Menu.
 export async function reorderCategories(orderedIds: string[]) {
   await assertWritable();
@@ -474,8 +474,8 @@ const SAMPLE_MENUS: Record<SampleCuisine, { label: string; categories: SampleCat
       { name: "Pizzas", items: [
         { name: "Basquiat BBQ Chicken", price: 32.5, description: "BBQ sauce, halal chicken, caramelized onions, red bell peppers, and mozzarella." },
         { name: "Mona Lisa Margherita", price: 27.5, description: "Fresh mozzarella, vine-ripened tomatoes, basil, and olive oil." },
-        { name: "Picasso Pepperoni", price: 31.25, description: "Halal pepperoni, mozzarella, and red sauce — bold, abstract, unforgettable." },
-        { name: "The Blank Canvas", price: 27, description: "Classic cheese pizza — simple, timeless, and perfectly balanced." },
+        { name: "Picasso Pepperoni", price: 31.25, description: "Halal pepperoni, mozzarella, and red sauce, bold, abstract, unforgettable." },
+        { name: "The Blank Canvas", price: 27, description: "Classic cheese pizza, simple, timeless, and perfectly balanced." },
         { name: "The Starry Night", price: 31.25, description: "Grilled halal chicken and sauteed mushrooms over creamy halal vodka sauce, finished with mozzarella and fresh basil." },
       ] },
       { name: "Combo Deals", items: [
@@ -499,7 +499,7 @@ const SAMPLE_MENUS: Record<SampleCuisine, { label: string; categories: SampleCat
         { name: "Mocha", price: 5.25, description: "Espresso, chocolate, and steamed milk." },
       ] },
       { name: "Iced & Cold Brew", items: [
-        { name: "Cold Brew", price: 4.5, description: "Slow-steeped 18 hours — smooth and low-acid." },
+        { name: "Cold Brew", price: 4.5, description: "Slow-steeped 18 hours, smooth and low-acid." },
         { name: "Iced Americano", price: 4, description: "Espresso over ice and cold water." },
         { name: "Dalgona Coffee Latte", price: 4.5, description: "Whipped coffee cloud over iced milk." },
         { name: "Iced Vanilla Latte", price: 4.5, description: "Espresso, vanilla, and cold milk over ice." },
@@ -614,7 +614,7 @@ export async function seedSampleMenu(cuisine: SampleCuisine = "burger") {
     revalidateTag("products");
     return {
       message: added
-        ? `${menu.label} sample menu ready — ${added} item${added === 1 ? "" : "s"} added.`
+        ? `${menu.label} sample menu ready - ${added} item${added === 1 ? "" : "s"} added.`
         : `${menu.label} sample menu already loaded.`,
     };
   } catch (error) {
@@ -636,7 +636,7 @@ export async function clearSampleMenu() {
           await db.item.delete({ where: { id: it.id } });
           removed++;
         } catch {
-          // Item was test-ordered (has an order) so it can't be deleted — just hide it.
+          // Item was test-ordered (has an order) so it can't be deleted - just hide it.
           await db.item.update({ where: { id: it.id }, data: { isAvailableForPurchase: false } }).catch(() => {});
         }
       }
