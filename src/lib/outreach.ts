@@ -10,13 +10,13 @@ export type OutreachConfig = {
   fullPrice: number;
   discountedPrice: number;
   discountReason: string;
-  // INTERNAL follow-up tracking only — never surfaced as a countdown/deadline.
+  // INTERNAL follow-up tracking only - never surfaced as a countdown/deadline.
   trialLengthDays: number;
   calendlyUrl: string;
   // One-click "yes, I'm interested" signal. `signalKey` is THIS client's project
   // slug in the builder CRM; the checkbox only renders when it's set (per-client,
   // like the outreach block itself). `signalEndpoint` is the builder's public
-  // interest API — the default fits every client, override only if it moves.
+  // interest API - the default fits every client, override only if it moves.
   signalEndpoint: string;
   signalKey: string;
   savings: {

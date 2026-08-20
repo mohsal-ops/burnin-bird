@@ -2,7 +2,7 @@ import { getOutreach, formatUsd } from "@/lib/outreach";
 
 // Shown only to read-only preview visitors (outreach leads). Honest: it says
 // plainly that this is a live, read-only demo of their own dashboard and that
-// saving is locked until they go live — and reinforces the offer without any
+// saving is locked until they go live - and reinforces the offer without any
 // countdown or fake scarcity.
 export default function PreviewBanner() {
   const o = getOutreach();

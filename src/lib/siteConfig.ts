@@ -100,7 +100,7 @@ export const SITE_CONFIG = {
   accentColor: "#ef4444",
   // Outreach conversion layer (trial popup + read-only dashboard preview).
   // Turn `enabled` off once a lead converts / the site goes live. `trialLengthDays`
-  // is for MY internal follow-up tracking only — it is never shown to the lead as
+  // is for MY internal follow-up tracking only - it is never shown to the lead as
   // a countdown or deadline. `savings` drives the estimated-savings math (default
   // formula, override per client with real numbers when known).
   outreach: {

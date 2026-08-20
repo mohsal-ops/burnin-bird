@@ -5,7 +5,7 @@
 // Where the "See your dashboard" CTA (popup) and the bubble both point.
 export const PREVIEW_ENTER_URL = "/api/preview/enter";
 
-// Set once the popup has actually appeared this session — the bubble keys off
+// Set once the popup has actually appeared this session - the bubble keys off
 // this so it never shows before the popup, and stays reachable afterward.
 const SEEN_KEY = "vega:trialPopupSeen";
 // Set once the visitor closes the popup, so it doesn't re-open this session.

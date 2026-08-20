@@ -1,6 +1,6 @@
 // Deterministic simulated order activity for the read-only preview dashboard.
 // Seeded by days-since-first-preview-visit so the numbers are stable within a
-// day but genuinely GROW on return visits — that's the honest "check back"
+// day but genuinely GROW on return visits - that's the honest "check back"
 // signal. Driven by the same estimated orders/day config as the savings math,
 // so a lead sees the real "20 orders a day" story. Never used for a real admin.
 import { getOutreach } from "./outreach";

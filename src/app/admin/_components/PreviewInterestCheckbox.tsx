@@ -4,14 +4,14 @@ import { useEffect, useState } from "react";
 import { getOutreach, outreachEnabled } from "@/lib/outreach";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 
-// One-click "yes, I'm interested" signal — the smallest possible next step,
+// One-click "yes, I'm interested" signal - the smallest possible next step,
 // replacing the old "book a call" CTA everywhere it appeared.
 //
 // The check itself IS the action (no submit button). Checking shows an instant,
 // satisfying confirmation and fires a best-effort background signal to the
 // builder CRM (POST /api/interest). The builder identifies this client from the
-// request Origin (its vercel subdomain) — an optional `signalKey` override is
-// sent too. Unchecking is "changed my mind" — it clears the signal. The checked
+// request Origin (its vercel subdomain) - an optional `signalKey` override is
+// sent too. Unchecking is "changed my mind" - it clears the signal. The checked
 // state lives in sessionStorage so it survives navigating between preview pages
 // in the same session. Renders nothing unless the outreach layer is enabled.
 
@@ -35,7 +35,7 @@ async function sendSignal(
       });
       return;
     } catch {
-      // retry once, then give up silently — the UI has already confirmed and we
+      // retry once, then give up silently - the UI has already confirmed and we
       // never want a network hiccup to surface an error to the lead.
     }
   }
@@ -44,7 +44,7 @@ async function sendSignal(
 export default function PreviewInterestCheckbox({
   variant = "inline",
 }: {
-  variant?: "inline" | "bubble";
+  variant?: "inline" | "inlineSoft" | "bubble";
 }) {
   const o = getOutreach();
   const [checked, setChecked] = useState(false);
@@ -81,67 +81,79 @@ export default function PreviewInterestCheckbox({
     `}</style>
   );
 
-  // ── Bubble variant (persistent corner pill) — unchanged, low-key by design ──
+  // Soft one-checkbox markup, shared by the corner bubble and the soft inline card.
+  const softInner = (
+    <>
+      <label className="flex cursor-pointer select-none items-start gap-3">
+        <span
+          className="relative mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 transition-colors"
+          style={{
+            borderColor: checked ? BRAND : "#d6d3d1",
+            backgroundColor: checked ? BRAND : "#ffffff",
+            animation: checked ? "vegaPopSm 0.28s ease" : undefined,
+          }}
+        >
+          <input type="checkbox" checked={checked} onChange={toggle} className="sr-only" />
+          {checked && (
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden>
+              <path
+                d="M4 12.5 L10 18 L20 6"
+                stroke="#ffffff"
+                strokeWidth={3}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeDasharray={22}
+                style={{ animation: "vegaCheckDraw 0.3s ease forwards" }}
+              />
+            </svg>
+          )}
+        </span>
+        <span className="text-sm font-medium leading-snug text-stone-700">
+          Yes, I want this live for my restaurant
+        </span>
+      </label>
+
+      {checked && (
+        <p
+          className="mt-2 pl-8 text-sm font-medium leading-snug text-[#c85a1e]"
+          style={{ animation: "vegaRise 0.3s ease" }}
+        >
+          Got it! I&apos;ll reach out on Instagram shortly.
+        </p>
+      )}
+    </>
+  );
+
+  // Bubble variant: persistent corner pill, low-key by design.
   if (variant === "bubble") {
-    const inner = (
-      <>
-        <label className="flex cursor-pointer select-none items-start gap-3">
-          <span
-            className="relative mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 transition-colors"
-            style={{
-              borderColor: checked ? BRAND : "#d6d3d1",
-              backgroundColor: checked ? BRAND : "#ffffff",
-              animation: checked ? "vegaPopSm 0.28s ease" : undefined,
-            }}
-          >
-            <input type="checkbox" checked={checked} onChange={toggle} className="sr-only" />
-            {checked && (
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden>
-                <path
-                  d="M4 12.5 L10 18 L20 6"
-                  stroke="#ffffff"
-                  strokeWidth={3}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeDasharray={22}
-                  style={{ animation: "vegaCheckDraw 0.3s ease forwards" }}
-                />
-              </svg>
-            )}
-          </span>
-          <span className="text-sm font-medium leading-snug text-stone-700">
-            Yes — I want this live for my restaurant
-          </span>
-        </label>
-
-        {checked && (
-          <p
-            className="mt-2 pl-8 text-sm font-medium leading-snug text-[#c85a1e]"
-            style={{ animation: "vegaRise 0.3s ease" }}
-          >
-            Got it! I&apos;ll reach out on Instagram shortly.
-          </p>
-        )}
-      </>
-    );
-
     return (
       <>
         {keyframes}
         <div className="fixed bottom-4 right-4 z-40 max-w-[280px] rounded-2xl border border-stone-200 bg-white/95 p-3.5 shadow-md backdrop-blur">
-          {inner}
+          {softInner}
         </div>
       </>
     );
   }
 
-  // ── Inline variant (primary dashboard CTA) — full-weight, whole-card clickable ──
+  // Soft inline variant: the original quiet card on a normal background. Used in
+  // the trial popup, where the loud orange CTA felt too heavy.
+  if (variant === "inlineSoft") {
+    return (
+      <>
+        {keyframes}
+        <div className="mt-4 rounded-2xl border border-[#c85a1e]/20 bg-[#fff7f2] p-4">{softInner}</div>
+      </>
+    );
+  }
+
+  // Inline variant: full-weight orange dashboard CTA, whole-card clickable.
   const label = checked
     ? "Got it! I'll reach out on Instagram shortly."
-    : "Yes — I want this live for my restaurant";
+    : "Yes, I want this live for my restaurant";
   const subline = checked
-    ? "Consider it done — no call, no forms. (Tap to undo.)"
-    : "One tap — I'll take it from here, no call needed.";
+    ? "Consider it done - no call, no forms. (Tap to undo.)"
+    : "One tap - I'll take it from here, no call needed.";
 
   return (
     <>

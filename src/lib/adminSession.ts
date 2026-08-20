@@ -83,7 +83,7 @@ export async function verifyAdminSessionToken(
 
 // ── Read-only preview tokens ────────────────────────────────────────────────
 // Same signed-HMAC scheme (reuses ADMIN_SECRET), but the payload carries a
-// `preview` flag instead of an admin id — it grants VIEW access to /admin only.
+// `preview` flag instead of an admin id - it grants VIEW access to /admin only.
 // Writes are blocked by assertWritable() (src/lib/previewGuard.ts). Long-lived
 // so the link stays reachable; clicking the link again just refreshes it.
 const PREVIEW_TTL_MS = 1000 * 60 * 60 * 24 * 90; // 90 days

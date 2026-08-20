@@ -2,7 +2,7 @@
 //
 // assertWritable() is called at the TOP of every mutating admin server action
 // and write API route. Because it runs on the server, it blocks the write no
-// matter how the action is invoked — clicking a button, or POSTing to the
+// matter how the action is invoked - clicking a button, or POSTing to the
 // action/route directly with devtools/curl. A real credentialed admin passes; a
 // preview visitor is rejected. It intentionally does NOT wrap the Prisma client,
 // so incidental read-path writes (e.g. lazy seedDefaults in getSiteImages) still
@@ -13,7 +13,7 @@ import { verifyAdminSessionToken, verifyPreviewToken } from "./adminSession";
 
 export class PreviewReadOnlyError extends Error {
   constructor() {
-    super("This is a read-only preview — sign in with full access to make changes.");
+    super("This is a read-only preview - sign in with full access to make changes.");
     this.name = "PreviewReadOnlyError";
   }
 }

@@ -110,7 +110,7 @@ export default async function AddProduct(
     let n = 1;
     while (await db.item.findUnique({ where: { slug } })) slug = `${base}-${++n}`;
 
-    // Handle image — never let a storage hiccup block saving the item.
+    // Handle image - never let a storage hiccup block saving the item.
     const file = data.image;
     const isValidImage = file && file.size > 0 && file.type.startsWith("image/");
     let image: string | null = null;
@@ -144,7 +144,7 @@ export default async function AddProduct(
     revalidateTag("products");
     return {
       message: imageWarning
-        ? "Item added — but the photo couldn't be saved (image storage isn't connected on this site)."
+        ? "Item added - but the photo couldn't be saved (image storage isn't connected on this site)."
         : "Menu item added.",
     };
   } catch (error) {
@@ -272,7 +272,7 @@ export async function DeleteCategory(id: string) {
 }
 
 // Persist the owner-chosen category order (array of category ids, in display
-// order) in the "category_order" SiteSetting — no schema change needed. The
+// order) in the "category_order" SiteSetting - no schema change needed. The
 // website reads this to order categories on the Menu.
 export async function reorderCategories(orderedIds: string[]) {
   await assertWritable();
@@ -342,12 +342,12 @@ export async function addItemSides(itemId: string, groups: SideGroupInput[]) {
 // they're easy to clear.
 const SAMPLE_CAT_SLUG = "sample-menu-demo";
 const SAMPLE_ITEMS = [
-  { name: "Classic Cheeseburger", description: "Sample item — beef patty, cheese, lettuce, tomato.", price: 9.99 },
-  { name: "Margherita Pizza", description: "Sample item — fresh mozzarella, tomato, basil.", price: 12.99 },
-  { name: "Caesar Salad", description: "Sample item — romaine, parmesan, croutons.", price: 7.99 },
-  { name: "Crispy Fries", description: "Sample item — golden and salted.", price: 3.99 },
-  { name: "Chocolate Brownie", description: "Sample item — warm and fudgy.", price: 4.99 },
-  { name: "Soft Drink", description: "Sample item — your choice of soda.", price: 2.49 },
+  { name: "Classic Cheeseburger", description: "Sample item - beef patty, cheese, lettuce, tomato.", price: 9.99 },
+  { name: "Margherita Pizza", description: "Sample item - fresh mozzarella, tomato, basil.", price: 12.99 },
+  { name: "Caesar Salad", description: "Sample item - romaine, parmesan, croutons.", price: 7.99 },
+  { name: "Crispy Fries", description: "Sample item - golden and salted.", price: 3.99 },
+  { name: "Chocolate Brownie", description: "Sample item - warm and fudgy.", price: 4.99 },
+  { name: "Soft Drink", description: "Sample item - your choice of soda.", price: 2.49 },
 ];
 
 export async function seedSampleMenu() {
@@ -380,7 +380,7 @@ export async function seedSampleMenu() {
     revalidatePath("/Menu");
     revalidatePath("/");
     revalidateTag("products");
-    return { message: added ? `Sample menu ready — ${added} item${added === 1 ? "" : "s"} added.` : "Sample menu already loaded." };
+    return { message: added ? `Sample menu ready - ${added} item${added === 1 ? "" : "s"} added.` : "Sample menu already loaded." };
   } catch (error) {
     console.error("seedSampleMenu error:", error);
     return { message: String(error) };
@@ -399,7 +399,7 @@ export async function clearSampleMenu() {
         await db.item.delete({ where: { id: it.id } });
         removed++;
       } catch {
-        // Item was test-ordered (has an order) so it can't be deleted — just hide it.
+        // Item was test-ordered (has an order) so it can't be deleted - just hide it.
         await db.item.update({ where: { id: it.id }, data: { isAvailableForPurchase: false } }).catch(() => {});
       }
     }
