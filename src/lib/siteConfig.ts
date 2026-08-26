@@ -47,6 +47,12 @@ export const SITE_CONFIG = {
   // Admin intro animation: "burger" (fast food) | "coffee" (café) | "pizza" (pizzeria)
   loaderStyle: "burger",
 
+  // Starting color theme for a first-time visitor: "light" | "dark".
+  // The header toggle always lets visitors switch and their choice is
+  // remembered - this is only the default before they pick one. Keep it
+  // "light" unless a brand is meant to open dark.
+  defaultTheme: "light" as "light" | "dark",
+
   // Main call-to-action button label, used on every "menu" button across the
   // site. Set it to whatever fits: "Order now", "View our menu", "See the menu"…
   menuCtaLabel: "Order now",

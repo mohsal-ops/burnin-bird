@@ -2,6 +2,7 @@
 
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import type { ComponentProps } from "react";
+import { SITE_CONFIG } from "@/lib/siteConfig";
 
 /**
  * App-wide theme provider (light / dark / system).
@@ -10,10 +11,10 @@ import type { ComponentProps } from "react";
  * toggles a `dark` class on <html>, which drives the `@custom-variant dark`
  * setup in globals.css and every `hsl(var(--token))` design token.
  *
- * `attribute="class"` + `defaultTheme="light"` + `enableSystem={false}` means a
- * first visit (no stored choice) always shows LIGHT - it does not follow the
- * visitor's OS dark setting - and an explicit toggle is persisted to
- * localStorage by next-themes.
+ * The starting theme comes from `SITE_CONFIG.defaultTheme` (per brand), and
+ * FALLS BACK TO "light" if it is ever unset - a first visit is never dark by
+ * accident and never follows the OS setting (`enableSystem={false}`). The
+ * header toggle still switches it and the choice persists to localStorage.
  *
  * `disableTransitionOnChange` is intentionally OFF so the toggle's sun<->moon
  * icon animation is allowed to play on switch (that flag suppresses all CSS
@@ -26,7 +27,7 @@ export function ThemeProvider({
   return (
     <NextThemesProvider
       attribute="class"
-      defaultTheme="light"
+      defaultTheme={SITE_CONFIG.defaultTheme ?? "light"}
       enableSystem={false}
       {...props}
     >
