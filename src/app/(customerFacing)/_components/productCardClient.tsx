@@ -49,7 +49,7 @@ export default function ProductCardClient({
       </Card>
       <div className="flex flex-col gap-0.5 px-1 font-semibold">
         <p className="line-clamp-2 min-h-[2.5rem] leading-tight">{name}</p>
-        <p className="text-neutral-600">{formatCurrency(priceInCents / 100)}</p>
+        <p className="text-muted-foreground">{formatCurrency(priceInCents / 100)}</p>
       </div>
     </Link>
   );
@@ -95,7 +95,7 @@ export function PopularDishesCardClient({
             <Button
               onClick={() => setOpen(true)}
               variant="outline"
-              className="h-9 w-9 rounded-full p-0 bg-white shadow-md hover:bg-stone-100"
+              className="h-9 w-9 rounded-full p-0 bg-background shadow-md hover:bg-accent"
             >
               <Plus className="stroke-2" size={20} />
             </Button>
@@ -104,7 +104,7 @@ export function PopularDishesCardClient({
       </Card>
       <div className="flex flex-col gap-0.5 px-1 font-semibold">
         <p className="line-clamp-2 min-h-[2.5rem] leading-tight">{name}</p>
-        <p className="text-neutral-600">{formatCurrency(priceInCents / 100)}</p>
+        <p className="text-muted-foreground">{formatCurrency(priceInCents / 100)}</p>
       </div>
       <SchedulePickupDialog
         orderType={orderType}
@@ -136,16 +136,16 @@ export function AllDishesCardClient({
   };
 
   return (
-    <div className="group flex w-full md:space-x-0 space-x-2 md:rounded-2xl md:border border-y border-gray-200 md:p-0 p-2 transition-colors duration-200 hover:border-gray-300">
+    <div className="group flex w-full md:space-x-0 space-x-2 md:rounded-2xl md:border border-y border-border md:p-0 p-2 transition-colors duration-200 hover:border-foreground/40">
       <div
         className={`flex py-3 flex-col justify-center gap-1 md:px-4 px-2 text-lg tracking-tight font-semibold ${image ? " w-3/5" : "w-full "}`}
       >
         <p>{name}</p>
-        <p className="text-gray-500 text-sm font">
+        <p className="text-muted-foreground text-sm font">
           {description?.split(" ").slice(0, 15).join(" ")}
           {(description?.split(" ").length ?? 0) > 15 && "..."}
         </p>
-        <p className="text-gray-600 font-bold text-sm">
+        <p className="text-foreground/80 font-bold text-sm">
           {formatCurrency(priceInCents / 100)}
         </p>
       </div>

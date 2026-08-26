@@ -17,7 +17,7 @@ export default async function Page({ params }: PageProps) {
 
   if (!id) {
     return (
-      <div className="flex items-center justify-center text-gray-400 w-full h-screen">
+      <div className="flex items-center justify-center text-muted-foreground w-full h-screen">
         A problem occurred
       </div>
     )
@@ -30,7 +30,7 @@ export default async function Page({ params }: PageProps) {
 
   if (!cart) {
     return (
-      <div className="h-svh justify-center w-full flex items-center text-stone-400">
+      <div className="h-svh justify-center w-full flex items-center text-muted-foreground">
         Your cart ID was not found
         <Button variant="link">
           <Link href="/Menu">Try again</Link>

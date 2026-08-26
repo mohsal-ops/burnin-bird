@@ -221,10 +221,10 @@ export default function CateringPageClient({
               desc: "Tailor your event menu with ease.",
             },
           ].map((f, i) => (
-            <Card key={i} className="rounded-2xl shadow-md bg-white">
+            <Card key={i} className="rounded-2xl shadow-md bg-card">
               <CardContent className="p-6">
                 <h3 className="font-semibold text-lg mb-2">{f.title}</h3>
-                <p className="text-gray-500 text-sm">{f.desc}</p>
+                <p className="text-muted-foreground text-sm">{f.desc}</p>
               </CardContent>
             </Card>
           ))}
@@ -238,7 +238,7 @@ export default function CateringPageClient({
       >
         <div className="space-y-2 text-center">
           <h2 className="text-3xl font-bold">Catering Menu</h2>
-          <p className="text-gray-500 max-w-2xl mx-auto">
+          <p className="text-muted-foreground max-w-2xl mx-auto">
             Sample packages to get you started - mix, match, or ask for
             something custom. Request a quote for exact pricing based on your
             headcount.
@@ -249,19 +249,19 @@ export default function CateringPageClient({
           {CATERING_PACKAGES.map((pkg, i) => (
             <Card
               key={i}
-              className="rounded-2xl shadow-md bg-white overflow-hidden"
+              className="rounded-2xl shadow-md bg-card overflow-hidden"
             >
               <CardContent className="p-6 space-y-4">
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <h3 className="text-xl font-bold">{pkg.name}</h3>
-                    <p className="text-sm text-gray-500">{pkg.serves}</p>
+                    <p className="text-sm text-muted-foreground">{pkg.serves}</p>
                   </div>
                   <span className="whitespace-nowrap text-lg font-extrabold text-brand-dark">
                     {pkg.price}
                   </span>
                 </div>
-                <ul className="space-y-1.5 text-gray-700">
+                <ul className="space-y-1.5 text-muted-foreground">
                   {pkg.items.map((item, j) => (
                     <li key={j} className="flex gap-2">
                       <span className="text-brand-dark">•</span>
@@ -275,7 +275,7 @@ export default function CateringPageClient({
         </div>
 
         <div className="flex flex-col items-center gap-3 pt-2">
-          <p className="text-sm text-gray-400 text-center">
+          <p className="text-sm text-muted-foreground text-center">
             Sample menu for preview - prices are estimates and fully
             customizable.
           </p>

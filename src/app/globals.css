@@ -124,16 +124,44 @@ html body[data-scroll-locked] {
   --sidebar-ring: hsl(217.2 91.2% 59.8%);
 }
 
-/* Dark mode tokens */
+/* Dark mode tokens.
+   Every semantic token that differs from its light value is overridden here so
+   the whole shadcn/ui token surface (surfaces, popovers, menus, borders, muted
+   text) adapts under the `dark` class - not just background/foreground. */
 .dark {
   --background: 0 0% 5%;
   --foreground: 0 0% 95%;
+
   --card: 0 0% 9%;
   --card-foreground: 0 0% 95%;
-  --secondary: 0 0% 12%;
+
+  --popover: 0 0% 9%;
+  --popover-foreground: 0 0% 95%;
+
+  --primary: 48 96% 53%;
+  --primary-foreground: 0 0% 5%;
+
+  --secondary: 0 0% 14%;
+  --secondary-foreground: 0 0% 95%;
+
   --muted: 0 0% 14%;
+  --muted-foreground: 0 0% 64%;
+
+  --accent: 0 0% 16%;
+  --accent-foreground: 0 0% 95%;
+
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 98%;
+
   --border: 0 0% 16%;
-  --input: 0 0% 16%;
+  --input: 0 0% 18%;
+  --ring: 48 96% 53%;
+
+  /* Brand red reads dark on a near-black surface - lift it so brand text/CTAs
+     keep contrast. --brand itself is re-injected per tenant by the root layout;
+     this is the fallback + the derived shade used for text/hover. */
+  --brand-dark: color-mix(in srgb, var(--brand) 82%, white);
+
   --sidebar: 0 0% 7%;
   --sidebar-foreground: 0 0% 90%;
   --sidebar-accent: 0 0% 12%;

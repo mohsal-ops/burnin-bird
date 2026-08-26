@@ -22,7 +22,7 @@ export default function PostCard({ post }: { post: Post }) {
         <h3 className="text-xl font-bold group-hover:text-[#f4b400] transition">
           {post.title}
         </h3>
-        <p className="text-gray-400 mt-2 line-clamp-3">
+        <p className="text-muted-foreground mt-2 line-clamp-3">
           {post.description}
         </p>
 

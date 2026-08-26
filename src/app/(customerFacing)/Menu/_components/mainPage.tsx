@@ -180,7 +180,7 @@ export default function MainPageMenu({
     >
       <div className="relative hidden md:block w-2/12 py-5  ">
         <div id="desktop-search-categories" className="flex w-60 flex-col sticky top-24">
-          <div className="flex  w-full justify-start items-center  border border-stone-300 rounded-xl outline-none focus-within:border-2 focus-within:border-black">
+          <div className="flex  w-full justify-start items-center  border border-border rounded-xl outline-none focus-within:border-2 focus-within:border-ring">
             {/* Search Input */}
             <PiMagnifyingGlass fontSize={21} className="mx-2" />
 
@@ -204,8 +204,8 @@ export default function MainPageMenu({
                   }
                   className={`justify-start font-medium text-sm ${
                     activeCategory === cat.id
-                      ? "bg-black text-white"
-                      : "bg-transparent text-gray-600"
+                      ? "bg-foreground text-background"
+                      : "bg-transparent text-muted-foreground"
                   }`}
                   variant="ghost"
                 >
@@ -223,7 +223,7 @@ export default function MainPageMenu({
           <p className="tracking-tight font-serif  text-xl text-center">
             {SITE_CONFIG.tagline}
           </p>
-          <span className="flex text-sm space-x-2 justify-center sm:justify-start items-center font-semibold w-4/5 gap-1  text-neutral-600 text-center  ">
+          <span className="flex text-sm space-x-2 justify-center sm:justify-start items-center font-semibold w-4/5 gap-1  text-muted-foreground text-center  ">
             <FaLocationPin className="md:block hidden" />
             <p>{SITE_CONFIG.address}</p>
 
@@ -242,8 +242,8 @@ export default function MainPageMenu({
           </span>
         </div>
         <div id="PickupOrDelivery" className="text-sm flex p-1">
-          <div className="flex flex-col sm:flex-row w-full sm:w-1/2  gap-4 font-semibold text-gray-600">
-            <div className="bg-stone-200 w-full shadow-sm sm:w-1/2 flex h-11 rounded-3xl overflow-hidden">
+          <div className="flex flex-col sm:flex-row w-full sm:w-1/2  gap-4 font-semibold text-muted-foreground">
+            <div className="bg-muted w-full shadow-sm sm:w-1/2 flex h-11 rounded-3xl overflow-hidden">
               <label className="cursor-pointer w-1/2 relative">
                 <input
                   type="radio"
@@ -253,7 +253,7 @@ export default function MainPageMenu({
                   onChange={() => setChoice("delivery")}
                   className="hidden peer"
                 />
-                <div className="h-full bg-stone-200 border  flex items-center justify-center rounded-3xl peer-checked:shadow-md peer-checked:border-gray-300 peer-checked:bg-white peer-checked:text-black transition">
+                <div className="h-full bg-muted border  flex items-center justify-center rounded-3xl peer-checked:shadow-md peer-checked:border-border peer-checked:bg-background peer-checked:text-foreground transition">
                   Delivery
                 </div>
               </label>
@@ -266,7 +266,7 @@ export default function MainPageMenu({
                   onChange={() => setChoice("pickup")}
                   className="hidden peer"
                 />
-                <div className=" h-full bg-stone-200 border  flex items-center justify-center rounded-3xl peer-checked:shadow-md peer-checked:border-gray-300 peer-checked:bg-white peer-checked:text-black transition">
+                <div className=" h-full bg-muted border  flex items-center justify-center rounded-3xl peer-checked:shadow-md peer-checked:border-border peer-checked:bg-background peer-checked:text-foreground transition">
                   Pickup
                 </div>
               </label>
@@ -274,7 +274,7 @@ export default function MainPageMenu({
             <Button
               variant="outline"
               onClick={() => setOpen(true)}
-              className="w-full sm:w-2/3 h-11 text-sm rounded-lg hover:bg-stone-200 shadow-xs justify-between"
+              className="w-full sm:w-2/3 h-11 text-sm rounded-lg hover:bg-accent shadow-xs justify-between"
             >
               {choice === "pickup" ? (
                 selectedDay != null || selectedTime != null ? (
@@ -307,18 +307,18 @@ export default function MainPageMenu({
               Poularproducts={featuredProducts}
             />
           ) : (
-            <p className="text-gray-500 text-center ">No products found</p>
+            <p className="text-muted-foreground text-center ">No products found</p>
           )}
         </div>
         <div
           id="SearchBar&gategories"
           className={
             isPinned
-              ? "fixed top-20  right-0 left-0  z-50 md:hidden transform p-2 -translate-y-20 duration-500  bg-white flex gap-2 flex-col "
+              ? "fixed top-20  right-0 left-0  z-50 md:hidden transform p-2 -translate-y-20 duration-500  bg-background flex gap-2 flex-col "
               : "md:hidden py-2 translate-y-0 duration-500 z-50 flex gap-2 flex-col"
           }
         >
-          <div className="flex pl-1 w-full justify-start items-center  bg-white border rounded-xl outline-none focus-within:border-2 focus-within:border-black">
+          <div className="flex pl-1 w-full justify-start items-center  bg-background border rounded-xl outline-none focus-within:border-2 focus-within:border-ring">
             {/* Search Input */}
             <PiMagnifyingGlass fontSize={21} className="ml-1" />
 
@@ -342,8 +342,8 @@ export default function MainPageMenu({
                   }
                   className={`font-medium text-sm ${
                     activeCategory === cat.id
-                      ? "bg-black text-white"
-                      : "bg-transparent text-gray-600"
+                      ? "bg-foreground text-background"
+                      : "bg-transparent text-muted-foreground"
                   }`}
                   variant="outline"
                 >
@@ -361,7 +361,7 @@ export default function MainPageMenu({
               Products={filtered}
             />
           ) : query ? (
-            <span className="text-gray-500 text-center  ">
+            <span className="text-muted-foreground text-center  ">
               No products found
             </span>
           ) : (

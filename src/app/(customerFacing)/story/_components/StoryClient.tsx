@@ -81,12 +81,12 @@ export default function StoryClient({
           <h2 className="text-3xl md:text-4xl font-bold leading-snug">
             Born from a love of home cooking
           </h2>
-          <p className="text-gray-600 text-lg leading-relaxed">
+          <p className="text-muted-foreground text-lg leading-relaxed">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pam&apos;s
             Kitchen began with a simple idea: serve fresh, homemade meals that
             taste like they came straight from a family table.
           </p>
-          <p className="text-gray-600 text-lg leading-relaxed">
+          <p className="text-muted-foreground text-lg leading-relaxed">
             Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
             From all-day breakfast to hand-pressed burgers and daily specials,
             everything is made from scratch with care - the way comfort food is
@@ -113,7 +113,7 @@ export default function StoryClient({
 
       {/* ── MEET THE OWNERS - hidden for mockup (bios/photos come from DB) ── */}
       {false && (
-      <section className="w-full bg-stone-50 py-24 px-6 md:px-12">
+      <section className="w-full bg-muted py-24 px-6 md:px-12">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 28 }}
@@ -172,7 +172,7 @@ export default function StoryClient({
                 {/* Bio */}
                 <div className="flex-1 space-y-5 pt-2">
                   {person.bio.map((para, j) => (
-                    <p key={j} className="text-gray-600 leading-relaxed text-[15px]">
+                    <p key={j} className="text-muted-foreground leading-relaxed text-[15px]">
                       {para}
                     </p>
                   ))}
@@ -246,10 +246,10 @@ export default function StoryClient({
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7, ease: "easeOut", delay: i * 0.12 }}
-              className="bg-white border border-stone-200 rounded-2xl p-8 space-y-3"
+              className="bg-card border border-border rounded-2xl p-8 space-y-3"
             >
               <h3 className="text-xl font-semibold">{v.title}</h3>
-              <p className="text-gray-500 leading-relaxed">{v.text}</p>
+              <p className="text-muted-foreground leading-relaxed">{v.text}</p>
             </motion.div>
           ))}
         </div>

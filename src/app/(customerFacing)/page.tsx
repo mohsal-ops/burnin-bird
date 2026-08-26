@@ -91,7 +91,7 @@ function FaqSchema() {
 function SectionDivider() {
   return (
     <div className="w-full flex justify-center px-4">
-      <div className="h-px w-full max-w-[85vw] bg-linear-to-r from-transparent via-stone-300 to-transparent" />
+      <div className="h-px w-full max-w-[85vw] bg-linear-to-r from-transparent via-border to-transparent" />
     </div>
   );
 }
@@ -163,12 +163,12 @@ export default async function Home() {
         <FeaturedProductsSection />
       </Suspense>
       <SectionDivider />
-      <Suspense fallback={<div className="sm:w-[85%] w-full h-100 bg-gray-200 rounded-3xl animate-pulse" />}>
+      <Suspense fallback={<div className="sm:w-[85%] w-full h-100 bg-muted rounded-3xl animate-pulse" />}>
         <GallerySection />
       </Suspense>
       <SectionDivider />
       <FadeIn delay={100}>
-        <Suspense fallback={<div className="h-96 w-full md:w-[85vw] bg-gray-100 rounded-4xl animate-pulse" />}>
+        <Suspense fallback={<div className="h-96 w-full md:w-[85vw] bg-muted rounded-4xl animate-pulse" />}>
           <ReviewsDataSection />
         </Suspense>
       </FadeIn>
@@ -203,7 +203,7 @@ export default async function Home() {
         </div>
       </FadeIn>
       <SectionDivider />
-      <Suspense fallback={<div className="h-40 w-full sm:w-[75%] animate-pulse bg-stone-100 rounded-4xl" />}>
+      <Suspense fallback={<div className="h-40 w-full sm:w-[75%] animate-pulse bg-muted rounded-4xl" />}>
         <LocationSection />
       </Suspense>
     </div>

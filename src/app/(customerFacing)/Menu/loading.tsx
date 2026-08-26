@@ -7,7 +7,7 @@ export default function LoadingMenu() {
       {/* Left categories */}
       <div className="hidden md:block w-2/12 space-y-3">
         {[...Array(6)].map((_, i) => (
-          <div key={i} className="h-10 rounded-xl bg-gray-200" />
+          <div key={i} className="h-10 rounded-xl bg-muted" />
         ))}
       </div>
 
@@ -16,13 +16,13 @@ export default function LoadingMenu() {
 
         {/* Title */}
         <div className="space-y-2">
-          <div className="h-6 w-2/3 bg-gray-200 rounded" />
-          <div className="h-4 w-1/3 bg-gray-200 rounded" />
+          <div className="h-6 w-2/3 bg-muted rounded" />
+          <div className="h-4 w-1/3 bg-muted rounded" />
         </div>
 
         {/* Popular */}
         <div className="space-y-3">
-          <div className="h-5 w-32 bg-gray-200 rounded" />
+          <div className="h-5 w-32 bg-muted rounded" />
           <div className="flex gap-4 overflow-hidden">
             <ProductCardSkeleton />
             <ProductCardSkeleton />

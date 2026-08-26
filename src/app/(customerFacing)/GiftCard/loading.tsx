@@ -10,10 +10,10 @@ export default function Loading() {
         <Image src={logo} alt="The Wagon Wheel" className="h-20 w-20 rounded-full object-cover" />
       </div>
 
-      <p className="text-gray-400 text-lg animate-pulse">Loading gift card payment…</p>
+      <p className="text-muted-foreground text-lg animate-pulse">Loading gift card payment…</p>
 
       <div className="flex justify-center">
-        <div className="w-12 h-12 border-4 border-brand border-t-black rounded-full animate-spin" />
+        <div className="w-12 h-12 border-4 border-brand border-t-foreground rounded-full animate-spin" />
       </div>
     </div>
   );

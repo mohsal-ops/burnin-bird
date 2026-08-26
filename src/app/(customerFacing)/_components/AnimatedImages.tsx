@@ -16,7 +16,7 @@ export function ThirdSectionComponent({
     <div className=" sm:w-[85vw] w-full sm:text-start text-center p-2 space-y-10 ">
       <div className="space-y-4">
         <PageHeader>{SITE_CONFIG.home.galleryTitle}</PageHeader>
-        <span className="font-medium text-neutral-600 text-lg">
+        <span className="font-medium text-muted-foreground text-lg">
           {" "}
           {SITE_CONFIG.home.gallerySubtitle}
         </span>
@@ -44,7 +44,7 @@ export function HoverCard({ src, alt }: { src: string; alt: string }) {
     >
       {/* Skeleton (same size, no layout shift) */}
       {!loaded && (
-        <div className="absolute inset-0 bg-gray-300 animate-pulse z-10" />
+        <div className="absolute inset-0 bg-muted animate-pulse z-10" />
       )}
 
       {/* Image */}

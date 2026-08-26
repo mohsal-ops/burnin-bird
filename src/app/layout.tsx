@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { CartProvider } from "./providers/CartProvider";
+import { ThemeProvider } from "./providers/ThemeProvider";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { getBusinessHours } from "@/lib/getHours";
@@ -102,7 +103,7 @@ export default async function RootLayout({
     : DEFAULT_THEME_COLOR;
   const brandForeground = readableTextColor(themeColor);
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <style
           dangerouslySetInnerHTML={{
@@ -151,7 +152,9 @@ export default async function RootLayout({
         <a href="#main-content" className="skip-to-content">
           Skip to main content
         </a>
-        <CartProvider>{children}</CartProvider>
+        <ThemeProvider>
+          <CartProvider>{children}</CartProvider>
+        </ThemeProvider>
         {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
         )}

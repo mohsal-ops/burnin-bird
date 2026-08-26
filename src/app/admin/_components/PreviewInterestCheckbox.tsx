@@ -108,7 +108,7 @@ export default function PreviewInterestCheckbox({
             </svg>
           )}
         </span>
-        <span className="text-sm font-medium leading-snug text-stone-700">
+        <span className="text-sm font-medium leading-snug text-stone-700 dark:text-foreground">
           Yes, I want this live for my restaurant
         </span>
       </label>
@@ -129,7 +129,7 @@ export default function PreviewInterestCheckbox({
     return (
       <>
         {keyframes}
-        <div className="fixed bottom-4 right-4 z-40 max-w-[280px] rounded-2xl border border-stone-200 bg-white/95 p-3.5 shadow-md backdrop-blur">
+        <div className="fixed bottom-4 right-4 z-40 max-w-[280px] rounded-2xl border border-stone-200 dark:border-border bg-white/95 dark:bg-card/95 p-3.5 shadow-md backdrop-blur">
           {softInner}
         </div>
       </>
@@ -142,7 +142,7 @@ export default function PreviewInterestCheckbox({
     return (
       <>
         {keyframes}
-        <div className="mt-4 rounded-2xl border border-[#c85a1e]/20 bg-[#fff7f2] p-4">{softInner}</div>
+        <div className="mt-4 rounded-2xl border border-[#c85a1e]/20 bg-[#fff7f2] dark:bg-[#241812] p-4">{softInner}</div>
       </>
     );
   }

@@ -11,6 +11,7 @@ import { usePathname } from "next/navigation";
 import { CartItem } from "generated/prisma";
 import { Gamepad2 } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/siteConfig";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export function SideBar({
   pathname,
@@ -34,17 +35,18 @@ export function SideBar({
         </Link>
       </div>
 
-      <div className="flex items-center gap-4 pr-7">
+      <div className="flex items-center gap-3 pr-7">
         {pathname !== "/Menu" && (
           <Button
             asChild
             size="md"
             variant="outline"
-            className="text-md border-gray-300"
+            className="text-md border-border"
           >
             <Link href="/Menu">Menu</Link>
           </Button>
         )}
+        <ThemeToggle />
         <div className="flex w-7 justify-center items-center">
           <AppSideBar />
         </div>
@@ -94,7 +96,7 @@ export function TopNavBar({
   const links = SITE_CONFIG.navLinks;
 
   return (
-    <div className="bg-white flex justify-center ">
+    <div className="bg-background border-b border-border flex justify-center ">
       <div className="flex w-full md:hidden">
         <SideBar pathname={pathname} logoUrl={logoUrl} />
         {cartItems.length > 0 && (
@@ -127,8 +129,8 @@ export function TopNavBar({
                     className={[
                       "text-md rounded-md  font-medium transition-colors duration-150 flex items-center gap-2",
                       isActive
-                        ? "bg-stone-100 text-stone-900" // active: yellow bg, dark text
-                        : "text-stone-700  hover:bg-stone-100 ", // inactive: orange text, subtle yellow hover
+                        ? "bg-accent text-accent-foreground" // active
+                        : "text-foreground/70 hover:bg-accent hover:text-accent-foreground", // inactive
                     ].join(" ")}
                   >
                     {obj.label === "Kids Zone" && (
@@ -145,6 +147,7 @@ export function TopNavBar({
             {SITE_CONFIG.menuCtaLabel}
           </Button>
         </Link>
+          <ThemeToggle />
           <div>
             <CartSideBar cartId={cartId} cartItems={cartItems} />
           </div>

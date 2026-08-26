@@ -126,7 +126,7 @@ export default function CartSideBar({ cartItems: initialItems, cartId }: { cartI
                 <SheetTrigger className={`${isMobile && 'absolute right-0 left-0 bottom-0'}`}>
                     <div style={quantity ? { backgroundColor: "oklch(85.2% 0.199 91.936)", color: 'white' } : {}} className='flex items-center gap-2 justify-center md:border  px-4 py-2 hover:cursor-pointer rounded-xl  bg-background hover:bg-accent hover:text-accent-foreground'>
                         {isMobile ? (
-                            <div className='flex items-center gap-3 py-1 text-black font-medium '>
+                            <div className='flex items-center gap-3 py-1 text-foreground font-medium '>
                                 <span>View Cart</span>
                                 <span>|</span>
                                 <span>{quantity > 1 ? quantity + '' + ' Items' : quantity + '' + ' Item'}</span>

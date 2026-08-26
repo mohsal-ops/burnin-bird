@@ -10,7 +10,7 @@ export default async function Success(props: any) {
 
   if (!payment_intent) {
     return (
-      <div className="flex items-center justify-center text-gray-400 w-full h-screen">
+      <div className="flex items-center justify-center text-muted-foreground w-full h-screen">
         A problem occurred
       </div>
     );
@@ -22,7 +22,7 @@ export default async function Success(props: any) {
 
   if (!paymentIntent) {
     return (
-      <div className="flex items-center justify-center text-gray-400 w-full h-screen">
+      <div className="flex items-center justify-center text-muted-foreground w-full h-screen">
         A problem occurred
       </div>
     );

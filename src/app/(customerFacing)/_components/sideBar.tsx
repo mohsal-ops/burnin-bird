@@ -41,8 +41,8 @@ export default function AppSideBar() {
                   className={[
                     "w-full text-center px-4 py-2 rounded-md font-medium transition-colors",
                     pathname === obj.href
-                      ? "bg-stone-100 text-stone-900"
-                      : "text-stone-700 hover:bg-stone-100"
+                      ? "bg-accent text-accent-foreground"
+                      : "text-foreground/70 hover:bg-accent hover:text-accent-foreground"
                   ].join(" ")}
                 >
                   <div className="flex items-center justify-center gap-2">

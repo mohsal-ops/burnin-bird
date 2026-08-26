@@ -222,7 +222,7 @@ export function PickupDetailsContent({
                 value={customerPhone}
                 onChange={(e) => setCustomerPhone(e.target.value)}
               />
-              <div className="border rounded-xl p-3 bg-stone-50 text-sm space-y-1">
+              <div className="border rounded-xl p-3 bg-muted text-sm space-y-1">
                 <p className="font-semibold">
                   ⭐ Earn Rewards With Every Order
                 </p>
@@ -319,7 +319,7 @@ export function PickupDetailsContent({
                 className={`${showMoreDays && "h-28"} flex flex-col max-h-72 overflow-hidden `}
               >
                 <p className="font-medium mb-2">Available times:</p>
-                <div className="w-full h-full overflow-auto scrollbar-thin scrollbar-thumb-gray-300 ">
+                <div className="w-full h-full overflow-auto scrollbar-thin scrollbar-thumb-border ">
                   <div>
                     {availableTimeSlots.length === 0 && (
                       <p className="text-sm text-muted-foreground py-2">
@@ -350,7 +350,7 @@ export function PickupDetailsContent({
                   onChange={(e) => setCustomerPhone(e.target.value)}
                 />
 
-                <div className="border rounded-xl p-3 bg-stone-50 text-sm space-y-1">
+                <div className="border rounded-xl p-3 bg-muted text-sm space-y-1">
                   <p className="font-semibold">
                     ⭐ Earn Rewards With Every Order
                   </p>
@@ -425,7 +425,7 @@ export default function PickupDetails({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         aria-describedby={undefined}
-        className="flex flex-col gap-4 justify-between overflow-scroll max-h-[95vh] scrollbar-thin scrollbar-track-gray-100 "
+        className="flex flex-col gap-4 justify-between overflow-scroll max-h-[95vh] scrollbar-thin scrollbar-track-muted "
       >
         <PickupDetailsContent
           orderType={orderType}

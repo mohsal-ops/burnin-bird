@@ -14,7 +14,7 @@ import Logo from "@/../public/general/logo/logo.png";
 
 // opaque background). `tile` sets the cell size, so a bigger value = more space.
 export default function LogoDriftBackground({
-  veilClassName = "bg-white/85",
+  veilClassName = "bg-background/85",
   opacity = 0.9,
   className = "",
   tile = 200,

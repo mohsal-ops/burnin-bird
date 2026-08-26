@@ -134,7 +134,7 @@ export default function GiftCardPageClient({ logoUrl }: { logoUrl?: string }) {
 
         {/* Amount Selector */}
         <div className="space-y-6">
-          <h2 className="text-3xl font-bold text-gray-900">
+          <h2 className="text-3xl font-bold text-foreground">
             Choose the amount
           </h2>
 
@@ -146,8 +146,8 @@ export default function GiftCardPageClient({ logoUrl }: { logoUrl?: string }) {
                 className={cn(
                   "rounded-full px-6 py-3 text-lg border-2",
                   price === amt * 100
-                    ? "bg-black text-stone-200 border-black"
-                    : "border-gray-300",
+                    ? "bg-foreground text-background border-foreground"
+                    : "border-border",
                 )}
                 onClick={() => setPrice(amt * 100)}
               >
@@ -157,7 +157,7 @@ export default function GiftCardPageClient({ logoUrl }: { logoUrl?: string }) {
           </div>
 
           <div className="flex items-center gap-3">
-            <Label htmlFor="custom-amount" className="text-gray-700">Custom amount</Label>
+            <Label htmlFor="custom-amount" className="text-muted-foreground">Custom amount</Label>
             <Input
               id="custom-amount"
               type="number"
@@ -179,7 +179,7 @@ export default function GiftCardPageClient({ logoUrl }: { logoUrl?: string }) {
           />
         </Elements>
       ) : (
-        <div className="flex justify-center text-gray-400 py-10">
+        <div className="flex justify-center text-muted-foreground py-10">
           Loading payment…
           <Button
             variant="link"
@@ -314,7 +314,7 @@ function CheckoutForm({
 
         <Button
           type="submit"
-          className="w-full bg-black text-brand hover:bg-black/90"
+          className="w-full bg-foreground text-brand hover:bg-foreground/90"
         >
           {isLoading
             ? "Processing..."

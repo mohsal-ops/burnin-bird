@@ -38,8 +38,8 @@ export function TopSection({
   logoUrl?: string;
 }) {
   return (
-    <div className="flex relative overflow-hidden h-svh w-full sm:w-[85%] flex-col sm:flex-row bg-stone-300 sm:rounded-3xl sm:p-2">
-      <LogoDriftBackground  veilClassName="bg-white/90" className="sm:rounded-3xl" />
+    <div className="flex relative overflow-hidden h-svh w-full sm:w-[85%] flex-col sm:flex-row bg-muted sm:rounded-3xl sm:p-2">
+      <LogoDriftBackground  veilClassName="bg-background/90" className="sm:rounded-3xl" />
       <div className="sm:relative absolute z-30 bottom-20 flex flex-col gap-6 items-start h-full sm:justify-center justify-end mt-10 md:mb-20 md:w-1/2 p-5 md:p-12">
          <Image
           alt={`${SITE_CONFIG.name} logo`}
@@ -49,13 +49,13 @@ export function TopSection({
           className="h-28 w-28 rounded-full object-cover shadow-lg"
         />
 
-        <span className="lg:text-5xl text-white sm:text-black text-4xl font-bold leading-10 lg:leading-15">
+        <span className="lg:text-5xl text-white sm:text-foreground text-4xl font-bold leading-10 lg:leading-15">
           <h1 className="text-brand">
             {headline || SITE_CONFIG.home.heroHeadline}
           </h1>{" "}
           {subheadline || SITE_CONFIG.home.heroSubHeadline}
         </span>
-        <span className="font-semibold text-white sm:text-zinc-400 text-md">
+        <span className="font-semibold text-white sm:text-muted-foreground text-md">
           {SITE_CONFIG.subTagline}
         </span>
         <Link href="/Menu">
@@ -159,7 +159,7 @@ export function DistinctiveFeatures({
         />
         <div className="flex flex-col space-y-7 p-5 justify-center   md:w-[45%] w-full h-full">
           <PageHeader>{f1Title}</PageHeader>
-          <p className="text-lg font-medium text-neutral-600">
+          <p className="text-lg font-medium text-muted-foreground">
             {f1Desc}
           </p>
         </div>
@@ -167,7 +167,7 @@ export function DistinctiveFeatures({
       <div className="flex md:flex-row flex-col justify-between md:h-132 h-full">
         <div className="flex md:order-1 order-2 flex-col space-y-7 p-5 justify-center   md:w-[45%] w-full h-full">
           <PageHeader>{f2Title}</PageHeader>
-          <p className="text-lg font-medium text-neutral-600">
+          <p className="text-lg font-medium text-muted-foreground">
             {f2Desc}
           </p>
         </div>
@@ -177,7 +177,7 @@ export function DistinctiveFeatures({
           width={800}
           height={600}
           sizes="(max-width: 768px) 100vw, 45vw"
-          className="object-cover flex items-start bg-stone-200 md:order-2 order-1 md:w-[45%] w-full h-full rounded-3xl"
+          className="object-cover flex items-start bg-muted md:order-2 order-1 md:w-[45%] w-full h-full rounded-3xl"
         />
       </div>
     </div>

@@ -55,7 +55,7 @@ function ReviewCard({
         <CardHeader className="pb-3">
           <Stars />
         </CardHeader>
-        <CardContent className="font-normal text-neutral-700">
+        <CardContent className="font-normal text-muted-foreground">
           <p className={isLong ? "line-clamp-5" : ""}>{review.review}</p>
           {isLong && (
             <button
@@ -94,8 +94,8 @@ export function ReviewsSection({ reviews }: { reviews: ReviewData[] }) {
   if (!reviews?.length) return null;
 
   return (
-    <section className="relative overflow-hidden flex w-full flex-col items-center gap-8 rounded-4xl bg-gray-100 p-6 md:w-[85vw] md:p-10">
-      <LogoDriftBackground className="rounded-4xl" veilClassName="bg-gray-100/80" />
+    <section className="relative overflow-hidden flex w-full flex-col items-center gap-8 rounded-4xl bg-muted p-6 md:w-[85vw] md:p-10">
+      <LogoDriftBackground className="rounded-4xl" veilClassName="bg-muted/80" />
       <div className="relative z-10 text-center">
         <PageHeader>What our guests are saying</PageHeader>
       </div>
@@ -122,21 +122,21 @@ export function ReviewsSection({ reviews }: { reviews: ReviewData[] }) {
           onClick={() => setActive(null)}
         >
           <div
-            className="relative max-h-[80vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-white p-7 shadow-2xl"
+            className="relative max-h-[80vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-card p-7 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               type="button"
               onClick={() => setActive(null)}
               aria-label="Close"
-              className="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full bg-stone-100 text-stone-600 transition-colors hover:bg-stone-200"
+              className="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-accent"
             >
               <X className="h-5 w-5" />
             </button>
             <div className="mb-4">
               <Stars />
             </div>
-            <p className="whitespace-pre-line leading-relaxed text-neutral-700">
+            <p className="whitespace-pre-line leading-relaxed text-muted-foreground">
               {active.review}
             </p>
             <div className="mt-6 border-t pt-4">

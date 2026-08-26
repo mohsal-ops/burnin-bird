@@ -58,7 +58,7 @@ console.log(choice)
         <div className='flex flex-col md:flex-row gap-16 w-full lg:w-[80%] pt-20'>
             <div className='relative hidden md:block w-2/12 py-5  '>
                 <div id="SearchBar&gategories" className='flex w-60 flex-col fixed'>
-                    <div className='flex  w-full justify-start items-center  border border-stone-300 rounded-xl outline-none focus-within:border-2 focus-within:border-black'>
+                    <div className='flex  w-full justify-start items-center  border border-border rounded-xl outline-none focus-within:border-2 focus-within:border-ring'>
                         {/* Search Input */}
                         <PiMagnifyingGlass fontSize={21} className="mx-2" />
 
@@ -79,7 +79,7 @@ console.log(choice)
                                     onClick={() =>
                                         document.getElementById(`cat-${cat.id}`)?.scrollIntoView({ behavior: "smooth" })
                                     }
-                                    className={`justify-start font-medium text-sm ${activeCategory === cat.id ? "bg-black text-white" : "bg-transparent text-gray-600"
+                                    className={`justify-start font-medium text-sm ${activeCategory === cat.id ? "bg-foreground text-background" : "bg-transparent text-muted-foreground"
                                         }`}
                                     variant="ghost"
                                 >
@@ -96,8 +96,8 @@ console.log(choice)
                 <div className='flex flex-col gap-2 md:items-start  items-center  font-bold  ' id="name&address">
                     <p className='tracking-tight font-serif  text-xl text-center'>Burgers, Breakfast, Pizza & Daily Specials</p>
                 </div>
-                <div id="PickupOrDelivery " className='text-xs flex  bg-stone-200 rounded-3xl p'>
-                    <div className="flex w-full justify-between  gap-4 font-semibold text-gray-600">
+                <div id="PickupOrDelivery " className='text-xs flex  bg-muted rounded-3xl p'>
+                    <div className="flex w-full justify-between  gap-4 font-semibold text-muted-foreground">
                         {/* Delivery */}
                         <label className="cursor-pointer w-1/2 relative">
                             <input
@@ -108,7 +108,7 @@ console.log(choice)
                                 onChange={() => setChoice("delivery")}
                                 className="hidden peer"
                             />
-                            <div className=" h-10 bg-stone-200 border  flex items-center justify-center  rounded-3xl peer-checked:shadow-md peer-checked:border-gray-300 peer-checked:bg-white peer-checked:text-black transition">
+                            <div className=" h-10 bg-muted border  flex items-center justify-center  rounded-3xl peer-checked:shadow-md peer-checked:border-border peer-checked:bg-background peer-checked:text-foreground transition">
                                 Delivery
                             </div>
                         </label>
@@ -123,14 +123,14 @@ console.log(choice)
                                 onChange={() => setChoice("pickup")}
                                 className="hidden peer"
                             />
-                            <div className=" h-10 bg-stone-200 border  flex items-center justify-center  rounded-3xl peer-checked:shadow-md peer-checked:border-gray-300 peer-checked:bg-white peer-checked:text-black transition">
+                            <div className=" h-10 bg-muted border  flex items-center justify-center  rounded-3xl peer-checked:shadow-md peer-checked:border-border peer-checked:bg-background peer-checked:text-foreground transition">
                                 Pickup
                             </div>
                         </label>
                     </div>
                 </div>
-                <div id="SearchBar&gategories" className='md:hidden sticky top-0 py-2 bg-white z-50 flex gap-2 flex-col'>
-                    <div className='flex pl-1 w-full justify-start items-center  bg-white border rounded-xl outline-none focus-within:border-2 focus-within:border-black'>
+                <div id="SearchBar&gategories" className='md:hidden sticky top-0 py-2 bg-background z-50 flex gap-2 flex-col'>
+                    <div className='flex pl-1 w-full justify-start items-center  bg-background border rounded-xl outline-none focus-within:border-2 focus-within:border-ring'>
                         {/* Search Input */}
                         <PiMagnifyingGlass fontSize={21} className="ml-1" />
 
@@ -150,7 +150,7 @@ console.log(choice)
                                     onClick={() =>
                                         document.getElementById(`cat-${cat.id}`)?.scrollIntoView({ behavior: "smooth" })
                                     }
-                                    className={`font-medium text-sm ${activeCategory === cat.id ? "bg-black text-white" : "bg-transparent text-gray-600"
+                                    className={`font-medium text-sm ${activeCategory === cat.id ? "bg-foreground text-background" : "bg-transparent text-muted-foreground"
                                         }`}
                                     variant="outline"
                                 >

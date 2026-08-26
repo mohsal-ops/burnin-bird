@@ -47,14 +47,14 @@ export default function TrialPopup() {
       onClick={dismiss}
     >
       <div
-        className="relative w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-2xl"
+        className="relative w-full max-w-md overflow-hidden rounded-3xl bg-card text-card-foreground shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           type="button"
           onClick={dismiss}
           aria-label="Close"
-          className="absolute right-3 top-3 z-10 grid h-9 w-9 place-items-center rounded-full bg-stone-100 text-stone-600 transition-colors hover:bg-stone-200"
+          className="absolute right-3 top-3 z-10 grid h-9 w-9 place-items-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-accent"
         >
           <X className="h-5 w-5" />
         </button>
@@ -63,11 +63,11 @@ export default function TrialPopup() {
           <p className="text-xs font-semibold uppercase tracking-widest text-[#c85a1e]">
             Built for you
           </p>
-          <h2 className="mt-2 text-xl font-extrabold leading-snug text-stone-900 sm:text-2xl">
+          <h2 className="mt-2 text-xl font-extrabold leading-snug text-foreground sm:text-2xl">
             This site and dashboard were built specifically for {SITE_CONFIG.name}.
           </h2>
 
-          <p className="mt-3 text-sm leading-relaxed text-stone-600">
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
             It&apos;s a live trial, yours to explore for free, for as long as you
             like. I&apos;m offering it at a discount right now since I&apos;m still
             building reviews for my own business, so I&apos;d rather get it into a
@@ -75,23 +75,23 @@ export default function TrialPopup() {
           </p>
 
           {/* Both prices - real value vs. the offer */}
-          <div className="mt-5 flex items-baseline gap-3 rounded-2xl bg-stone-50 px-4 py-3">
-            <span className="text-sm text-stone-400 line-through">
+          <div className="mt-5 flex items-baseline gap-3 rounded-2xl bg-muted px-4 py-3">
+            <span className="text-sm text-muted-foreground line-through">
               {formatUsd(o.fullPrice)}
             </span>
-            <span className="text-2xl font-extrabold text-stone-900">
+            <span className="text-2xl font-extrabold text-foreground">
               {formatUsd(o.discountedPrice)}
             </span>
-            <span className="text-xs text-stone-500">one-time</span>
+            <span className="text-xs text-muted-foreground">one-time</span>
           </div>
-          <p className="mt-2 text-xs text-stone-500">
+          <p className="mt-2 text-xs text-muted-foreground">
             Less than a single year of what a typical Toast/Square setup runs
             ($150–500/month). It could save you around {formatUsd(annualSavings)} a
             year vs. paying delivery-app commissions.
           </p>
 
           {/* Real scarcity, no fake counter */}
-          <p className="mt-4 text-xs leading-relaxed text-stone-500">
+          <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
             I build and manage each of these personally, so I only take on a handful
             of restaurants at a time.
           </p>

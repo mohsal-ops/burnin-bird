@@ -55,7 +55,7 @@ export function OurLocation({
   const mapsUrl = `${SITE_CONFIG.googleMapsUrl}?entry=ttu`;
 
   return (
-    <div className="flex flex-col sm:flex-row gap-4 p-4 bg-stone-200 rounded-4xl w-[92%] mx-auto sm:w-[75%] font-bold ">
+    <div className="flex flex-col sm:flex-row gap-4 p-4 bg-muted text-foreground rounded-4xl w-[92%] mx-auto sm:w-[75%] font-bold ">
       <HereMapsScripts />
       {/* Map */}
       <div className="sm:w-[45%] w-full h-56 sm:h-auto min-h-50 rounded-3xl overflow-hidden shrink-0">
@@ -67,13 +67,13 @@ export function OurLocation({
         {/* Top: name + address */}
         <div className="flex flex-col gap-4">
           <div>
-            <p className="text-sm text-gray-500">{SITE_CONFIG.name}</p>
-            <p className="text-xl font-semibold text-gray-900">{SITE_CONFIG.city}, {SITE_CONFIG.state}</p>
+            <p className="text-sm text-muted-foreground">{SITE_CONFIG.name}</p>
+            <p className="text-xl font-semibold text-foreground">{SITE_CONFIG.city}, {SITE_CONFIG.state}</p>
           </div>
 
           <div className="flex gap-8 mt-3">
             <div className="flex flex-col gap-1">
-              <span className="text-xs text-gray-500">Address</span>
+              <span className="text-xs text-muted-foreground">Address</span>
               <p className="text-sm leading-relaxed">
                 {SITE_CONFIG.street}
                 <br />
@@ -81,7 +81,7 @@ export function OurLocation({
               </p>
             </div>
             <div className="flex flex-col gap-1">
-              <span className="text-xs text-gray-500">Contact</span>
+              <span className="text-xs text-muted-foreground">Contact</span>
               <p className="text-sm leading-relaxed">
                 {SITE_CONFIG.phone}
                 <br />
@@ -97,7 +97,7 @@ export function OurLocation({
             showHours ? "max-h-80 opacity-100" : "max-h-0 opacity-0"
           }`}
         >
-          <div className="border-t border-gray-300 pt-3">
+          <div className="border-t border-border pt-3">
             <table className="w-full text-sm">
               <tbody>
                 {HOURS.map((h, i) => {
@@ -107,7 +107,7 @@ export function OurLocation({
                   return (
                     <tr
                       key={h.day}
-                      className={`border-b border-gray-200 last:border-0 transition-all duration-300 ${
+                      className={`border-b border-border last:border-0 transition-all duration-300 ${
                         showHours
                           ? "opacity-100 translate-y-0"
                           : "opacity-0 translate-y-2"
@@ -119,8 +119,8 @@ export function OurLocation({
                       <td
                         className={`py-1.5 w-28 ${
                           isToday
-                            ? "font-semibold text-gray-900"
-                            : "text-gray-500"
+                            ? "font-semibold text-foreground"
+                            : "text-muted-foreground"
                         }`}
                       >
                         {h.day}
@@ -128,8 +128,8 @@ export function OurLocation({
                       <td
                         className={`py-1.5 ${
                           isToday
-                            ? "font-semibold text-gray-900"
-                            : "text-gray-700"
+                            ? "font-semibold text-foreground"
+                            : "text-foreground/80"
                         }`}
                       >
                         {label}
@@ -143,7 +143,7 @@ export function OurLocation({
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-gray-300 pt-3 flex flex-wrap items-center justify-between gap-3">
+        <div className="border-t border-border pt-3 flex flex-wrap items-center justify-between gap-3">
           <p className="text-sm flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-green-500 inline-block" />
             {todayLabel}
