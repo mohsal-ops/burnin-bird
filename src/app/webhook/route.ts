@@ -6,6 +6,20 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { sendTelegramMessage } from "@/lib/telegram";
 import { sendMail } from "@/lib/email";
 import { SITE_CONFIG } from "@/lib/siteConfig";
+import { getUberDirect } from "@/lib/siteSettings";
+import { createDelivery } from "@/lib/uber";
+import { deriveOrderType } from "@/lib/orderType";
+
+// Uber Direct needs phone numbers in E.164. Coerce a US-style number; leave an
+// already-+prefixed number as-is.
+function toE164(phone?: string | null): string {
+  const raw = (phone || "").trim();
+  if (raw.startsWith("+")) return raw;
+  const digits = raw.replace(/\D/g, "");
+  if (digits.length === 10) return `+1${digits}`;
+  if (digits.length === 11 && digits.startsWith("1")) return `+${digits}`;
+  return digits ? `+${digits}` : "";
+}
 
 const formatSides = (sides: any[]) => {
   if (!sides || sides.length === 0) return "";
@@ -110,6 +124,61 @@ export async function POST(req: NextRequest) {
     await db.cart.update({ where: { id: cartId }, data: { status: "completed" } });
 
     const first = cart.items[0];
+
+    // Uber Direct: dispatch a real courier for delivery orders when enabled. The
+    // order is already paid + saved, so this is strictly best-effort — any
+    // failure is logged + surfaced to the owner, and NEVER 500s the webhook
+    // (that would make Stripe retry and risk duplicate handling).
+    try {
+      const uber = await getUberDirect();
+      if (uber.enabled && deriveOrderType(first) === "delivery" && first.deliveryAddress) {
+        if (!cart.uberQuoteId) {
+          await sendTelegramMessage(
+            `⚠️ Delivery order ${cart.id} has no Uber quote — please arrange delivery manually.`,
+          );
+        } else {
+          const dropoffNotes = [first.apt ? `Apt/Suite: ${first.apt}` : "", first.instructions || ""]
+            .filter(Boolean)
+            .join(" — ");
+          const delivery = await createDelivery({
+            quoteId: cart.uberQuoteId,
+            pickup: {
+              formatted: SITE_CONFIG.address,
+              lat: SITE_CONFIG.lat,
+              lng: SITE_CONFIG.lng,
+              name: SITE_CONFIG.name,
+              businessName: SITE_CONFIG.name,
+              phone: toE164(SITE_CONFIG.phone),
+            },
+            dropoff: {
+              formatted: first.deliveryAddress,
+              lat: first.deliveryLat,
+              lng: first.deliveryLng,
+              name: first.customerName || "Customer",
+              phone: toE164(first.customerPhone),
+              notes: dropoffNotes || undefined,
+            },
+            manifestItems: cart.items
+              .filter((it) => it.name)
+              .map((it) => ({ name: it.name as string, quantity: it.quantity ?? 1 })),
+            externalId: cart.id,
+          });
+          await db.cart.update({
+            where: { id: cart.id },
+            data: {
+              uberDeliveryId: delivery.id,
+              uberStatus: delivery.status,
+              uberTrackingUrl: delivery.trackingUrl ?? null,
+            },
+          });
+        }
+      }
+    } catch (e) {
+      console.error("Uber Direct dispatch failed (order still saved):", (e as Error).message);
+      await sendTelegramMessage(
+        `⚠️ Uber delivery dispatch FAILED for order ${cart.id}: ${(e as Error).message}. Please arrange delivery manually.`,
+      ).catch(() => {});
+    }
 
     const itemsList = cart.items
       .map((it) => {

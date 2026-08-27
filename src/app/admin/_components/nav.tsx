@@ -27,6 +27,7 @@ import {
   Palette,
   ExternalLink,
   FileText,
+  Truck,
   type LucideIcon,
 } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/siteConfig";
@@ -96,6 +97,7 @@ const NAV_GROUPS: NavGroup[] = [
     label: "Settings",
     items: [
       { href: "/admin/branding", label: "Branding", icon: Palette },
+      { href: "/admin/delivery", label: "Delivery", icon: Truck },
       { href: "/admin/places", label: "Places", icon: MapPin },
       { href: "/admin/team", label: "Team", icon: ShieldCheck },
     ],

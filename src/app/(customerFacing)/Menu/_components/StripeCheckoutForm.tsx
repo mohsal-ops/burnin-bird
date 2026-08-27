@@ -14,10 +14,11 @@ import PageHeader from "../../_components/PageHeader"
 
 type CheckoutFormProps = {
     priceInCents: number
+    deliveryFeeInCents?: number
     clientSecret: string
 }
 export function StripeCheckoutForm(
-    { priceInCents, clientSecret
+    { priceInCents, deliveryFeeInCents = 0, clientSecret
 
     }: CheckoutFormProps) {
     const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY as string)
@@ -27,7 +28,7 @@ export function StripeCheckoutForm(
         <div className=" max-w-5xl mt-3 w-full mx-auto space-y-8 ">
             <PageHeader>Checkout</PageHeader>
             <Elements options={{ clientSecret }} stripe={stripePromise}>
-                <Form priceInCents={priceInCents} />
+                <Form priceInCents={priceInCents} deliveryFeeInCents={deliveryFeeInCents} />
             </Elements>
         </div>
     )
@@ -36,7 +37,7 @@ export function StripeCheckoutForm(
 
 
 
-function Form({ priceInCents }: { priceInCents: number }) {
+function Form({ priceInCents, deliveryFeeInCents = 0 }: { priceInCents: number; deliveryFeeInCents?: number }) {
     const [isLoading, setIsLoading] = useState(false);
     const [ErrorMessage, setErrorMessage] = useState<string>()
     const [email, setEmail] = useState<string>()
@@ -94,7 +95,13 @@ function Form({ priceInCents }: { priceInCents: number }) {
                     <LinkAuthenticationElement onChange={e => setEmail(e.value.email)} />
                 </div>
             </CardContent>
-            <CardFooter>
+            <CardFooter className="flex-col items-stretch gap-3">
+                {deliveryFeeInCents > 0 && (
+                    <div className="flex justify-between text-sm text-muted-foreground">
+                        <span>Uber delivery fee</span>
+                        <span>{formatCurrency(deliveryFeeInCents / 100)}</span>
+                    </div>
+                )}
                 <Button className="w-full" variant='mainButton' disabled={isLoading || !stripe || !elements}>
                     {isLoading ? "Purchasing..." : `Purchase - ${formatCurrency(priceInCents / 100)}`}
                 </Button>

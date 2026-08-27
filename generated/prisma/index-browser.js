@@ -207,7 +207,12 @@ exports.Prisma.CartScalarFieldEnum = {
   id: 'id',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  status: 'status'
+  status: 'status',
+  uberQuoteId: 'uberQuoteId',
+  uberFeeCents: 'uberFeeCents',
+  uberDeliveryId: 'uberDeliveryId',
+  uberStatus: 'uberStatus',
+  uberTrackingUrl: 'uberTrackingUrl'
 };
 
 exports.Prisma.CartItemScalarFieldEnum = {
@@ -238,6 +243,7 @@ exports.Prisma.SideGroupScalarFieldEnum = {
   type: 'type',
   required: 'required',
   maxSelect: 'maxSelect',
+  order: 'order',
   createdAt: 'createdAt'
 };
 
@@ -246,7 +252,8 @@ exports.Prisma.SideOptionScalarFieldEnum = {
   sideGroupId: 'sideGroupId',
   label: 'label',
   priceInCents: 'priceInCents',
-  linkedItemId: 'linkedItemId'
+  linkedItemId: 'linkedItemId',
+  order: 'order'
 };
 
 exports.Prisma.CartItemSideScalarFieldEnum = {

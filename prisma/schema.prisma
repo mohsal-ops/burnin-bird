@@ -114,8 +114,17 @@ model Cart {
   id        String     @id @default(uuid())
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
-  items     CartItem[]      
+  items     CartItem[]
   status    String     @default("open") // open/completed/abandoned
+
+  // Uber Direct courier delivery (optional per restaurant — see SiteSetting
+  // "uber_direct_enabled"). A quote is fetched at checkout; the courier is
+  // dispatched after payment; status is advanced by the Uber webhook.
+  uberQuoteId     String?
+  uberFeeCents    Int?
+  uberDeliveryId  String?
+  uberStatus      String? // pending|pickup|pickup_complete|dropoff|delivered|canceled|returned
+  uberTrackingUrl String?
 }
 
 model CartItem {

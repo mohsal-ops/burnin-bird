@@ -41,6 +41,9 @@ type Order = {
   status: string;
   createdAt: Date;
   items: OrderItem[];
+  uberDeliveryId: string | null;
+  uberStatus: string | null;
+  uberTrackingUrl: string | null;
 };
 
 type Stats = {
@@ -231,6 +234,20 @@ export default function OrdersDashboard({ orders, stats }: { orders: Order[]; st
                         {first.instructions && (
                           <p className="sm:col-span-2">
                             <span className="font-semibold text-stone-700">Instructions:</span> {first.instructions}
+                          </p>
+                        )}
+                        {order.uberDeliveryId && (
+                          <p className="sm:col-span-2">
+                            <span className="font-semibold text-stone-700">Uber courier:</span>{" "}
+                            <span className="capitalize">{(order.uberStatus ?? "pending").replace(/_/g, " ")}</span>
+                            {order.uberTrackingUrl && (
+                              <>
+                                {" — "}
+                                <a href={order.uberTrackingUrl} target="_blank" rel="noreferrer" className="underline">
+                                  track
+                                </a>
+                              </>
+                            )}
                           </p>
                         )}
                       </>

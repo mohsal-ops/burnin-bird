@@ -1,9 +1,9 @@
 import db from "@/db/db"
-import { notFound } from "next/navigation"
 import Stripe from "stripe"
 import { StripeCheckoutForm } from "../../_components/StripeCheckoutForm"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { deriveOrderType } from "@/lib/orderType"
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -39,10 +39,16 @@ export default async function Page({ params }: PageProps) {
     )
   }
 
-  const total = cart.items.reduce(
+  const itemsTotal = cart.items.reduce(
     (acc, item) => acc + (item.price ?? 0) * (item.quantity ?? 0),
     0
   )
+
+  // Add the real Uber Direct courier fee only for delivery orders (it's stored on
+  // the cart at address entry). Pickup orders are unaffected.
+  const isDelivery = cart.items[0] ? deriveOrderType(cart.items[0]) === "delivery" : false
+  const deliveryFee = isDelivery ? cart.uberFeeCents ?? 0 : 0
+  const total = itemsTotal + deliveryFee
 
   const paymentIntent = await stripe.paymentIntents.create({
     amount: total,
@@ -57,6 +63,7 @@ export default async function Page({ params }: PageProps) {
   return (
     <StripeCheckoutForm
       priceInCents={total}
+      deliveryFeeInCents={deliveryFee}
       clientSecret={paymentIntent.client_secret}
     />
   )

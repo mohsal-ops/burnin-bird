@@ -11423,8 +11423,18 @@ export namespace Prisma {
 
   export type AggregateCart = {
     _count: CartCountAggregateOutputType | null
+    _avg: CartAvgAggregateOutputType | null
+    _sum: CartSumAggregateOutputType | null
     _min: CartMinAggregateOutputType | null
     _max: CartMaxAggregateOutputType | null
+  }
+
+  export type CartAvgAggregateOutputType = {
+    uberFeeCents: number | null
+  }
+
+  export type CartSumAggregateOutputType = {
+    uberFeeCents: number | null
   }
 
   export type CartMinAggregateOutputType = {
@@ -11432,6 +11442,11 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     status: string | null
+    uberQuoteId: string | null
+    uberFeeCents: number | null
+    uberDeliveryId: string | null
+    uberStatus: string | null
+    uberTrackingUrl: string | null
   }
 
   export type CartMaxAggregateOutputType = {
@@ -11439,6 +11454,11 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     status: string | null
+    uberQuoteId: string | null
+    uberFeeCents: number | null
+    uberDeliveryId: string | null
+    uberStatus: string | null
+    uberTrackingUrl: string | null
   }
 
   export type CartCountAggregateOutputType = {
@@ -11446,15 +11466,33 @@ export namespace Prisma {
     createdAt: number
     updatedAt: number
     status: number
+    uberQuoteId: number
+    uberFeeCents: number
+    uberDeliveryId: number
+    uberStatus: number
+    uberTrackingUrl: number
     _all: number
   }
 
+
+  export type CartAvgAggregateInputType = {
+    uberFeeCents?: true
+  }
+
+  export type CartSumAggregateInputType = {
+    uberFeeCents?: true
+  }
 
   export type CartMinAggregateInputType = {
     id?: true
     createdAt?: true
     updatedAt?: true
     status?: true
+    uberQuoteId?: true
+    uberFeeCents?: true
+    uberDeliveryId?: true
+    uberStatus?: true
+    uberTrackingUrl?: true
   }
 
   export type CartMaxAggregateInputType = {
@@ -11462,6 +11500,11 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     status?: true
+    uberQuoteId?: true
+    uberFeeCents?: true
+    uberDeliveryId?: true
+    uberStatus?: true
+    uberTrackingUrl?: true
   }
 
   export type CartCountAggregateInputType = {
@@ -11469,6 +11512,11 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     status?: true
+    uberQuoteId?: true
+    uberFeeCents?: true
+    uberDeliveryId?: true
+    uberStatus?: true
+    uberTrackingUrl?: true
     _all?: true
   }
 
@@ -11510,6 +11558,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: CartAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CartSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: CartMinAggregateInputType
@@ -11540,6 +11600,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: CartCountAggregateInputType | true
+    _avg?: CartAvgAggregateInputType
+    _sum?: CartSumAggregateInputType
     _min?: CartMinAggregateInputType
     _max?: CartMaxAggregateInputType
   }
@@ -11549,7 +11611,14 @@ export namespace Prisma {
     createdAt: Date
     updatedAt: Date
     status: string
+    uberQuoteId: string | null
+    uberFeeCents: number | null
+    uberDeliveryId: string | null
+    uberStatus: string | null
+    uberTrackingUrl: string | null
     _count: CartCountAggregateOutputType | null
+    _avg: CartAvgAggregateOutputType | null
+    _sum: CartSumAggregateOutputType | null
     _min: CartMinAggregateOutputType | null
     _max: CartMaxAggregateOutputType | null
   }
@@ -11573,6 +11642,11 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     status?: boolean
+    uberQuoteId?: boolean
+    uberFeeCents?: boolean
+    uberDeliveryId?: boolean
+    uberStatus?: boolean
+    uberTrackingUrl?: boolean
     items?: boolean | Cart$itemsArgs<ExtArgs>
     _count?: boolean | CartCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cart"]>
@@ -11582,6 +11656,11 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     status?: boolean
+    uberQuoteId?: boolean
+    uberFeeCents?: boolean
+    uberDeliveryId?: boolean
+    uberStatus?: boolean
+    uberTrackingUrl?: boolean
   }, ExtArgs["result"]["cart"]>
 
   export type CartSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -11589,6 +11668,11 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     status?: boolean
+    uberQuoteId?: boolean
+    uberFeeCents?: boolean
+    uberDeliveryId?: boolean
+    uberStatus?: boolean
+    uberTrackingUrl?: boolean
   }, ExtArgs["result"]["cart"]>
 
   export type CartSelectScalar = {
@@ -11596,9 +11680,14 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     status?: boolean
+    uberQuoteId?: boolean
+    uberFeeCents?: boolean
+    uberDeliveryId?: boolean
+    uberStatus?: boolean
+    uberTrackingUrl?: boolean
   }
 
-  export type CartOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "status", ExtArgs["result"]["cart"]>
+  export type CartOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "status" | "uberQuoteId" | "uberFeeCents" | "uberDeliveryId" | "uberStatus" | "uberTrackingUrl", ExtArgs["result"]["cart"]>
   export type CartInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     items?: boolean | Cart$itemsArgs<ExtArgs>
     _count?: boolean | CartCountOutputTypeDefaultArgs<ExtArgs>
@@ -11616,6 +11705,11 @@ export namespace Prisma {
       createdAt: Date
       updatedAt: Date
       status: string
+      uberQuoteId: string | null
+      uberFeeCents: number | null
+      uberDeliveryId: string | null
+      uberStatus: string | null
+      uberTrackingUrl: string | null
     }, ExtArgs["result"]["cart"]>
     composites: {}
   }
@@ -12044,6 +12138,11 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"Cart", 'DateTime'>
     readonly updatedAt: FieldRef<"Cart", 'DateTime'>
     readonly status: FieldRef<"Cart", 'String'>
+    readonly uberQuoteId: FieldRef<"Cart", 'String'>
+    readonly uberFeeCents: FieldRef<"Cart", 'Int'>
+    readonly uberDeliveryId: FieldRef<"Cart", 'String'>
+    readonly uberStatus: FieldRef<"Cart", 'String'>
+    readonly uberTrackingUrl: FieldRef<"Cart", 'String'>
   }
     
 
@@ -13791,10 +13890,12 @@ export namespace Prisma {
 
   export type SideGroupAvgAggregateOutputType = {
     maxSelect: number | null
+    order: number | null
   }
 
   export type SideGroupSumAggregateOutputType = {
     maxSelect: number | null
+    order: number | null
   }
 
   export type SideGroupMinAggregateOutputType = {
@@ -13804,6 +13905,7 @@ export namespace Prisma {
     type: $Enums.SideGroupType | null
     required: boolean | null
     maxSelect: number | null
+    order: number | null
     createdAt: Date | null
   }
 
@@ -13814,6 +13916,7 @@ export namespace Prisma {
     type: $Enums.SideGroupType | null
     required: boolean | null
     maxSelect: number | null
+    order: number | null
     createdAt: Date | null
   }
 
@@ -13824,6 +13927,7 @@ export namespace Prisma {
     type: number
     required: number
     maxSelect: number
+    order: number
     createdAt: number
     _all: number
   }
@@ -13831,10 +13935,12 @@ export namespace Prisma {
 
   export type SideGroupAvgAggregateInputType = {
     maxSelect?: true
+    order?: true
   }
 
   export type SideGroupSumAggregateInputType = {
     maxSelect?: true
+    order?: true
   }
 
   export type SideGroupMinAggregateInputType = {
@@ -13844,6 +13950,7 @@ export namespace Prisma {
     type?: true
     required?: true
     maxSelect?: true
+    order?: true
     createdAt?: true
   }
 
@@ -13854,6 +13961,7 @@ export namespace Prisma {
     type?: true
     required?: true
     maxSelect?: true
+    order?: true
     createdAt?: true
   }
 
@@ -13864,6 +13972,7 @@ export namespace Prisma {
     type?: true
     required?: true
     maxSelect?: true
+    order?: true
     createdAt?: true
     _all?: true
   }
@@ -13961,6 +14070,7 @@ export namespace Prisma {
     type: $Enums.SideGroupType
     required: boolean
     maxSelect: number | null
+    order: number
     createdAt: Date
     _count: SideGroupCountAggregateOutputType | null
     _avg: SideGroupAvgAggregateOutputType | null
@@ -13990,6 +14100,7 @@ export namespace Prisma {
     type?: boolean
     required?: boolean
     maxSelect?: boolean
+    order?: boolean
     createdAt?: boolean
     item?: boolean | ItemDefaultArgs<ExtArgs>
     options?: boolean | SideGroup$optionsArgs<ExtArgs>
@@ -14003,6 +14114,7 @@ export namespace Prisma {
     type?: boolean
     required?: boolean
     maxSelect?: boolean
+    order?: boolean
     createdAt?: boolean
     item?: boolean | ItemDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["sideGroup"]>
@@ -14014,6 +14126,7 @@ export namespace Prisma {
     type?: boolean
     required?: boolean
     maxSelect?: boolean
+    order?: boolean
     createdAt?: boolean
     item?: boolean | ItemDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["sideGroup"]>
@@ -14025,10 +14138,11 @@ export namespace Prisma {
     type?: boolean
     required?: boolean
     maxSelect?: boolean
+    order?: boolean
     createdAt?: boolean
   }
 
-  export type SideGroupOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "itemId" | "title" | "type" | "required" | "maxSelect" | "createdAt", ExtArgs["result"]["sideGroup"]>
+  export type SideGroupOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "itemId" | "title" | "type" | "required" | "maxSelect" | "order" | "createdAt", ExtArgs["result"]["sideGroup"]>
   export type SideGroupInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     item?: boolean | ItemDefaultArgs<ExtArgs>
     options?: boolean | SideGroup$optionsArgs<ExtArgs>
@@ -14054,6 +14168,7 @@ export namespace Prisma {
       type: $Enums.SideGroupType
       required: boolean
       maxSelect: number | null
+      order: number
       createdAt: Date
     }, ExtArgs["result"]["sideGroup"]>
     composites: {}
@@ -14486,6 +14601,7 @@ export namespace Prisma {
     readonly type: FieldRef<"SideGroup", 'SideGroupType'>
     readonly required: FieldRef<"SideGroup", 'Boolean'>
     readonly maxSelect: FieldRef<"SideGroup", 'Int'>
+    readonly order: FieldRef<"SideGroup", 'Int'>
     readonly createdAt: FieldRef<"SideGroup", 'DateTime'>
   }
     
@@ -14939,10 +15055,12 @@ export namespace Prisma {
 
   export type SideOptionAvgAggregateOutputType = {
     priceInCents: number | null
+    order: number | null
   }
 
   export type SideOptionSumAggregateOutputType = {
     priceInCents: number | null
+    order: number | null
   }
 
   export type SideOptionMinAggregateOutputType = {
@@ -14951,6 +15069,7 @@ export namespace Prisma {
     label: string | null
     priceInCents: number | null
     linkedItemId: string | null
+    order: number | null
   }
 
   export type SideOptionMaxAggregateOutputType = {
@@ -14959,6 +15078,7 @@ export namespace Prisma {
     label: string | null
     priceInCents: number | null
     linkedItemId: string | null
+    order: number | null
   }
 
   export type SideOptionCountAggregateOutputType = {
@@ -14967,16 +15087,19 @@ export namespace Prisma {
     label: number
     priceInCents: number
     linkedItemId: number
+    order: number
     _all: number
   }
 
 
   export type SideOptionAvgAggregateInputType = {
     priceInCents?: true
+    order?: true
   }
 
   export type SideOptionSumAggregateInputType = {
     priceInCents?: true
+    order?: true
   }
 
   export type SideOptionMinAggregateInputType = {
@@ -14985,6 +15108,7 @@ export namespace Prisma {
     label?: true
     priceInCents?: true
     linkedItemId?: true
+    order?: true
   }
 
   export type SideOptionMaxAggregateInputType = {
@@ -14993,6 +15117,7 @@ export namespace Prisma {
     label?: true
     priceInCents?: true
     linkedItemId?: true
+    order?: true
   }
 
   export type SideOptionCountAggregateInputType = {
@@ -15001,6 +15126,7 @@ export namespace Prisma {
     label?: true
     priceInCents?: true
     linkedItemId?: true
+    order?: true
     _all?: true
   }
 
@@ -15096,6 +15222,7 @@ export namespace Prisma {
     label: string
     priceInCents: number | null
     linkedItemId: string | null
+    order: number
     _count: SideOptionCountAggregateOutputType | null
     _avg: SideOptionAvgAggregateOutputType | null
     _sum: SideOptionSumAggregateOutputType | null
@@ -15123,6 +15250,7 @@ export namespace Prisma {
     label?: boolean
     priceInCents?: boolean
     linkedItemId?: boolean
+    order?: boolean
     sideGroup?: boolean | SideGroupDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["sideOption"]>
 
@@ -15132,6 +15260,7 @@ export namespace Prisma {
     label?: boolean
     priceInCents?: boolean
     linkedItemId?: boolean
+    order?: boolean
     sideGroup?: boolean | SideGroupDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["sideOption"]>
 
@@ -15141,6 +15270,7 @@ export namespace Prisma {
     label?: boolean
     priceInCents?: boolean
     linkedItemId?: boolean
+    order?: boolean
     sideGroup?: boolean | SideGroupDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["sideOption"]>
 
@@ -15150,9 +15280,10 @@ export namespace Prisma {
     label?: boolean
     priceInCents?: boolean
     linkedItemId?: boolean
+    order?: boolean
   }
 
-  export type SideOptionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sideGroupId" | "label" | "priceInCents" | "linkedItemId", ExtArgs["result"]["sideOption"]>
+  export type SideOptionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sideGroupId" | "label" | "priceInCents" | "linkedItemId" | "order", ExtArgs["result"]["sideOption"]>
   export type SideOptionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     sideGroup?: boolean | SideGroupDefaultArgs<ExtArgs>
   }
@@ -15174,6 +15305,7 @@ export namespace Prisma {
       label: string
       priceInCents: number | null
       linkedItemId: string | null
+      order: number
     }, ExtArgs["result"]["sideOption"]>
     composites: {}
   }
@@ -15603,6 +15735,7 @@ export namespace Prisma {
     readonly label: FieldRef<"SideOption", 'String'>
     readonly priceInCents: FieldRef<"SideOption", 'Int'>
     readonly linkedItemId: FieldRef<"SideOption", 'String'>
+    readonly order: FieldRef<"SideOption", 'Int'>
   }
     
 
@@ -23405,7 +23538,12 @@ export namespace Prisma {
     id: 'id',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
-    status: 'status'
+    status: 'status',
+    uberQuoteId: 'uberQuoteId',
+    uberFeeCents: 'uberFeeCents',
+    uberDeliveryId: 'uberDeliveryId',
+    uberStatus: 'uberStatus',
+    uberTrackingUrl: 'uberTrackingUrl'
   };
 
   export type CartScalarFieldEnum = (typeof CartScalarFieldEnum)[keyof typeof CartScalarFieldEnum]
@@ -23442,6 +23580,7 @@ export namespace Prisma {
     type: 'type',
     required: 'required',
     maxSelect: 'maxSelect',
+    order: 'order',
     createdAt: 'createdAt'
   };
 
@@ -23453,7 +23592,8 @@ export namespace Prisma {
     sideGroupId: 'sideGroupId',
     label: 'label',
     priceInCents: 'priceInCents',
-    linkedItemId: 'linkedItemId'
+    linkedItemId: 'linkedItemId',
+    order: 'order'
   };
 
   export type SideOptionScalarFieldEnum = (typeof SideOptionScalarFieldEnum)[keyof typeof SideOptionScalarFieldEnum]
@@ -24214,6 +24354,11 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Cart"> | Date | string
     updatedAt?: DateTimeFilter<"Cart"> | Date | string
     status?: StringFilter<"Cart"> | string
+    uberQuoteId?: StringNullableFilter<"Cart"> | string | null
+    uberFeeCents?: IntNullableFilter<"Cart"> | number | null
+    uberDeliveryId?: StringNullableFilter<"Cart"> | string | null
+    uberStatus?: StringNullableFilter<"Cart"> | string | null
+    uberTrackingUrl?: StringNullableFilter<"Cart"> | string | null
     items?: CartItemListRelationFilter
   }
 
@@ -24222,6 +24367,11 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     status?: SortOrder
+    uberQuoteId?: SortOrderInput | SortOrder
+    uberFeeCents?: SortOrderInput | SortOrder
+    uberDeliveryId?: SortOrderInput | SortOrder
+    uberStatus?: SortOrderInput | SortOrder
+    uberTrackingUrl?: SortOrderInput | SortOrder
     items?: CartItemOrderByRelationAggregateInput
   }
 
@@ -24233,6 +24383,11 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Cart"> | Date | string
     updatedAt?: DateTimeFilter<"Cart"> | Date | string
     status?: StringFilter<"Cart"> | string
+    uberQuoteId?: StringNullableFilter<"Cart"> | string | null
+    uberFeeCents?: IntNullableFilter<"Cart"> | number | null
+    uberDeliveryId?: StringNullableFilter<"Cart"> | string | null
+    uberStatus?: StringNullableFilter<"Cart"> | string | null
+    uberTrackingUrl?: StringNullableFilter<"Cart"> | string | null
     items?: CartItemListRelationFilter
   }, "id">
 
@@ -24241,9 +24396,16 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     status?: SortOrder
+    uberQuoteId?: SortOrderInput | SortOrder
+    uberFeeCents?: SortOrderInput | SortOrder
+    uberDeliveryId?: SortOrderInput | SortOrder
+    uberStatus?: SortOrderInput | SortOrder
+    uberTrackingUrl?: SortOrderInput | SortOrder
     _count?: CartCountOrderByAggregateInput
+    _avg?: CartAvgOrderByAggregateInput
     _max?: CartMaxOrderByAggregateInput
     _min?: CartMinOrderByAggregateInput
+    _sum?: CartSumOrderByAggregateInput
   }
 
   export type CartScalarWhereWithAggregatesInput = {
@@ -24254,6 +24416,11 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Cart"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Cart"> | Date | string
     status?: StringWithAggregatesFilter<"Cart"> | string
+    uberQuoteId?: StringNullableWithAggregatesFilter<"Cart"> | string | null
+    uberFeeCents?: IntNullableWithAggregatesFilter<"Cart"> | number | null
+    uberDeliveryId?: StringNullableWithAggregatesFilter<"Cart"> | string | null
+    uberStatus?: StringNullableWithAggregatesFilter<"Cart"> | string | null
+    uberTrackingUrl?: StringNullableWithAggregatesFilter<"Cart"> | string | null
   }
 
   export type CartItemWhereInput = {
@@ -24391,6 +24558,7 @@ export namespace Prisma {
     type?: EnumSideGroupTypeFilter<"SideGroup"> | $Enums.SideGroupType
     required?: BoolFilter<"SideGroup"> | boolean
     maxSelect?: IntNullableFilter<"SideGroup"> | number | null
+    order?: IntFilter<"SideGroup"> | number
     createdAt?: DateTimeFilter<"SideGroup"> | Date | string
     item?: XOR<ItemScalarRelationFilter, ItemWhereInput>
     options?: SideOptionListRelationFilter
@@ -24403,6 +24571,7 @@ export namespace Prisma {
     type?: SortOrder
     required?: SortOrder
     maxSelect?: SortOrderInput | SortOrder
+    order?: SortOrder
     createdAt?: SortOrder
     item?: ItemOrderByWithRelationInput
     options?: SideOptionOrderByRelationAggregateInput
@@ -24418,6 +24587,7 @@ export namespace Prisma {
     type?: EnumSideGroupTypeFilter<"SideGroup"> | $Enums.SideGroupType
     required?: BoolFilter<"SideGroup"> | boolean
     maxSelect?: IntNullableFilter<"SideGroup"> | number | null
+    order?: IntFilter<"SideGroup"> | number
     createdAt?: DateTimeFilter<"SideGroup"> | Date | string
     item?: XOR<ItemScalarRelationFilter, ItemWhereInput>
     options?: SideOptionListRelationFilter
@@ -24430,6 +24600,7 @@ export namespace Prisma {
     type?: SortOrder
     required?: SortOrder
     maxSelect?: SortOrderInput | SortOrder
+    order?: SortOrder
     createdAt?: SortOrder
     _count?: SideGroupCountOrderByAggregateInput
     _avg?: SideGroupAvgOrderByAggregateInput
@@ -24448,6 +24619,7 @@ export namespace Prisma {
     type?: EnumSideGroupTypeWithAggregatesFilter<"SideGroup"> | $Enums.SideGroupType
     required?: BoolWithAggregatesFilter<"SideGroup"> | boolean
     maxSelect?: IntNullableWithAggregatesFilter<"SideGroup"> | number | null
+    order?: IntWithAggregatesFilter<"SideGroup"> | number
     createdAt?: DateTimeWithAggregatesFilter<"SideGroup"> | Date | string
   }
 
@@ -24460,6 +24632,7 @@ export namespace Prisma {
     label?: StringFilter<"SideOption"> | string
     priceInCents?: IntNullableFilter<"SideOption"> | number | null
     linkedItemId?: StringNullableFilter<"SideOption"> | string | null
+    order?: IntFilter<"SideOption"> | number
     sideGroup?: XOR<SideGroupScalarRelationFilter, SideGroupWhereInput>
   }
 
@@ -24469,6 +24642,7 @@ export namespace Prisma {
     label?: SortOrder
     priceInCents?: SortOrderInput | SortOrder
     linkedItemId?: SortOrderInput | SortOrder
+    order?: SortOrder
     sideGroup?: SideGroupOrderByWithRelationInput
   }
 
@@ -24481,6 +24655,7 @@ export namespace Prisma {
     label?: StringFilter<"SideOption"> | string
     priceInCents?: IntNullableFilter<"SideOption"> | number | null
     linkedItemId?: StringNullableFilter<"SideOption"> | string | null
+    order?: IntFilter<"SideOption"> | number
     sideGroup?: XOR<SideGroupScalarRelationFilter, SideGroupWhereInput>
   }, "id">
 
@@ -24490,6 +24665,7 @@ export namespace Prisma {
     label?: SortOrder
     priceInCents?: SortOrderInput | SortOrder
     linkedItemId?: SortOrderInput | SortOrder
+    order?: SortOrder
     _count?: SideOptionCountOrderByAggregateInput
     _avg?: SideOptionAvgOrderByAggregateInput
     _max?: SideOptionMaxOrderByAggregateInput
@@ -24506,6 +24682,7 @@ export namespace Prisma {
     label?: StringWithAggregatesFilter<"SideOption"> | string
     priceInCents?: IntNullableWithAggregatesFilter<"SideOption"> | number | null
     linkedItemId?: StringNullableWithAggregatesFilter<"SideOption"> | string | null
+    order?: IntWithAggregatesFilter<"SideOption"> | number
   }
 
   export type CartItemSideWhereInput = {
@@ -25517,6 +25694,11 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     status?: string
+    uberQuoteId?: string | null
+    uberFeeCents?: number | null
+    uberDeliveryId?: string | null
+    uberStatus?: string | null
+    uberTrackingUrl?: string | null
     items?: CartItemCreateNestedManyWithoutCartInput
   }
 
@@ -25525,6 +25707,11 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     status?: string
+    uberQuoteId?: string | null
+    uberFeeCents?: number | null
+    uberDeliveryId?: string | null
+    uberStatus?: string | null
+    uberTrackingUrl?: string | null
     items?: CartItemUncheckedCreateNestedManyWithoutCartInput
   }
 
@@ -25533,6 +25720,11 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: StringFieldUpdateOperationsInput | string
+    uberQuoteId?: NullableStringFieldUpdateOperationsInput | string | null
+    uberFeeCents?: NullableIntFieldUpdateOperationsInput | number | null
+    uberDeliveryId?: NullableStringFieldUpdateOperationsInput | string | null
+    uberStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    uberTrackingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     items?: CartItemUpdateManyWithoutCartNestedInput
   }
 
@@ -25541,6 +25733,11 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: StringFieldUpdateOperationsInput | string
+    uberQuoteId?: NullableStringFieldUpdateOperationsInput | string | null
+    uberFeeCents?: NullableIntFieldUpdateOperationsInput | number | null
+    uberDeliveryId?: NullableStringFieldUpdateOperationsInput | string | null
+    uberStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    uberTrackingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     items?: CartItemUncheckedUpdateManyWithoutCartNestedInput
   }
 
@@ -25549,6 +25746,11 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     status?: string
+    uberQuoteId?: string | null
+    uberFeeCents?: number | null
+    uberDeliveryId?: string | null
+    uberStatus?: string | null
+    uberTrackingUrl?: string | null
   }
 
   export type CartUpdateManyMutationInput = {
@@ -25556,6 +25758,11 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: StringFieldUpdateOperationsInput | string
+    uberQuoteId?: NullableStringFieldUpdateOperationsInput | string | null
+    uberFeeCents?: NullableIntFieldUpdateOperationsInput | number | null
+    uberDeliveryId?: NullableStringFieldUpdateOperationsInput | string | null
+    uberStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    uberTrackingUrl?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CartUncheckedUpdateManyInput = {
@@ -25563,6 +25770,11 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: StringFieldUpdateOperationsInput | string
+    uberQuoteId?: NullableStringFieldUpdateOperationsInput | string | null
+    uberFeeCents?: NullableIntFieldUpdateOperationsInput | number | null
+    uberDeliveryId?: NullableStringFieldUpdateOperationsInput | string | null
+    uberStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    uberTrackingUrl?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CartItemCreateInput = {
@@ -25721,6 +25933,7 @@ export namespace Prisma {
     type: $Enums.SideGroupType
     required?: boolean
     maxSelect?: number | null
+    order?: number
     createdAt?: Date | string
     item: ItemCreateNestedOneWithoutSideGroupsInput
     options?: SideOptionCreateNestedManyWithoutSideGroupInput
@@ -25733,6 +25946,7 @@ export namespace Prisma {
     type: $Enums.SideGroupType
     required?: boolean
     maxSelect?: number | null
+    order?: number
     createdAt?: Date | string
     options?: SideOptionUncheckedCreateNestedManyWithoutSideGroupInput
   }
@@ -25743,6 +25957,7 @@ export namespace Prisma {
     type?: EnumSideGroupTypeFieldUpdateOperationsInput | $Enums.SideGroupType
     required?: BoolFieldUpdateOperationsInput | boolean
     maxSelect?: NullableIntFieldUpdateOperationsInput | number | null
+    order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     item?: ItemUpdateOneRequiredWithoutSideGroupsNestedInput
     options?: SideOptionUpdateManyWithoutSideGroupNestedInput
@@ -25755,6 +25970,7 @@ export namespace Prisma {
     type?: EnumSideGroupTypeFieldUpdateOperationsInput | $Enums.SideGroupType
     required?: BoolFieldUpdateOperationsInput | boolean
     maxSelect?: NullableIntFieldUpdateOperationsInput | number | null
+    order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     options?: SideOptionUncheckedUpdateManyWithoutSideGroupNestedInput
   }
@@ -25766,6 +25982,7 @@ export namespace Prisma {
     type: $Enums.SideGroupType
     required?: boolean
     maxSelect?: number | null
+    order?: number
     createdAt?: Date | string
   }
 
@@ -25775,6 +25992,7 @@ export namespace Prisma {
     type?: EnumSideGroupTypeFieldUpdateOperationsInput | $Enums.SideGroupType
     required?: BoolFieldUpdateOperationsInput | boolean
     maxSelect?: NullableIntFieldUpdateOperationsInput | number | null
+    order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -25785,6 +26003,7 @@ export namespace Prisma {
     type?: EnumSideGroupTypeFieldUpdateOperationsInput | $Enums.SideGroupType
     required?: BoolFieldUpdateOperationsInput | boolean
     maxSelect?: NullableIntFieldUpdateOperationsInput | number | null
+    order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -25793,6 +26012,7 @@ export namespace Prisma {
     label: string
     priceInCents?: number | null
     linkedItemId?: string | null
+    order?: number
     sideGroup: SideGroupCreateNestedOneWithoutOptionsInput
   }
 
@@ -25802,6 +26022,7 @@ export namespace Prisma {
     label: string
     priceInCents?: number | null
     linkedItemId?: string | null
+    order?: number
   }
 
   export type SideOptionUpdateInput = {
@@ -25809,6 +26030,7 @@ export namespace Prisma {
     label?: StringFieldUpdateOperationsInput | string
     priceInCents?: NullableIntFieldUpdateOperationsInput | number | null
     linkedItemId?: NullableStringFieldUpdateOperationsInput | string | null
+    order?: IntFieldUpdateOperationsInput | number
     sideGroup?: SideGroupUpdateOneRequiredWithoutOptionsNestedInput
   }
 
@@ -25818,6 +26040,7 @@ export namespace Prisma {
     label?: StringFieldUpdateOperationsInput | string
     priceInCents?: NullableIntFieldUpdateOperationsInput | number | null
     linkedItemId?: NullableStringFieldUpdateOperationsInput | string | null
+    order?: IntFieldUpdateOperationsInput | number
   }
 
   export type SideOptionCreateManyInput = {
@@ -25826,6 +26049,7 @@ export namespace Prisma {
     label: string
     priceInCents?: number | null
     linkedItemId?: string | null
+    order?: number
   }
 
   export type SideOptionUpdateManyMutationInput = {
@@ -25833,6 +26057,7 @@ export namespace Prisma {
     label?: StringFieldUpdateOperationsInput | string
     priceInCents?: NullableIntFieldUpdateOperationsInput | number | null
     linkedItemId?: NullableStringFieldUpdateOperationsInput | string | null
+    order?: IntFieldUpdateOperationsInput | number
   }
 
   export type SideOptionUncheckedUpdateManyInput = {
@@ -25841,6 +26066,7 @@ export namespace Prisma {
     label?: StringFieldUpdateOperationsInput | string
     priceInCents?: NullableIntFieldUpdateOperationsInput | number | null
     linkedItemId?: NullableStringFieldUpdateOperationsInput | string | null
+    order?: IntFieldUpdateOperationsInput | number
   }
 
   export type CartItemSideCreateInput = {
@@ -26866,6 +27092,15 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     status?: SortOrder
+    uberQuoteId?: SortOrder
+    uberFeeCents?: SortOrder
+    uberDeliveryId?: SortOrder
+    uberStatus?: SortOrder
+    uberTrackingUrl?: SortOrder
+  }
+
+  export type CartAvgOrderByAggregateInput = {
+    uberFeeCents?: SortOrder
   }
 
   export type CartMaxOrderByAggregateInput = {
@@ -26873,6 +27108,11 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     status?: SortOrder
+    uberQuoteId?: SortOrder
+    uberFeeCents?: SortOrder
+    uberDeliveryId?: SortOrder
+    uberStatus?: SortOrder
+    uberTrackingUrl?: SortOrder
   }
 
   export type CartMinOrderByAggregateInput = {
@@ -26880,6 +27120,15 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     status?: SortOrder
+    uberQuoteId?: SortOrder
+    uberFeeCents?: SortOrder
+    uberDeliveryId?: SortOrder
+    uberStatus?: SortOrder
+    uberTrackingUrl?: SortOrder
+  }
+
+  export type CartSumOrderByAggregateInput = {
+    uberFeeCents?: SortOrder
   }
 
   export type FloatNullableFilter<$PrismaModel = never> = {
@@ -27025,11 +27274,13 @@ export namespace Prisma {
     type?: SortOrder
     required?: SortOrder
     maxSelect?: SortOrder
+    order?: SortOrder
     createdAt?: SortOrder
   }
 
   export type SideGroupAvgOrderByAggregateInput = {
     maxSelect?: SortOrder
+    order?: SortOrder
   }
 
   export type SideGroupMaxOrderByAggregateInput = {
@@ -27039,6 +27290,7 @@ export namespace Prisma {
     type?: SortOrder
     required?: SortOrder
     maxSelect?: SortOrder
+    order?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -27049,11 +27301,13 @@ export namespace Prisma {
     type?: SortOrder
     required?: SortOrder
     maxSelect?: SortOrder
+    order?: SortOrder
     createdAt?: SortOrder
   }
 
   export type SideGroupSumOrderByAggregateInput = {
     maxSelect?: SortOrder
+    order?: SortOrder
   }
 
   export type EnumSideGroupTypeWithAggregatesFilter<$PrismaModel = never> = {
@@ -27077,10 +27331,12 @@ export namespace Prisma {
     label?: SortOrder
     priceInCents?: SortOrder
     linkedItemId?: SortOrder
+    order?: SortOrder
   }
 
   export type SideOptionAvgOrderByAggregateInput = {
     priceInCents?: SortOrder
+    order?: SortOrder
   }
 
   export type SideOptionMaxOrderByAggregateInput = {
@@ -27089,6 +27345,7 @@ export namespace Prisma {
     label?: SortOrder
     priceInCents?: SortOrder
     linkedItemId?: SortOrder
+    order?: SortOrder
   }
 
   export type SideOptionMinOrderByAggregateInput = {
@@ -27097,10 +27354,12 @@ export namespace Prisma {
     label?: SortOrder
     priceInCents?: SortOrder
     linkedItemId?: SortOrder
+    order?: SortOrder
   }
 
   export type SideOptionSumOrderByAggregateInput = {
     priceInCents?: SortOrder
+    order?: SortOrder
   }
 
   export type CartItemScalarRelationFilter = {
@@ -28112,6 +28371,7 @@ export namespace Prisma {
     type: $Enums.SideGroupType
     required?: boolean
     maxSelect?: number | null
+    order?: number
     createdAt?: Date | string
     options?: SideOptionCreateNestedManyWithoutSideGroupInput
   }
@@ -28122,6 +28382,7 @@ export namespace Prisma {
     type: $Enums.SideGroupType
     required?: boolean
     maxSelect?: number | null
+    order?: number
     createdAt?: Date | string
     options?: SideOptionUncheckedCreateNestedManyWithoutSideGroupInput
   }
@@ -28215,6 +28476,7 @@ export namespace Prisma {
     type?: EnumSideGroupTypeFilter<"SideGroup"> | $Enums.SideGroupType
     required?: BoolFilter<"SideGroup"> | boolean
     maxSelect?: IntNullableFilter<"SideGroup"> | number | null
+    order?: IntFilter<"SideGroup"> | number
     createdAt?: DateTimeFilter<"SideGroup"> | Date | string
   }
 
@@ -28557,6 +28819,11 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     status?: string
+    uberQuoteId?: string | null
+    uberFeeCents?: number | null
+    uberDeliveryId?: string | null
+    uberStatus?: string | null
+    uberTrackingUrl?: string | null
   }
 
   export type CartUncheckedCreateWithoutItemsInput = {
@@ -28564,6 +28831,11 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     status?: string
+    uberQuoteId?: string | null
+    uberFeeCents?: number | null
+    uberDeliveryId?: string | null
+    uberStatus?: string | null
+    uberTrackingUrl?: string | null
   }
 
   export type CartCreateOrConnectWithoutItemsInput = {
@@ -28613,6 +28885,11 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: StringFieldUpdateOperationsInput | string
+    uberQuoteId?: NullableStringFieldUpdateOperationsInput | string | null
+    uberFeeCents?: NullableIntFieldUpdateOperationsInput | number | null
+    uberDeliveryId?: NullableStringFieldUpdateOperationsInput | string | null
+    uberStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    uberTrackingUrl?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CartUncheckedUpdateWithoutItemsInput = {
@@ -28620,6 +28897,11 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: StringFieldUpdateOperationsInput | string
+    uberQuoteId?: NullableStringFieldUpdateOperationsInput | string | null
+    uberFeeCents?: NullableIntFieldUpdateOperationsInput | number | null
+    uberDeliveryId?: NullableStringFieldUpdateOperationsInput | string | null
+    uberStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    uberTrackingUrl?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CartItemSideUpsertWithWhereUniqueWithoutCartItemInput = {
@@ -28692,6 +28974,7 @@ export namespace Prisma {
     label: string
     priceInCents?: number | null
     linkedItemId?: string | null
+    order?: number
   }
 
   export type SideOptionUncheckedCreateWithoutSideGroupInput = {
@@ -28699,6 +28982,7 @@ export namespace Prisma {
     label: string
     priceInCents?: number | null
     linkedItemId?: string | null
+    order?: number
   }
 
   export type SideOptionCreateOrConnectWithoutSideGroupInput = {
@@ -28779,6 +29063,7 @@ export namespace Prisma {
     label?: StringFilter<"SideOption"> | string
     priceInCents?: IntNullableFilter<"SideOption"> | number | null
     linkedItemId?: StringNullableFilter<"SideOption"> | string | null
+    order?: IntFilter<"SideOption"> | number
   }
 
   export type SideGroupCreateWithoutOptionsInput = {
@@ -28787,6 +29072,7 @@ export namespace Prisma {
     type: $Enums.SideGroupType
     required?: boolean
     maxSelect?: number | null
+    order?: number
     createdAt?: Date | string
     item: ItemCreateNestedOneWithoutSideGroupsInput
   }
@@ -28798,6 +29084,7 @@ export namespace Prisma {
     type: $Enums.SideGroupType
     required?: boolean
     maxSelect?: number | null
+    order?: number
     createdAt?: Date | string
   }
 
@@ -28823,6 +29110,7 @@ export namespace Prisma {
     type?: EnumSideGroupTypeFieldUpdateOperationsInput | $Enums.SideGroupType
     required?: BoolFieldUpdateOperationsInput | boolean
     maxSelect?: NullableIntFieldUpdateOperationsInput | number | null
+    order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     item?: ItemUpdateOneRequiredWithoutSideGroupsNestedInput
   }
@@ -28834,6 +29122,7 @@ export namespace Prisma {
     type?: EnumSideGroupTypeFieldUpdateOperationsInput | $Enums.SideGroupType
     required?: BoolFieldUpdateOperationsInput | boolean
     maxSelect?: NullableIntFieldUpdateOperationsInput | number | null
+    order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -28951,6 +29240,7 @@ export namespace Prisma {
     type: $Enums.SideGroupType
     required?: boolean
     maxSelect?: number | null
+    order?: number
     createdAt?: Date | string
   }
 
@@ -28984,6 +29274,7 @@ export namespace Prisma {
     type?: EnumSideGroupTypeFieldUpdateOperationsInput | $Enums.SideGroupType
     required?: BoolFieldUpdateOperationsInput | boolean
     maxSelect?: NullableIntFieldUpdateOperationsInput | number | null
+    order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     options?: SideOptionUpdateManyWithoutSideGroupNestedInput
   }
@@ -28994,6 +29285,7 @@ export namespace Prisma {
     type?: EnumSideGroupTypeFieldUpdateOperationsInput | $Enums.SideGroupType
     required?: BoolFieldUpdateOperationsInput | boolean
     maxSelect?: NullableIntFieldUpdateOperationsInput | number | null
+    order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     options?: SideOptionUncheckedUpdateManyWithoutSideGroupNestedInput
   }
@@ -29004,6 +29296,7 @@ export namespace Prisma {
     type?: EnumSideGroupTypeFieldUpdateOperationsInput | $Enums.SideGroupType
     required?: BoolFieldUpdateOperationsInput | boolean
     maxSelect?: NullableIntFieldUpdateOperationsInput | number | null
+    order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -29218,6 +29511,7 @@ export namespace Prisma {
     label: string
     priceInCents?: number | null
     linkedItemId?: string | null
+    order?: number
   }
 
   export type SideOptionUpdateWithoutSideGroupInput = {
@@ -29225,6 +29519,7 @@ export namespace Prisma {
     label?: StringFieldUpdateOperationsInput | string
     priceInCents?: NullableIntFieldUpdateOperationsInput | number | null
     linkedItemId?: NullableStringFieldUpdateOperationsInput | string | null
+    order?: IntFieldUpdateOperationsInput | number
   }
 
   export type SideOptionUncheckedUpdateWithoutSideGroupInput = {
@@ -29232,6 +29527,7 @@ export namespace Prisma {
     label?: StringFieldUpdateOperationsInput | string
     priceInCents?: NullableIntFieldUpdateOperationsInput | number | null
     linkedItemId?: NullableStringFieldUpdateOperationsInput | string | null
+    order?: IntFieldUpdateOperationsInput | number
   }
 
   export type SideOptionUncheckedUpdateManyWithoutSideGroupInput = {
@@ -29239,6 +29535,7 @@ export namespace Prisma {
     label?: StringFieldUpdateOperationsInput | string
     priceInCents?: NullableIntFieldUpdateOperationsInput | number | null
     linkedItemId?: NullableStringFieldUpdateOperationsInput | string | null
+    order?: IntFieldUpdateOperationsInput | number
   }
 
 
