@@ -174,6 +174,29 @@ export async function POST(req: NextRequest) {
               uberTrackingUrl: delivery.trackingUrl ?? null,
             },
           });
+
+          // Email the customer their live Uber tracking link (like the delivery
+          // apps do). The tracking page updates itself as the courier moves, so
+          // one email is enough. Best-effort — never blocks the order.
+          if (delivery.trackingUrl && email && email !== "N/A") {
+            await sendMail({
+              to: email,
+              subject: `Your ${SITE_CONFIG.name} order is on the way 🚗`,
+              html: `
+                <div style="font-family:system-ui,Segoe UI,sans-serif;font-size:15px;color:#1c1917">
+                  <h2 style="margin:0 0 12px">Your order is on the way</h2>
+                  <p>A courier is bringing your ${SITE_CONFIG.name} order to
+                     ${first.deliveryAddress ?? "your address"}.</p>
+                  <p style="margin:18px 0">
+                    <a href="${delivery.trackingUrl}"
+                       style="background:#1c1917;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:600">
+                      Track your delivery
+                    </a>
+                  </p>
+                  <p style="color:#78716c;font-size:13px">This link stays live until your order arrives.</p>
+                </div>`,
+            }).catch((e) => console.error("Customer tracking email failed:", e));
+          }
         }
       }
     } catch (e) {
