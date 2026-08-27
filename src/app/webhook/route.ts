@@ -161,7 +161,10 @@ export async function POST(req: NextRequest) {
             manifestItems: cart.items
               .filter((it) => it.name)
               .map((it) => ({ name: it.name as string, quantity: it.quantity ?? 1 })),
-            externalId: cart.id,
+            // Tag the order with this site's URL so the ONE central webhook on
+            // the builder can relay Uber's status events back to this site's
+            // /api/uber/status-callback. Format: "<cartId>|<siteUrl>".
+            externalId: `${cart.id}|${SITE_CONFIG.siteUrl}`,
           });
           await db.cart.update({
             where: { id: cart.id },
