@@ -29,9 +29,9 @@ export default function CartSideBar({ cartItems: initialItems, cartId }: { cartI
 
 
     useEffect(() => {
-        if (initialItems && initialItems.length > 0) {
-            setCartItems(initialItems);
-        }
+        // Always track the latest cart from SWR (including going back to empty),
+        // so the badge count is never stale after add / remove.
+        setCartItems(initialItems ?? []);
     }, [initialItems]);
 
 
@@ -110,7 +110,9 @@ export default function CartSideBar({ cartItems: initialItems, cartId }: { cartI
     };
 
 
-    const quantity = cartItems[0] && !cartItems[0].image ? cartItems.length -1 : cartItems.length
+    // Count only real line items (a delivery order also has a phantom
+    // address/contact row with no name/price — never count that).
+    const quantity = cartItems.filter((item) => item.name != null && item.price).length
     // item.price is the per-unit finalPrice set in schedualePickupModal (base price + sides),
     // so sides are already folded in here - no separate sides total needs to be added.
     const subtotal = cartItems.reduce((acc, item) => acc + (item.price ?? 0) * (item.quantity ?? 0), 0);
@@ -124,7 +126,7 @@ export default function CartSideBar({ cartItems: initialItems, cartId }: { cartI
         <div className='flex items-center gap justify-start'>
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
                 <SheetTrigger className={`${isMobile && 'absolute right-0 left-0 bottom-0'}`}>
-                    <div style={quantity ? { backgroundColor: "oklch(85.2% 0.199 91.936)", color: 'white' } : {}} className='flex items-center gap-2 justify-center md:border  px-4 py-2 hover:cursor-pointer rounded-xl  bg-background hover:bg-accent hover:text-accent-foreground'>
+                    <div style={quantity ? { backgroundColor: "var(--brand)", color: "var(--brand-foreground)" } : {}} className='flex items-center gap-2 justify-center md:border  px-4 py-2 hover:cursor-pointer rounded-xl  bg-background hover:bg-accent hover:text-accent-foreground'>
                         {isMobile ? (
                             <div className='flex items-center gap-3 py-1 text-foreground font-medium '>
                                 <span>View Cart</span>

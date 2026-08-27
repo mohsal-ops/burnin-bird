@@ -3,6 +3,7 @@ import db from "@/db/db";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Stripe from "stripe";
+import { finalizeCart } from "@/lib/finalizeOrder";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_placeholder");
 
@@ -15,6 +16,12 @@ export default async function Success(props: any) {
   const paymentIntent = await stripe.paymentIntents.retrieve(payment_intent);
 
   if (!paymentIntent) return notFound();
+
+  // Finalize here too (idempotent) so the order completes, counts as revenue,
+  // dispatches the courier and notifies — even if the Stripe webhook isn't set up.
+  if (paymentIntent.status === "succeeded") {
+    await finalizeCart(paymentIntent.metadata.cartId, paymentIntent.receipt_email || "N/A");
+  }
 
   const cart = await db.cart.findUnique({
     where: { id: paymentIntent.metadata.cartId },

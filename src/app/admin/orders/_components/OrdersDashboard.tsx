@@ -60,6 +60,16 @@ const STATUS_TABS = ["all", "open", "completed", "abandoned"] as const;
 
 export default function OrdersDashboard({ orders, stats }: { orders: Order[]; stats: Stats }) {
   const router = useRouter();
+
+  // Auto-refresh so new orders (and Uber status changes) appear without the
+  // owner reloading. Only polls while the tab is visible.
+  useEffect(() => {
+    const tick = () => {
+      if (document.visibilityState === "visible") router.refresh();
+    };
+    const id = setInterval(tick, 25000);
+    return () => clearInterval(id);
+  }, [router]);
   const [isPending, startTransition] = useTransition();
   const [filter, setFilter] = useState<(typeof STATUS_TABS)[number]>("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
