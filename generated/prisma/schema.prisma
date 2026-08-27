@@ -249,3 +249,35 @@ model SiteSetting {
   value     String
   updatedAt DateTime @default(now()) @updatedAt
 }
+
+// Loyalty & SMS marketing (optional add-on; gated by SiteSetting
+// "loyalty_enabled"). Consent is captured at checkout and stored verbatim +
+// versioned so it's provable later exactly what the customer agreed to.
+model LoyaltyContact {
+  id                 String    @id @default(cuid())
+  projectId          String // which client site this belongs to (this site's id)
+  phone              String
+  firstName          String?
+  birthday           DateTime?
+  subscribed         Boolean   @default(true)
+  consentTextVersion String // exact opt-in wording shown, versioned
+  consentTimestamp   DateTime  @default(now())
+  consentIp          String?
+  unsubscribedAt     DateTime?
+  createdAt          DateTime  @default(now())
+
+  @@unique([projectId, phone])
+  @@index([projectId])
+  @@index([phone])
+}
+
+model LoyaltyCampaign {
+  id             String   @id @default(cuid())
+  projectId      String
+  message        String
+  type           String // "manual_blast" | "birthday_auto"
+  recipientCount Int
+  sentAt         DateTime @default(now())
+
+  @@index([projectId])
+}

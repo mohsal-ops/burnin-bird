@@ -4,6 +4,7 @@ import { StripeCheckoutForm } from "../../_components/StripeCheckoutForm"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { deriveOrderType } from "@/lib/orderType"
+import { getLoyaltySettings } from "@/lib/loyalty"
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -60,11 +61,15 @@ export default async function Page({ params }: PageProps) {
     throw new Error("Stripe failed to create payment intent")
   }
 
+  const loyalty = await getLoyaltySettings()
+
   return (
     <StripeCheckoutForm
       priceInCents={total}
       deliveryFeeInCents={deliveryFee}
       clientSecret={paymentIntent.client_secret}
+      loyaltyEnabled={loyalty.enabled}
+      loyaltyConsentText={loyalty.consentText}
     />
   )
 }

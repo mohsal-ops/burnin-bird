@@ -319,6 +319,29 @@ exports.Prisma.SiteSettingScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.LoyaltyContactScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  phone: 'phone',
+  firstName: 'firstName',
+  birthday: 'birthday',
+  subscribed: 'subscribed',
+  consentTextVersion: 'consentTextVersion',
+  consentTimestamp: 'consentTimestamp',
+  consentIp: 'consentIp',
+  unsubscribedAt: 'unsubscribedAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.LoyaltyCampaignScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  message: 'message',
+  type: 'type',
+  recipientCount: 'recipientCount',
+  sentAt: 'sentAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -367,7 +390,9 @@ exports.Prisma.ModelName = {
   BusinessHours: 'BusinessHours',
   CateringRequest: 'CateringRequest',
   SiteImage: 'SiteImage',
-  SiteSetting: 'SiteSetting'
+  SiteSetting: 'SiteSetting',
+  LoyaltyContact: 'LoyaltyContact',
+  LoyaltyCampaign: 'LoyaltyCampaign'
 };
 
 /**
