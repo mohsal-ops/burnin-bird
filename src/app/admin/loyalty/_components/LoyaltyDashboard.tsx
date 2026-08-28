@@ -3,8 +3,11 @@
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { sendBlast, setLoyaltyEnabled, saveBirthday } from "../_actions/loyaltyActions";
-import { OPT_OUT_LINE } from "@/lib/loyalty";
 import type { LoyaltySettings } from "@/lib/loyalty";
+
+// Kept as a plain string here (NOT imported from @/lib/loyalty) so this client
+// component never pulls the server-only DB module into the browser bundle.
+const OPT_OUT_LINE = "Reply STOP to unsubscribe.";
 
 type Campaign = { id: string; message: string; type: string; recipientCount: number; sentAt: string };
 
