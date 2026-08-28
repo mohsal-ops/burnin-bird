@@ -1,7 +1,6 @@
 import "server-only";
 import db from "@/db/db";
 import { google } from "googleapis";
-import { revalidatePath } from "next/cache";
 import { sendTelegramMessage } from "@/lib/telegram";
 import { sendMail } from "@/lib/email";
 import { SITE_CONFIG } from "@/lib/siteConfig";
@@ -225,6 +224,8 @@ export async function finalizeCart(
     console.error("Order email failed (order still saved):", e);
   }
 
-  revalidatePath("/admin/orders");
+  // NOTE: no revalidatePath here — finalizeCart runs from the success PAGE (a
+  // Server Component render, where revalidatePath throws) as well as the webhook.
+  // The admin Orders view auto-refreshes on its own, so it picks this up.
   return { finalized: true };
 }
