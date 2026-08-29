@@ -1,10 +1,19 @@
 // Single source of truth for every brand-specific value on the site.
 // To onboard a new restaurant client, this is the only file that should
 // need to change (plus swapping image assets in /public).
+import { atLeast, type PackageTier } from "./packages";
+
+// Product tier this client is on. The panel patches this line per client at
+// provision time. It gates which site + admin sections show (via `minTier`
+// below and the admin nav). Defaults to PRO so the template/demo and any
+// pre-tier client that lacks this line keep the full feature set.
+const PACKAGE_TIER: PackageTier = "PRO";
 
 // Optional sections. Flip a flag to false to remove that section from the
 // navbar + footer (the new-project tool sets these per client). The route
-// still exists, it is simply not linked.
+// still exists, it is simply not linked. Tier gating (`minTier`) is layered on
+// top: a section shows only when its flag is on AND the client's tier reaches
+// it, so FEATURES acts as a per-client on/off *within* the tier's ceiling.
 const FEATURES = {
   catering: true,
   giftCard: false,
@@ -13,26 +22,30 @@ const FEATURES = {
 };
 
 type FeatureKey = keyof typeof FEATURES;
-type NavLink = { label: string; href: string; feature?: FeatureKey };
+type NavLink = { label: string; href: string; feature?: FeatureKey; minTier?: PackageTier };
 
 const ALL_NAV_LINKS: NavLink[] = [
   { label: "Home", href: "/" },
   { label: "Menu", href: "/Menu" },
-  { label: "Catering", href: "/catering", feature: "catering" },
-  { label: "Gift Card", href: "/GiftCard", feature: "giftCard" },
-  { label: "Rewards", href: "/rewards", feature: "rewards" },
-  { label: "Press", href: "/Blog", feature: "blog" },
+  { label: "Catering", href: "/catering", feature: "catering", minTier: "STANDARD" },
+  { label: "Gift Card", href: "/GiftCard", feature: "giftCard", minTier: "STANDARD" },
+  { label: "Rewards", href: "/rewards", feature: "rewards", minTier: "PRO" },
+  { label: "Kids Zone", href: "/KidsZone", minTier: "PRO" },
+  { label: "Press", href: "/Blog", feature: "blog", minTier: "STANDARD" },
   { label: "Our Story", href: "/story" },
 ];
 
 const ALL_FOOTER_LINKS: NavLink[] = [
   { label: "Menu", href: "/Menu" },
-  { label: "Catering", href: "/catering", feature: "catering" },
-  { label: "Gift Cards", href: "/GiftCard", feature: "giftCard" },
+  { label: "Catering", href: "/catering", feature: "catering", minTier: "STANDARD" },
+  { label: "Gift Cards", href: "/GiftCard", feature: "giftCard", minTier: "STANDARD" },
   { label: "Terms", href: "/terms" },
 ];
 
-const enabled = (l: NavLink) => !l.feature || FEATURES[l.feature];
+// A link shows when its feature flag is on (or it has none) AND the client's
+// tier reaches its minTier (or it has none).
+const enabled = (l: NavLink) =>
+  (!l.feature || FEATURES[l.feature]) && (!l.minTier || atLeast(PACKAGE_TIER, l.minTier));
 const pickLink = ({ label, href }: NavLink) => ({ label, href });
 
 export const SITE_CONFIG = {
@@ -111,8 +124,8 @@ export const SITE_CONFIG = {
   // formula, override per client with real numbers when known).
   outreach: {
     enabled: true,
-    fullPrice: 2600,
-    discountedPrice: 399,
+    // Prices are NOT set here — they come from the single product-ladder source
+    // (src/lib/packages.ts, via getOutreach defaults): Pro anchor → Standard offer.
     discountReason: "review",
     trialLengthDays: 14,
     calendlyUrl: "https://calendly.com/popdeveloper54/10-minute-meet",
@@ -190,7 +203,10 @@ export const SITE_CONFIG = {
   // Which optional sections are enabled (see FEATURES above)
   features: FEATURES,
 
-  // Navbar links (derived from FEATURES)
+  // Product tier — gates site + admin sections (see PACKAGE_TIER above).
+  packageTier: PACKAGE_TIER,
+
+  // Navbar links (derived from FEATURES + tier)
   navLinks: ALL_NAV_LINKS.filter(enabled).map(pickLink),
 
   // Footer

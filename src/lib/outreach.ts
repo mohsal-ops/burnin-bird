@@ -4,6 +4,7 @@
 // feature OFF (enabled defaults to false). Shared by the popup and the preview
 // dashboard so prices/math never drift between them.
 import { SITE_CONFIG } from "@/lib/siteConfig";
+import { PACKAGES } from "@/lib/packages";
 
 export type OutreachConfig = {
   enabled: boolean;
@@ -28,8 +29,10 @@ export type OutreachConfig = {
 
 const DEFAULTS: OutreachConfig = {
   enabled: false,
-  fullPrice: 2600,
-  discountedPrice: 1200,
+  // Prices come from the one product-ladder source (src/lib/packages.ts), never
+  // hardcoded here: anchor at the full Pro build, offer at the Standard price.
+  fullPrice: PACKAGES.PRO.price,
+  discountedPrice: PACKAGES.STANDARD.price,
   discountReason: "review",
   trialLengthDays: 14,
   calendlyUrl: "https://calendly.com/popdeveloper54/10-minute-meet",

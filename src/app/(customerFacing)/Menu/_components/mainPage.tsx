@@ -2,6 +2,7 @@
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import { FaLocationPin } from "react-icons/fa6";
 import { SITE_CONFIG } from "@/lib/siteConfig";
+import { atLeast, tierOf } from "@/lib/packages";
 import { PiMagnifyingGlass } from "react-icons/pi";
 import { Button } from "@/components/ui/button";
 import { AllDishesSuspense, PopularDishesSuspense } from "./ProductSuspense";
@@ -48,6 +49,10 @@ export default function MainPageMenu({
   hours,
 }: PropsTypes) {
   const [filtered, setfiltered] = useState<ItemWithSides[] | undefined>();
+  // Delivery is a Standard+ tier capability; Starter sites are pickup-only.
+  // tierOf() defaults a tier-less (pre-tiers) siteConfig to PRO, so existing
+  // clients that get new template code but keep their old siteConfig keep delivery.
+  const deliveryAllowed = atLeast(tierOf(SITE_CONFIG), "STANDARD");
   // Default to pickup so ordering works out of the box; the toggle can switch to delivery.
   const [choice, setChoice] = useState<"delivery" | "pickup" | null>("pickup");
   const [query, setQuery] = useState("");
@@ -243,6 +248,8 @@ export default function MainPageMenu({
         </div>
         <div id="PickupOrDelivery" className="text-sm flex p-1">
           <div className="flex flex-col sm:flex-row w-full sm:w-1/2  gap-4 font-semibold text-muted-foreground">
+            {/* Pickup/Delivery toggle — only on Standard+ tiers. Starter is pickup-only. */}
+            {deliveryAllowed && (
             <div className="bg-muted w-full shadow-sm sm:w-1/2 flex h-11 rounded-3xl overflow-hidden">
               <label className="cursor-pointer w-1/2 relative">
                 <input
@@ -271,6 +278,7 @@ export default function MainPageMenu({
                 </div>
               </label>
             </div>
+            )}
             <Button
               variant="outline"
               onClick={() => setOpen(true)}

@@ -17,10 +17,18 @@ const STATIC_ROUTES: { path: string; priority: number; changeFrequency: Metadata
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const posts = await db.post.findMany({
-    select: { id: true, createdAt: true },
-    orderBy: { createdAt: "desc" },
-  });
+  // Never let the sitemap's DB read fail a production build (e.g. a fresh DB
+  // that hasn't been migrated yet, or a transient DB outage). Fall back to the
+  // static routes and log — the sitemap regenerates on the next build/request.
+  let posts: { id: string; createdAt: Date }[] = [];
+  try {
+    posts = await db.post.findMany({
+      select: { id: true, createdAt: true },
+      orderBy: { createdAt: "desc" },
+    });
+  } catch (e) {
+    console.error("sitemap: skipping blog posts (DB unavailable):", e);
+  }
 
   const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.map((route) => ({
     url: `${BASE_URL}${route.path}`,

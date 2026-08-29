@@ -32,6 +32,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/siteConfig";
+import { atLeast, tierOf, type PackageTier } from "@/lib/packages";
 
 // ── "New" badges in the sidebar ───────────────────────────────────────────
 // Shows a small "New" pill next to recently-added tabs so the owner notices
@@ -54,6 +55,10 @@ type NavItem = {
   label: string;
   icon: LucideIcon;
   badgeKey?: "catering";
+  // Lowest tier that gets this admin section. Omitted = all tiers (Starter+).
+  // Loyalty has no minTier: it's an independent paid add-on available on every
+  // tier, not a tier feature.
+  minTier?: PackageTier;
 };
 
 type NavGroup = { label: string; items: NavItem[] };
@@ -66,14 +71,14 @@ const NAV_GROUPS: NavGroup[] = [
     label: "Overview",
     items: [
       { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-      { href: "/admin/analytics", label: "Analytics", icon: ChartArea },
+      { href: "/admin/analytics", label: "Analytics", icon: ChartArea, minTier: "PRO" },
     ],
   },
   {
     label: "Operations",
     items: [
       { href: "/admin/orders", label: "Sales", icon: ShoppingBag },
-      { href: "/admin/catering", label: "Catering", icon: Mail, badgeKey: "catering" },
+      { href: "/admin/catering", label: "Catering", icon: Mail, badgeKey: "catering", minTier: "STANDARD" },
       { href: "/admin/hours", label: "Hours", icon: Clock },
     ],
   },
@@ -87,24 +92,32 @@ const NAV_GROUPS: NavGroup[] = [
   {
     label: "Website",
     items: [
-      { href: "/admin/story", label: "Our Story", icon: Newspaper },
-      { href: "/admin/Blog", label: "Blog", icon: BookOpen },
-      { href: "/admin/content", label: "Content", icon: FileText },
-      { href: "/admin/media", label: "Media", icon: Images },
-      { href: "/admin/reviews", label: "Reviews", icon: Star },
+      { href: "/admin/story", label: "Our Story", icon: Newspaper, minTier: "STANDARD" },
+      { href: "/admin/Blog", label: "Blog", icon: BookOpen, minTier: "STANDARD" },
+      { href: "/admin/content", label: "Content", icon: FileText, minTier: "STANDARD" },
+      { href: "/admin/media", label: "Media", icon: Images, minTier: "STANDARD" },
+      { href: "/admin/reviews", label: "Reviews", icon: Star, minTier: "STANDARD" },
     ],
   },
   {
     label: "Settings",
     items: [
-      { href: "/admin/branding", label: "Branding", icon: Palette },
-      { href: "/admin/delivery", label: "Delivery", icon: Truck },
+      { href: "/admin/branding", label: "Branding", icon: Palette, minTier: "STANDARD" },
+      { href: "/admin/delivery", label: "Delivery", icon: Truck, minTier: "STANDARD" },
       { href: "/admin/loyalty", label: "Loyalty", icon: Gift },
-      { href: "/admin/places", label: "Places", icon: MapPin },
-      { href: "/admin/team", label: "Team", icon: ShieldCheck },
+      { href: "/admin/places", label: "Places", icon: MapPin, minTier: "PRO" },
+      { href: "/admin/team", label: "Team", icon: ShieldCheck, minTier: "PRO" },
     ],
   },
 ];
+
+// Hide sections above the client's tier, then drop any group left empty.
+// tierOf() defaults a tier-less (pre-tiers) siteConfig to PRO — never strips a live site.
+const SITE_TIER = tierOf(SITE_CONFIG);
+const VISIBLE_NAV_GROUPS: NavGroup[] = NAV_GROUPS.map((g) => ({
+  ...g,
+  items: g.items.filter((it) => !it.minTier || atLeast(SITE_TIER, it.minTier)),
+})).filter((g) => g.items.length > 0);
 
 function isItemActive(href: string, pathname: string) {
   return href === "/admin" ? pathname === "/admin" : pathname.startsWith(href);
@@ -203,7 +216,7 @@ function SidebarBody({
   return (
     <>
       <nav className="flex-1 space-y-6 overflow-y-auto px-3 py-4">
-        {NAV_GROUPS.map((group) => (
+        {VISIBLE_NAV_GROUPS.map((group) => (
           <div key={group.label}>
             <p className="mb-1.5 px-3 text-[10px] font-semibold uppercase tracking-wider text-stone-500">
               {group.label}
