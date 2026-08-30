@@ -10,7 +10,7 @@ import { X } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { getOutreach, formatUsd, savingsBreakdown } from "@/lib/outreach";
 import { isTrialDismissed, markTrialDismissed, markTrialSeen } from "@/lib/trialPopupSession";
-import PreviewInterestCheckbox from "@/app/admin/_components/PreviewInterestCheckbox";
+import PreviewPackPicker from "@/app/admin/_components/PreviewPackPicker";
 
 const SHOW_AFTER_MS = 7000;
 
@@ -103,7 +103,7 @@ export default function TrialPopup() {
             See your dashboard →
           </a>
 
-          <PreviewInterestCheckbox variant="inlineSoft" />
+          <PreviewPackPicker />
         </div>
       </div>
     </div>
