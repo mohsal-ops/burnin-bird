@@ -23,8 +23,9 @@ async function sendSignal(
   key: string,
   siteUrl: string,
   interested: boolean,
+  source: "website" | "dashboard",
 ) {
-  const body = JSON.stringify({ key, siteUrl, interested });
+  const body = JSON.stringify({ key, siteUrl, interested, source });
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
       await fetch(endpoint, {
@@ -41,10 +42,29 @@ async function sendSignal(
   }
 }
 
+// Best-effort email alert to me on a "yes" (same-origin route -> SMTP). Fire and
+// forget; a hiccup must never surface to the lead. Only sent when checking on.
+async function notifyEmail(source: "website" | "dashboard") {
+  try {
+    await fetch("/api/interest-alert", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ source }),
+      keepalive: true,
+    });
+  } catch {
+    /* ignore */
+  }
+}
+
 export default function PreviewInterestCheckbox({
   variant = "inline",
+  source = "dashboard",
 }: {
   variant?: "inline" | "inlineSoft" | "bubble";
+  // Which view this checkbox lives in: the site's trial popup ("website") or the
+  // read-only preview dashboard ("dashboard"). Recorded with the signal + email.
+  source?: "website" | "dashboard";
 }) {
   const o = getOutreach();
   const [checked, setChecked] = useState(false);
@@ -69,7 +89,8 @@ export default function PreviewInterestCheckbox({
     } catch {
       /* ignore */
     }
-    sendSignal(o.signalEndpoint, o.signalKey, SITE_CONFIG.siteUrl, next);
+    sendSignal(o.signalEndpoint, o.signalKey, SITE_CONFIG.siteUrl, next, source);
+    if (next) notifyEmail(source); // email me on "yes", not on undo
   };
 
   const keyframes = (
@@ -109,7 +130,7 @@ export default function PreviewInterestCheckbox({
           )}
         </span>
         <span className="text-sm font-medium leading-snug text-stone-700 dark:text-foreground">
-          Yes, I want this live for my restaurant
+          Yes, let&apos;s talk about getting this live
         </span>
       </label>
 
@@ -150,7 +171,7 @@ export default function PreviewInterestCheckbox({
   // Inline variant: full-weight orange dashboard CTA, whole-card clickable.
   const label = checked
     ? "Got it! I'll reach out on Instagram shortly."
-    : "Yes, I want this live for my restaurant";
+    : "Yes, let's talk about getting this live";
   const subline = checked
     ? "Consider it done - no call, no forms. (Tap to undo.)"
     : "One tap - I'll take it from here, no call needed.";

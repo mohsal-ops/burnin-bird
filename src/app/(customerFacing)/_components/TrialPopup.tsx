@@ -1,16 +1,16 @@
 "use client";
 
-// Trial pitch popup shown ~5s after the customer site loads. Honest by design:
-// no countdown, no fake spot-counter, no expiry/takedown copy. Shows both the
-// real value and the discounted price, an honest reason for the discount, and
-// real scarcity (I take on a handful at a time). Primary CTA opens the read-only
-// dashboard preview; a low-friction secondary option signals interest in one click.
+// Trial pitch popup shown ~7s after the customer site loads. Honest by design:
+// no countdown, no fake spot-counter, no expiry/takedown copy, no pricing. It's
+// built specifically for the restaurant, real scarcity (I take on a handful at a
+// time). Primary CTA opens the read-only dashboard preview; a single low-friction
+// interest checkbox is the next step - a signal I follow up on personally.
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/siteConfig";
-import { getOutreach, formatUsd, savingsBreakdown } from "@/lib/outreach";
+import { getOutreach } from "@/lib/outreach";
 import { isTrialDismissed, markTrialDismissed, markTrialSeen } from "@/lib/trialPopupSession";
-import PreviewPackPicker from "@/app/admin/_components/PreviewPackPicker";
+import PreviewInterestCheckbox from "@/app/admin/_components/PreviewInterestCheckbox";
 
 const SHOW_AFTER_MS = 7000;
 
@@ -35,8 +35,6 @@ export default function TrialPopup() {
     setOpen(false);
     markTrialDismissed();
   };
-
-  const { annualSavings } = savingsBreakdown();
 
   return (
     <div
@@ -74,22 +72,6 @@ export default function TrialPopup() {
             few real restaurants&apos; hands than charge full price.
           </p>
 
-          {/* Both prices - real value vs. the offer */}
-          <div className="mt-5 flex items-baseline gap-3 rounded-2xl bg-muted px-4 py-3">
-            <span className="text-sm text-muted-foreground line-through">
-              {formatUsd(o.fullPrice)}
-            </span>
-            <span className="text-2xl font-extrabold text-foreground">
-              {formatUsd(o.discountedPrice)}
-            </span>
-            <span className="text-xs text-muted-foreground">one-time</span>
-          </div>
-          <p className="mt-2 text-xs text-muted-foreground">
-            Less than a single year of what a typical Toast/Square setup runs
-            ($150–500/month). It could save you around {formatUsd(annualSavings)} a
-            year vs. paying delivery-app commissions.
-          </p>
-
           {/* Real scarcity, no fake counter */}
           <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
             I build and manage each of these personally, so I only take on a handful
@@ -103,7 +85,7 @@ export default function TrialPopup() {
             See your dashboard →
           </a>
 
-          <PreviewPackPicker />
+          <PreviewInterestCheckbox variant="inlineSoft" source="website" />
         </div>
       </div>
     </div>
