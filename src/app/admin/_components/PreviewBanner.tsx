@@ -14,11 +14,11 @@ export default function PreviewBanner() {
       <span className="text-white/70">
         Everything works; saving is locked until you go live.
       </span>
-      <span className="text-white/90">
+      {/* <span className="text-white/90">
         Full setup{" "}
         <span className="font-semibold">{formatUsd(o.discountedPrice)}</span>{" "}
         <span className="text-white/50 line-through">{formatUsd(o.fullPrice)}</span>
-      </span>
+      </span> */}
     </div>
   );
 }
