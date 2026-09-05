@@ -4,15 +4,20 @@ import { SITE_CONFIG } from "@/lib/siteConfig";
 import { getOutreach } from "@/lib/outreach";
 import { getClientIp, isRateLimited } from "@/lib/rateLimit";
 
-// Emails me the moment a prospect checks "Yes, let's talk about getting this
-// live" in the trial popup (website) or the read-only preview dashboard. This is
-// a signal I act on personally - no auto-checkout, no auto-messaging - and it's
-// paired with the CRM interest flag written by POST /api/interest on the builder.
-// Reuses the same mailer + recipient as the visit alert (OWNER_ALERT_EMAIL).
+// Emails the AGENCY the moment a prospect checks "Yes, let's talk about getting
+// this live" in the trial popup (website) or the read-only preview dashboard. A
+// signal I act on personally - no auto-checkout, no auto-messaging - paired with
+// the CRM interest flag written by POST /api/interest on the builder (which also
+// sends its own copy, so this is a belt-and-suspenders second path). Always goes
+// to AGENCY_ALERT_EMAIL, never the client's OWNER_ALERT_EMAIL.
 export const runtime = "nodejs";
 
+// Agency inbox — see the note in visit-alert/route.ts. Literal is the guaranteed
+// fallback so interest signals reach us even without the env var backfilled.
+const AGENCY_ALERT_EMAIL = process.env.AGENCY_ALERT_EMAIL || "bensa0016@gmail.com";
+
 export async function POST(req: NextRequest) {
-  const to = process.env.OWNER_ALERT_EMAIL || process.env.SMTP_USER;
+  const to = AGENCY_ALERT_EMAIL;
   if (!to) return NextResponse.json({ ok: true }); // no mail configured -> no-op
 
   const o = getOutreach();
