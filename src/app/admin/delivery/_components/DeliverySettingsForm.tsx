@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { saveUberDirect } from "../_actions/deliveryActions";
 import type { UberDirectMode, UberDirectSettings } from "@/lib/siteSettings";
 import { Truck, Check } from "lucide-react";
@@ -51,22 +52,12 @@ export function DeliverySettingsForm({ initial }: { initial: UberDirectSettings 
               </p>
             </div>
           </div>
-          <button
-            type="button"
-            role="switch"
-            aria-checked={enabled}
+          <Switch
+            checked={enabled}
+            onCheckedChange={toggle}
             aria-label="Offer delivery"
-            onClick={toggle}
-            className={`relative mt-1 h-6 w-11 shrink-0 rounded-full transition-colors ${
-              enabled ? "bg-[#c85a1e]" : "bg-stone-300"
-            }`}
-          >
-            <span
-              className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
-                enabled ? "translate-x-[22px]" : "translate-x-0.5"
-              }`}
-            />
-          </button>
+            className="mt-1 data-[state=checked]:bg-[#c85a1e] data-[state=unchecked]:bg-stone-300"
+          />
         </div>
       </div>
 
@@ -109,7 +100,7 @@ export function DeliverySettingsForm({ initial }: { initial: UberDirectSettings 
         </div>
       </div>
 
-      <Button onClick={save} disabled={pending} variant="mainButton">
+      <Button onClick={save} disabled={pending} variant="mainButton" size="md">
         {pending ? "Saving…" : "Save changes"}
       </Button>
     </div>

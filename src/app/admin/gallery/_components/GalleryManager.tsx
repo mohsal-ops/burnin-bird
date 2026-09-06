@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { GripVertical, Trash2, Upload } from "lucide-react";
+import { GripVertical, Trash2, Upload, Loader2, ImageIcon, AlertTriangle } from "lucide-react";
 import {
   addGalleryImage,
   deleteGalleryImage,
@@ -20,6 +20,17 @@ type GalleryImage = {
   alt: string;
   order: number;
 };
+
+// Server actions accept up to 10mb per request (next.config.ts). Selecting
+// several large photos at once quietly blows past that and the upload throws,
+// which used to look like the whole page "breaking". Keep a little headroom.
+const MAX_UPLOAD_BYTES = 9 * 1024 * 1024;
+
+function formatBytes(bytes: number) {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
 
 export default function GalleryManager({
   images: initialImages,
@@ -38,16 +49,39 @@ export default function GalleryManager({
   });
   const formRef = useRef<HTMLFormElement>(null);
 
+  // Track the chosen files so we can show a live summary + block oversized
+  // batches BEFORE they hit the server (where they'd fail hard).
+  const [selected, setSelected] = useState<File[]>([]);
+  const totalBytes = selected.reduce((sum, f) => sum + f.size, 0);
+  const tooBig = totalBytes > MAX_UPLOAD_BYTES;
+
   useEffect(() => {
     if (state?.message) {
       toast.success(state.message);
       formRef.current?.reset();
+      setSelected([]);
       router.refresh();
     } else if (state && "error" in state && state.error) {
       toast.error(state.error);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
+
+  function handleFilesChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setSelected(e.target.files ? Array.from(e.target.files) : []);
+  }
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    if (selected.length === 0) return; // native `required` will prompt
+    if (tooBig) {
+      e.preventDefault();
+      toast.error(
+        `That's ${formatBytes(totalBytes)} in one go — please upload under ${formatBytes(
+          MAX_UPLOAD_BYTES
+        )} at a time (fewer or smaller photos).`
+      );
+    }
+  }
 
   async function handleDelete(id: string, alt: string) {
     if (!confirm(`Remove "${alt || "this image"}" from the gallery?`)) return;
@@ -109,7 +143,8 @@ export default function GalleryManager({
       <form
         ref={formRef}
         action={formAction}
-        className="bg-white rounded-2xl border border-stone-200 shadow-sm p-6 space-y-4"
+        onSubmit={handleSubmit}
+        className="relative bg-white rounded-2xl border border-stone-200 shadow-sm p-6 space-y-4"
       >
         <h2 className="text-sm font-bold uppercase tracking-widest text-stone-400">
           Add a photo
@@ -117,19 +152,73 @@ export default function GalleryManager({
         <div className="flex flex-col sm:flex-row gap-3 items-start">
           <div className="flex-1 space-y-2 w-full">
             <Label htmlFor="gallery-image">Image file(s)</Label>
-            <Input id="gallery-image" name="image" type="file" accept="image/*" multiple required />
-            <p className="text-xs text-stone-400">You can select multiple images at once.</p>
+            <Input
+              id="gallery-image"
+              name="image"
+              type="file"
+              accept="image/*"
+              multiple
+              required
+              disabled={isUploading}
+              onChange={handleFilesChange}
+            />
+            <p className="text-xs text-stone-400">
+              You can select multiple images at once — up to {formatBytes(MAX_UPLOAD_BYTES)} per upload.
+            </p>
           </div>
           <div className="flex-1 space-y-2 w-full">
             <Label htmlFor="gallery-alt">Alt text (optional - applied to all)</Label>
-            <Input id="gallery-alt" name="alt" placeholder="Homemade comfort food" />
+            <Input id="gallery-alt" name="alt" placeholder="Homemade comfort food" disabled={isUploading} />
           </div>
         </div>
-        <Button type="submit" disabled={isUploading} className="gap-2">
+
+        {/* Live selection summary + oversize guard */}
+        {selected.length > 0 && (
+          <div
+            className={[
+              "flex items-center gap-2 rounded-xl border px-3 py-2 text-sm",
+              tooBig
+                ? "border-red-200 bg-red-50 text-red-600"
+                : "border-stone-200 bg-stone-50 text-stone-600",
+            ].join(" ")}
+          >
+            {tooBig ? <AlertTriangle size={16} /> : <ImageIcon size={16} />}
+            <span>
+              {selected.length} photo{selected.length !== 1 ? "s" : ""} selected ·{" "}
+              <span className="font-medium">{formatBytes(totalBytes)}</span>
+            </span>
+            {tooBig && (
+              <span className="ml-auto text-xs font-medium">
+                Too large — upload fewer or smaller photos.
+              </span>
+            )}
+          </div>
+        )}
+
+        <Button type="submit" variant="mainButton" size="md" disabled={isUploading || tooBig} className="gap-2">
           <Upload size={16} />
           {isUploading ? "Uploading..." : "Add to gallery"}
         </Button>
         {state?.error && <p className="text-sm text-red-500">{state.error}</p>}
+
+        {/* Upload overlay — keeps the user informed while large photos transfer */}
+        {isUploading && (
+          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 rounded-2xl bg-white/85 backdrop-blur-sm">
+            <Loader2 size={32} className="animate-spin text-[#c85a1e]" />
+            <div className="text-center">
+              <p className="font-semibold text-stone-800">
+                Uploading {selected.length > 0 ? `${selected.length} ` : ""}photo
+                {selected.length !== 1 ? "s" : ""}…
+              </p>
+              <p className="mt-0.5 text-sm text-stone-500">
+                Large images can take a moment. Please keep this tab open — don&apos;t refresh.
+              </p>
+            </div>
+            <div className="h-1.5 w-48 overflow-hidden rounded-full bg-stone-200">
+              <div className="h-full w-1/3 animate-[gallery-loading_1.1s_ease-in-out_infinite] rounded-full bg-[#c85a1e]" />
+            </div>
+          </div>
+        )}
       </form>
 
       <div>

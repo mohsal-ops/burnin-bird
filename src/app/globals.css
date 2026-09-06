@@ -306,6 +306,12 @@ html body[data-scroll-locked] {
   to { height: 0; }
 }
 
+/* Indeterminate progress sweep for the gallery upload overlay */
+@keyframes gallery-loading {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(400%); }
+}
+
 /* ================================
    Accessibility
 ================================ */

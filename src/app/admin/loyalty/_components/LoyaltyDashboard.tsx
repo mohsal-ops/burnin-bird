@@ -101,7 +101,7 @@ export function LoyaltyDashboard({
             </div>
           )}
           <div className="mt-3 flex items-center gap-3">
-            <Button variant="mainButton" disabled={pending || !msg.trim() || subscribed === 0} onClick={doBlast}>
+            <Button variant="mainButton" size="md" disabled={pending || !msg.trim() || subscribed === 0} onClick={doBlast}>
               {pending ? "Sending…" : `Send to ${subscribed}`}
             </Button>
             {blastResult && <span className="text-sm text-muted-foreground">{blastResult}</span>}
@@ -127,7 +127,7 @@ export function LoyaltyDashboard({
             Turn on birthday automation
           </label>
           <div className="mt-3 flex items-center gap-3">
-            <Button variant="outline" disabled={pending} onClick={doSaveBirthday}>Save birthday settings</Button>
+            <Button variant="mainButton" size="md" disabled={pending} onClick={doSaveBirthday}>Save birthday settings</Button>
             {bResult && <span className="text-sm text-muted-foreground">{bResult}</span>}
           </div>
         </div>
