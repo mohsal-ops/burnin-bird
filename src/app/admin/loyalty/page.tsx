@@ -36,7 +36,7 @@ export default async function LoyaltyPage() {
 
   return (
     <div className="mx-auto max-w-3xl p-6">
-      <h1 className="text-2xl font-bold text-foreground">Loyalty & text marketing</h1>
+      <h1 className="text-2xl font-bold text-stone-800">Loyalty & text marketing</h1>
       <LoyaltyDashboard
         settings={settings}
         subscribed={subscribed}
