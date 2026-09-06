@@ -179,6 +179,11 @@ html body[data-scroll-locked] {
    the inherited `.dark` values) keeps the whole dashboard light regardless. */
 .admin-shell {
   color-scheme: light;
+  /* `body` resolves `color: hsl(var(--foreground))` once and it inherits down;
+     re-declaring the variable here isn't enough for elements that rely on the
+     inherited color (e.g. inputs with no text-color class), so re-resolve the
+     color property on this subtree too. */
+  color: hsl(222.2 47.4% 11.2%);
   --background: 0 0% 100%;
   --foreground: 222.2 47.4% 11.2%;
   --card: 0 0% 100%;
