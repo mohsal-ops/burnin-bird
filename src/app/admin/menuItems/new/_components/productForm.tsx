@@ -37,6 +37,8 @@ export default function ProductForm({
   const [price, setPrice] = useState<string>(item ? (item.priceInCents / 100).toFixed(2) : "");
   const [isCaterable, setIsCaterable] = useState<boolean>(item?.isCaterable ?? false);
   const [preview, setPreview] = useState<string | null>(item?.image || null);
+  const [removeImage, setRemoveImage] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
   const hiddenCategoryRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -115,18 +117,41 @@ export default function ProductForm({
                   <ImageIcon className="text-stone-300" />
                 )}
               </div>
-              <Input
-                type="file"
-                id="image"
-                name="image"
-                accept="image/*"
-                className="max-w-xs"
-                onChange={(e) => {
-                  const f = e.target.files?.[0];
-                  setPreview(f ? URL.createObjectURL(f) : item?.image || null);
-                }}
-              />
+              <div className="space-y-2">
+                <Input
+                  type="file"
+                  id="image"
+                  name="image"
+                  ref={fileRef}
+                  accept="image/*"
+                  className="max-w-xs"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) {
+                      setRemoveImage(false);
+                      setPreview(URL.createObjectURL(f));
+                    } else {
+                      setPreview(removeImage ? null : item?.image || null);
+                    }
+                  }}
+                />
+                {preview && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPreview(null);
+                      setRemoveImage(true);
+                      if (fileRef.current) fileRef.current.value = "";
+                    }}
+                    className="text-sm font-medium text-red-600 hover:underline"
+                  >
+                    Remove photo
+                  </button>
+                )}
+              </div>
             </div>
+            {/* Tells the server to clear the saved photo (leave it empty). */}
+            <input type="hidden" name="removeImage" value={removeImage ? "true" : ""} />
           </div>
 
           <div className="space-y-1.5">

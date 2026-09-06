@@ -67,6 +67,32 @@ export async function updateLogo(formData: FormData) {
   }
 }
 
+export async function removeLogo() {
+  await assertWritable();
+  try {
+    const existing = await db.siteSetting.findUnique({ where: { key: "logo_url" } });
+    // Best-effort: delete the stored blob so it doesn't linger.
+    if (existing?.value?.startsWith("https://")) {
+      try {
+        const { del } = await import("@vercel/blob");
+        await del(existing.value);
+      } catch {
+        /* ignore — clearing the setting is what matters */
+      }
+    }
+    await db.siteSetting.upsert({
+      where: { key: "logo_url" },
+      update: { value: "" },
+      create: { key: "logo_url", value: "" },
+    });
+    revalidatePath("/", "layout");
+    return { ok: true };
+  } catch (error) {
+    console.error("removeLogo error:", error);
+    return { error: "Couldn't remove the logo. Try again." };
+  }
+}
+
 export async function updateHomeText(headline: string, subheadline: string) {
   await assertWritable();
   try {

@@ -5,7 +5,6 @@ import PreviewBanner from "./_components/PreviewBanner";
 import PreviewCallCta from "./_components/PreviewCallCta";
 import { getAccess } from "@/lib/getAccess";
 import { getLogoUrl } from "@/lib/siteSettings";
-import { ThemeProvider } from "../providers/ThemeProvider";
 import db from "@/db/db";
 
 export const dynamic = "force-dynamic";
@@ -28,23 +27,22 @@ export default async function Adminlayout({
   }
 
   return (
-    // The admin dashboard is intentionally locked to light mode: the public
-    // dark theme is scoped to the customer-facing site, so forcing light here
-    // keeps un-audited admin screens from following a dark OS/system setting.
-    <ThemeProvider forcedTheme="light">
-      <div className="min-h-screen bg-stone-50">
-        {access.mode === "preview" && <PreviewBanner />}
-        <div className="md:flex">
-          {/* One-time branded splash on a fresh admin load. */}
-          <LoadingScreen />
-          <AdminNav newCateringCount={newCateringCount} logoUrl={logoUrl} />
-          <main id="main-content" className="min-w-0 flex-1 overflow-auto">
-            {children}
-          </main>
-          <Toaster expand richColors closeButton duration={6000} />
-        </div>
-        {access.mode === "preview" && <PreviewCallCta />}
+    // The admin dashboard is ALWAYS light — the public dark theme is scoped to
+    // the customer site only. `.admin-shell` (globals.css) re-declares the light
+    // design tokens for this subtree, so admin stays light even when <html> has
+    // the `dark` class set by the website's theme toggle.
+    <div className="admin-shell min-h-screen bg-stone-50">
+      {access.mode === "preview" && <PreviewBanner />}
+      <div className="md:flex">
+        {/* One-time branded splash on a fresh admin load. */}
+        <LoadingScreen />
+        <AdminNav newCateringCount={newCateringCount} logoUrl={logoUrl} />
+        <main id="main-content" className="min-w-0 flex-1 overflow-auto">
+          {children}
+        </main>
+        <Toaster expand richColors closeButton duration={6000} />
       </div>
-    </ThemeProvider>
+      {access.mode === "preview" && <PreviewCallCta />}
+    </div>
   );
 }

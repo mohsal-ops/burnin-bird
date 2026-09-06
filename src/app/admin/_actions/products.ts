@@ -174,6 +174,7 @@ export async function updateProduct(
   let image = item.image;
   const file = data.image;
   const isValidImage = file && file.size > 0 && file.type.startsWith("image/");
+  const removeImage = formData.get("removeImage") === "true";
 
   if (isValidImage) {
     try {
@@ -182,6 +183,10 @@ export async function updateProduct(
     } catch (e) {
       console.error("Image save failed:", e);
     }
+  } else if (removeImage && item.image) {
+    // Owner cleared the photo — delete the stored file and leave it empty.
+    await deleteImage(item.image);
+    image = null;
   }
 
   await db.item.update({

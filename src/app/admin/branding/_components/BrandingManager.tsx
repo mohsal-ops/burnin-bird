@@ -1,12 +1,14 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
   updateThemeColor,
   updateLogo,
+  removeLogo,
   updateHomeText,
 } from "../_actions/brandingActions";
 import { readableTextColor } from "@/lib/color";
@@ -51,7 +53,9 @@ export default function BrandingManager({
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [savingLogo, startLogo] = useTransition();
+  const [removingLogo, startRemove] = useTransition();
   const logoRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
   const saveColor = () =>
     startColor(async () => {
@@ -76,6 +80,20 @@ export default function BrandingManager({
       }
     });
   };
+
+  const removeLogoHandler = () =>
+    startRemove(async () => {
+      const res = await removeLogo();
+      if (res.ok) {
+        toast.success("Logo removed");
+        setLogoFile(null);
+        setLogoPreview(null);
+        if (logoRef.current) logoRef.current.value = "";
+        router.refresh();
+      } else {
+        toast.error(res.error ?? "Failed to remove");
+      }
+    });
 
   return (
     <div className="space-y-6 px-4 md:px-0">
@@ -270,6 +288,18 @@ export default function BrandingManager({
                 onClick={saveLogo}
               >
                 {savingLogo ? "Saving..." : "Save logo"}
+              </Button>
+            )}
+            {!logoFile && initialLogo && (
+              <Button
+                variant="outline"
+                size="sm"
+                type="button"
+                disabled={removingLogo}
+                onClick={removeLogoHandler}
+                className="border-red-200 text-red-600 hover:bg-red-50"
+              >
+                {removingLogo ? "Removing…" : "Remove logo"}
               </Button>
             )}
           </div>

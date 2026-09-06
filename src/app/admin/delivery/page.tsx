@@ -1,20 +1,24 @@
 import { getUberDirect } from "@/lib/siteSettings";
 import { DeliverySettingsForm } from "./_components/DeliverySettingsForm";
+import PageHeader from "../_components/pageHeader";
 
 export const dynamic = "force-dynamic";
 
 export default async function DeliverySettingsPage() {
   const settings = await getUberDirect();
   return (
-    <div className="mx-auto max-w-2xl p-6">
-      <h1 className="text-2xl font-bold text-foreground">Delivery</h1>
-      <p className="mt-2 text-sm text-muted-foreground">
-        Dispatch a real Uber courier for delivery orders placed on your own site — no marketplace,
-        no commission. Off by default. Requires your Uber Direct credentials to be set in the
-        environment; delivery only dispatches when a courier is available, and any failure falls
-        back to pickup so orders never get stuck.
-      </p>
-      <DeliverySettingsForm initial={settings} />
+    <div className="lg:flex justify-center">
+      <div className="w-full lg:w-[80%] p-4 md:p-6 space-y-5">
+        <div>
+          <PageHeader>Delivery</PageHeader>
+          <p className="mt-1 max-w-2xl text-sm text-stone-500">
+            By default your site takes <span className="font-medium text-stone-700">pickup</span> orders
+            only. Turn on delivery to have a real Uber courier bring orders to customers — straight from
+            your own site, with no marketplace commission.
+          </p>
+        </div>
+        <DeliverySettingsForm initial={settings} />
+      </div>
     </div>
   );
 }
