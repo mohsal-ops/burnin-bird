@@ -2,7 +2,12 @@
 @plugin "tailwindcss-animate";
 @plugin 'tailwind-scrollbar';
 
-@custom-variant dark (&:is(.dark *));
+/* The admin dashboard is ALWAYS light. It lives inside <html class="dark">
+   when the public site's theme toggle is on, so any `dark:` utility would
+   otherwise fire there too. Excluding `.admin-shell` (and its descendants)
+   from the dark variant keeps the whole dashboard light in one shot — on top
+   of the light token values re-declared on `.admin-shell` below. */
+@custom-variant dark (&:is(.dark *):not(.admin-shell):not(.admin-shell *));
 
 /* Brand color - themeable from admin (SiteSetting "theme_color").
    --brand is overridden at runtime by a <style> tag in the root layout;

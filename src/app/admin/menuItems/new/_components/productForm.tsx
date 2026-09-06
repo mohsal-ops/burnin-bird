@@ -16,7 +16,7 @@ import { toast } from "sonner";
 import { formatCurrency } from "@/lib/formatters";
 import { Label } from "@radix-ui/react-label";
 import { Item } from "generated/prisma";
-import { Plus, ImageIcon } from "lucide-react";
+import { Plus, ImageIcon, X } from "lucide-react";
 import Link from "next/link";
 import { useActionState, useEffect, useRef, useState } from "react";
 
@@ -109,12 +109,27 @@ export default function ProductForm({
           <div className="space-y-1.5">
             <Label className={label}>Photo</Label>
             <div className="flex items-center gap-4">
-              <div className="relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-xl border border-stone-200 bg-stone-100">
+              <div className="group relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-xl border border-stone-200 bg-stone-100">
                 {preview ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={preview} alt="preview" className="h-full w-full object-cover" />
                 ) : (
                   <ImageIcon className="text-stone-300" />
+                )}
+                {preview && (
+                  <button
+                    type="button"
+                    aria-label="Remove photo"
+                    title="Remove photo"
+                    onClick={() => {
+                      setPreview(null);
+                      setRemoveImage(true);
+                      if (fileRef.current) fileRef.current.value = "";
+                    }}
+                    className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-black/60 text-white shadow-sm transition hover:bg-black/80"
+                  >
+                    <X size={12} strokeWidth={2.5} />
+                  </button>
                 )}
               </div>
               <div className="space-y-2">
@@ -135,19 +150,6 @@ export default function ProductForm({
                     }
                   }}
                 />
-                {preview && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setPreview(null);
-                      setRemoveImage(true);
-                      if (fileRef.current) fileRef.current.value = "";
-                    }}
-                    className="text-sm font-medium text-red-600 hover:underline"
-                  >
-                    Remove photo
-                  </button>
-                )}
               </div>
             </div>
             {/* Tells the server to clear the saved photo (leave it empty). */}

@@ -12,7 +12,7 @@ import {
   updateHomeText,
 } from "../_actions/brandingActions";
 import { readableTextColor } from "@/lib/color";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, X } from "lucide-react";
 import SlotDiagram from "@/app/admin/images/_components/SlotDiagram";
 
 const PRESETS = [
@@ -257,6 +257,18 @@ export default function BrandingManager({
                 Default
               </div>
             )}
+            {!logoFile && initialLogo && (
+              <button
+                type="button"
+                aria-label="Remove logo"
+                title="Remove logo"
+                disabled={removingLogo}
+                onClick={removeLogoHandler}
+                className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-black/60 text-white shadow-sm transition hover:bg-black/80 disabled:opacity-50"
+              >
+                <X size={12} strokeWidth={2.5} />
+              </button>
+            )}
           </div>
           <input
             ref={logoRef}
@@ -288,18 +300,6 @@ export default function BrandingManager({
                 onClick={saveLogo}
               >
                 {savingLogo ? "Saving..." : "Save logo"}
-              </Button>
-            )}
-            {!logoFile && initialLogo && (
-              <Button
-                variant="outline"
-                size="sm"
-                type="button"
-                disabled={removingLogo}
-                onClick={removeLogoHandler}
-                className="border-red-200 text-red-600 hover:bg-red-50"
-              >
-                {removingLogo ? "Removing…" : "Remove logo"}
               </Button>
             )}
           </div>
