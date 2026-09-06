@@ -83,7 +83,7 @@ export default function CategoryReorderList({ categories }: { categories: Cat[] 
                 <span className="sr-only">Actions</span>
                 <MoreVertical size={16} />
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" className="admin-shell">
                 <DeleteItemComp2 id={cate.id} disabled={cate._count.items > 0} />
               </DropdownMenuContent>
             </DropdownMenu>

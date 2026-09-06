@@ -42,7 +42,7 @@ export default function PostsTable({ posts }: { posts: Post[] }) {
               <DropdownMenuTrigger>
                 <MoreVertical className="h-4 w-4" />
               </DropdownMenuTrigger>
-              <DropdownMenuContent>
+              <DropdownMenuContent className="admin-shell">
                 <DropdownMenuItem
                   className="text-red-600 cursor-pointer"
                   disabled={deletingId === post.id}

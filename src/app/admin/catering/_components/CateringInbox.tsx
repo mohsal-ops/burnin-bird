@@ -146,7 +146,7 @@ export default function CateringInbox({ requests }: { requests: CateringRequestR
                           Change status <MoreVertical size={14} />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent>
+                      <DropdownMenuContent className="admin-shell">
                         <DropdownMenuItem onClick={() => changeStatus(r.id, "contacted")}>
                           Mark as Contacted
                         </DropdownMenuItem>

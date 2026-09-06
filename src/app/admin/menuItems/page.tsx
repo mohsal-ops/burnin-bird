@@ -117,7 +117,7 @@ export default async function Items() {
                             <span className="sr-only">Actions</span>
                             <MoreVertical size={16} />
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
+                          <DropdownMenuContent align="end" className="admin-shell">
                             <IsFeaturedOrNot id={obj?.id} isProductFeatured={obj?.featured} />
                             <ActivateAndDesactivate
                               id={obj?.id}

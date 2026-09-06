@@ -162,7 +162,7 @@ export default function ProductForm({
               <SelectTrigger className="w-56">
                 <SelectValue placeholder="Choose a category" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="admin-shell">
                 {types && types.length > 0 ? (
                   types.map((type: any) => (
                     <SelectItem key={type.id} value={type.id} className="hover:cursor-pointer">

@@ -150,7 +150,7 @@ export function AllDishesCardClient({
         </p>
       </div>
       <Card
-        className={`flex md:rounded-l-none rounded-2xl overflow-hidden gap-5 md:h-50 h-36 flex-col  ${image ? " md:w-1/2 w-2/5" : "w-16 "} `}
+        className={`flex md:rounded-l-none rounded-2xl overflow-hidden gap-5 md:h-50 h-36 flex-col  ${image ? " md:w-1/2 w-2/5" : "w-16 border-0 bg-transparent shadow-none"} `}
         key={id}
       >
       

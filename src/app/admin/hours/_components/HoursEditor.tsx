@@ -109,7 +109,7 @@ export default function HoursEditor({ hours }: { hours: HourRow[] }) {
                     <SelectTrigger className="w-32">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="admin-shell">
                       {HOUR_OPTIONS.map((h) => (
                         <SelectItem key={h} value={String(h)}>
                           {formatHour(h)}
@@ -125,7 +125,7 @@ export default function HoursEditor({ hours }: { hours: HourRow[] }) {
                     <SelectTrigger className="w-32">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="admin-shell">
                       {HOUR_OPTIONS.map((h) => (
                         <SelectItem key={h} value={String(h)}>
                           {formatHour(h)}
