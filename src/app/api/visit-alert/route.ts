@@ -10,13 +10,14 @@ import { verifyAdminSessionToken } from "@/lib/adminSession";
 const MUTE_COOKIE = "va_mute";
 const MUTE_MAX_AGE = 60 * 60 * 24 * 90; // 90 days
 
-// Emails the AGENCY when a real browser opens the site - access tracking for the
-// private pre-launch Vercel link. Always goes to AGENCY_ALERT_EMAIL (the agency
-// inbox), never the client's OWNER_ALERT_EMAIL, so we still see who's poking at a
-// demo even after a real owner email is set on the project. The client only calls
-// this once per browser every couple of hours (see VisitAlert.tsx), and we add an
-// IP backstop here so a reload loop or a script can't spam the mailbox. To turn it
-// off: delete the <VisitAlert /> mount in (customerFacing)/layout.tsx.
+// Emails the AGENCY when a browser opens the ADMIN/preview dashboard - a lead
+// looking at their demo. Mounted in admin/layout.tsx gated to preview mode ONLY
+// (NOT the public customer site: that emailed on every live-site visit and
+// flooded the inbox). Always goes to AGENCY_ALERT_EMAIL, never the client's
+// OWNER_ALERT_EMAIL. The client pings this at most once per browser every couple
+// of hours (see VisitAlert.tsx), plus an IP backstop here; logged-in owners are
+// muted below. To turn it off entirely: remove the <VisitAlert /> mount in
+// admin/layout.tsx.
 export const runtime = "nodejs";
 
 // Agency inbox for access-tracking / lead alerts. Provisioned as AGENCY_ALERT_EMAIL

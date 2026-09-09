@@ -3,6 +3,7 @@ import { AdminNav } from "./_components/nav";
 import LoadingScreen from "@/components/LoadingScreen";
 import PreviewBanner from "./_components/PreviewBanner";
 import PreviewCallCta from "./_components/PreviewCallCta";
+import VisitAlert from "@/app/(customerFacing)/_components/VisitAlert";
 import { getAccess } from "@/lib/getAccess";
 import { getLogoUrl } from "@/lib/siteSettings";
 import db from "@/db/db";
@@ -33,6 +34,11 @@ export default async function Adminlayout({
     // the `dark` class set by the website's theme toggle.
     <div className="admin-shell min-h-screen bg-stone-50">
       {access.mode === "preview" && <PreviewBanner />}
+      {/* Access tracking lives here (admin/dashboard) only, NOT on the public
+          site - it emailed on every live-site visit and flooded the inbox.
+          Preview-only so it pings when a lead opens their dashboard, never for
+          a logged-in owner (also muted server-side in /api/visit-alert). */}
+      {access.mode === "preview" && <VisitAlert />}
       <div className="md:flex">
         {/* One-time branded splash on a fresh admin load. */}
         <LoadingScreen />

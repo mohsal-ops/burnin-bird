@@ -7,7 +7,6 @@ import Link from "next/link";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { getLogoUrl } from "@/lib/siteSettings";
 import { getLoyaltySettings, loyaltyIncentive } from "@/lib/loyalty";
-import VisitAlert from "./_components/VisitAlert";
 import LoadingScreen from "@/components/LoadingScreen";
 import TrialPopup from "./_components/TrialPopup";
 import DashboardBubble from "./_components/DashboardBubble";
@@ -27,7 +26,6 @@ export default async function Customerlayout({
     <SidebarProvider>
       {/* One-time branded intro on the public site (once per browser session) */}
       <LoadingScreen />
-      <VisitAlert />
       <TrialPopup />
       <DashboardBubble />
       <LoyaltyPopup
