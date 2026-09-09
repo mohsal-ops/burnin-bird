@@ -29,7 +29,7 @@ export default function CateringPageClient({
   // each client keeps their own). Read defensively so a clone without it still
   // renders the rest of the page.
   const catering = (SITE_CONFIG as {
-    catering?: { pdfUrl?: string; menu?: CateringMenuSection[] };
+    catering?: { pdfUrl?: string; animation?: "grill" | "none"; menu?: CateringMenuSection[] };
   }).catering;
   const cateringMenu = catering?.menu ?? [];
   const [open, setOpen] = useState(false);
@@ -144,7 +144,12 @@ export default function CateringPageClient({
               Trays that feed a crowd. Pick your favorites, then request a quote.
             </p>
           </div>
-          <CateringMenuDisplay menu={cateringMenu} pdfUrl={catering?.pdfUrl} logoUrl={logoUrl} />
+          <CateringMenuDisplay
+            menu={cateringMenu}
+            pdfUrl={catering?.pdfUrl}
+            logoUrl={logoUrl}
+            grill={catering?.animation !== "none"}
+          />
         </section>
       )}
 

@@ -25,13 +25,18 @@ export default function CateringMenuDisplay({
   menu,
   pdfUrl,
   logoUrl,
+  grill = true,
 }: {
   menu: CateringMenuSection[];
   pdfUrl?: string;
   logoUrl?: string;
+  // "Off the grill" smoke + ember entrance. Driven by SITE_CONFIG.catering
+  // .animation ("grill" | "none"); reduced motion always wins over it.
+  grill?: boolean;
 }) {
   const reduce = useReducedMotion();
   const patternLogo = logoUrl || logo.src;
+  const showGrill = grill && !reduce;
 
   if (!menu || menu.length === 0) return null;
 
@@ -81,8 +86,8 @@ export default function CateringMenuDisplay({
       />
 
       {/* "Off the grill" — drifting smoke + a warm ember glow along the base.
-          Motion only when the viewer allows it; otherwise the card is static. */}
-      {!reduce && (
+          Gated by the catering.animation config; off under reduced motion. */}
+      {showGrill && (
         <>
           <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
             {SMOKE.map((w, i) => (

@@ -75,6 +75,8 @@ export const SITE_CONFIG = {
   // `pdfUrl` is optional (a downloadable PDF in /public); omit to hide the button.
   catering: {
     pdfUrl: "",
+    // Catering menu entrance animation: "grill" (drifting smoke + embers) or "none".
+    animation: "grill",
     menu: [
       {
         title: "Chicken",
