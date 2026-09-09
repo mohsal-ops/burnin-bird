@@ -5,7 +5,7 @@ import { sendToSubscribed } from "@/app/admin/loyalty/_actions/loyaltyActions";
 
 // Daily birthday send, driven by the n8n workflow (one call per client site).
 // Sends the owner's saved birthday message to contacts whose birthday is exactly
-// `daysAhead` (default 7) away — never on the day, never unless the owner turned
+// `daysAhead` (default 7) away - never on the day, never unless the owner turned
 // it on AND saved a message. Uses the shared send path, so subscribed-only +
 // quiet-hours + opt-out all apply (no automated bypass).
 // Auth: ?key=<LOYALTY_CRON_SECRET> or Authorization: Bearer <LOYALTY_CRON_SECRET>.
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
   const tDay = target.getUTCDate();
 
   const contacts = await db.loyaltyContact.findMany({
-    where: { projectId: LOYALTY_PROJECT_ID, subscribed: true, birthday: { not: null } },
+    where: { projectId: LOYALTY_PROJECT_ID, smsSubscribed: true, birthday: { not: null } },
     select: { phone: true, firstName: true, birthday: true },
   });
   const due = contacts.filter(

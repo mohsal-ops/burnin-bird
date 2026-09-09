@@ -248,7 +248,7 @@ export default function MainPageMenu({
         </div>
         <div id="PickupOrDelivery" className="text-sm flex p-1">
           <div className="flex flex-col sm:flex-row w-full sm:w-1/2  gap-4 font-semibold text-muted-foreground">
-            {/* Pickup/Delivery toggle — only on Standard+ tiers. Starter is pickup-only. */}
+            {/* Pickup/Delivery toggle - only on Standard+ tiers. Starter is pickup-only. */}
             {deliveryAllowed && (
             <div className="bg-muted w-full shadow-sm sm:w-1/2 flex h-11 rounded-3xl overflow-hidden">
               <label className="cursor-pointer w-1/2 relative">

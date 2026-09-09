@@ -12,7 +12,7 @@ import { getClientIp, isRateLimited } from "@/lib/rateLimit";
 // to AGENCY_ALERT_EMAIL, never the client's OWNER_ALERT_EMAIL.
 export const runtime = "nodejs";
 
-// Agency inbox — see the note in visit-alert/route.ts. Literal is the guaranteed
+// Agency inbox - see the note in visit-alert/route.ts. Literal is the guaranteed
 // fallback so interest signals reach us even without the env var backfilled.
 const AGENCY_ALERT_EMAIL = process.env.AGENCY_ALERT_EMAIL || "bensa0016@gmail.com";
 

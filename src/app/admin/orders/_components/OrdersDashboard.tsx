@@ -252,7 +252,7 @@ export default function OrdersDashboard({ orders, stats }: { orders: Order[]; st
                             <span className="capitalize">{(order.uberStatus ?? "pending").replace(/_/g, " ")}</span>
                             {order.uberTrackingUrl && (
                               <>
-                                {" — "}
+                                {" - "}
                                 <a href={order.uberTrackingUrl} target="_blank" rel="noreferrer" className="underline">
                                   track
                                 </a>

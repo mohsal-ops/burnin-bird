@@ -76,7 +76,7 @@ export default function GalleryManager({
     if (tooBig) {
       e.preventDefault();
       toast.error(
-        `That's ${formatBytes(totalBytes)} in one go — please upload under ${formatBytes(
+        `That's ${formatBytes(totalBytes)} in one go - please upload under ${formatBytes(
           MAX_UPLOAD_BYTES
         )} at a time (fewer or smaller photos).`
       );
@@ -163,7 +163,7 @@ export default function GalleryManager({
               onChange={handleFilesChange}
             />
             <p className="text-xs text-stone-400">
-              You can select multiple images at once — up to {formatBytes(MAX_UPLOAD_BYTES)} per upload.
+              You can select multiple images at once - up to {formatBytes(MAX_UPLOAD_BYTES)} per upload.
             </p>
           </div>
           <div className="flex-1 space-y-2 w-full">
@@ -189,7 +189,7 @@ export default function GalleryManager({
             </span>
             {tooBig && (
               <span className="ml-auto text-xs font-medium">
-                Too large — upload fewer or smaller photos.
+                Too large - upload fewer or smaller photos.
               </span>
             )}
           </div>
@@ -201,7 +201,7 @@ export default function GalleryManager({
         </Button>
         {state?.error && <p className="text-sm text-red-500">{state.error}</p>}
 
-        {/* Upload overlay — keeps the user informed while large photos transfer */}
+        {/* Upload overlay - keeps the user informed while large photos transfer */}
         {isUploading && (
           <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 rounded-2xl bg-white/85 backdrop-blur-sm">
             <Loader2 size={32} className="animate-spin text-[#c85a1e]" />
@@ -211,7 +211,7 @@ export default function GalleryManager({
                 {selected.length !== 1 ? "s" : ""}…
               </p>
               <p className="mt-0.5 text-sm text-stone-500">
-                Large images can take a moment. Please keep this tab open — don&apos;t refresh.
+                Large images can take a moment. Please keep this tab open - don&apos;t refresh.
               </p>
             </div>
             <div className="h-1.5 w-48 overflow-hidden rounded-full bg-stone-200">

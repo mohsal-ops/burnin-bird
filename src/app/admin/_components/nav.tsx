@@ -112,7 +112,7 @@ const NAV_GROUPS: NavGroup[] = [
 ];
 
 // Hide sections above the client's tier, then drop any group left empty.
-// tierOf() defaults a tier-less (pre-tiers) siteConfig to PRO — never strips a live site.
+// tierOf() defaults a tier-less (pre-tiers) siteConfig to PRO - never strips a live site.
 const SITE_TIER = tierOf(SITE_CONFIG);
 const VISIBLE_NAV_GROUPS: NavGroup[] = NAV_GROUPS.map((g) => ({
   ...g,

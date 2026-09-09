@@ -193,7 +193,7 @@ export default function ModifierGroupsManager({
 
       {groups.length === 0 && (
         <p className="mt-4 rounded-xl bg-stone-50 px-4 py-6 text-center text-sm text-stone-500">
-          No modifier groups yet. Add one — e.g. a required &ldquo;Choose a sauce&rdquo; or optional
+          No modifier groups yet. Add one - e.g. a required &ldquo;Choose a sauce&rdquo; or optional
           &ldquo;Add extras&rdquo;.
         </p>
       )}

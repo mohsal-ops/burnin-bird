@@ -5,7 +5,7 @@
 /* The admin dashboard is ALWAYS light. It lives inside <html class="dark">
    when the public site's theme toggle is on, so any `dark:` utility would
    otherwise fire there too. Excluding `.admin-shell` (and its descendants)
-   from the dark variant keeps the whole dashboard light in one shot — on top
+   from the dark variant keeps the whole dashboard light in one shot - on top
    of the light token values re-declared on `.admin-shell` below. */
 @custom-variant dark (&:is(.dark *):not(.admin-shell):not(.admin-shell *));
 
@@ -210,7 +210,7 @@ html body[data-scroll-locked] {
   --sidebar-border: hsl(220 13% 91%);
 
   /* Tailwind v4 utilities (bg-background, bg-card, border-border, …) read the
-     mapped `--color-*` theme vars, NOT the raw `--background` triples above —
+     mapped `--color-*` theme vars, NOT the raw `--background` triples above -
      and those are baked to the dark values under `html.dark`. Re-map them here
      from the light triples so token-driven elements (e.g. `outline` buttons,
      which are `bg-background`) render light in the dashboard too. */

@@ -1,5 +1,7 @@
+import QRCode from "qrcode";
 import db from "@/db/db";
 import { getLoyaltySettings, LOYALTY_PROJECT_ID } from "@/lib/loyalty";
+import { SITE_CONFIG } from "@/lib/siteConfig";
 import { LoyaltyDashboard } from "./_components/LoyaltyDashboard";
 
 export const dynamic = "force-dynamic";
@@ -7,9 +9,15 @@ export const dynamic = "force-dynamic";
 export default async function LoyaltyPage() {
   const settings = await getLoyaltySettings();
 
-  const [subscribed, optedOut, contacts, campaigns] = await Promise.all([
-    db.loyaltyContact.count({ where: { projectId: LOYALTY_PROJECT_ID, subscribed: true } }),
-    db.loyaltyContact.count({ where: { projectId: LOYALTY_PROJECT_ID, subscribed: false } }),
+  // QR code (PNG data URL) pointing at the public join page - for table tents,
+  // receipts, etc. Generated server-side so no client library is needed.
+  const rewardsUrl = `${SITE_CONFIG.siteUrl.replace(/\/$/, "")}/rewards`;
+  const qrDataUrl = await QRCode.toDataURL(rewardsUrl, { width: 512, margin: 2 });
+
+  const [smsSubscribed, emailSubscribed, optedOut, contacts, campaigns] = await Promise.all([
+    db.loyaltyContact.count({ where: { projectId: LOYALTY_PROJECT_ID, smsSubscribed: true } }),
+    db.loyaltyContact.count({ where: { projectId: LOYALTY_PROJECT_ID, emailSubscribed: true } }),
+    db.loyaltyContact.count({ where: { projectId: LOYALTY_PROJECT_ID, unsubscribedAt: { not: null } } }),
     db.loyaltyContact.findMany({
       where: { projectId: LOYALTY_PROJECT_ID },
       select: { createdAt: true },
@@ -39,11 +47,15 @@ export default async function LoyaltyPage() {
       <h1 className="text-2xl font-bold text-stone-800">Loyalty & text marketing</h1>
       <LoyaltyDashboard
         settings={settings}
-        subscribed={subscribed}
+        smsSubscribed={smsSubscribed}
+        emailSubscribed={emailSubscribed}
         optedOut={optedOut}
         growth={days}
+        qrDataUrl={qrDataUrl}
+        rewardsUrl={rewardsUrl}
         campaigns={campaigns.map((c) => ({
           id: c.id,
+          channel: c.channel,
           message: c.message,
           type: c.type,
           recipientCount: c.recipientCount,

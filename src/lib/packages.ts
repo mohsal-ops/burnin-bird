@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// Package tiers — the single source of truth for VegaStar's product ladder:
+// Package tiers - the single source of truth for VegaStar's product ladder:
 // prices, and which site + admin capabilities each tier unlocks.
 //
 // SYNC: this file is mirrored byte-for-byte in two repos. Keep them identical:
@@ -19,12 +19,12 @@ export const PACKAGES = {
   },
   STANDARD: {
     label: "Standard",
-    price: 999, // starting point — adjustable
+    price: 999, // starting point - adjustable
     blurb: "Most sit-down independents who want the real toolkit.",
   },
   PRO: {
     label: "Pro",
-    price: 1999, // starting point — adjustable
+    price: 1999, // starting point - adjustable
     blurb: "Multi-location owners, or anyone who wants everything.",
   },
 } as const;
@@ -37,7 +37,7 @@ export const atLeast = (have: PackageTier, need: PackageTier): boolean =>
   TIER_ORDER.indexOf(have) >= TIER_ORDER.indexOf(need);
 
 // Resolve a site's tier defensively. A site whose siteConfig predates tiers (no
-// packageTier field — e.g. an existing client that receives new template code via
+// packageTier field - e.g. an existing client that receives new template code via
 // "Update from template" but keeps its blocklisted siteConfig) is treated as PRO,
 // so gating never strips sections from an already-live site.
 export function tierOf(cfg: { packageTier?: PackageTier }): PackageTier {

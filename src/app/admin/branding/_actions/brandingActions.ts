@@ -77,7 +77,7 @@ export async function removeLogo() {
         const { del } = await import("@vercel/blob");
         await del(existing.value);
       } catch {
-        /* ignore — clearing the setting is what matters */
+        /* ignore - clearing the setting is what matters */
       }
     }
     await db.siteSetting.upsert({

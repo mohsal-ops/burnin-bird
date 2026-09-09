@@ -27,7 +27,7 @@ export default async function Adminlayout({
   }
 
   return (
-    // The admin dashboard is ALWAYS light — the public dark theme is scoped to
+    // The admin dashboard is ALWAYS light - the public dark theme is scoped to
     // the customer site only. `.admin-shell` (globals.css) re-declares the light
     // design tokens for this subtree, so admin stays light even when <html> has
     // the `dark` class set by the website's theme toggle.

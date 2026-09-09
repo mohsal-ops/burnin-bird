@@ -117,7 +117,7 @@ model Cart {
   items     CartItem[]
   status    String     @default("open") // open/completed/abandoned
 
-  // Uber Direct courier delivery (optional per restaurant — see SiteSetting
+  // Uber Direct courier delivery (optional per restaurant - see SiteSetting
   // "uber_direct_enabled"). A quote is fetched at checkout; the courier is
   // dispatched after payment; status is advanced by the Uber webhook.
   uberQuoteId     String?
@@ -261,24 +261,31 @@ model SiteSetting {
 model LoyaltyContact {
   id                 String    @id @default(cuid())
   projectId          String    // which client site this belongs to (this site's id)
-  phone              String
+  phone              String?
+  email              String?
   firstName          String?
   birthday           DateTime?
-  subscribed         Boolean   @default(true)
-  consentTextVersion String    // exact opt-in wording shown, versioned
+  // SMS (TCPA) and email (CAN-SPAM) are legally distinct consents - tracked
+  // separately so an email-only signup never counts as an SMS opt-in.
+  smsSubscribed      Boolean   @default(false)
+  emailSubscribed    Boolean   @default(false)
+  consentTextVersion String?   // exact opt-in wording shown, versioned
   consentTimestamp   DateTime  @default(now())
   consentIp          String?
   unsubscribedAt     DateTime?
   createdAt          DateTime  @default(now())
 
   @@unique([projectId, phone])
+  @@unique([projectId, email])
   @@index([projectId])
   @@index([phone])
+  @@index([email])
 }
 
 model LoyaltyCampaign {
   id             String   @id @default(cuid())
   projectId      String
+  channel        String   @default("sms") // "sms" | "email"
   message        String
   type           String   // "manual_blast" | "birthday_auto"
   recipientCount Int

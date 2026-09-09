@@ -23609,9 +23609,11 @@ export namespace Prisma {
     id: string | null
     projectId: string | null
     phone: string | null
+    email: string | null
     firstName: string | null
     birthday: Date | null
-    subscribed: boolean | null
+    smsSubscribed: boolean | null
+    emailSubscribed: boolean | null
     consentTextVersion: string | null
     consentTimestamp: Date | null
     consentIp: string | null
@@ -23623,9 +23625,11 @@ export namespace Prisma {
     id: string | null
     projectId: string | null
     phone: string | null
+    email: string | null
     firstName: string | null
     birthday: Date | null
-    subscribed: boolean | null
+    smsSubscribed: boolean | null
+    emailSubscribed: boolean | null
     consentTextVersion: string | null
     consentTimestamp: Date | null
     consentIp: string | null
@@ -23637,9 +23641,11 @@ export namespace Prisma {
     id: number
     projectId: number
     phone: number
+    email: number
     firstName: number
     birthday: number
-    subscribed: number
+    smsSubscribed: number
+    emailSubscribed: number
     consentTextVersion: number
     consentTimestamp: number
     consentIp: number
@@ -23653,9 +23659,11 @@ export namespace Prisma {
     id?: true
     projectId?: true
     phone?: true
+    email?: true
     firstName?: true
     birthday?: true
-    subscribed?: true
+    smsSubscribed?: true
+    emailSubscribed?: true
     consentTextVersion?: true
     consentTimestamp?: true
     consentIp?: true
@@ -23667,9 +23675,11 @@ export namespace Prisma {
     id?: true
     projectId?: true
     phone?: true
+    email?: true
     firstName?: true
     birthday?: true
-    subscribed?: true
+    smsSubscribed?: true
+    emailSubscribed?: true
     consentTextVersion?: true
     consentTimestamp?: true
     consentIp?: true
@@ -23681,9 +23691,11 @@ export namespace Prisma {
     id?: true
     projectId?: true
     phone?: true
+    email?: true
     firstName?: true
     birthday?: true
-    subscribed?: true
+    smsSubscribed?: true
+    emailSubscribed?: true
     consentTextVersion?: true
     consentTimestamp?: true
     consentIp?: true
@@ -23767,11 +23779,13 @@ export namespace Prisma {
   export type LoyaltyContactGroupByOutputType = {
     id: string
     projectId: string
-    phone: string
+    phone: string | null
+    email: string | null
     firstName: string | null
     birthday: Date | null
-    subscribed: boolean
-    consentTextVersion: string
+    smsSubscribed: boolean
+    emailSubscribed: boolean
+    consentTextVersion: string | null
     consentTimestamp: Date
     consentIp: string | null
     unsubscribedAt: Date | null
@@ -23799,9 +23813,11 @@ export namespace Prisma {
     id?: boolean
     projectId?: boolean
     phone?: boolean
+    email?: boolean
     firstName?: boolean
     birthday?: boolean
-    subscribed?: boolean
+    smsSubscribed?: boolean
+    emailSubscribed?: boolean
     consentTextVersion?: boolean
     consentTimestamp?: boolean
     consentIp?: boolean
@@ -23813,9 +23829,11 @@ export namespace Prisma {
     id?: boolean
     projectId?: boolean
     phone?: boolean
+    email?: boolean
     firstName?: boolean
     birthday?: boolean
-    subscribed?: boolean
+    smsSubscribed?: boolean
+    emailSubscribed?: boolean
     consentTextVersion?: boolean
     consentTimestamp?: boolean
     consentIp?: boolean
@@ -23827,9 +23845,11 @@ export namespace Prisma {
     id?: boolean
     projectId?: boolean
     phone?: boolean
+    email?: boolean
     firstName?: boolean
     birthday?: boolean
-    subscribed?: boolean
+    smsSubscribed?: boolean
+    emailSubscribed?: boolean
     consentTextVersion?: boolean
     consentTimestamp?: boolean
     consentIp?: boolean
@@ -23841,9 +23861,11 @@ export namespace Prisma {
     id?: boolean
     projectId?: boolean
     phone?: boolean
+    email?: boolean
     firstName?: boolean
     birthday?: boolean
-    subscribed?: boolean
+    smsSubscribed?: boolean
+    emailSubscribed?: boolean
     consentTextVersion?: boolean
     consentTimestamp?: boolean
     consentIp?: boolean
@@ -23851,7 +23873,7 @@ export namespace Prisma {
     createdAt?: boolean
   }
 
-  export type LoyaltyContactOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "projectId" | "phone" | "firstName" | "birthday" | "subscribed" | "consentTextVersion" | "consentTimestamp" | "consentIp" | "unsubscribedAt" | "createdAt", ExtArgs["result"]["loyaltyContact"]>
+  export type LoyaltyContactOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "projectId" | "phone" | "email" | "firstName" | "birthday" | "smsSubscribed" | "emailSubscribed" | "consentTextVersion" | "consentTimestamp" | "consentIp" | "unsubscribedAt" | "createdAt", ExtArgs["result"]["loyaltyContact"]>
 
   export type $LoyaltyContactPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "LoyaltyContact"
@@ -23859,11 +23881,13 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       projectId: string
-      phone: string
+      phone: string | null
+      email: string | null
       firstName: string | null
       birthday: Date | null
-      subscribed: boolean
-      consentTextVersion: string
+      smsSubscribed: boolean
+      emailSubscribed: boolean
+      consentTextVersion: string | null
       consentTimestamp: Date
       consentIp: string | null
       unsubscribedAt: Date | null
@@ -24294,9 +24318,11 @@ export namespace Prisma {
     readonly id: FieldRef<"LoyaltyContact", 'String'>
     readonly projectId: FieldRef<"LoyaltyContact", 'String'>
     readonly phone: FieldRef<"LoyaltyContact", 'String'>
+    readonly email: FieldRef<"LoyaltyContact", 'String'>
     readonly firstName: FieldRef<"LoyaltyContact", 'String'>
     readonly birthday: FieldRef<"LoyaltyContact", 'DateTime'>
-    readonly subscribed: FieldRef<"LoyaltyContact", 'Boolean'>
+    readonly smsSubscribed: FieldRef<"LoyaltyContact", 'Boolean'>
+    readonly emailSubscribed: FieldRef<"LoyaltyContact", 'Boolean'>
     readonly consentTextVersion: FieldRef<"LoyaltyContact", 'String'>
     readonly consentTimestamp: FieldRef<"LoyaltyContact", 'DateTime'>
     readonly consentIp: FieldRef<"LoyaltyContact", 'String'>
@@ -24691,6 +24717,7 @@ export namespace Prisma {
   export type LoyaltyCampaignMinAggregateOutputType = {
     id: string | null
     projectId: string | null
+    channel: string | null
     message: string | null
     type: string | null
     recipientCount: number | null
@@ -24700,6 +24727,7 @@ export namespace Prisma {
   export type LoyaltyCampaignMaxAggregateOutputType = {
     id: string | null
     projectId: string | null
+    channel: string | null
     message: string | null
     type: string | null
     recipientCount: number | null
@@ -24709,6 +24737,7 @@ export namespace Prisma {
   export type LoyaltyCampaignCountAggregateOutputType = {
     id: number
     projectId: number
+    channel: number
     message: number
     type: number
     recipientCount: number
@@ -24728,6 +24757,7 @@ export namespace Prisma {
   export type LoyaltyCampaignMinAggregateInputType = {
     id?: true
     projectId?: true
+    channel?: true
     message?: true
     type?: true
     recipientCount?: true
@@ -24737,6 +24767,7 @@ export namespace Prisma {
   export type LoyaltyCampaignMaxAggregateInputType = {
     id?: true
     projectId?: true
+    channel?: true
     message?: true
     type?: true
     recipientCount?: true
@@ -24746,6 +24777,7 @@ export namespace Prisma {
   export type LoyaltyCampaignCountAggregateInputType = {
     id?: true
     projectId?: true
+    channel?: true
     message?: true
     type?: true
     recipientCount?: true
@@ -24842,6 +24874,7 @@ export namespace Prisma {
   export type LoyaltyCampaignGroupByOutputType = {
     id: string
     projectId: string
+    channel: string
     message: string
     type: string
     recipientCount: number
@@ -24870,6 +24903,7 @@ export namespace Prisma {
   export type LoyaltyCampaignSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     projectId?: boolean
+    channel?: boolean
     message?: boolean
     type?: boolean
     recipientCount?: boolean
@@ -24879,6 +24913,7 @@ export namespace Prisma {
   export type LoyaltyCampaignSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     projectId?: boolean
+    channel?: boolean
     message?: boolean
     type?: boolean
     recipientCount?: boolean
@@ -24888,6 +24923,7 @@ export namespace Prisma {
   export type LoyaltyCampaignSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     projectId?: boolean
+    channel?: boolean
     message?: boolean
     type?: boolean
     recipientCount?: boolean
@@ -24897,13 +24933,14 @@ export namespace Prisma {
   export type LoyaltyCampaignSelectScalar = {
     id?: boolean
     projectId?: boolean
+    channel?: boolean
     message?: boolean
     type?: boolean
     recipientCount?: boolean
     sentAt?: boolean
   }
 
-  export type LoyaltyCampaignOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "projectId" | "message" | "type" | "recipientCount" | "sentAt", ExtArgs["result"]["loyaltyCampaign"]>
+  export type LoyaltyCampaignOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "projectId" | "channel" | "message" | "type" | "recipientCount" | "sentAt", ExtArgs["result"]["loyaltyCampaign"]>
 
   export type $LoyaltyCampaignPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "LoyaltyCampaign"
@@ -24911,6 +24948,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       projectId: string
+      channel: string
       message: string
       type: string
       recipientCount: number
@@ -25340,6 +25378,7 @@ export namespace Prisma {
   interface LoyaltyCampaignFieldRefs {
     readonly id: FieldRef<"LoyaltyCampaign", 'String'>
     readonly projectId: FieldRef<"LoyaltyCampaign", 'String'>
+    readonly channel: FieldRef<"LoyaltyCampaign", 'String'>
     readonly message: FieldRef<"LoyaltyCampaign", 'String'>
     readonly type: FieldRef<"LoyaltyCampaign", 'String'>
     readonly recipientCount: FieldRef<"LoyaltyCampaign", 'Int'>
@@ -25984,9 +26023,11 @@ export namespace Prisma {
     id: 'id',
     projectId: 'projectId',
     phone: 'phone',
+    email: 'email',
     firstName: 'firstName',
     birthday: 'birthday',
-    subscribed: 'subscribed',
+    smsSubscribed: 'smsSubscribed',
+    emailSubscribed: 'emailSubscribed',
     consentTextVersion: 'consentTextVersion',
     consentTimestamp: 'consentTimestamp',
     consentIp: 'consentIp',
@@ -26000,6 +26041,7 @@ export namespace Prisma {
   export const LoyaltyCampaignScalarFieldEnum: {
     id: 'id',
     projectId: 'projectId',
+    channel: 'channel',
     message: 'message',
     type: 'type',
     recipientCount: 'recipientCount',
@@ -27427,11 +27469,13 @@ export namespace Prisma {
     NOT?: LoyaltyContactWhereInput | LoyaltyContactWhereInput[]
     id?: StringFilter<"LoyaltyContact"> | string
     projectId?: StringFilter<"LoyaltyContact"> | string
-    phone?: StringFilter<"LoyaltyContact"> | string
+    phone?: StringNullableFilter<"LoyaltyContact"> | string | null
+    email?: StringNullableFilter<"LoyaltyContact"> | string | null
     firstName?: StringNullableFilter<"LoyaltyContact"> | string | null
     birthday?: DateTimeNullableFilter<"LoyaltyContact"> | Date | string | null
-    subscribed?: BoolFilter<"LoyaltyContact"> | boolean
-    consentTextVersion?: StringFilter<"LoyaltyContact"> | string
+    smsSubscribed?: BoolFilter<"LoyaltyContact"> | boolean
+    emailSubscribed?: BoolFilter<"LoyaltyContact"> | boolean
+    consentTextVersion?: StringNullableFilter<"LoyaltyContact"> | string | null
     consentTimestamp?: DateTimeFilter<"LoyaltyContact"> | Date | string
     consentIp?: StringNullableFilter<"LoyaltyContact"> | string | null
     unsubscribedAt?: DateTimeNullableFilter<"LoyaltyContact"> | Date | string | null
@@ -27441,11 +27485,13 @@ export namespace Prisma {
   export type LoyaltyContactOrderByWithRelationInput = {
     id?: SortOrder
     projectId?: SortOrder
-    phone?: SortOrder
+    phone?: SortOrderInput | SortOrder
+    email?: SortOrderInput | SortOrder
     firstName?: SortOrderInput | SortOrder
     birthday?: SortOrderInput | SortOrder
-    subscribed?: SortOrder
-    consentTextVersion?: SortOrder
+    smsSubscribed?: SortOrder
+    emailSubscribed?: SortOrder
+    consentTextVersion?: SortOrderInput | SortOrder
     consentTimestamp?: SortOrder
     consentIp?: SortOrderInput | SortOrder
     unsubscribedAt?: SortOrderInput | SortOrder
@@ -27455,29 +27501,34 @@ export namespace Prisma {
   export type LoyaltyContactWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     projectId_phone?: LoyaltyContactProjectIdPhoneCompoundUniqueInput
+    projectId_email?: LoyaltyContactProjectIdEmailCompoundUniqueInput
     AND?: LoyaltyContactWhereInput | LoyaltyContactWhereInput[]
     OR?: LoyaltyContactWhereInput[]
     NOT?: LoyaltyContactWhereInput | LoyaltyContactWhereInput[]
     projectId?: StringFilter<"LoyaltyContact"> | string
-    phone?: StringFilter<"LoyaltyContact"> | string
+    phone?: StringNullableFilter<"LoyaltyContact"> | string | null
+    email?: StringNullableFilter<"LoyaltyContact"> | string | null
     firstName?: StringNullableFilter<"LoyaltyContact"> | string | null
     birthday?: DateTimeNullableFilter<"LoyaltyContact"> | Date | string | null
-    subscribed?: BoolFilter<"LoyaltyContact"> | boolean
-    consentTextVersion?: StringFilter<"LoyaltyContact"> | string
+    smsSubscribed?: BoolFilter<"LoyaltyContact"> | boolean
+    emailSubscribed?: BoolFilter<"LoyaltyContact"> | boolean
+    consentTextVersion?: StringNullableFilter<"LoyaltyContact"> | string | null
     consentTimestamp?: DateTimeFilter<"LoyaltyContact"> | Date | string
     consentIp?: StringNullableFilter<"LoyaltyContact"> | string | null
     unsubscribedAt?: DateTimeNullableFilter<"LoyaltyContact"> | Date | string | null
     createdAt?: DateTimeFilter<"LoyaltyContact"> | Date | string
-  }, "id" | "projectId_phone">
+  }, "id" | "projectId_phone" | "projectId_email">
 
   export type LoyaltyContactOrderByWithAggregationInput = {
     id?: SortOrder
     projectId?: SortOrder
-    phone?: SortOrder
+    phone?: SortOrderInput | SortOrder
+    email?: SortOrderInput | SortOrder
     firstName?: SortOrderInput | SortOrder
     birthday?: SortOrderInput | SortOrder
-    subscribed?: SortOrder
-    consentTextVersion?: SortOrder
+    smsSubscribed?: SortOrder
+    emailSubscribed?: SortOrder
+    consentTextVersion?: SortOrderInput | SortOrder
     consentTimestamp?: SortOrder
     consentIp?: SortOrderInput | SortOrder
     unsubscribedAt?: SortOrderInput | SortOrder
@@ -27493,11 +27544,13 @@ export namespace Prisma {
     NOT?: LoyaltyContactScalarWhereWithAggregatesInput | LoyaltyContactScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"LoyaltyContact"> | string
     projectId?: StringWithAggregatesFilter<"LoyaltyContact"> | string
-    phone?: StringWithAggregatesFilter<"LoyaltyContact"> | string
+    phone?: StringNullableWithAggregatesFilter<"LoyaltyContact"> | string | null
+    email?: StringNullableWithAggregatesFilter<"LoyaltyContact"> | string | null
     firstName?: StringNullableWithAggregatesFilter<"LoyaltyContact"> | string | null
     birthday?: DateTimeNullableWithAggregatesFilter<"LoyaltyContact"> | Date | string | null
-    subscribed?: BoolWithAggregatesFilter<"LoyaltyContact"> | boolean
-    consentTextVersion?: StringWithAggregatesFilter<"LoyaltyContact"> | string
+    smsSubscribed?: BoolWithAggregatesFilter<"LoyaltyContact"> | boolean
+    emailSubscribed?: BoolWithAggregatesFilter<"LoyaltyContact"> | boolean
+    consentTextVersion?: StringNullableWithAggregatesFilter<"LoyaltyContact"> | string | null
     consentTimestamp?: DateTimeWithAggregatesFilter<"LoyaltyContact"> | Date | string
     consentIp?: StringNullableWithAggregatesFilter<"LoyaltyContact"> | string | null
     unsubscribedAt?: DateTimeNullableWithAggregatesFilter<"LoyaltyContact"> | Date | string | null
@@ -27510,6 +27563,7 @@ export namespace Prisma {
     NOT?: LoyaltyCampaignWhereInput | LoyaltyCampaignWhereInput[]
     id?: StringFilter<"LoyaltyCampaign"> | string
     projectId?: StringFilter<"LoyaltyCampaign"> | string
+    channel?: StringFilter<"LoyaltyCampaign"> | string
     message?: StringFilter<"LoyaltyCampaign"> | string
     type?: StringFilter<"LoyaltyCampaign"> | string
     recipientCount?: IntFilter<"LoyaltyCampaign"> | number
@@ -27519,6 +27573,7 @@ export namespace Prisma {
   export type LoyaltyCampaignOrderByWithRelationInput = {
     id?: SortOrder
     projectId?: SortOrder
+    channel?: SortOrder
     message?: SortOrder
     type?: SortOrder
     recipientCount?: SortOrder
@@ -27531,6 +27586,7 @@ export namespace Prisma {
     OR?: LoyaltyCampaignWhereInput[]
     NOT?: LoyaltyCampaignWhereInput | LoyaltyCampaignWhereInput[]
     projectId?: StringFilter<"LoyaltyCampaign"> | string
+    channel?: StringFilter<"LoyaltyCampaign"> | string
     message?: StringFilter<"LoyaltyCampaign"> | string
     type?: StringFilter<"LoyaltyCampaign"> | string
     recipientCount?: IntFilter<"LoyaltyCampaign"> | number
@@ -27540,6 +27596,7 @@ export namespace Prisma {
   export type LoyaltyCampaignOrderByWithAggregationInput = {
     id?: SortOrder
     projectId?: SortOrder
+    channel?: SortOrder
     message?: SortOrder
     type?: SortOrder
     recipientCount?: SortOrder
@@ -27557,6 +27614,7 @@ export namespace Prisma {
     NOT?: LoyaltyCampaignScalarWhereWithAggregatesInput | LoyaltyCampaignScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"LoyaltyCampaign"> | string
     projectId?: StringWithAggregatesFilter<"LoyaltyCampaign"> | string
+    channel?: StringWithAggregatesFilter<"LoyaltyCampaign"> | string
     message?: StringWithAggregatesFilter<"LoyaltyCampaign"> | string
     type?: StringWithAggregatesFilter<"LoyaltyCampaign"> | string
     recipientCount?: IntWithAggregatesFilter<"LoyaltyCampaign"> | number
@@ -28980,11 +29038,13 @@ export namespace Prisma {
   export type LoyaltyContactCreateInput = {
     id?: string
     projectId: string
-    phone: string
+    phone?: string | null
+    email?: string | null
     firstName?: string | null
     birthday?: Date | string | null
-    subscribed?: boolean
-    consentTextVersion: string
+    smsSubscribed?: boolean
+    emailSubscribed?: boolean
+    consentTextVersion?: string | null
     consentTimestamp?: Date | string
     consentIp?: string | null
     unsubscribedAt?: Date | string | null
@@ -28994,11 +29054,13 @@ export namespace Prisma {
   export type LoyaltyContactUncheckedCreateInput = {
     id?: string
     projectId: string
-    phone: string
+    phone?: string | null
+    email?: string | null
     firstName?: string | null
     birthday?: Date | string | null
-    subscribed?: boolean
-    consentTextVersion: string
+    smsSubscribed?: boolean
+    emailSubscribed?: boolean
+    consentTextVersion?: string | null
     consentTimestamp?: Date | string
     consentIp?: string | null
     unsubscribedAt?: Date | string | null
@@ -29008,11 +29070,13 @@ export namespace Prisma {
   export type LoyaltyContactUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     projectId?: StringFieldUpdateOperationsInput | string
-    phone?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
     birthday?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    subscribed?: BoolFieldUpdateOperationsInput | boolean
-    consentTextVersion?: StringFieldUpdateOperationsInput | string
+    smsSubscribed?: BoolFieldUpdateOperationsInput | boolean
+    emailSubscribed?: BoolFieldUpdateOperationsInput | boolean
+    consentTextVersion?: NullableStringFieldUpdateOperationsInput | string | null
     consentTimestamp?: DateTimeFieldUpdateOperationsInput | Date | string
     consentIp?: NullableStringFieldUpdateOperationsInput | string | null
     unsubscribedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -29022,11 +29086,13 @@ export namespace Prisma {
   export type LoyaltyContactUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     projectId?: StringFieldUpdateOperationsInput | string
-    phone?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
     birthday?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    subscribed?: BoolFieldUpdateOperationsInput | boolean
-    consentTextVersion?: StringFieldUpdateOperationsInput | string
+    smsSubscribed?: BoolFieldUpdateOperationsInput | boolean
+    emailSubscribed?: BoolFieldUpdateOperationsInput | boolean
+    consentTextVersion?: NullableStringFieldUpdateOperationsInput | string | null
     consentTimestamp?: DateTimeFieldUpdateOperationsInput | Date | string
     consentIp?: NullableStringFieldUpdateOperationsInput | string | null
     unsubscribedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -29036,11 +29102,13 @@ export namespace Prisma {
   export type LoyaltyContactCreateManyInput = {
     id?: string
     projectId: string
-    phone: string
+    phone?: string | null
+    email?: string | null
     firstName?: string | null
     birthday?: Date | string | null
-    subscribed?: boolean
-    consentTextVersion: string
+    smsSubscribed?: boolean
+    emailSubscribed?: boolean
+    consentTextVersion?: string | null
     consentTimestamp?: Date | string
     consentIp?: string | null
     unsubscribedAt?: Date | string | null
@@ -29050,11 +29118,13 @@ export namespace Prisma {
   export type LoyaltyContactUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     projectId?: StringFieldUpdateOperationsInput | string
-    phone?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
     birthday?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    subscribed?: BoolFieldUpdateOperationsInput | boolean
-    consentTextVersion?: StringFieldUpdateOperationsInput | string
+    smsSubscribed?: BoolFieldUpdateOperationsInput | boolean
+    emailSubscribed?: BoolFieldUpdateOperationsInput | boolean
+    consentTextVersion?: NullableStringFieldUpdateOperationsInput | string | null
     consentTimestamp?: DateTimeFieldUpdateOperationsInput | Date | string
     consentIp?: NullableStringFieldUpdateOperationsInput | string | null
     unsubscribedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -29064,11 +29134,13 @@ export namespace Prisma {
   export type LoyaltyContactUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     projectId?: StringFieldUpdateOperationsInput | string
-    phone?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
     birthday?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    subscribed?: BoolFieldUpdateOperationsInput | boolean
-    consentTextVersion?: StringFieldUpdateOperationsInput | string
+    smsSubscribed?: BoolFieldUpdateOperationsInput | boolean
+    emailSubscribed?: BoolFieldUpdateOperationsInput | boolean
+    consentTextVersion?: NullableStringFieldUpdateOperationsInput | string | null
     consentTimestamp?: DateTimeFieldUpdateOperationsInput | Date | string
     consentIp?: NullableStringFieldUpdateOperationsInput | string | null
     unsubscribedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -29078,6 +29150,7 @@ export namespace Prisma {
   export type LoyaltyCampaignCreateInput = {
     id?: string
     projectId: string
+    channel?: string
     message: string
     type: string
     recipientCount: number
@@ -29087,6 +29160,7 @@ export namespace Prisma {
   export type LoyaltyCampaignUncheckedCreateInput = {
     id?: string
     projectId: string
+    channel?: string
     message: string
     type: string
     recipientCount: number
@@ -29096,6 +29170,7 @@ export namespace Prisma {
   export type LoyaltyCampaignUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     projectId?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     recipientCount?: IntFieldUpdateOperationsInput | number
@@ -29105,6 +29180,7 @@ export namespace Prisma {
   export type LoyaltyCampaignUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     projectId?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     recipientCount?: IntFieldUpdateOperationsInput | number
@@ -29114,6 +29190,7 @@ export namespace Prisma {
   export type LoyaltyCampaignCreateManyInput = {
     id?: string
     projectId: string
+    channel?: string
     message: string
     type: string
     recipientCount: number
@@ -29123,6 +29200,7 @@ export namespace Prisma {
   export type LoyaltyCampaignUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     projectId?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     recipientCount?: IntFieldUpdateOperationsInput | number
@@ -29132,6 +29210,7 @@ export namespace Prisma {
   export type LoyaltyCampaignUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     projectId?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     recipientCount?: IntFieldUpdateOperationsInput | number
@@ -30226,13 +30305,20 @@ export namespace Prisma {
     phone: string
   }
 
+  export type LoyaltyContactProjectIdEmailCompoundUniqueInput = {
+    projectId: string
+    email: string
+  }
+
   export type LoyaltyContactCountOrderByAggregateInput = {
     id?: SortOrder
     projectId?: SortOrder
     phone?: SortOrder
+    email?: SortOrder
     firstName?: SortOrder
     birthday?: SortOrder
-    subscribed?: SortOrder
+    smsSubscribed?: SortOrder
+    emailSubscribed?: SortOrder
     consentTextVersion?: SortOrder
     consentTimestamp?: SortOrder
     consentIp?: SortOrder
@@ -30244,9 +30330,11 @@ export namespace Prisma {
     id?: SortOrder
     projectId?: SortOrder
     phone?: SortOrder
+    email?: SortOrder
     firstName?: SortOrder
     birthday?: SortOrder
-    subscribed?: SortOrder
+    smsSubscribed?: SortOrder
+    emailSubscribed?: SortOrder
     consentTextVersion?: SortOrder
     consentTimestamp?: SortOrder
     consentIp?: SortOrder
@@ -30258,9 +30346,11 @@ export namespace Prisma {
     id?: SortOrder
     projectId?: SortOrder
     phone?: SortOrder
+    email?: SortOrder
     firstName?: SortOrder
     birthday?: SortOrder
-    subscribed?: SortOrder
+    smsSubscribed?: SortOrder
+    emailSubscribed?: SortOrder
     consentTextVersion?: SortOrder
     consentTimestamp?: SortOrder
     consentIp?: SortOrder
@@ -30271,6 +30361,7 @@ export namespace Prisma {
   export type LoyaltyCampaignCountOrderByAggregateInput = {
     id?: SortOrder
     projectId?: SortOrder
+    channel?: SortOrder
     message?: SortOrder
     type?: SortOrder
     recipientCount?: SortOrder
@@ -30284,6 +30375,7 @@ export namespace Prisma {
   export type LoyaltyCampaignMaxOrderByAggregateInput = {
     id?: SortOrder
     projectId?: SortOrder
+    channel?: SortOrder
     message?: SortOrder
     type?: SortOrder
     recipientCount?: SortOrder
@@ -30293,6 +30385,7 @@ export namespace Prisma {
   export type LoyaltyCampaignMinOrderByAggregateInput = {
     id?: SortOrder
     projectId?: SortOrder
+    channel?: SortOrder
     message?: SortOrder
     type?: SortOrder
     recipientCount?: SortOrder

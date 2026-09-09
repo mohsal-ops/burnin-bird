@@ -111,7 +111,7 @@ export default function CartSideBar({ cartItems: initialItems, cartId }: { cartI
 
 
     // Count only real line items (a delivery order also has a phantom
-    // address/contact row with no name/price — never count that).
+    // address/contact row with no name/price - never count that).
     const quantity = cartItems.filter((item) => item.name != null && item.price).length
     // item.price is the per-unit finalPrice set in schedualePickupModal (base price + sides),
     // so sides are already folded in here - no separate sides total needs to be added.

@@ -3,7 +3,7 @@ import db from "@/db/db";
 import { LOYALTY_PROJECT_ID } from "@/lib/loyalty";
 
 // Brevo unsubscribe / STOP webhook. When a contact texts STOP (or unsubscribes),
-// Brevo posts here — we flip subscribed=false + set unsubscribedAt so the
+// Brevo posts here - we flip subscribed=false + set unsubscribedAt so the
 // dashboard reflects real status and no further sends go to that number.
 // Configure this URL in Brevo with ?key=<BREVO_WEBHOOK_SECRET>.
 export const runtime = "nodejs";
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
     // Match with or without a leading "+".
     await db.loyaltyContact.updateMany({
       where: { projectId: LOYALTY_PROJECT_ID, phone: { in: [phone, phone.replace(/^\+/, ""), `+${phone.replace(/^\+/, "")}`] } },
-      data: { subscribed: false, unsubscribedAt: new Date() },
+      data: { smsSubscribed: false, unsubscribedAt: new Date() },
     });
     return NextResponse.json({ ok: true });
   } catch (e) {

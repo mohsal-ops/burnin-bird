@@ -1,4 +1,4 @@
-// Server-only Uber Direct client (customer-based Direct API — courier dispatch,
+// Server-only Uber Direct client (customer-based Direct API - courier dispatch,
 // NOT the Uber Eats marketplace). Manual pickup/dropoff addresses, no store or
 // menu sync, no commission. Never import this into a client component; it reads
 // the Uber secret.
@@ -18,7 +18,7 @@ function creds() {
   const customerId = process.env.UBER_DIRECT_CUSTOMER_ID;
   if (!clientId || !clientSecret || !customerId) {
     throw new Error(
-      "Uber Direct is not configured — set UBER_DIRECT_CLIENT_ID, UBER_DIRECT_CLIENT_SECRET, UBER_DIRECT_CUSTOMER_ID.",
+      "Uber Direct is not configured - set UBER_DIRECT_CLIENT_ID, UBER_DIRECT_CLIENT_SECRET, UBER_DIRECT_CUSTOMER_ID.",
     );
   }
   return { clientId, clientSecret, customerId };

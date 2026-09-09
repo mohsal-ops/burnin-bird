@@ -19,7 +19,7 @@ const STATIC_ROUTES: { path: string; priority: number; changeFrequency: Metadata
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Never let the sitemap's DB read fail a production build (e.g. a fresh DB
   // that hasn't been migrated yet, or a transient DB outage). Fall back to the
-  // static routes and log — the sitemap regenerates on the next build/request.
+  // static routes and log - the sitemap regenerates on the next build/request.
   let posts: { id: string; createdAt: Date }[] = [];
   try {
     posts = await db.post.findMany({

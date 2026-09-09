@@ -45,7 +45,7 @@ export async function POST(req: Request) {
     // Uber Direct: fetch a REAL courier quote for delivery orders, only when the
     // owner has enabled it. Store it on the cart so checkout can add the fee and
     // the post-payment webhook can dispatch with this quote. Never fabricate a
-    // fee, and never let a quote failure block the order — fall back to pickup.
+    // fee, and never let a quote failure block the order - fall back to pickup.
     let delivery: {
       available: boolean;
       feeCents?: number;
@@ -76,7 +76,7 @@ export async function POST(req: Request) {
         delivery = {
           available: false,
           reason:
-            "Delivery isn't available for this address right now — pickup is still available.",
+            "Delivery isn't available for this address right now - pickup is still available.",
         };
       }
     }

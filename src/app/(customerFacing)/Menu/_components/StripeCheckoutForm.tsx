@@ -11,6 +11,7 @@ import { FormEvent, useState } from "react"
 import { undefined, z } from "zod"
 import { useFormState } from "react-dom"
 import PageHeader from "../../_components/PageHeader"
+import LoyaltySignupForm from "../../rewards/_components/LoyaltySignupForm"
 
 type CheckoutFormProps = {
     priceInCents: number
@@ -18,9 +19,10 @@ type CheckoutFormProps = {
     clientSecret: string
     loyaltyEnabled?: boolean
     loyaltyConsentText?: string
+    loyaltyIncentive?: string
 }
 export function StripeCheckoutForm(
-    { priceInCents, deliveryFeeInCents = 0, clientSecret, loyaltyEnabled = false, loyaltyConsentText = ""
+    { priceInCents, deliveryFeeInCents = 0, clientSecret, loyaltyEnabled = false, loyaltyConsentText = "", loyaltyIncentive = ""
 
     }: CheckoutFormProps) {
     const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY as string)
@@ -30,7 +32,7 @@ export function StripeCheckoutForm(
         <div className=" max-w-5xl mt-3 w-full mx-auto space-y-8 ">
             <PageHeader>Checkout</PageHeader>
             <Elements options={{ clientSecret }} stripe={stripePromise}>
-                <Form priceInCents={priceInCents} deliveryFeeInCents={deliveryFeeInCents} loyaltyEnabled={loyaltyEnabled} loyaltyConsentText={loyaltyConsentText} />
+                <Form priceInCents={priceInCents} deliveryFeeInCents={deliveryFeeInCents} loyaltyEnabled={loyaltyEnabled} loyaltyConsentText={loyaltyConsentText} loyaltyIncentive={loyaltyIncentive} />
             </Elements>
         </div>
     )
@@ -39,45 +41,23 @@ export function StripeCheckoutForm(
 
 
 
-function Form({ priceInCents, deliveryFeeInCents = 0, loyaltyEnabled = false, loyaltyConsentText = "" }: { priceInCents: number; deliveryFeeInCents?: number; loyaltyEnabled?: boolean; loyaltyConsentText?: string }) {
+function Form({ priceInCents, deliveryFeeInCents = 0, loyaltyEnabled = false, loyaltyConsentText = "", loyaltyIncentive = "" }: { priceInCents: number; deliveryFeeInCents?: number; loyaltyEnabled?: boolean; loyaltyConsentText?: string; loyaltyIncentive?: string }) {
     const [isLoading, setIsLoading] = useState(false);
     const [ErrorMessage, setErrorMessage] = useState<string>()
     const [email, setEmail] = useState<string>()
-    // SMS marketing opt-in (only when the loyalty add-on is enabled). Unchecked by
-    // default — never pre-checked (that's not valid consent).
-    const [smsOptIn, setSmsOptIn] = useState(false)
-    const [smsPhone, setSmsPhone] = useState("")
-    const [smsBirthday, setSmsBirthday] = useState("")
-
-
 
     const stripe = useStripe()
     const elements = useElements()
 
     async function OnsubmitHandler(e: FormEvent) {
         e.preventDefault()
-        console.log('start')
         if (stripe == null || elements == null || email == null) return
 
         setIsLoading(true)
-        console.log('start')
 
-        // Record the SMS opt-in (best-effort — never blocks the payment).
-        if (loyaltyEnabled && smsOptIn && smsPhone.trim()) {
-            try {
-                await fetch("/api/loyalty/subscribe", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        phone: smsPhone,
-                        birthday: smsBirthday || undefined,
-                        consentTextVersion: loyaltyConsentText,
-                    }),
-                })
-            } catch { /* opt-in failure must not block checkout */ }
-        }
-
-
+        // Loyalty opt-in is now its own action via <LoyaltySignupForm/> below -
+        // it posts to /api/loyalty/subscribe on its own button, independent of
+        // (and never blocking) the payment.
 
         stripe.confirmPayment({
             elements, confirmParams:
@@ -117,17 +97,12 @@ function Form({ priceInCents, deliveryFeeInCents = 0, loyaltyEnabled = false, lo
                     <LinkAuthenticationElement onChange={e => setEmail(e.value.email)} />
                 </div>
                 {loyaltyEnabled && (
-                    <div className="mt-4 rounded-xl border border-border p-3">
-                        <label className="flex items-start gap-2 text-sm">
-                            <input type="checkbox" checked={smsOptIn} onChange={e => setSmsOptIn(e.target.checked)} className="mt-0.5 h-4 w-4 accent-primary" />
-                            <span>{loyaltyConsentText}</span>
-                        </label>
-                        {smsOptIn && (
-                            <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                                <input type="tel" value={smsPhone} onChange={e => setSmsPhone(e.target.value)} placeholder="Mobile number" className="rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary" />
-                                <input type="date" value={smsBirthday} onChange={e => setSmsBirthday(e.target.value)} title="Birthday (optional)" className="rounded-lg border border-border bg-background px-3 py-2 text-sm text-muted-foreground outline-none focus:border-primary" />
-                            </div>
-                        )}
+                    <div className="mt-4">
+                        <LoyaltySignupForm
+                            loyaltyEnabled={loyaltyEnabled}
+                            consentText={loyaltyConsentText}
+                            incentive={loyaltyIncentive}
+                        />
                     </div>
                 )}
             </CardContent>

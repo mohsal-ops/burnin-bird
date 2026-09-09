@@ -19,7 +19,7 @@ export function DeliverySettingsForm({ initial }: { initial: UberDirectSettings 
   const [mode, setMode] = useState<UberDirectMode>(initial.mode);
   const [pending, startTransition] = useTransition();
 
-  // Delivery on this platform IS Uber Direct — so pickup/delivery options only
+  // Delivery on this platform IS Uber Direct - so pickup/delivery options only
   // matter once it's on. Turning it off falls back to pickup-only.
   const toggle = () =>
     setEnabled((v) => {
@@ -47,7 +47,7 @@ export function DeliverySettingsForm({ initial }: { initial: UberDirectSettings 
             <div>
               <p className="font-semibold text-stone-800">Offer delivery (Uber Direct)</p>
               <p className="mt-0.5 text-sm text-stone-500">
-                A real Uber courier is dispatched after payment — no marketplace, no commission.
+                A real Uber courier is dispatched after payment - no marketplace, no commission.
                 Needs your Uber Direct credentials; if none is available the order falls back to pickup.
               </p>
             </div>

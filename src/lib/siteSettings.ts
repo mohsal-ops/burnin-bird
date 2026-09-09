@@ -26,7 +26,7 @@ export type UberDirectMode = "both" | "delivery_only" | "pickup_only";
 export type UberDirectSettings = { enabled: boolean; mode: UberDirectMode };
 
 /**
- * Per-restaurant Uber Direct courier-delivery config. OFF by default — a client
+ * Per-restaurant Uber Direct courier-delivery config. OFF by default - a client
  * only gets courier delivery once they've bought the add-on and the owner flips
  * this on in admin. When disabled the checkout behaves exactly as before.
  */

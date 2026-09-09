@@ -13,7 +13,7 @@ export default async function DeliverySettingsPage() {
           <PageHeader>Delivery</PageHeader>
           <p className="mt-1 max-w-2xl text-sm text-stone-500">
             By default your site takes <span className="font-medium text-stone-700">pickup</span> orders
-            only. Turn on delivery to have a real Uber courier bring orders to customers — straight from
+            only. Turn on delivery to have a real Uber courier bring orders to customers - straight from
             your own site, with no marketplace commission.
           </p>
         </div>

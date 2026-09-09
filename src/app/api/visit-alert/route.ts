@@ -10,7 +10,7 @@ import { verifyAdminSessionToken } from "@/lib/adminSession";
 const MUTE_COOKIE = "va_mute";
 const MUTE_MAX_AGE = 60 * 60 * 24 * 90; // 90 days
 
-// Emails the AGENCY when a real browser opens the site — access tracking for the
+// Emails the AGENCY when a real browser opens the site - access tracking for the
 // private pre-launch Vercel link. Always goes to AGENCY_ALERT_EMAIL (the agency
 // inbox), never the client's OWNER_ALERT_EMAIL, so we still see who's poking at a
 // demo even after a real owner email is set on the project. The client only calls

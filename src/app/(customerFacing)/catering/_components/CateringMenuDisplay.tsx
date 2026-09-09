@@ -4,7 +4,7 @@ import { motion, useReducedMotion, type Variants } from "framer-motion";
 import Image from "next/image";
 import logo from "public/logo.png";
 
-// The inline catering menu — DESIGN ONLY. The content comes from
+// The inline catering menu - DESIGN ONLY. The content comes from
 // SITE_CONFIG.catering.menu (per client, so ⤓ Update never overwrites a
 // client's real menu) and is passed in by CateringPageClient. Optional
 // `pdfUrl` shows a download button; omit it to hide the button.
@@ -85,7 +85,7 @@ export default function CateringMenuDisplay({
         className="pointer-events-none absolute -top-24 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-brand/20 blur-3xl"
       />
 
-      {/* "Off the grill" — drifting smoke + a warm ember glow along the base.
+      {/* "Off the grill" - drifting smoke + a warm ember glow along the base.
           Gated by the catering.animation config; off under reduced motion. */}
       {showGrill && (
         <>

@@ -184,7 +184,7 @@ export async function updateProduct(
       console.error("Image save failed:", e);
     }
   } else if (removeImage && item.image) {
-    // Owner cleared the photo — delete the stored file and leave it empty.
+    // Owner cleared the photo - delete the stored file and leave it empty.
     await deleteImage(item.image);
     image = null;
   }

@@ -4,7 +4,7 @@ import { finalizeCart } from "@/lib/finalizeOrder";
 
 // Stripe payment webhook. Verifies the signature, then finalizes the paid cart
 // via the shared, idempotent finalizeCart (same path the success page uses, so
-// orders complete even if this webhook isn't configured — see finalizeOrder.ts).
+// orders complete even if this webhook isn't configured - see finalizeOrder.ts).
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_placeholder");
 
 export async function POST(req: NextRequest) {

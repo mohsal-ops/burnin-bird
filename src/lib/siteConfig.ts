@@ -70,8 +70,17 @@ export const SITE_CONFIG = {
   // site. Set it to whatever fits: "Order now", "View our menu", "See the menu"…
   menuCtaLabel: "Order now",
 
+  // Loyalty / rewards program.
+  loyalty: {
+    // PLACEHOLDER: set this to the real signup reward the owner confirms
+    // (e.g. "10% off your next order" or "a free regular side"), then it flows
+    // into the /rewards signup, the instant welcome text/email, the popup, and
+    // the success message. Do NOT turn the loyalty toggle on until this is set.
+    incentive: "[INCENTIVE]",
+  },
+
   // Inline catering menu shown on /catering (design in CateringMenuDisplay).
-  // Edit these to change the menu — the first section renders full-width.
+  // Edit these to change the menu - the first section renders full-width.
   // `pdfUrl` is optional (a downloadable PDF in /public); omit to hide the button.
   catering: {
     pdfUrl: "",
@@ -161,7 +170,7 @@ export const SITE_CONFIG = {
   // formula, override per client with real numbers when known).
   outreach: {
     enabled: true,
-    // Prices are NOT set here — they come from the single product-ladder source
+    // Prices are NOT set here - they come from the single product-ladder source
     // (src/lib/packages.ts, via getOutreach defaults): Pro anchor → Standard offer.
     discountReason: "review",
     trialLengthDays: 14,
@@ -263,7 +272,7 @@ export const SITE_CONFIG = {
   // Which optional sections are enabled (see FEATURES above)
   features: FEATURES,
 
-  // Product tier — gates site + admin sections (see PACKAGE_TIER above).
+  // Product tier - gates site + admin sections (see PACKAGE_TIER above).
   packageTier: PACKAGE_TIER,
 
   // Navbar links (derived from FEATURES + tier)

@@ -18,7 +18,7 @@ export default async function Success(props: any) {
   if (!paymentIntent) return notFound();
 
   // Finalize here too (idempotent) so the order completes, counts as revenue,
-  // dispatches the courier and notifies — even if the Stripe webhook isn't set up.
+  // dispatches the courier and notifies - even if the Stripe webhook isn't set up.
   if (paymentIntent.status === "succeeded") {
     await finalizeCart(paymentIntent.metadata.cartId, paymentIntent.receipt_email || "N/A");
   }
@@ -49,7 +49,7 @@ export default async function Success(props: any) {
             <div className="text-sm font-normal">
               <p>
                 A courier is being arranged
-                {cart.uberStatus ? ` — status: ${cart.uberStatus.replace(/_/g, " ")}` : ""}.
+                {cart.uberStatus ? ` - status: ${cart.uberStatus.replace(/_/g, " ")}` : ""}.
               </p>
               {cart.uberTrackingUrl && (
                 <a

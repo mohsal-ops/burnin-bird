@@ -51,7 +51,7 @@ export async function finalizeCart(
   if (cart.status === "completed") return { finalized: false, alreadyDone: true };
 
   // Atomically claim the cart. If another caller (webhook vs success page) already
-  // claimed it, count is 0 and we stop — no duplicate orders/dispatch/emails.
+  // claimed it, count is 0 and we stop - no duplicate orders/dispatch/emails.
   const claim = await db.cart.updateMany({
     where: { id: cartId, status: { not: "completed" } },
     data: { status: "completed" },
@@ -84,12 +84,12 @@ export async function finalizeCart(
     if (uber.enabled && deriveOrderType(first) === "delivery" && first.deliveryAddress) {
       if (!cart.uberQuoteId) {
         await sendTelegramMessage(
-          `⚠️ Delivery order ${cart.id} has no Uber quote — please arrange delivery manually.`,
+          `⚠️ Delivery order ${cart.id} has no Uber quote - please arrange delivery manually.`,
         ).catch(() => {});
       } else {
         const dropoffNotes = [first.apt ? `Apt/Suite: ${first.apt}` : "", first.instructions || ""]
           .filter(Boolean)
-          .join(" — ");
+          .join(" - ");
         const delivery = await createDelivery({
           quoteId: cart.uberQuoteId,
           pickup: {
@@ -224,7 +224,7 @@ export async function finalizeCart(
     console.error("Order email failed (order still saved):", e);
   }
 
-  // NOTE: no revalidatePath here — finalizeCart runs from the success PAGE (a
+  // NOTE: no revalidatePath here - finalizeCart runs from the success PAGE (a
   // Server Component render, where revalidatePath throws) as well as the webhook.
   // The admin Orders view auto-refreshes on its own, so it picks this up.
   return { finalized: true };

@@ -4,7 +4,7 @@ import { StripeCheckoutForm } from "../../_components/StripeCheckoutForm"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { deriveOrderType } from "@/lib/orderType"
-import { getLoyaltySettings } from "@/lib/loyalty"
+import { getLoyaltySettings, loyaltyIncentive } from "@/lib/loyalty"
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -70,6 +70,7 @@ export default async function Page({ params }: PageProps) {
       clientSecret={paymentIntent.client_secret}
       loyaltyEnabled={loyalty.enabled}
       loyaltyConsentText={loyalty.consentText}
+      loyaltyIncentive={loyaltyIncentive()}
     />
   )
 }

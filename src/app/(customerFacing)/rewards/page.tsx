@@ -1,14 +1,16 @@
 import logo from "public/logo.png";
 import { buildMetadata } from "@/lib/seo";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { getLogoUrl } from "@/lib/siteSettings";
+import { getLoyaltySettings, loyaltyIncentive } from "@/lib/loyalty";
+import { SITE_CONFIG } from "@/lib/siteConfig";
+import LoyaltySignupForm from "./_components/LoyaltySignupForm";
 
 export const metadata = buildMetadata("rewards");
 
 export default async function RewardsPage() {
-  const logoUrl = await getLogoUrl();
+  const [logoUrl, settings] = await Promise.all([getLogoUrl(), getLoyaltySettings()]);
+  const incentive = loyaltyIncentive();
   return (
     <div className="max-w-5xl mx-auto mt-10 space-y-16">
       {/* 🔥 HERO */}
@@ -30,7 +32,7 @@ export default async function RewardsPage() {
           </h1>
 
           <p className="mt-6 max-w-2xl mx-auto text-lg">
-            Every order earns points that turn into free The Wagon Wheel meals.
+            Every order earns points that turn into free {SITE_CONFIG.name} meals.
           </p>
         </div>
       </section>
@@ -42,7 +44,7 @@ export default async function RewardsPage() {
           <div className="rounded-2xl bg-linear-to-br from-brand to-brand-dark p-8 shadow-2xl -rotate-3">
             <div className="flex justify-between items-center mb-10">
               <span className="font-bold text-brand-foreground text-xl">
-                The Wagon Wheel
+                {SITE_CONFIG.name}
               </span>
               <span className="text-brand-foreground/70">Rewards</span>
             </div>
@@ -81,20 +83,23 @@ export default async function RewardsPage() {
         </div>
       </section>
 
-      {/* 📲 HOW IT WORKS */}
+      {/* 📲 JOIN */}
       <section className="px-6">
-        <Card className="p-10 text-center space-y-4">
-          <h3 className="text-2xl font-bold">No App. No Cards. No Hassle.</h3>
-
-          <p className="text-muted-foreground">
-            Just enter your phone number when ordering. Use the same number
-            every time to collect points.
-          </p>
-          <Link href="/Menu">
-            <Button variant="mainButton" size="lg">
-              Start Earning Today
-            </Button>
-          </Link>
+        <Card className="p-8 md:p-10 space-y-6">
+          <div className="text-center space-y-2">
+            <h3 className="text-2xl font-bold">No App. No Cards. No Hassle.</h3>
+            <p className="text-muted-foreground">
+              Join in seconds, then earn points on every order. Add your phone for
+              text specials, your email for news, or both.
+            </p>
+          </div>
+          <div className="mx-auto w-full max-w-lg">
+            <LoyaltySignupForm
+              loyaltyEnabled={settings.enabled}
+              consentText={settings.consentText}
+              incentive={incentive}
+            />
+          </div>
         </Card>
       </section>
     </div>

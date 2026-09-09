@@ -375,7 +375,7 @@ export default function SchedulePickupDialog({
 
       const data = await res.json();
       // Revalidate the shared cart key so the nav badge + sidebar update
-      // immediately (the bound mutate's first arg is DATA, not a key — passing a
+      // immediately (the bound mutate's first arg is DATA, not a key - passing a
       // key array here set bogus data and was the reason the count went stale).
       await mutate();
       router.refresh();
