@@ -11,6 +11,16 @@ import logo from "public/logo.png";
 export type CateringMenuItem = { name: string; qty?: string; price: number };
 export type CateringMenuSection = { title: string; note?: string; items: CateringMenuItem[] };
 
+// Drifting smoke plumes for the "off the grill" entrance. Each wisp is a soft
+// blurred blob that rises + fades on its own timer so the motion reads organic.
+const SMOKE: { left: string; size: number; rise: number; dur: number; delay: number }[] = [
+  { left: "12%", size: 150, rise: 260, dur: 7.0, delay: 0.0 },
+  { left: "34%", size: 190, rise: 320, dur: 8.5, delay: 1.6 },
+  { left: "56%", size: 140, rise: 240, dur: 6.5, delay: 0.8 },
+  { left: "74%", size: 200, rise: 340, dur: 9.0, delay: 2.4 },
+  { left: "88%", size: 130, rise: 220, dur: 7.5, delay: 3.2 },
+];
+
 export default function CateringMenuDisplay({
   menu,
   pdfUrl,
@@ -34,8 +44,11 @@ export default function CateringMenuDisplay({
   };
 
   const container: Variants = {
-    hidden: {},
-    show: { transition: { staggerChildren: reduce ? 0 : 0.08, delayChildren: 0.05 } },
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { duration: 0.5, staggerChildren: reduce ? 0 : 0.08, delayChildren: 0.05 },
+    },
   };
   const rise: Variants = {
     hidden: reduce ? { opacity: 0 } : { opacity: 0, y: 24 },
@@ -66,6 +79,41 @@ export default function CateringMenuDisplay({
         aria-hidden
         className="pointer-events-none absolute -top-24 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-brand/20 blur-3xl"
       />
+
+      {/* "Off the grill" — drifting smoke + a warm ember glow along the base.
+          Motion only when the viewer allows it; otherwise the card is static. */}
+      {!reduce && (
+        <>
+          <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+            {SMOKE.map((w, i) => (
+              <motion.span
+                key={i}
+                className="absolute rounded-full blur-2xl"
+                style={{
+                  left: w.left,
+                  bottom: -40,
+                  width: w.size,
+                  height: w.size,
+                  background:
+                    "radial-gradient(circle, rgba(255,255,255,0.16), rgba(255,255,255,0) 70%)",
+                }}
+                initial={{ opacity: 0, y: 0, scale: 0.6 }}
+                animate={{ opacity: [0, 0.5, 0], y: [0, -w.rise], scale: [0.6, 1.5] }}
+                transition={{ duration: w.dur, delay: w.delay, repeat: Infinity, ease: "easeOut" }}
+              />
+            ))}
+          </div>
+          <motion.div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 -bottom-12 h-36 blur-3xl"
+            style={{
+              background: "radial-gradient(ellipse at bottom, rgba(200,90,30,0.4), rgba(200,90,30,0) 70%)",
+            }}
+            animate={{ opacity: [0.35, 0.7, 0.35] }}
+            transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </>
+      )}
 
       <div className="relative">
         <motion.div variants={rise} className="mb-8 flex items-center justify-center gap-3 text-center">
