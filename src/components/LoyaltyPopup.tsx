@@ -68,11 +68,13 @@ export default function LoyaltyPopup({
   popupEnabled = true,
   consentText,
   incentive,
+  name = "our",
 }: {
   loyaltyEnabled: boolean;
   popupEnabled?: boolean;
   consentText: string;
   incentive: string;
+  name?: string;
 }) {
   const reduce = useReducedMotion();
   const pathname = usePathname() || "";
@@ -176,13 +178,13 @@ export default function LoyaltyPopup({
                     className="text-center"
                   >
                     <p className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-500">
-                      Southern Jerks Rewards
+                      {name} Rewards
                     </p>
                     <h2 className="mt-3 text-4xl font-extrabold leading-[1.05] text-brand sm:text-5xl">
-                      {incentive}
+                      Join the club.
                     </h2>
                     <p className="mt-3 text-base font-semibold text-stone-700">
-                      Yours the second you join the club. No app, no hassle.
+                      Sign up for {incentive}.
                     </p>
                     <div className="mt-6 flex flex-col items-center gap-3">
                       <Button variant="mainButton" size="lg" className="w-full" onClick={() => setStep("form")}>
@@ -229,7 +231,7 @@ export default function LoyaltyPopup({
                     <p className="text-4xl">🎉</p>
                     <h2 className="mt-2 text-2xl font-extrabold text-stone-800">You&apos;re in!</h2>
                     <p className="mt-1 text-sm text-stone-600">
-                      {incentive} is on its way - check your phone or inbox.
+                      Watch your phone or inbox for {incentive}.
                     </p>
                     <Button variant="mainButton" size="md" className="mt-5" onClick={finishCompleted}>
                       Awesome, thanks

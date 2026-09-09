@@ -82,14 +82,14 @@ export default function LoyaltySignupForm({
         email?: boolean;
       };
       if (!res.ok || !data.ok) {
-        setError(data.error || "Couldn't sign you up - please try again.");
+        setError(data.error || "Couldn't sign you up. Please try again.");
       } else if (onSuccess) {
         onSuccess({ sms: !!data.sms, email: !!data.email });
       } else {
         setDone({ sms: !!data.sms, email: !!data.email });
       }
     } catch {
-      setError("Couldn't sign you up - please try again.");
+      setError("Couldn't sign you up. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -107,7 +107,7 @@ export default function LoyaltySignupForm({
         <p className="text-2xl">🎉</p>
         <p className="mt-1 text-lg font-bold text-stone-800">You&apos;re in!</p>
         <p className="mt-1 text-sm text-stone-600">
-          Check <span className="font-semibold">{where}</span> for {incentive}.
+          Watch <span className="font-semibold">{where}</span> for {incentive}.
         </p>
       </div>
     );
@@ -119,7 +119,7 @@ export default function LoyaltySignupForm({
   return (
     <div className={`rounded-2xl border border-stone-200 bg-white p-5 text-left ${className}`}>
       <p className="text-sm font-semibold text-stone-800">
-        Join Southern Jerks Rewards - get {incentive}
+          Join the rewards club for {incentive}
       </p>
       <div className="mt-3 grid gap-2 sm:grid-cols-2">
         <input
@@ -133,7 +133,7 @@ export default function LoyaltySignupForm({
           type="date"
           value={birthday}
           onChange={(e) => setBirthday(e.target.value)}
-          title="Birthday (optional) - for a birthday treat"
+          title="Birthday (optional): for a birthday treat"
           className={`${inputCls} text-stone-500`}
         />
         <input
@@ -177,7 +177,7 @@ export default function LoyaltySignupForm({
             onChange={(e) => setEmailConsent(e.target.checked)}
             className="mt-0.5 h-4 w-4 accent-[#c85a1e]"
           />
-          <span>Email me specials and news - unsubscribe anytime.</span>
+          <span>Email me specials and news. Unsubscribe anytime.</span>
         </label>
       </div>
 

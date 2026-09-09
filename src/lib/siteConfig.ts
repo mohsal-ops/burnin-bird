@@ -72,11 +72,11 @@ export const SITE_CONFIG = {
 
   // Loyalty / rewards program.
   loyalty: {
-    // PLACEHOLDER: set this to the real signup reward the owner confirms
-    // (e.g. "10% off your next order" or "a free regular side"), then it flows
-    // into the /rewards signup, the instant welcome text/email, the popup, and
-    // the success message. Do NOT turn the loyalty toggle on until this is set.
-    incentive: "[INCENTIVE]",
+    // What members sign up FOR. A lowercase noun phrase, always used mid-sentence
+    // ("You're on the list for ...", "Sign up for ..."), so keep it generic and
+    // lowercase. Flows into the /rewards signup, the welcome text/email, the
+    // popup, and the success message.
+    incentive: "member specials, event invites, and offers you won't find anywhere else",
   },
 
   // Inline catering menu shown on /catering (design in CateringMenuDisplay).

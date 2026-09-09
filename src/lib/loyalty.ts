@@ -86,7 +86,7 @@ export function loyaltyIncentive(): string {
 /** Instant welcome text sent the moment someone opts in to SMS. */
 export function loyaltyWelcomeSms(): string {
   return withOptOut(
-    `Welcome to ${SITE_CONFIG.name} Rewards! Your reward: ${loyaltyIncentive()}. Show this text on your next visit.`,
+    `Welcome to ${SITE_CONFIG.name} Rewards! You're on the list for ${loyaltyIncentive()}.`,
   );
 }
 
@@ -98,8 +98,7 @@ export function loyaltyWelcomeEmailSubject(): string {
 export function loyaltyWelcomeEmailBody(): string {
   return (
     `<h2 style="margin:0 0 12px">Welcome to ${SITE_CONFIG.name} Rewards!</h2>` +
-    `<p style="font-size:15px;line-height:1.6;margin:0 0 8px">Thanks for joining. Here's your reward:</p>` +
-    `<p style="font-size:20px;font-weight:700;color:#c85a1e;margin:0 0 12px">${loyaltyIncentive()}</p>` +
+    `<p style="font-size:15px;line-height:1.6;margin:0 0 12px">Thanks for joining. You're on the list for ${loyaltyIncentive()}.</p>` +
     `<p style="font-size:15px;line-height:1.6;margin:0">See you soon 🍗</p>`
   );
 }

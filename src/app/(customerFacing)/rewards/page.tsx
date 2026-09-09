@@ -8,6 +8,10 @@ import LoyaltySignupForm from "./_components/LoyaltySignupForm";
 
 export const metadata = buildMetadata("rewards");
 
+// Always read the live loyalty settings (enabled + incentive), so the join form
+// reflects the toggle without a rebuild.
+export const dynamic = "force-dynamic";
+
 export default async function RewardsPage() {
   const [logoUrl, settings] = await Promise.all([getLogoUrl(), getLoyaltySettings()]);
   const incentive = loyaltyIncentive();
