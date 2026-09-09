@@ -135,6 +135,8 @@ export default async function Home() {
   // single indexed lookup, cheap enough to await directly here.
   const [
     heroImage,
+    heroImage2,
+    heroImage3,
     orderImage,
     featureBreakfast,
     featureComfort,
@@ -142,6 +144,8 @@ export default async function Home() {
     logoUrl,
   ] = await Promise.all([
     getSiteImage("home_hero"),
+    getSiteImage("home_hero_2"),
+    getSiteImage("home_hero_3"),
     getSiteImage("home_order"),
     getSiteImage("home_feature_1"),
     getSiteImage("home_feature_2"),
@@ -154,6 +158,7 @@ export default async function Home() {
       <FaqSchema />
       <TopSection
         heroImage={heroImage}
+        heroImages={[heroImage, heroImage2, heroImage3]}
         headline={homeText.headline}
         subheadline={homeText.subheadline}
         logoUrl={logoUrl}

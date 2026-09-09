@@ -2,6 +2,8 @@ import db from "@/db/db";
 
 export const DEFAULT_SITE_IMAGES = [
   { key: "home_hero", url: "/general/generalPages/mainImage.jpg", label: "Home Page Hero" },
+  { key: "home_hero_2", url: "/general/generalPages/enjoy.jpg", label: "Home Hero — Slide 2 (Catering)" },
+  { key: "home_hero_3", url: "/general/generalPages/vibe.jpg", label: "Home Hero — Slide 3 (Rewards)" },
   { key: "story_hero", url: "/general/generalPages/partners.jpg", label: "Our Story - Hero" },
   { key: "story_origin", url: "/general/generalPages/grandmother.jpg", label: "Our Story - Origin Section" },
   { key: "story_closing", url: "/general/generalPages/enjoy.jpg", label: "Our Story - Closing Section" },

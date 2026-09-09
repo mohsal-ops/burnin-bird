@@ -27,23 +27,32 @@ import { SITE_CONFIG } from "@/lib/siteConfig";
 
 export function TopSection({
   heroImage,
+  heroImages,
   headline,
   subheadline,
   logoUrl,
 }: {
   heroImage: string;
+  heroImages?: string[];
   headline?: string;
   subheadline?: string;
   logoUrl?: string;
 }) {
-  // Prefer the configured slide list. If a clone hasn't populated it, fall back
-  // to a single slide built from the (admin-editable) hero props so nothing
-  // breaks. Note: when heroSlides IS set, it drives the hero — the admin-set
-  // heroImage/headline/subheadline props are only used by the fallback.
+  // The config slide list is the DEFAULT; real dashboard values win per-slide.
+  // Merge the admin-uploaded hero images in by index, and let slide 1's
+  // headline/subheadline stay admin-text-editable (restoring what the /admin
+  // content editor drove before heroSlides existed). If heroSlides is ever
+  // emptied, fall back to a single slide from the hero props.
   const configured = SITE_CONFIG.home.heroSlides;
   const slides: HeroSlide[] =
     configured && configured.length > 0
-      ? configured
+      ? configured.map((s, i) => ({
+          ...s,
+          image: heroImages?.[i] || s.image,
+          ...(i === 0
+            ? { headline: headline || s.headline, subheadline: subheadline || s.subheadline }
+            : {}),
+        }))
       : [
           {
             image: heroImage,
