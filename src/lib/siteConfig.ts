@@ -70,6 +70,41 @@ export const SITE_CONFIG = {
   // site. Set it to whatever fits: "Order now", "View our menu", "See the menu"…
   menuCtaLabel: "Order now",
 
+  // Inline catering menu shown on /catering (design in CateringMenuDisplay).
+  // Edit these to change the menu — the first section renders full-width.
+  // `pdfUrl` is optional (a downloadable PDF in /public); omit to hide the button.
+  catering: {
+    pdfUrl: "",
+    menu: [
+      {
+        title: "Chicken",
+        note: "Each tray comes with rolls and pickles",
+        items: [
+          { name: "Hot Chicken Tenders", qty: "25 pieces", price: 65 },
+          { name: "Hot Chicken Tenders", qty: "50 pieces", price: 120 },
+          { name: "Wings", qty: "50 pieces", price: 75 },
+          { name: "Wings", qty: "100 pieces", price: 145 },
+        ],
+      },
+      {
+        title: "Sides",
+        items: [
+          { name: "Pan Mac & Cheese", price: 60 },
+          { name: "Pan Coleslaw", price: 40 },
+          { name: "Box of Fries", price: 35 },
+          { name: "Pan Baked Beans", price: 45 },
+        ],
+      },
+      {
+        title: "Extras",
+        items: [
+          { name: "Rolls (20)", price: 10 },
+          { name: "Comeback Sauce (pint)", price: 8 },
+        ],
+      },
+    ] as { title: string; note?: string; items: { name: string; qty?: string; price: number }[] }[],
+  },
+
   // Contact & Location
   address: "1829 M St NW, Washington, DC 20036",
   street: "1829 M St NW",
