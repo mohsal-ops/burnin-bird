@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import mainImg from "@/../public/general/generalPages/mainImage.jpg";
-import Logo from "@/../public/general/logo/logo.png";
 import PageHeader from "./PageHeader";
+import HeroCarousel, { type HeroSlide } from "./HeroCarousel";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { PiPackageFill } from "react-icons/pi";
 import { MdOutlineFamilyRestroom } from "react-icons/md";
@@ -22,7 +22,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { CartItem } from "generated/prisma";
 import { SecondSectionFeatured } from "./FeaturedSection";
-import LogoDriftBackground from "./LogoDriftBackground";
 import type { ItemWithSides } from "../page";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 
@@ -37,48 +36,25 @@ export function TopSection({
   subheadline?: string;
   logoUrl?: string;
 }) {
-  return (
-    <div className="flex relative overflow-hidden h-svh w-full sm:w-[85%] flex-col sm:flex-row bg-muted sm:rounded-3xl sm:p-2">
-      <LogoDriftBackground  veilClassName="bg-background/90" className="sm:rounded-3xl" />
-      <div className="sm:relative absolute z-30 bottom-20 flex flex-col gap-6 items-start h-full sm:justify-center justify-end mt-10 md:mb-20 md:w-1/2 p-5 md:p-12">
-         <Image
-          alt={`${SITE_CONFIG.name} logo`}
-          src={logoUrl || Logo}
-          width={120}
-          height={120}
-          className="h-28 w-28 rounded-full object-cover shadow-lg"
-        />
+  // Prefer the configured slide list. If a clone hasn't populated it, fall back
+  // to a single slide built from the (admin-editable) hero props so nothing
+  // breaks. Note: when heroSlides IS set, it drives the hero — the admin-set
+  // heroImage/headline/subheadline props are only used by the fallback.
+  const configured = SITE_CONFIG.home.heroSlides;
+  const slides: HeroSlide[] =
+    configured && configured.length > 0
+      ? configured
+      : [
+          {
+            image: heroImage,
+            headline: headline || SITE_CONFIG.home.heroHeadline,
+            subheadline: subheadline || SITE_CONFIG.home.heroSubHeadline,
+            ctaLabel: SITE_CONFIG.menuCtaLabel,
+            ctaHref: "/Menu",
+          },
+        ];
 
-        <span className="lg:text-5xl text-white sm:text-foreground text-4xl font-bold leading-10 lg:leading-15">
-          <h1 className="text-brand">
-            {headline || SITE_CONFIG.home.heroHeadline}
-          </h1>{" "}
-          {subheadline || SITE_CONFIG.home.heroSubHeadline}
-        </span>
-        <span className="font-semibold text-white sm:text-muted-foreground text-md">
-          {SITE_CONFIG.subTagline}
-        </span>
-        <Link href="/Menu">
-          <Button size="lg" variant="mainButton">
-            {SITE_CONFIG.menuCtaLabel}
-            <MdKeyboardArrowRight />
-          </Button>
-        </Link>
-      </div>
-
-      <div className="relative z-10 w-full md:w-1/2 sm:rounded-3xl overflow-hidden h-svh sm:h-full">
-        <Image
-          priority
-          fill
-          alt={`${SITE_CONFIG.name} homemade food`}
-          src={heroImage}
-          sizes="(max-width: 768px) 100vw, 50vw"
-          className="object-cover sm:brightness-100 brightness-[0.4]"
-        />
-        <div className="sm:hidden absolute inset-0 bg-linear-to-t from-black/70 via-black/25 to-transparent z-20"></div>
-      </div>
-    </div>
-  );
+  return <HeroCarousel slides={slides} logoUrl={logoUrl} subTagline={SITE_CONFIG.subTagline} />;
 }
 
 export function SecondSection({

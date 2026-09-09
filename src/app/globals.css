@@ -474,3 +474,11 @@ html body[data-scroll-locked] {
 }
 .logo-drift { animation: logoDrift 14s linear infinite; will-change: transform; }
 @media (prefers-reduced-motion: reduce) { .logo-drift { animation: none; } }
+
+/* Hero carousel progress bar (HeroCarousel.tsx): the active slide's segment
+   fills left-to-right over the dwell. Pure CSS so the global reduced-motion
+   rule above collapses it automatically; JS keeps the 6s dwell either way. */
+@keyframes heroProgress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}

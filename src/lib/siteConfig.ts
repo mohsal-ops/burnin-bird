@@ -149,6 +149,29 @@ export const SITE_CONFIG = {
   home: {
     heroHeadline: "DC's Premier Halal Hot Chicken",
     heroSubHeadline: "100% Halal, hormone-free chicken fried crisp with custom heat levels",
+    heroSlides: [
+      {
+        image: "/general/generalPages/mainImage.jpg",
+        headline: "DC's Premier Halal Hot Chicken",
+        subheadline: "100% halal, fried crisp, your heat level.",
+        ctaLabel: "Order now",
+        ctaHref: "/Menu",
+      },
+      {
+        image: "/general/generalPages/enjoy.jpg",
+        headline: "Now Booking Catering",
+        subheadline: "Feeding a crowd? We've got you covered.",
+        ctaLabel: "See Catering",
+        ctaHref: "/catering",
+      },
+      {
+        image: "/general/generalPages/vibe.jpg",
+        headline: "Earn Every Time You Order",
+        subheadline: "Join the rewards club and rack up perks.",
+        ctaLabel: "Join Rewards",
+        ctaHref: "/rewards",
+      },
+    ] as { image: string; headline: string; subheadline: string; ctaLabel: string; ctaHref: string }[],
     galleryTitle: "Burnin Bird Hot Chicken",
     gallerySubtitle: "1829 M St NW (Dupont Circle), Washington, DC",
     distinctiveFeatures: [
