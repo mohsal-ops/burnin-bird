@@ -106,7 +106,9 @@ export default function HeroCarousel({
       aria-roledescription="carousel"
       aria-label={`${SITE_CONFIG.name} highlights`}
     >
-      <LogoDriftBackground veilClassName="bg-background/90" className="sm:rounded-3xl" />
+      {/* Same veil as the reviews section (bg-muted/80) so the tiled logo pattern
+          reads as a subtle tint, not high-contrast white marks against near-black. */}
+      <LogoDriftBackground veilClassName="bg-muted/80" className="sm:rounded-3xl" />
 
       {/* Text column (Phase 0 layout preserved). subTagline is a constant kicker
           under the logo; the rotating trio (headline / subheadline / CTA) sits
