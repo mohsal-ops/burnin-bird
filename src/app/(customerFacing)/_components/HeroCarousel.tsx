@@ -97,7 +97,7 @@ export default function HeroCarousel({
 
   return (
     <div
-      className="flex relative overflow-hidden h-[calc(100svh-5rem)] w-full sm:w-[85%] flex-col sm:flex-row bg-stone-100 sm:rounded-3xl sm:p-2"
+      className="flex relative overflow-hidden h-[calc(100svh-5rem)] w-full sm:w-[85%] flex-col sm:flex-row bg-muted sm:rounded-3xl sm:p-2"
       onMouseEnter={pause}
       onMouseLeave={resume}
       onFocus={pause}
