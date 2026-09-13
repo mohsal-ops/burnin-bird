@@ -70,6 +70,11 @@ export const SITE_CONFIG = {
   // site. Set it to whatever fits: "Order now", "View our menu", "See the menu"…
   menuCtaLabel: "Order now",
 
+  // Email the agency when someone opens the PUBLIC website (pre-launch tracking).
+  // On by default; set false once a site is live so real customer traffic
+  // doesn't flood the inbox. Dashboard/preview visits are always tracked.
+  trackWebsiteVisits: true,
+
   // Loyalty / rewards program.
   loyalty: {
     // What members sign up FOR. A lowercase noun phrase, always used mid-sentence

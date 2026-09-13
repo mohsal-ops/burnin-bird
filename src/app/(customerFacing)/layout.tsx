@@ -5,6 +5,7 @@ import { Toaster } from "sonner";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { SITE_CONFIG } from "@/lib/siteConfig";
+import VisitAlert from "./_components/VisitAlert";
 import { getLogoUrl } from "@/lib/siteSettings";
 import { getLoyaltySettings, loyaltyIncentive } from "@/lib/loyalty";
 import LoadingScreen from "@/components/LoadingScreen";
@@ -26,6 +27,12 @@ export default async function Customerlayout({
     <SidebarProvider>
       {/* One-time branded intro on the public site (once per browser session) */}
       <LoadingScreen />
+      {/* Website visit alert (emails the agency when someone opens the public
+          site). On by default; a client can turn it off by setting
+          SITE_CONFIG.trackWebsiteVisits = false (e.g. once they're live and it
+          would just be customer noise). Dashboard/preview visits are tracked
+          separately in admin/layout.tsx. */}
+      {(SITE_CONFIG as { trackWebsiteVisits?: boolean }).trackWebsiteVisits !== false && <VisitAlert />}
       <TrialPopup />
       <DashboardBubble />
       <LoyaltyPopup
