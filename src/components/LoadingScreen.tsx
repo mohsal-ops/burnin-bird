@@ -5,7 +5,8 @@
 // no libraries.
 //
 // The dish is chosen by SITE_CONFIG.loaderStyle so one template serves every
-// client: "burger" (fast food), "coffee" (a matcha / latte cup), or "pizza".
+// client: "burger" (fast food), "coffee" (matcha / latte cup), "pizza",
+// "bowl" (rice bowl), or "grill" (BBQ / smokehouse / hot chicken).
 // Unknown values fall back to "burger" so template-sync is always safe.
 //
 // Plays ONCE PER BROWSER SESSION (sessionStorage) - refreshing or moving
@@ -16,7 +17,7 @@ import { useState, useEffect, useRef } from "react";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 
 type Phase = "assemble" | "hold" | "fadeOut";
-type Variant = "burger" | "coffee" | "pizza" | "bowl";
+type Variant = "burger" | "coffee" | "pizza" | "bowl" | "grill";
 
 const SESSION_KEY = "vega:introPlayed";
 const NAME = SITE_CONFIG.name;
@@ -27,7 +28,9 @@ const BRAND_DEEP = (SITE_CONFIG as { accentColor?: string }).accentColor || "#b8
 
 function resolveVariant(override?: Variant): Variant {
   const raw = override ?? (SITE_CONFIG as { loaderStyle?: string }).loaderStyle;
-  return raw === "coffee" || raw === "pizza" || raw === "burger" || raw === "bowl" ? raw : "burger";
+  return raw === "coffee" || raw === "pizza" || raw === "burger" || raw === "bowl" || raw === "grill"
+    ? raw
+    : "burger";
 }
 
 const ACCENTS: Record<Variant, { fill: string; shine: string }> = {
@@ -35,6 +38,7 @@ const ACCENTS: Record<Variant, { fill: string; shine: string }> = {
   coffee: { fill: "#4c8c5a", shine: "#7bb08a" },
   pizza: { fill: "#d94b2b", shine: "#e8834f" },
   bowl: { fill: "#f0dcae", shine: "#e9c78a" },
+  grill: { fill: "#e8621f", shine: "#f7b733" },
 };
 
 // Shine lines radiating OUTWARD from around the dish (SVG uses overflow:visible).
@@ -172,6 +176,45 @@ function FrontArt({ variant, phase }: { variant: Variant; phase: Phase }) {
               style={{ ...svgLayer, animation: popAnim(phase, b.d) }} />
           ))}
         </g>
+      </svg>
+    );
+  }
+
+  if (variant === "grill") {
+    return (
+      <svg width="94" viewBox="0 0 120 100" fill="none" style={{ overflow: "visible" }}>
+        {shine}
+        {/* Smoke rising off the grill */}
+        {["M 50,32 Q 46,25 50,19 Q 54,12 50,6", "M 60,31 Q 56,23 60,16 Q 64,8 60,2", "M 70,32 Q 66,26 70,20 Q 74,13 70,7"].map((d, i) => (
+          <path key={i} d={d} stroke="#121212" strokeWidth={1.5} fill="none" strokeLinecap="round"
+            style={{ opacity: 0.4, animation: `steam 2.1s ease-in-out ${500 + i * 260}ms infinite` }} />
+        ))}
+        {/* Legs */}
+        <g {...outline} style={{ ...svgLayer, animation: layerAnim(phase, 0) }}>
+          <path d="M 40,62 L 32,86" />
+          <path d="M 80,62 L 88,86" />
+          <path d="M 60,64 L 60,88" />
+        </g>
+        {/* Charcoal basin */}
+        <path d="M 32,56 Q 60,82 88,56" {...outline} style={{ ...svgLayer, animation: layerAnim(phase, 100) }} />
+        {/* Cooking-grate rim */}
+        <ellipse cx={60} cy={56} rx={29} ry={5.5} {...outline} style={{ ...svgLayer, animation: layerAnim(phase, 180) }} />
+        {/* Grate bars */}
+        <g stroke="#121212" strokeWidth={1.6} strokeLinecap="round" style={{ ...svgLayer, animation: layerAnim(phase, 240) }}>
+          <line x1={39} y1={54.5} x2={81} y2={54.5} />
+          <line x1={35} y1={56.5} x2={85} y2={56.5} />
+          <line x1={39} y1={58.5} x2={81} y2={58.5} />
+        </g>
+        {/* Flames licking up through the grate */}
+        <path d="M 57,53 C 51,46 58,41 55,33 C 61,37 60,45 64,41 C 68,47 64,53 57,53 Z"
+          fill={accent.fill} stroke="#121212" strokeWidth={1.3} strokeLinejoin="round"
+          style={{ ...svgLayer, animation: popAnim(phase, 360) }} />
+        <path d="M 68,53 C 64,48 69,44 67,38 C 71,41 70,46 73,44 C 76,48 72,53 68,53 Z"
+          fill={accent.shine} stroke="#121212" strokeWidth={1.1} strokeLinejoin="round"
+          style={{ ...svgLayer, animation: popAnim(phase, 460) }} />
+        <path d="M 47,53 C 44,49 48,45 47,40 C 50,43 49,47 52,45 C 54,49 51,53 47,53 Z"
+          fill={accent.fill} stroke="#121212" strokeWidth={1.1} strokeLinejoin="round"
+          style={{ ...svgLayer, animation: popAnim(phase, 540) }} />
       </svg>
     );
   }
