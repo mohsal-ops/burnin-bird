@@ -38,7 +38,7 @@ export default async function Adminlayout({
           site - it emailed on every live-site visit and flooded the inbox.
           Preview-only so it pings when a lead opens their dashboard, never for
           a logged-in owner (also muted server-side in /api/visit-alert). */}
-      {access.mode === "preview" && <VisitAlert />}
+      {access.mode === "preview" && <VisitAlert source="dashboard" />}
       <div className="md:flex">
         {/* One-time branded splash on a fresh admin load. */}
         <LoadingScreen />

@@ -48,20 +48,23 @@ export async function POST(req: NextRequest) {
     return res;
   }
 
-  const ip = getClientIp(req);
-  // Backstop: at most one visit alert per IP per 30 minutes.
-  if (isRateLimited(`visit-alert:${ip}`, 1, 30 * 60_000)) {
-    return NextResponse.json({ ok: true, skipped: true });
-  }
-
   let path = "/";
   let referrer = "";
+  let source: "site" | "dashboard" = "site";
   try {
     const body = await req.json();
     if (typeof body?.path === "string") path = body.path;
     if (typeof body?.referrer === "string") referrer = body.referrer;
+    if (body?.source === "dashboard" || body?.source === "site") source = body.source;
   } catch {
     /* body optional */
+  }
+
+  const ip = getClientIp(req);
+  // Backstop: at most one visit alert per IP per 30 minutes, PER source - so a
+  // dashboard/preview visit never rate-limits away the website's alert.
+  if (isRateLimited(`visit-alert:${source}:${ip}`, 1, 30 * 60_000)) {
+    return NextResponse.json({ ok: true, skipped: true });
   }
 
   const ua = req.headers.get("user-agent") ?? "unknown";
@@ -71,13 +74,19 @@ export async function POST(req: NextRequest) {
     timeStyle: "short",
   });
 
+  const where = source === "dashboard" ? "dashboard" : "website";
+  const subject =
+    source === "dashboard"
+      ? `Dashboard visit: ${SITE_CONFIG.name}`
+      : `Website visit: ${SITE_CONFIG.name}`;
+
   try {
     await sendMail({
       to,
-      subject: `Website visit: ${SITE_CONFIG.name}`,
+      subject,
       html: `
         <div style="font-family:system-ui,Segoe UI,sans-serif;font-size:15px;color:#1c1917">
-          <h2 style="margin:0 0 12px">Someone opened the ${SITE_CONFIG.name} website</h2>
+          <h2 style="margin:0 0 12px">Someone opened the ${SITE_CONFIG.name} ${where}</h2>
           <table style="border-collapse:collapse">
             <tr><td style="padding:4px 14px 4px 0;color:#78716c">Time</td><td>${when} (${SITE_CONFIG.timezone})</td></tr>
             <tr><td style="padding:4px 14px 4px 0;color:#78716c">Page</td><td>${path}</td></tr>
@@ -86,7 +95,7 @@ export async function POST(req: NextRequest) {
             <tr><td style="padding:4px 14px 4px 0;color:#78716c">Device</td><td style="max-width:420px">${ua}</td></tr>
           </table>
           <p style="margin-top:16px;color:#78716c;font-size:13px">
-            You're receiving this because website visit alerts are on (private pre-launch link).
+            You're receiving this because ${where} visit alerts are on.
             At most one email per visitor every couple of hours.
           </p>
         </div>`,

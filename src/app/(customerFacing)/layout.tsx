@@ -32,7 +32,7 @@ export default async function Customerlayout({
           SITE_CONFIG.trackWebsiteVisits = false (e.g. once they're live and it
           would just be customer noise). Dashboard/preview visits are tracked
           separately in admin/layout.tsx. */}
-      {(SITE_CONFIG as { trackWebsiteVisits?: boolean }).trackWebsiteVisits !== false && <VisitAlert />}
+      {(SITE_CONFIG as { trackWebsiteVisits?: boolean }).trackWebsiteVisits !== false && <VisitAlert source="site" />}
       <TrialPopup />
       <DashboardBubble />
       <LoyaltyPopup
