@@ -2,6 +2,7 @@ import QRCode from "qrcode";
 import db from "@/db/db";
 import { getLoyaltySettings, LOYALTY_PROJECT_ID } from "@/lib/loyalty";
 import { SITE_CONFIG } from "@/lib/siteConfig";
+import PageHeader from "../_components/pageHeader";
 import { LoyaltyDashboard } from "./_components/LoyaltyDashboard";
 
 export const dynamic = "force-dynamic";
@@ -18,9 +19,20 @@ export default async function LoyaltyPage() {
     db.loyaltyContact.count({ where: { projectId: LOYALTY_PROJECT_ID, smsSubscribed: true } }),
     db.loyaltyContact.count({ where: { projectId: LOYALTY_PROJECT_ID, emailSubscribed: true } }),
     db.loyaltyContact.count({ where: { projectId: LOYALTY_PROJECT_ID, unsubscribedAt: { not: null } } }),
+    // The real contact rows - powers both the growth chart and the new
+    // browsable subscriber list.
     db.loyaltyContact.findMany({
       where: { projectId: LOYALTY_PROJECT_ID },
-      select: { createdAt: true },
+      select: {
+        id: true,
+        firstName: true,
+        phone: true,
+        email: true,
+        smsSubscribed: true,
+        emailSubscribed: true,
+        unsubscribedAt: true,
+        createdAt: true,
+      },
       orderBy: { createdAt: "asc" },
     }),
     db.loyaltyCampaign.findMany({
@@ -42,26 +54,43 @@ export default async function LoyaltyPage() {
     days.push({ label: `${d.getUTCMonth() + 1}/${d.getUTCDate()}`, count });
   }
 
+  const subscribers = contacts.map((c) => ({
+    id: c.id,
+    firstName: c.firstName,
+    phone: c.phone,
+    email: c.email,
+    smsSubscribed: c.smsSubscribed,
+    emailSubscribed: c.emailSubscribed,
+    optedOut: !!c.unsubscribedAt,
+    createdAt: c.createdAt.toISOString(),
+  }));
+
   return (
-    <div className="mx-auto max-w-3xl p-6">
-      <h1 className="text-2xl font-bold text-stone-800">Loyalty & text marketing</h1>
-      <LoyaltyDashboard
-        settings={settings}
-        smsSubscribed={smsSubscribed}
-        emailSubscribed={emailSubscribed}
-        optedOut={optedOut}
-        growth={days}
-        qrDataUrl={qrDataUrl}
-        rewardsUrl={rewardsUrl}
-        campaigns={campaigns.map((c) => ({
-          id: c.id,
-          channel: c.channel,
-          message: c.message,
-          type: c.type,
-          recipientCount: c.recipientCount,
-          sentAt: c.sentAt.toISOString(),
-        }))}
-      />
+    <div className="lg:flex justify-center">
+      <div className="p-5 space-y-4 w-full lg:w-[85%]">
+        <PageHeader>Loyalty &amp; text marketing</PageHeader>
+        <p className="text-sm text-stone-500 px-4 md:px-0">
+          Grow your rewards list, see exactly who&apos;s on it, and send text or email specials.
+        </p>
+        <LoyaltyDashboard
+          settings={settings}
+          smsSubscribed={smsSubscribed}
+          emailSubscribed={emailSubscribed}
+          optedOut={optedOut}
+          growth={days}
+          subscribers={subscribers}
+          qrDataUrl={qrDataUrl}
+          rewardsUrl={rewardsUrl}
+          campaigns={campaigns.map((c) => ({
+            id: c.id,
+            channel: c.channel,
+            message: c.message,
+            type: c.type,
+            recipientCount: c.recipientCount,
+            sentAt: c.sentAt.toISOString(),
+          }))}
+        />
+      </div>
     </div>
   );
 }
