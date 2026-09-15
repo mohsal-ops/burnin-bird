@@ -7,10 +7,12 @@ import { SITE_CONFIG } from "@/lib/siteConfig";
 import { getUberDirect } from "@/lib/siteSettings";
 import { createDelivery } from "@/lib/uber";
 import { deriveOrderType } from "@/lib/orderType";
+import { NEW_ORDER, PAID_STATUSES, isPaid } from "@/lib/orderStatus";
 
-// One place that finalizes a paid cart: mark it completed (so it counts as
-// revenue and shows up right), save orders, dispatch the Uber courier for
-// delivery, log to the sheet, and notify the owner + customer.
+// One place that finalizes a paid cart: mark it "new" (a real, paid order
+// waiting on the kitchen - it counts as revenue AND triggers the kitchen
+// new-order alarm), save orders, dispatch the Uber courier for delivery, log to
+// the sheet, and notify the owner + customer.
 //
 // Called from BOTH the Stripe webhook AND the success page. It's race-safe and
 // idempotent via an atomic "claim" (updateMany where status != completed), so
@@ -48,13 +50,14 @@ export async function finalizeCart(
     include: { items: { include: { sides: true } } },
   });
   if (!cart || cart.items.length === 0) return { finalized: false };
-  if (cart.status === "completed") return { finalized: false, alreadyDone: true };
+  if (isPaid(cart.status)) return { finalized: false, alreadyDone: true };
 
   // Atomically claim the cart. If another caller (webhook vs success page) already
   // claimed it, count is 0 and we stop - no duplicate orders/dispatch/emails.
+  // Paid carts become "new" (a fresh order for the kitchen), not "completed".
   const claim = await db.cart.updateMany({
-    where: { id: cartId, status: { not: "completed" } },
-    data: { status: "completed" },
+    where: { id: cartId, status: { notIn: [...PAID_STATUSES] } },
+    data: { status: NEW_ORDER },
   });
   if (claim.count === 0) return { finalized: false, alreadyDone: true };
 

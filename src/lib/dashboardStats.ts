@@ -1,5 +1,6 @@
 import db from "@/db/db";
 import { SITE_CONFIG } from "@/lib/siteConfig";
+import { isPaid } from "@/lib/orderStatus";
 
 // Owner's "morning briefing" numbers - today's money + this-week trend, plus
 // the couple of things that actually need action. All derived from data we
@@ -33,7 +34,7 @@ export async function getOwnerBriefing() {
   const dailyOrders = new Array(14).fill(0);
 
   for (const cart of carts) {
-    if (cart.items.length === 0 || cart.status !== "completed") continue;
+    if (cart.items.length === 0 || !isPaid(cart.status)) continue;
     const idx = Math.floor((cart.createdAt.getTime() - windowStart.getTime()) / 86400000);
     if (idx < 0 || idx > 13) continue;
     dailyRevenue[idx] += cartTotal(cart.items);

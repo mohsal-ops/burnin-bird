@@ -57,7 +57,7 @@ type Stats = {
   mostOrderedItem: { name: string; count: number } | null;
 };
 
-const STATUS_TABS = ["all", "open", "completed", "abandoned"] as const;
+const STATUS_TABS = ["all", "new", "open", "completed", "abandoned"] as const;
 
 export default function OrdersDashboard({ orders, stats }: { orders: Order[]; stats: Stats }) {
   const router = useRouter();
@@ -103,10 +103,10 @@ export default function OrdersDashboard({ orders, stats }: { orders: Order[]; st
     order.items.reduce((sum, i) => sum + (i.price ?? 0) * (i.quantity ?? 1), 0);
   const maxHourCount = Math.max(1, ...stats.ordersByHour);
 
-  // Ticket-age tint (open tickets only): a left accent that warms with age so
-  // stale orders stand out at a glance. Neutral < 5 min, amber 5-10, red > 10.
+  // Ticket-age tint (new/unfulfilled tickets only): a left accent that warms
+  // with age so stale orders stand out. Neutral < 5 min, amber 5-10, red > 10.
   const ageClasses = (order: Order): string => {
-    if (now === null || order.status !== "open") return "bg-white border-stone-200";
+    if (now === null || order.status !== "new") return "bg-white border-stone-200";
     const mins = (now - new Date(order.createdAt).getTime()) / 60000;
     if (mins >= 10) return "bg-red-50/50 border-y-stone-200 border-r-stone-200 border-l-4 border-l-red-500";
     if (mins >= 5) return "bg-amber-50/50 border-y-stone-200 border-r-stone-200 border-l-4 border-l-amber-500";
@@ -366,6 +366,7 @@ function StatCard({ label, value, sub }: { label: string; value: string | number
 
 function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
+    new: "bg-amber-100 text-amber-700",
     open: "bg-blue-50 text-blue-600",
     completed: "bg-green-50 text-green-600",
     abandoned: "bg-stone-100 text-stone-500",

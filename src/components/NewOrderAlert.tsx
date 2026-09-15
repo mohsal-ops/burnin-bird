@@ -95,17 +95,19 @@ export default function NewOrderAlert({ orders }: { orders: AlertOrder[] }) {
   // whatever is already open (so opening the dashboard never alerts on existing
   // orders); after that, any open id we haven't seen is a real new order.
   useEffect(() => {
-    const openOrders = orders.filter((o) => o.status === "open");
+    // "new" = a paid order awaiting the kitchen (what finalizeCart sets). Open
+    // carts are unpaid and never alarm.
+    const newOrders = orders.filter((o) => o.status === "new");
     const seen = seenRef.current!;
 
     if (!initializedRef.current) {
-      openOrders.forEach((o) => seen.add(o.id));
+      newOrders.forEach((o) => seen.add(o.id));
       persistSeen();
       initializedRef.current = true;
       return;
     }
 
-    const fresh = openOrders.filter((o) => !seen.has(o.id));
+    const fresh = newOrders.filter((o) => !seen.has(o.id));
     if (fresh.length === 0) return;
     fresh.forEach((o) => seen.add(o.id));
     persistSeen();
