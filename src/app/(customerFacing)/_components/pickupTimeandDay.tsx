@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { useCart } from "@/app/providers/CartProvider";
 import HereAutocomplete from "@/lib/HereAutocomplete";
 import { getAvailableTimeSlots } from "@/lib/hours";
+import { loadCustomer, saveCustomer } from "@/lib/customerMemory";
 
 /**
  * The order-details/schedule UI, extracted from its Dialog wrapper so it can be
@@ -55,6 +56,18 @@ export function PickupDetailsContent({
   const [showMoreDays, setShowMoreDays] = useState(false);
   const { cartId, mutate } = useCart();
   const router = useRouter();
+
+  // Pre-fill from what this browser remembered on a previous order, so a
+  // returning customer doesn't retype their address/name/phone. Runs after mount
+  // (localStorage is client-only) so there's no hydration mismatch.
+  useEffect(() => {
+    const saved = loadCustomer();
+    if (saved.name) setCustomerName(saved.name);
+    if (saved.phone) setCustomerPhone(saved.phone);
+    if (saved.apt) setApt(saved.apt);
+    if (saved.instructions) setInstructions(saved.instructions);
+    if (saved.place) setSelectedPlace(saved.place);
+  }, []);
 
   const today = new Date();
   const tomorrow = new Date(today);
@@ -112,6 +125,8 @@ export function PickupDetailsContent({
       router.refresh();
 
       if (res.ok) {
+        // Remember these for the customer's next order (this browser only).
+        saveCustomer({ name: customerName, phone: customerPhone, apt, instructions, place: selectedPlace ?? undefined });
         toast(`${data.message}`);
         onComplete();
       } else {
@@ -148,6 +163,8 @@ export function PickupDetailsContent({
       router.refresh();
 
       if (res.ok) {
+        // Remember the customer's contact for their next order (this browser).
+        saveCustomer({ name: customerName, phone: customerPhone });
         toast(`${data.message}`);
         setShowSchedule(false);
         onComplete();
