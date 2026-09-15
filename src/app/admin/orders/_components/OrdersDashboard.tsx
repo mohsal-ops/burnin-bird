@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { updateCartStatus, deleteCart } from "../_actions/cartOrders";
 import { deriveOrderType } from "@/lib/orderType";
+import NewOrderAlert from "@/components/NewOrderAlert";
 
 type OrderItemSide = { id: string; label: string; priceInCents: number | null };
 
@@ -61,19 +62,35 @@ const STATUS_TABS = ["all", "open", "completed", "abandoned"] as const;
 export default function OrdersDashboard({ orders, stats }: { orders: Order[]; stats: Stats }) {
   const router = useRouter();
 
-  // Auto-refresh so new orders (and Uber status changes) appear without the
-  // owner reloading. Only polls while the tab is visible.
+  // One live poll: refresh every 5s while the tab is visible, pause when hidden,
+  // and refresh immediately on return. Tight enough for a kitchen to feel live
+  // (new orders + Uber status) without hammering the DB. The new-order alarm
+  // below reacts to whatever this brings in.
   useEffect(() => {
     const tick = () => {
       if (document.visibilityState === "visible") router.refresh();
     };
-    const id = setInterval(tick, 25000);
-    return () => clearInterval(id);
+    const id = setInterval(tick, 5000);
+    document.addEventListener("visibilitychange", tick);
+    return () => {
+      clearInterval(id);
+      document.removeEventListener("visibilitychange", tick);
+    };
   }, [router]);
+
   const [isPending, startTransition] = useTransition();
   const [filter, setFilter] = useState<(typeof STATUS_TABS)[number]>("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // Client clock for ticket-age tinting (null on the server so first paint
+  // matches, then it ticks in the background).
+  const [now, setNow] = useState<number | null>(null);
+  useEffect(() => {
+    setNow(Date.now());
+    const t = setInterval(() => setNow(Date.now()), 30000);
+    return () => clearInterval(t);
+  }, []);
 
   const refresh = () => {
     setIsRefreshing(true);
@@ -81,19 +98,25 @@ export default function OrdersDashboard({ orders, stats }: { orders: Order[]; st
     setTimeout(() => setIsRefreshing(false), 600);
   };
 
-  // Keep the dashboard reasonably live without the admin having to babysit it.
-  useEffect(() => {
-    const interval = setInterval(() => router.refresh(), 60000);
-    return () => clearInterval(interval);
-  }, [router]);
-
   const filteredOrders = filter === "all" ? orders : orders.filter((o) => o.status === filter);
   const orderTotal = (order: Order) =>
     order.items.reduce((sum, i) => sum + (i.price ?? 0) * (i.quantity ?? 1), 0);
   const maxHourCount = Math.max(1, ...stats.ordersByHour);
 
+  // Ticket-age tint (open tickets only): a left accent that warms with age so
+  // stale orders stand out at a glance. Neutral < 5 min, amber 5-10, red > 10.
+  const ageClasses = (order: Order): string => {
+    if (now === null || order.status !== "open") return "bg-white border-stone-200";
+    const mins = (now - new Date(order.createdAt).getTime()) / 60000;
+    if (mins >= 10) return "bg-red-50/50 border-y-stone-200 border-r-stone-200 border-l-4 border-l-red-500";
+    if (mins >= 5) return "bg-amber-50/50 border-y-stone-200 border-r-stone-200 border-l-4 border-l-amber-500";
+    return "bg-white border-y-stone-200 border-r-stone-200 border-l-4 border-l-stone-300";
+  };
+
   return (
     <div className="space-y-6 px-4 md:px-0">
+      <NewOrderAlert orders={orders} />
+
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-stone-900">Orders</h1>
@@ -174,7 +197,7 @@ export default function OrdersDashboard({ orders, stats }: { orders: Order[]; st
           const isExpanded = expandedId === order.id;
 
           return (
-            <div key={order.id} className="bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden">
+            <div key={order.id} className={`rounded-2xl border shadow-sm overflow-hidden ${ageClasses(order)}`}>
               <button
                 className="w-full flex flex-wrap items-center gap-3 p-4 text-left"
                 onClick={() => setExpandedId(isExpanded ? null : order.id)}
