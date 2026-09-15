@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { GripVertical, Trash2, Upload, Loader2, ImageIcon, AlertTriangle } from "lucide-react";
 import {
   addGalleryImage,
+  registerGalleryImage,
   deleteGalleryImage,
   reorderGalleryImages,
 } from "../_actions/galleryActions";
@@ -21,10 +22,15 @@ type GalleryImage = {
   order: number;
 };
 
-// Server actions accept up to 10mb per request (next.config.ts). Selecting
-// several large photos at once quietly blows past that and the upload throws,
-// which used to look like the whole page "breaking". Keep a little headroom.
-const MAX_UPLOAD_BYTES = 9 * 1024 * 1024;
+// In production, photos upload straight from the browser to Vercel Blob (see
+// /api/gallery/upload) - no serverless function in the transfer path, so there's
+// no ~4.5MB request cap and no function timeout. Big photos go through fine;
+// each file just needs to be a sane size on its own.
+const isDev = process.env.NODE_ENV === "development";
+const MAX_PER_FILE_BYTES = 100 * 1024 * 1024; // 100 MB per photo (prod)
+// Dev still uses the server action + local filesystem, which is bound by
+// next.config's 10mb server-action limit - so keep the old batch guard there.
+const MAX_DEV_BATCH_BYTES = 9 * 1024 * 1024;
 
 function formatBytes(bytes: number) {
   if (bytes < 1024) return `${bytes} B`;
@@ -53,7 +59,15 @@ export default function GalleryManager({
   // batches BEFORE they hit the server (where they'd fail hard).
   const [selected, setSelected] = useState<File[]>([]);
   const totalBytes = selected.reduce((sum, f) => sum + f.size, 0);
-  const tooBig = totalBytes > MAX_UPLOAD_BYTES;
+  // Dev: guard the whole batch against the 10mb server-action limit.
+  // Prod: only guard each individual file (each uploads on its own to Blob).
+  const oversizeFile = selected.find((f) => f.size > MAX_PER_FILE_BYTES);
+  const tooBig = isDev ? totalBytes > MAX_DEV_BATCH_BYTES : !!oversizeFile;
+
+  // Prod client-upload progress.
+  const [prodBusy, setProdBusy] = useState(false);
+  const [prog, setProg] = useState({ done: 0, total: 0 });
+  const isBusy = isDev ? isUploading : prodBusy;
 
   useEffect(() => {
     if (state?.message) {
@@ -71,15 +85,71 @@ export default function GalleryManager({
     setSelected(e.target.files ? Array.from(e.target.files) : []);
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  // DEV path: the native server-action submit, guarded against the batch limit.
+  function handleDevSubmit(e: React.FormEvent<HTMLFormElement>) {
     if (selected.length === 0) return; // native `required` will prompt
     if (tooBig) {
       e.preventDefault();
       toast.error(
         `That's ${formatBytes(totalBytes)} in one go - please upload under ${formatBytes(
-          MAX_UPLOAD_BYTES
+          MAX_DEV_BATCH_BYTES
         )} at a time (fewer or smaller photos).`
       );
+    }
+  }
+
+  // PROD path: upload each file straight to Vercel Blob from the browser, then
+  // record it. No function-size cap, no timeout - large photos work.
+  async function handleProdSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (selected.length === 0 || prodBusy) return;
+    if (oversizeFile) {
+      toast.error(
+        `"${oversizeFile.name}" is ${formatBytes(oversizeFile.size)} - please keep each photo under ${formatBytes(
+          MAX_PER_FILE_BYTES
+        )}.`
+      );
+      return;
+    }
+    const alt = String(new FormData(e.currentTarget).get("alt") ?? "").trim();
+    const { upload } = await import("@vercel/blob/client");
+
+    setProdBusy(true);
+    setProg({ done: 0, total: selected.length });
+    let added = 0;
+    let failed = 0;
+    for (const file of selected) {
+      try {
+        const blob = await upload(`gallery/${file.name}`, file, {
+          access: "public",
+          handleUploadUrl: "/api/gallery/upload",
+          contentType: file.type || undefined,
+        });
+        const altText = alt || file.name.replace(/\.[^.]+$/, "");
+        const res = await registerGalleryImage(blob.url, altText);
+        if (res.error) failed++;
+        else added++;
+      } catch (err) {
+        console.error("gallery upload failed for", file.name, err);
+        failed++;
+      }
+      setProg((p) => ({ ...p, done: p.done + 1 }));
+    }
+    setProdBusy(false);
+
+    if (added > 0) {
+      toast.success(
+        failed > 0
+          ? `${added} photo${added !== 1 ? "s" : ""} added, ${failed} failed.`
+          : added === 1
+          ? "Image added."
+          : `${added} images added.`
+      );
+      formRef.current?.reset();
+      setSelected([]);
+      router.refresh();
+    } else {
+      toast.error("Upload failed. Please try again, or check your connection.");
     }
   }
 
@@ -142,8 +212,8 @@ export default function GalleryManager({
     <div className="space-y-8">
       <form
         ref={formRef}
-        action={formAction}
-        onSubmit={handleSubmit}
+        action={isDev ? formAction : undefined}
+        onSubmit={isDev ? handleDevSubmit : handleProdSubmit}
         className="relative bg-white rounded-2xl border border-stone-200 shadow-sm p-6 space-y-4"
       >
         <h2 className="text-sm font-bold uppercase tracking-widest text-stone-400">
@@ -159,16 +229,18 @@ export default function GalleryManager({
               accept="image/*"
               multiple
               required
-              disabled={isUploading}
+              disabled={isBusy}
               onChange={handleFilesChange}
             />
             <p className="text-xs text-stone-400">
-              You can select multiple images at once - up to {formatBytes(MAX_UPLOAD_BYTES)} per upload.
+              {isDev
+                ? `You can select multiple images at once - up to ${formatBytes(MAX_DEV_BATCH_BYTES)} per upload.`
+                : `Select as many photos as you like - each can be up to ${formatBytes(MAX_PER_FILE_BYTES)}.`}
             </p>
           </div>
           <div className="flex-1 space-y-2 w-full">
             <Label htmlFor="gallery-alt">Alt text (optional - applied to all)</Label>
-            <Input id="gallery-alt" name="alt" placeholder="Homemade comfort food" disabled={isUploading} />
+            <Input id="gallery-alt" name="alt" placeholder="Homemade comfort food" disabled={isBusy} />
           </div>
         </div>
 
@@ -195,27 +267,35 @@ export default function GalleryManager({
           </div>
         )}
 
-        <Button type="submit" variant="mainButton" size="md" disabled={isUploading || tooBig} className="gap-2">
+        <Button type="submit" variant="mainButton" size="md" disabled={isBusy || tooBig} className="gap-2">
           <Upload size={16} />
-          {isUploading ? "Uploading..." : "Add to gallery"}
+          {isBusy ? "Uploading..." : "Add to gallery"}
         </Button>
         {state?.error && <p className="text-sm text-red-500">{state.error}</p>}
 
         {/* Upload overlay - keeps the user informed while large photos transfer */}
-        {isUploading && (
+        {isBusy && (
           <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 rounded-2xl bg-white/85 backdrop-blur-sm">
             <Loader2 size={32} className="animate-spin text-[#c85a1e]" />
             <div className="text-center">
               <p className="font-semibold text-stone-800">
-                Uploading {selected.length > 0 ? `${selected.length} ` : ""}photo
-                {selected.length !== 1 ? "s" : ""}…
+                {!isDev && prog.total > 1
+                  ? `Uploading photo ${Math.min(prog.done + 1, prog.total)} of ${prog.total}…`
+                  : `Uploading ${selected.length > 0 ? `${selected.length} ` : ""}photo${selected.length !== 1 ? "s" : ""}…`}
               </p>
               <p className="mt-0.5 text-sm text-stone-500">
                 Large images can take a moment. Please keep this tab open - don&apos;t refresh.
               </p>
             </div>
             <div className="h-1.5 w-48 overflow-hidden rounded-full bg-stone-200">
-              <div className="h-full w-1/3 animate-[gallery-loading_1.1s_ease-in-out_infinite] rounded-full bg-[#c85a1e]" />
+              {!isDev && prog.total > 0 ? (
+                <div
+                  className="h-full rounded-full bg-[#c85a1e] transition-all duration-300"
+                  style={{ width: `${Math.round((prog.done / prog.total) * 100)}%` }}
+                />
+              ) : (
+                <div className="h-full w-1/3 animate-[gallery-loading_1.1s_ease-in-out_infinite] rounded-full bg-[#c85a1e]" />
+              )}
             </div>
           </div>
         )}

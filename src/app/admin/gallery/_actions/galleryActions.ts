@@ -102,6 +102,26 @@ export async function addGalleryImage(
   return { message: added === 1 ? "Image added." : `${added} images added.` };
 }
 
+// Create the DB row for an image that was uploaded DIRECTLY to Vercel Blob from
+// the browser (see /api/gallery/upload + GalleryManager). The heavy file
+// transfer never touches a server function, so there's no 4.5MB request-body
+// cap and no function timeout - big photos upload fine. This just records the
+// resulting URL, which is tiny and fast.
+export async function registerGalleryImage(url: string, alt: string): Promise<ActionResult> {
+  await assertWritable();
+  if (!url || !/^https?:\/\//.test(url)) return { error: "Invalid image URL." };
+
+  const maxOrder = await db.galleryImage.aggregate({ _max: { order: true } });
+  const order = (maxOrder._max.order ?? -1) + 1;
+  await db.galleryImage.create({
+    data: { url, alt: alt.trim() || "Gallery photo", order },
+  });
+
+  revalidatePath("/");
+  revalidatePath("/admin/gallery");
+  return { message: "Image added." };
+}
+
 export async function deleteGalleryImage(id: string): Promise<ActionResult> {
   await assertWritable();
   const image = await db.galleryImage.findUnique({ where: { id } });
