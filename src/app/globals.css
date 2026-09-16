@@ -85,7 +85,10 @@ html body[data-scroll-locked] {
   --background: 0 0% 100%;
   --foreground: 222.2 47.4% 11.2%;
 
-  --primary: 48 96% 53%;
+  /* Light-mode accent = the one bold golden yellow (#FFC72C), unified with the
+     brand accent above. Black text sits on it (--primary-foreground). The dark
+     and .admin-shell copies of --primary are intentionally left unchanged. */
+  --primary: 44 100% 59%;
   --primary-foreground: 0 0% 5%;
 
   --secondary: 210 40% 96.1%;

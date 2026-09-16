@@ -164,8 +164,12 @@ export const SITE_CONFIG = {
   cuisines: ["American", "Hot Chicken", "Halal", "Fast Food"],
   priceRange: "$$",
 
-  // Colors (Tailwind hex values - inspired by fiery orange & deep charcoal logo)
-  primaryColor: "#f97316",
+  // Colors (Tailwind hex values). primaryColor is the brand accent - the single
+  // bold, fully-saturated golden yellow used across buttons, the active nav item,
+  // badges and accent headings (Southern-Jerks style), always with auto-black
+  // text on top (see readableTextColor). This is the template DEFAULT --brand; a
+  // live client can still override it in admin -> Branding.
+  primaryColor: "#FFC72C",
   secondaryColor: "#111827",
   accentColor: "#ef4444",
   // Outreach conversion layer (trial popup + read-only dashboard preview).
