@@ -27,11 +27,13 @@ type CateringRequestRow = {
   createdAt: Date;
 };
 
+// Mirrors the canonical POS status palette (admin/_components/pos.tsx) so a
+// catering "confirmed" is the same green as an enabled toggle or a paid order.
 const STATUS_STYLES: Record<string, string> = {
-  new: "bg-orange-50 text-orange-600",
-  contacted: "bg-blue-50 text-blue-600",
-  confirmed: "bg-green-50 text-green-600",
-  declined: "bg-red-50 text-red-600",
+  new: "bg-amber-100 text-amber-800", // needs attention
+  contacted: "bg-blue-100 text-blue-700", // in progress / info
+  confirmed: "bg-green-100 text-green-800", // live / good
+  declined: "bg-red-100 text-red-700", // off / error
 };
 
 const STATUS_TABS = ["all", "new", "contacted", "confirmed", "declined"] as const;
@@ -69,7 +71,7 @@ export default function CateringInbox({ requests }: { requests: CateringRequestR
             key={f}
             onClick={() => setFilter(f)}
             className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
-              filter === f ? "bg-[#c85a1e] text-white" : "bg-stone-100 text-stone-500 hover:bg-stone-200"
+              filter === f ? "bg-brand text-white" : "bg-stone-100 text-stone-500 hover:bg-stone-200"
             }`}
           >
             {f[0].toUpperCase() + f.slice(1)}

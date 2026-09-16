@@ -174,7 +174,7 @@ export default function OrdersDashboard({ orders, stats }: { orders: Order[]; st
             key={f}
             onClick={() => setFilter(f)}
             className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
-              filter === f ? "bg-[#c85a1e] text-white" : "bg-stone-100 text-stone-500 hover:bg-stone-200"
+              filter === f ? "bg-brand text-white" : "bg-stone-100 text-stone-500 hover:bg-stone-200"
             }`}
           >
             {f[0].toUpperCase() + f.slice(1)}
@@ -365,11 +365,14 @@ function StatCard({ label, value, sub }: { label: string; value: string | number
 }
 
 function StatusBadge({ status }: { status: string }) {
+  // Canonical POS status palette (admin/_components/pos.tsx): new=attention,
+  // open=info, completed=live, abandoned=neutral - same colors as every other
+  // admin section.
   const styles: Record<string, string> = {
-    new: "bg-amber-100 text-amber-700",
-    open: "bg-blue-50 text-blue-600",
-    completed: "bg-green-50 text-green-600",
-    abandoned: "bg-stone-100 text-stone-500",
+    new: "bg-amber-100 text-amber-800",
+    open: "bg-blue-100 text-blue-700",
+    completed: "bg-green-100 text-green-800",
+    abandoned: "bg-stone-100 text-stone-600",
   };
   return (
     <span className={`text-xs font-semibold px-2 py-0.5 rounded-full capitalize ${styles[status] ?? styles.open}`}>

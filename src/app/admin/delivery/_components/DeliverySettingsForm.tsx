@@ -56,7 +56,7 @@ export function DeliverySettingsForm({ initial }: { initial: UberDirectSettings 
             checked={enabled}
             onCheckedChange={toggle}
             aria-label="Offer delivery"
-            className="mt-1 data-[state=checked]:bg-[#c85a1e] data-[state=unchecked]:bg-stone-300"
+            className="mt-1 data-[state=unchecked]:bg-stone-300"
           />
         </div>
       </div>

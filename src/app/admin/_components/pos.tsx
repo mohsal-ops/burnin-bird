@@ -10,20 +10,27 @@ import { cn } from "@/lib/utils";
 //   attention  - pending / needs a decision / new
 //   off        - off / error / unavailable / declined
 //   neutral    - idle / informational
-export type PosTone = "live" | "attention" | "off" | "neutral";
+//   info       - in-progress / informational (e.g. "contacted")
+export type PosTone = "live" | "attention" | "off" | "neutral" | "info";
 
-const PILL: Record<PosTone, string> = {
+// Canonical status swatches. Every admin section reads these (directly via
+// StatusPill/StatusDot, or by mirroring POS_PILL in a local status map) so the
+// same state is the same color everywhere.
+export const POS_PILL: Record<PosTone, string> = {
   live: "bg-green-100 text-green-800",
   attention: "bg-amber-100 text-amber-800",
   off: "bg-red-100 text-red-700",
   neutral: "bg-stone-100 text-stone-600",
+  info: "bg-blue-100 text-blue-700",
 };
+const PILL = POS_PILL;
 
 const DOT: Record<PosTone, string> = {
   live: "bg-green-600",
   attention: "bg-amber-500",
   off: "bg-red-600",
   neutral: "bg-stone-400",
+  info: "bg-blue-600",
 };
 
 // A small status pill. Optional leading dot; `pulse` for a live/active state.

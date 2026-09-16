@@ -23,7 +23,9 @@ const OPT_OUT_LINE = "Reply STOP to unsubscribe.";
 // exactly (same card, input, and toggle treatment).
 const CARD = "rounded-2xl border border-stone-200 bg-white p-6 shadow-sm";
 const INPUT = "w-full rounded-lg border border-stone-200 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-stone-300";
-const SWITCH = "data-[state=checked]:bg-[#c85a1e] data-[state=unchecked]:bg-stone-300";
+// Enabled toggles read as "live" (green) everywhere - see the shared Switch
+// default; here we only tweak the off state for a touch more contrast.
+const SWITCH = "data-[state=unchecked]:bg-stone-300";
 
 type Campaign = { id: string; channel?: string; message: string; type: string; recipientCount: number; sentAt: string };
 type Subscriber = {
@@ -302,11 +304,12 @@ const FILTERS: { key: Filter; label: string }[] = [
 ];
 
 function Badge({ tone, children }: { tone: "green" | "blue" | "red" | "stone"; children: React.ReactNode }) {
+  // Canonical POS status palette (admin/_components/pos.tsx).
   const tones = {
-    green: "bg-green-50 text-green-600",
-    blue: "bg-blue-50 text-blue-600",
-    red: "bg-red-50 text-red-600",
-    stone: "bg-stone-100 text-stone-500",
+    green: "bg-green-100 text-green-800",
+    blue: "bg-blue-100 text-blue-700",
+    red: "bg-red-100 text-red-700",
+    stone: "bg-stone-100 text-stone-600",
   } as const;
   return (
     <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${tones[tone]}`}>{children}</span>
@@ -366,7 +369,7 @@ function SubscriberList({ subscribers }: { subscribers: Subscriber[] }) {
             key={f.key}
             onClick={() => setFilter(f.key)}
             className={`rounded-full px-3 py-1.5 text-xs font-semibold whitespace-nowrap transition-colors ${
-              filter === f.key ? "bg-[#c85a1e] text-white" : "bg-stone-100 text-stone-500 hover:bg-stone-200"
+              filter === f.key ? "bg-brand text-white" : "bg-stone-100 text-stone-500 hover:bg-stone-200"
             }`}
           >
             {f.label}

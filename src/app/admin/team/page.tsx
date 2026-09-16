@@ -6,11 +6,13 @@ import RemoveAdminButton from "./_components/RemoveAdminButton";
 import { CheckCircle2, XCircle, Clock, ShieldCheck } from "lucide-react";
 
 function StatusBadge({ status }: { status: string }) {
+  // Canonical POS status palette (admin/_components/pos.tsx), with a matching
+  // border so team badges read the same as status pills elsewhere.
   const styles: Record<string, string> = {
-    APPROVED: "bg-green-50 text-green-700 border-green-200",
-    PENDING_APPROVAL: "bg-amber-50 text-amber-700 border-amber-200",
-    PENDING_VERIFICATION: "bg-stone-100 text-stone-500 border-stone-200",
-    REJECTED: "bg-red-50 text-red-700 border-red-200",
+    APPROVED: "bg-green-100 text-green-800 border-green-200",
+    PENDING_APPROVAL: "bg-amber-100 text-amber-800 border-amber-200",
+    PENDING_VERIFICATION: "bg-stone-100 text-stone-600 border-stone-200",
+    REJECTED: "bg-red-100 text-red-700 border-red-200",
   };
   const labels: Record<string, string> = {
     APPROVED: "Approved",
