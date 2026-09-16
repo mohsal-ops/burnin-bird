@@ -28,6 +28,10 @@ const buttonVariants = cva(
         sm: "h-8 rounded-md px-4 text-xs",
         lg: "h-12 text-sm rounded-xl p-6",
         icon: "h-9 w-9",
+        // POS: guaranteed 48px+ touch target, rounded + a touch bolder. Use for
+        // primary admin actions so taps land reliably on a terminal/tablet.
+        pos: "h-12 min-h-12 rounded-xl px-5 text-base font-semibold",
+        "pos-icon": "h-12 w-12 rounded-xl",
       },
     },
     defaultVariants: {

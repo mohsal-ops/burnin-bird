@@ -53,6 +53,28 @@ function itemTotalCents(item: { price: number | null; quantity: number | null })
   return (item.price ?? 0) * (item.quantity ?? 1);
 }
 
+// Lightweight "today" numbers for the persistent admin live bar. Same source and
+// definitions as getOrderStats (Cart + isPaid), just without the heavy
+// most-ordered aggregation - so it's cheap to run on every admin page.
+export async function getTodaySummary() {
+  const { start, end } = getTodayBoundsUTC();
+  const carts = await db.cart.findMany({
+    where: { createdAt: { gte: start, lt: end } },
+    include: { items: true },
+  });
+  const orders = carts.filter((c) => c.items.length > 0);
+  const paid = orders.filter((c) => isPaid(c.status));
+  const salesTodayCents = paid.reduce(
+    (sum, c) => sum + c.items.reduce((s, i) => s + itemTotalCents(i), 0),
+    0,
+  );
+  return {
+    salesTodayCents,
+    ordersToday: orders.length, // matches the Sales page's "Orders Today"
+    newOrders: orders.filter((c) => c.status === "new").length, // unfulfilled
+  };
+}
+
 export async function getOrderStats() {
   const { start, end } = getTodayBoundsUTC();
 

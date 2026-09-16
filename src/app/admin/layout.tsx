@@ -6,6 +6,8 @@ import PreviewCallCta from "./_components/PreviewCallCta";
 import VisitAlert from "@/app/(customerFacing)/_components/VisitAlert";
 import { getAccess } from "@/lib/getAccess";
 import { getLogoUrl } from "@/lib/siteSettings";
+import { getTodaySummary } from "./orders/_actions/cartOrders";
+import LiveBar from "./_components/LiveBar";
 import db from "@/db/db";
 
 export const dynamic = "force-dynamic";
@@ -27,6 +29,15 @@ export default async function Adminlayout({
     newCateringCount = 0;
   }
 
+  // Today's numbers for the persistent live bar (same source as Sales). Resilient
+  // to a DB hiccup so a transient outage never 500s the whole admin.
+  let today = { salesTodayCents: 0, ordersToday: 0, newOrders: 0 };
+  try {
+    today = await getTodaySummary();
+  } catch {
+    /* keep zeros */
+  }
+
   return (
     // The admin dashboard is ALWAYS light - the public dark theme is scoped to
     // the customer site only. `.admin-shell` (globals.css) re-declares the light
@@ -44,6 +55,11 @@ export default async function Adminlayout({
         <LoadingScreen />
         <AdminNav newCateringCount={newCateringCount} logoUrl={logoUrl} />
         <main id="main-content" className="min-w-0 flex-1 overflow-auto">
+          <LiveBar
+            salesTodayCents={today.salesTodayCents}
+            ordersToday={today.ordersToday}
+            newOrders={today.newOrders}
+          />
           {children}
         </main>
         <Toaster expand richColors closeButton duration={6000} />

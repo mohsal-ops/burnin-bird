@@ -209,6 +209,22 @@ html body[data-scroll-locked] {
   --sidebar-accent: hsl(240 4.8% 95.9%);
   --sidebar-border: hsl(220 13% 91%);
 
+  /* ── POS status color language ──────────────────────────────────────────
+     ONE bold status palette used across every admin section (live/good,
+     needs-attention, off/error), so status never gets redefined per section.
+     The React helpers in admin/_components/pos.tsx encode these same tones. */
+  --pos-live: #15803d;          /* live / good / enabled  */
+  --pos-live-bg: #dcfce7;
+  --pos-attention: #b45309;     /* needs attention / pending */
+  --pos-attention-bg: #fef3c7;
+  --pos-off: #b91c1c;           /* off / error / unavailable */
+  --pos-off-bg: #fee2e2;
+  --pos-neutral: #57534e;       /* idle / informational */
+  --pos-neutral-bg: #f5f5f4;
+  /* Tactile surface treatment for POS tiles/cards. */
+  --pos-radius: 1rem;
+  --pos-shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 4px 12px rgb(0 0 0 / 0.06);
+
   /* Tailwind v4 utilities (bg-background, bg-card, border-border, …) read the
      mapped `--color-*` theme vars, NOT the raw `--background` triples above -
      and those are baked to the dark values under `html.dark`. Re-map them here

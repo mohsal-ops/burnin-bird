@@ -145,19 +145,22 @@ function NavItemLink({
       onClick={onNavigate}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "group relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+        // POS home-screen tile: large, rounded, tactile, 56px tall.
+        "group relative flex min-h-14 items-center gap-3 rounded-xl px-2.5 py-2 text-sm font-semibold transition-all duration-150 active:scale-[0.98]",
         active
-          ? "bg-[#c85a1e] text-white shadow-sm"
-          : "text-stone-300 hover:bg-stone-800 hover:text-white"
+          ? "bg-brand text-white shadow-lg"
+          : "text-stone-200 hover:bg-stone-800"
       )}
     >
-      {active && (
-        <span className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-white/80" />
-      )}
-      <Icon
-        size={18}
-        className={cn(active ? "text-white" : "text-stone-400 group-hover:text-white")}
-      />
+      {/* Icon chip */}
+      <span
+        className={cn(
+          "flex size-10 shrink-0 items-center justify-center rounded-lg transition-colors",
+          active ? "bg-white/20 text-white" : "bg-stone-800 text-stone-300 group-hover:bg-stone-700 group-hover:text-white"
+        )}
+      >
+        <Icon size={20} />
+      </span>
       <span className="flex flex-1 items-center gap-1.5 truncate">
         <span className="truncate">{item.label}</span>
         {showNew && (
@@ -169,8 +172,8 @@ function NavItemLink({
       {showBadge && (
         <span
           className={cn(
-            "flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[11px] font-bold",
-            active ? "bg-white text-[#c85a1e]" : "bg-orange-500 text-white"
+            "flex h-6 min-w-6 items-center justify-center rounded-full px-1.5 text-xs font-bold",
+            active ? "bg-white text-brand" : "bg-amber-500 text-white"
           )}
         >
           {badge > 99 ? "99+" : badge}
@@ -221,7 +224,7 @@ function SidebarBody({
             <p className="mb-1.5 px-3 text-[10px] font-semibold uppercase tracking-wider text-stone-500">
               {group.label}
             </p>
-            <div className="space-y-0.5">
+            <div className="space-y-1.5">
               {group.items.map((item) => (
                 <NavItemLink
                   key={item.href}
@@ -241,9 +244,11 @@ function SidebarBody({
           href="/"
           target="_blank"
           rel="noopener noreferrer"
-          className="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-stone-300 transition-colors hover:bg-stone-800 hover:text-white"
+          className="group flex min-h-14 items-center gap-3 rounded-xl px-2.5 py-2 text-sm font-semibold text-stone-200 transition-all duration-150 hover:bg-stone-800 active:scale-[0.98]"
         >
-          <Globe size={18} className="text-stone-400 group-hover:text-white" />
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-stone-800 text-stone-300 group-hover:bg-stone-700 group-hover:text-white">
+            <Globe size={20} />
+          </span>
           <span className="flex-1">View live site</span>
           <ExternalLink size={14} className="text-stone-500 group-hover:text-white" />
         </a>
@@ -252,23 +257,20 @@ function SidebarBody({
           onClick={onNavigate}
           aria-current={isProfileActive ? "page" : undefined}
           className={cn(
-            "group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-            isProfileActive
-              ? "bg-[#c85a1e] text-white"
-              : "text-stone-300 hover:bg-stone-800 hover:text-white"
+            "group flex min-h-14 items-center gap-3 rounded-xl px-2.5 py-2 text-sm font-semibold transition-all duration-150 active:scale-[0.98]",
+            isProfileActive ? "bg-brand text-white shadow-lg" : "text-stone-200 hover:bg-stone-800"
           )}
         >
-          <UserCircle
-            size={18}
-            className={cn(isProfileActive ? "text-white" : "text-stone-400 group-hover:text-white")}
-          />
+          <span
+            className={cn(
+              "flex size-10 shrink-0 items-center justify-center rounded-lg",
+              isProfileActive ? "bg-white/20 text-white" : "bg-stone-800 text-stone-300 group-hover:bg-stone-700 group-hover:text-white"
+            )}
+          >
+            <UserCircle size={20} />
+          </span>
           <span className="flex flex-1 items-center gap-1.5">
             <span>My account</span>
-            {SHOW_NEW_BADGES && NEW_TAB_HREFS.has("/admin/profile") && (
-              <span className="rounded-full bg-emerald-500 px-1.5 py-px text-[9px] font-bold uppercase leading-none tracking-wide text-white">
-                New
-              </span>
-            )}
           </span>
         </Link>
       </div>
@@ -289,7 +291,7 @@ export function AdminNav({
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-stone-800 bg-stone-900 text-white md:flex">
+      <aside className="sticky top-0 hidden h-screen w-72 shrink-0 flex-col border-r border-stone-800 bg-stone-900 text-white md:flex">
         <div className="flex h-16 items-center border-b border-stone-800 px-5">
           <Brand logoUrl={logoUrl} />
         </div>
