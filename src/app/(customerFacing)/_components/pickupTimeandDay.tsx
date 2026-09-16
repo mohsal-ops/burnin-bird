@@ -54,12 +54,17 @@ export function PickupDetailsContent({
   const [customerPhone, setCustomerPhone] = useState<string | undefined>("");
   const [isLoading, setIsLoading] = useState(false);
   const [showMoreDays, setShowMoreDays] = useState(false);
+  // Gate the save-on-change effect until the mount hydrate has run, so we never
+  // overwrite stored details with the initial empty state.
+  const [hydrated, setHydrated] = useState(false);
   const { cartId, mutate } = useCart();
   const router = useRouter();
 
-  // Pre-fill from what this browser remembered on a previous order, so a
-  // returning customer doesn't retype their address/name/phone. Runs after mount
-  // (localStorage is client-only) so there's no hydration mismatch.
+  // Pre-fill from what this browser remembered, so a returning customer - OR one
+  // starting a second order in the same session right after a first - doesn't
+  // retype anything. Runs on EVERY mount (this dialog remounts per order); no
+  // first-visit/return-visit gate. After mount because localStorage is
+  // client-only, so there's no hydration mismatch.
   useEffect(() => {
     const saved = loadCustomer();
     if (saved.name) setCustomerName(saved.name);
@@ -67,7 +72,32 @@ export function PickupDetailsContent({
     if (saved.apt) setApt(saved.apt);
     if (saved.instructions) setInstructions(saved.instructions);
     if (saved.place) setSelectedPlace(saved.place);
+    // Restore the scheduling preference, but never a stale past day.
+    if (saved.day) {
+      const d = new Date(saved.day);
+      const startToday = new Date();
+      startToday.setHours(0, 0, 0, 0);
+      if (!isNaN(d.getTime()) && d >= startToday) setSelectedDay(d);
+    }
+    if (saved.time) setSelectedTime(saved.time);
+    setHydrated(true);
   }, []);
+
+  // Persist on every change (Phase 2): even an abandoned checkout keeps what was
+  // typed. saveCustomer merges non-empty fields, so a transient blank never wipes
+  // a good stored value.
+  useEffect(() => {
+    if (!hydrated) return;
+    saveCustomer({
+      name: customerName,
+      phone: customerPhone,
+      apt,
+      instructions,
+      place: selectedPlace ?? undefined,
+      day: selectedDay ? selectedDay.toISOString() : undefined,
+      time: selectedTime ?? undefined,
+    });
+  }, [hydrated, customerName, customerPhone, apt, instructions, selectedPlace, selectedDay, selectedTime]);
 
   const today = new Date();
   const tomorrow = new Date(today);
