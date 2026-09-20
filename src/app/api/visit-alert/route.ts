@@ -48,6 +48,17 @@ export async function POST(req: NextRequest) {
     return res;
   }
 
+  // Drop known crawlers up front - Meta's link-preview bot, search engines, chat
+  // link unfurlers and SEO scanners. Checked BEFORE the rate-limit so a bot crawl
+  // can never eat the 30-min-per-IP slot a real visitor right after it would need,
+  // and never sends a false "someone visited" alert.
+  const ua = req.headers.get("user-agent") ?? "unknown";
+  if (
+    /meta-externalagent|facebookexternalhit|googlebot|bingbot|slackbot|telegrambot|twitterbot|linkedinbot|discordbot|whatsapp|ahrefsbot|semrushbot|applebot|pinterest|bot\//i.test(ua)
+  ) {
+    return NextResponse.json({ ok: true, skipped: "bot" });
+  }
+
   let path = "/";
   let referrer = "";
   let source: "site" | "dashboard" = "site";
@@ -67,7 +78,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, skipped: true });
   }
 
-  const ua = req.headers.get("user-agent") ?? "unknown";
   const when = new Date().toLocaleString("en-US", {
     timeZone: SITE_CONFIG.timezone,
     dateStyle: "medium",
