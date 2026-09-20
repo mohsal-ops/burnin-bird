@@ -4,6 +4,7 @@ import db from "@/db/db";
 import { revalidatePath } from "next/cache";
 import { sendSms, sendEmail } from "@/lib/brevo";
 import { withinQuietHours, withOptOut, wrapMarketingEmail, LOYALTY_PROJECT_ID } from "@/lib/loyalty";
+import { sendCostCents, generateRedemptionCode, offerLine, DEFAULT_DISCOUNT_PERCENT } from "@/lib/loyaltyPromo";
 
 function escapeHtml(s: string): string {
   return s
@@ -53,7 +54,11 @@ export async function sendToSubscribed(
       select: { phone: true, firstName: true },
     }));
 
-  const body = withOptOut(message);
+  // Generate the redemption code up front and append it to the send so every
+  // subscriber actually receives a code they can enter at checkout.
+  const code = generateRedemptionCode();
+  const discountPercent = DEFAULT_DISCOUNT_PERCENT;
+  const body = withOptOut(`${message.trim()}\n${offerLine(code, discountPercent)}`);
   let sent = 0;
   for (const c of contacts) {
     if (!c.phone) continue; // email-only contacts have no number to text
@@ -65,7 +70,16 @@ export async function sendToSubscribed(
     }
   }
   await db.loyaltyCampaign.create({
-    data: { projectId: LOYALTY_PROJECT_ID, message, type, recipientCount: sent },
+    data: {
+      projectId: LOYALTY_PROJECT_ID,
+      channel: "sms",
+      message,
+      type,
+      recipientCount: sent,
+      redemptionCode: code,
+      discountPercent,
+      costCents: sendCostCents("sms", sent),
+    },
   });
   return { sent };
 }
@@ -96,8 +110,13 @@ export async function sendEmailToSubscribed(
     where: { projectId: LOYALTY_PROJECT_ID, emailSubscribed: true, email: { not: null } },
     select: { id: true, email: true, firstName: true },
   });
-  // Owner writes plain text; escape it, keep line breaks, then personalize.
-  const template = `<p style="font-size:15px;line-height:1.6;white-space:pre-line">${escapeHtml(body)}</p>`;
+  // Owner writes plain text; escape it, keep line breaks, then personalize. The
+  // redemption code is appended so the recipient receives a code to redeem.
+  const code = generateRedemptionCode();
+  const discountPercent = DEFAULT_DISCOUNT_PERCENT;
+  const template =
+    `<p style="font-size:15px;line-height:1.6;white-space:pre-line">${escapeHtml(body)}</p>` +
+    `<p style="font-size:15px;line-height:1.6;margin-top:16px">${escapeHtml(offerLine(code, discountPercent))}</p>`;
   let sent = 0;
   for (const c of contacts) {
     if (!c.email) continue;
@@ -110,7 +129,16 @@ export async function sendEmailToSubscribed(
     }
   }
   await db.loyaltyCampaign.create({
-    data: { projectId: LOYALTY_PROJECT_ID, channel: "email", message: subject, type, recipientCount: sent },
+    data: {
+      projectId: LOYALTY_PROJECT_ID,
+      channel: "email",
+      message: subject,
+      type,
+      recipientCount: sent,
+      redemptionCode: code,
+      discountPercent,
+      costCents: sendCostCents("email", sent),
+    },
   });
   return { sent };
 }

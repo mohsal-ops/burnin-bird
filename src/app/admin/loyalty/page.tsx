@@ -38,7 +38,7 @@ export default async function LoyaltyPage() {
     db.loyaltyCampaign.findMany({
       where: { projectId: LOYALTY_PROJECT_ID },
       orderBy: { sentAt: "desc" },
-      take: 10,
+      take: 100,
     }),
   ]);
 
@@ -87,6 +87,10 @@ export default async function LoyaltyPage() {
             message: c.message,
             type: c.type,
             recipientCount: c.recipientCount,
+            redemptionCode: c.redemptionCode,
+            discountPercent: c.discountPercent,
+            costCents: c.costCents,
+            redemptionCount: c.redemptionCount,
             sentAt: c.sentAt.toISOString(),
           }))}
         />

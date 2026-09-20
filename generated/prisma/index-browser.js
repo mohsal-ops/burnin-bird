@@ -212,7 +212,8 @@ exports.Prisma.CartScalarFieldEnum = {
   uberFeeCents: 'uberFeeCents',
   uberDeliveryId: 'uberDeliveryId',
   uberStatus: 'uberStatus',
-  uberTrackingUrl: 'uberTrackingUrl'
+  uberTrackingUrl: 'uberTrackingUrl',
+  promoCampaignId: 'promoCampaignId'
 };
 
 exports.Prisma.CartItemScalarFieldEnum = {
@@ -342,6 +343,10 @@ exports.Prisma.LoyaltyCampaignScalarFieldEnum = {
   message: 'message',
   type: 'type',
   recipientCount: 'recipientCount',
+  redemptionCode: 'redemptionCode',
+  discountPercent: 'discountPercent',
+  costCents: 'costCents',
+  redemptionCount: 'redemptionCount',
   sentAt: 'sentAt'
 };
 

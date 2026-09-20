@@ -11629,6 +11629,7 @@ export namespace Prisma {
     uberDeliveryId: string | null
     uberStatus: string | null
     uberTrackingUrl: string | null
+    promoCampaignId: string | null
   }
 
   export type CartMaxAggregateOutputType = {
@@ -11641,6 +11642,7 @@ export namespace Prisma {
     uberDeliveryId: string | null
     uberStatus: string | null
     uberTrackingUrl: string | null
+    promoCampaignId: string | null
   }
 
   export type CartCountAggregateOutputType = {
@@ -11653,6 +11655,7 @@ export namespace Prisma {
     uberDeliveryId: number
     uberStatus: number
     uberTrackingUrl: number
+    promoCampaignId: number
     _all: number
   }
 
@@ -11675,6 +11678,7 @@ export namespace Prisma {
     uberDeliveryId?: true
     uberStatus?: true
     uberTrackingUrl?: true
+    promoCampaignId?: true
   }
 
   export type CartMaxAggregateInputType = {
@@ -11687,6 +11691,7 @@ export namespace Prisma {
     uberDeliveryId?: true
     uberStatus?: true
     uberTrackingUrl?: true
+    promoCampaignId?: true
   }
 
   export type CartCountAggregateInputType = {
@@ -11699,6 +11704,7 @@ export namespace Prisma {
     uberDeliveryId?: true
     uberStatus?: true
     uberTrackingUrl?: true
+    promoCampaignId?: true
     _all?: true
   }
 
@@ -11798,6 +11804,7 @@ export namespace Prisma {
     uberDeliveryId: string | null
     uberStatus: string | null
     uberTrackingUrl: string | null
+    promoCampaignId: string | null
     _count: CartCountAggregateOutputType | null
     _avg: CartAvgAggregateOutputType | null
     _sum: CartSumAggregateOutputType | null
@@ -11829,6 +11836,7 @@ export namespace Prisma {
     uberDeliveryId?: boolean
     uberStatus?: boolean
     uberTrackingUrl?: boolean
+    promoCampaignId?: boolean
     items?: boolean | Cart$itemsArgs<ExtArgs>
     _count?: boolean | CartCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cart"]>
@@ -11843,6 +11851,7 @@ export namespace Prisma {
     uberDeliveryId?: boolean
     uberStatus?: boolean
     uberTrackingUrl?: boolean
+    promoCampaignId?: boolean
   }, ExtArgs["result"]["cart"]>
 
   export type CartSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -11855,6 +11864,7 @@ export namespace Prisma {
     uberDeliveryId?: boolean
     uberStatus?: boolean
     uberTrackingUrl?: boolean
+    promoCampaignId?: boolean
   }, ExtArgs["result"]["cart"]>
 
   export type CartSelectScalar = {
@@ -11867,9 +11877,10 @@ export namespace Prisma {
     uberDeliveryId?: boolean
     uberStatus?: boolean
     uberTrackingUrl?: boolean
+    promoCampaignId?: boolean
   }
 
-  export type CartOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "status" | "uberQuoteId" | "uberFeeCents" | "uberDeliveryId" | "uberStatus" | "uberTrackingUrl", ExtArgs["result"]["cart"]>
+  export type CartOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "status" | "uberQuoteId" | "uberFeeCents" | "uberDeliveryId" | "uberStatus" | "uberTrackingUrl" | "promoCampaignId", ExtArgs["result"]["cart"]>
   export type CartInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     items?: boolean | Cart$itemsArgs<ExtArgs>
     _count?: boolean | CartCountOutputTypeDefaultArgs<ExtArgs>
@@ -11892,6 +11903,7 @@ export namespace Prisma {
       uberDeliveryId: string | null
       uberStatus: string | null
       uberTrackingUrl: string | null
+      promoCampaignId: string | null
     }, ExtArgs["result"]["cart"]>
     composites: {}
   }
@@ -12325,6 +12337,7 @@ export namespace Prisma {
     readonly uberDeliveryId: FieldRef<"Cart", 'String'>
     readonly uberStatus: FieldRef<"Cart", 'String'>
     readonly uberTrackingUrl: FieldRef<"Cart", 'String'>
+    readonly promoCampaignId: FieldRef<"Cart", 'String'>
   }
     
 
@@ -24708,10 +24721,16 @@ export namespace Prisma {
 
   export type LoyaltyCampaignAvgAggregateOutputType = {
     recipientCount: number | null
+    discountPercent: number | null
+    costCents: number | null
+    redemptionCount: number | null
   }
 
   export type LoyaltyCampaignSumAggregateOutputType = {
     recipientCount: number | null
+    discountPercent: number | null
+    costCents: number | null
+    redemptionCount: number | null
   }
 
   export type LoyaltyCampaignMinAggregateOutputType = {
@@ -24721,6 +24740,10 @@ export namespace Prisma {
     message: string | null
     type: string | null
     recipientCount: number | null
+    redemptionCode: string | null
+    discountPercent: number | null
+    costCents: number | null
+    redemptionCount: number | null
     sentAt: Date | null
   }
 
@@ -24731,6 +24754,10 @@ export namespace Prisma {
     message: string | null
     type: string | null
     recipientCount: number | null
+    redemptionCode: string | null
+    discountPercent: number | null
+    costCents: number | null
+    redemptionCount: number | null
     sentAt: Date | null
   }
 
@@ -24741,6 +24768,10 @@ export namespace Prisma {
     message: number
     type: number
     recipientCount: number
+    redemptionCode: number
+    discountPercent: number
+    costCents: number
+    redemptionCount: number
     sentAt: number
     _all: number
   }
@@ -24748,10 +24779,16 @@ export namespace Prisma {
 
   export type LoyaltyCampaignAvgAggregateInputType = {
     recipientCount?: true
+    discountPercent?: true
+    costCents?: true
+    redemptionCount?: true
   }
 
   export type LoyaltyCampaignSumAggregateInputType = {
     recipientCount?: true
+    discountPercent?: true
+    costCents?: true
+    redemptionCount?: true
   }
 
   export type LoyaltyCampaignMinAggregateInputType = {
@@ -24761,6 +24798,10 @@ export namespace Prisma {
     message?: true
     type?: true
     recipientCount?: true
+    redemptionCode?: true
+    discountPercent?: true
+    costCents?: true
+    redemptionCount?: true
     sentAt?: true
   }
 
@@ -24771,6 +24812,10 @@ export namespace Prisma {
     message?: true
     type?: true
     recipientCount?: true
+    redemptionCode?: true
+    discountPercent?: true
+    costCents?: true
+    redemptionCount?: true
     sentAt?: true
   }
 
@@ -24781,6 +24826,10 @@ export namespace Prisma {
     message?: true
     type?: true
     recipientCount?: true
+    redemptionCode?: true
+    discountPercent?: true
+    costCents?: true
+    redemptionCount?: true
     sentAt?: true
     _all?: true
   }
@@ -24878,6 +24927,10 @@ export namespace Prisma {
     message: string
     type: string
     recipientCount: number
+    redemptionCode: string | null
+    discountPercent: number
+    costCents: number | null
+    redemptionCount: number
     sentAt: Date
     _count: LoyaltyCampaignCountAggregateOutputType | null
     _avg: LoyaltyCampaignAvgAggregateOutputType | null
@@ -24907,6 +24960,10 @@ export namespace Prisma {
     message?: boolean
     type?: boolean
     recipientCount?: boolean
+    redemptionCode?: boolean
+    discountPercent?: boolean
+    costCents?: boolean
+    redemptionCount?: boolean
     sentAt?: boolean
   }, ExtArgs["result"]["loyaltyCampaign"]>
 
@@ -24917,6 +24974,10 @@ export namespace Prisma {
     message?: boolean
     type?: boolean
     recipientCount?: boolean
+    redemptionCode?: boolean
+    discountPercent?: boolean
+    costCents?: boolean
+    redemptionCount?: boolean
     sentAt?: boolean
   }, ExtArgs["result"]["loyaltyCampaign"]>
 
@@ -24927,6 +24988,10 @@ export namespace Prisma {
     message?: boolean
     type?: boolean
     recipientCount?: boolean
+    redemptionCode?: boolean
+    discountPercent?: boolean
+    costCents?: boolean
+    redemptionCount?: boolean
     sentAt?: boolean
   }, ExtArgs["result"]["loyaltyCampaign"]>
 
@@ -24937,10 +25002,14 @@ export namespace Prisma {
     message?: boolean
     type?: boolean
     recipientCount?: boolean
+    redemptionCode?: boolean
+    discountPercent?: boolean
+    costCents?: boolean
+    redemptionCount?: boolean
     sentAt?: boolean
   }
 
-  export type LoyaltyCampaignOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "projectId" | "channel" | "message" | "type" | "recipientCount" | "sentAt", ExtArgs["result"]["loyaltyCampaign"]>
+  export type LoyaltyCampaignOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "projectId" | "channel" | "message" | "type" | "recipientCount" | "redemptionCode" | "discountPercent" | "costCents" | "redemptionCount" | "sentAt", ExtArgs["result"]["loyaltyCampaign"]>
 
   export type $LoyaltyCampaignPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "LoyaltyCampaign"
@@ -24952,6 +25021,10 @@ export namespace Prisma {
       message: string
       type: string
       recipientCount: number
+      redemptionCode: string | null
+      discountPercent: number
+      costCents: number | null
+      redemptionCount: number
       sentAt: Date
     }, ExtArgs["result"]["loyaltyCampaign"]>
     composites: {}
@@ -25382,6 +25455,10 @@ export namespace Prisma {
     readonly message: FieldRef<"LoyaltyCampaign", 'String'>
     readonly type: FieldRef<"LoyaltyCampaign", 'String'>
     readonly recipientCount: FieldRef<"LoyaltyCampaign", 'Int'>
+    readonly redemptionCode: FieldRef<"LoyaltyCampaign", 'String'>
+    readonly discountPercent: FieldRef<"LoyaltyCampaign", 'Int'>
+    readonly costCents: FieldRef<"LoyaltyCampaign", 'Int'>
+    readonly redemptionCount: FieldRef<"LoyaltyCampaign", 'Int'>
     readonly sentAt: FieldRef<"LoyaltyCampaign", 'DateTime'>
   }
     
@@ -25879,7 +25956,8 @@ export namespace Prisma {
     uberFeeCents: 'uberFeeCents',
     uberDeliveryId: 'uberDeliveryId',
     uberStatus: 'uberStatus',
-    uberTrackingUrl: 'uberTrackingUrl'
+    uberTrackingUrl: 'uberTrackingUrl',
+    promoCampaignId: 'promoCampaignId'
   };
 
   export type CartScalarFieldEnum = (typeof CartScalarFieldEnum)[keyof typeof CartScalarFieldEnum]
@@ -26045,6 +26123,10 @@ export namespace Prisma {
     message: 'message',
     type: 'type',
     recipientCount: 'recipientCount',
+    redemptionCode: 'redemptionCode',
+    discountPercent: 'discountPercent',
+    costCents: 'costCents',
+    redemptionCount: 'redemptionCount',
     sentAt: 'sentAt'
   };
 
@@ -26727,6 +26809,7 @@ export namespace Prisma {
     uberDeliveryId?: StringNullableFilter<"Cart"> | string | null
     uberStatus?: StringNullableFilter<"Cart"> | string | null
     uberTrackingUrl?: StringNullableFilter<"Cart"> | string | null
+    promoCampaignId?: StringNullableFilter<"Cart"> | string | null
     items?: CartItemListRelationFilter
   }
 
@@ -26740,6 +26823,7 @@ export namespace Prisma {
     uberDeliveryId?: SortOrderInput | SortOrder
     uberStatus?: SortOrderInput | SortOrder
     uberTrackingUrl?: SortOrderInput | SortOrder
+    promoCampaignId?: SortOrderInput | SortOrder
     items?: CartItemOrderByRelationAggregateInput
   }
 
@@ -26756,6 +26840,7 @@ export namespace Prisma {
     uberDeliveryId?: StringNullableFilter<"Cart"> | string | null
     uberStatus?: StringNullableFilter<"Cart"> | string | null
     uberTrackingUrl?: StringNullableFilter<"Cart"> | string | null
+    promoCampaignId?: StringNullableFilter<"Cart"> | string | null
     items?: CartItemListRelationFilter
   }, "id">
 
@@ -26769,6 +26854,7 @@ export namespace Prisma {
     uberDeliveryId?: SortOrderInput | SortOrder
     uberStatus?: SortOrderInput | SortOrder
     uberTrackingUrl?: SortOrderInput | SortOrder
+    promoCampaignId?: SortOrderInput | SortOrder
     _count?: CartCountOrderByAggregateInput
     _avg?: CartAvgOrderByAggregateInput
     _max?: CartMaxOrderByAggregateInput
@@ -26789,6 +26875,7 @@ export namespace Prisma {
     uberDeliveryId?: StringNullableWithAggregatesFilter<"Cart"> | string | null
     uberStatus?: StringNullableWithAggregatesFilter<"Cart"> | string | null
     uberTrackingUrl?: StringNullableWithAggregatesFilter<"Cart"> | string | null
+    promoCampaignId?: StringNullableWithAggregatesFilter<"Cart"> | string | null
   }
 
   export type CartItemWhereInput = {
@@ -27567,6 +27654,10 @@ export namespace Prisma {
     message?: StringFilter<"LoyaltyCampaign"> | string
     type?: StringFilter<"LoyaltyCampaign"> | string
     recipientCount?: IntFilter<"LoyaltyCampaign"> | number
+    redemptionCode?: StringNullableFilter<"LoyaltyCampaign"> | string | null
+    discountPercent?: IntFilter<"LoyaltyCampaign"> | number
+    costCents?: IntNullableFilter<"LoyaltyCampaign"> | number | null
+    redemptionCount?: IntFilter<"LoyaltyCampaign"> | number
     sentAt?: DateTimeFilter<"LoyaltyCampaign"> | Date | string
   }
 
@@ -27577,11 +27668,16 @@ export namespace Prisma {
     message?: SortOrder
     type?: SortOrder
     recipientCount?: SortOrder
+    redemptionCode?: SortOrderInput | SortOrder
+    discountPercent?: SortOrder
+    costCents?: SortOrderInput | SortOrder
+    redemptionCount?: SortOrder
     sentAt?: SortOrder
   }
 
   export type LoyaltyCampaignWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    redemptionCode?: string
     AND?: LoyaltyCampaignWhereInput | LoyaltyCampaignWhereInput[]
     OR?: LoyaltyCampaignWhereInput[]
     NOT?: LoyaltyCampaignWhereInput | LoyaltyCampaignWhereInput[]
@@ -27590,8 +27686,11 @@ export namespace Prisma {
     message?: StringFilter<"LoyaltyCampaign"> | string
     type?: StringFilter<"LoyaltyCampaign"> | string
     recipientCount?: IntFilter<"LoyaltyCampaign"> | number
+    discountPercent?: IntFilter<"LoyaltyCampaign"> | number
+    costCents?: IntNullableFilter<"LoyaltyCampaign"> | number | null
+    redemptionCount?: IntFilter<"LoyaltyCampaign"> | number
     sentAt?: DateTimeFilter<"LoyaltyCampaign"> | Date | string
-  }, "id">
+  }, "id" | "redemptionCode">
 
   export type LoyaltyCampaignOrderByWithAggregationInput = {
     id?: SortOrder
@@ -27600,6 +27699,10 @@ export namespace Prisma {
     message?: SortOrder
     type?: SortOrder
     recipientCount?: SortOrder
+    redemptionCode?: SortOrderInput | SortOrder
+    discountPercent?: SortOrder
+    costCents?: SortOrderInput | SortOrder
+    redemptionCount?: SortOrder
     sentAt?: SortOrder
     _count?: LoyaltyCampaignCountOrderByAggregateInput
     _avg?: LoyaltyCampaignAvgOrderByAggregateInput
@@ -27618,6 +27721,10 @@ export namespace Prisma {
     message?: StringWithAggregatesFilter<"LoyaltyCampaign"> | string
     type?: StringWithAggregatesFilter<"LoyaltyCampaign"> | string
     recipientCount?: IntWithAggregatesFilter<"LoyaltyCampaign"> | number
+    redemptionCode?: StringNullableWithAggregatesFilter<"LoyaltyCampaign"> | string | null
+    discountPercent?: IntWithAggregatesFilter<"LoyaltyCampaign"> | number
+    costCents?: IntNullableWithAggregatesFilter<"LoyaltyCampaign"> | number | null
+    redemptionCount?: IntWithAggregatesFilter<"LoyaltyCampaign"> | number
     sentAt?: DateTimeWithAggregatesFilter<"LoyaltyCampaign"> | Date | string
   }
 
@@ -28225,6 +28332,7 @@ export namespace Prisma {
     uberDeliveryId?: string | null
     uberStatus?: string | null
     uberTrackingUrl?: string | null
+    promoCampaignId?: string | null
     items?: CartItemCreateNestedManyWithoutCartInput
   }
 
@@ -28238,6 +28346,7 @@ export namespace Prisma {
     uberDeliveryId?: string | null
     uberStatus?: string | null
     uberTrackingUrl?: string | null
+    promoCampaignId?: string | null
     items?: CartItemUncheckedCreateNestedManyWithoutCartInput
   }
 
@@ -28251,6 +28360,7 @@ export namespace Prisma {
     uberDeliveryId?: NullableStringFieldUpdateOperationsInput | string | null
     uberStatus?: NullableStringFieldUpdateOperationsInput | string | null
     uberTrackingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    promoCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
     items?: CartItemUpdateManyWithoutCartNestedInput
   }
 
@@ -28264,6 +28374,7 @@ export namespace Prisma {
     uberDeliveryId?: NullableStringFieldUpdateOperationsInput | string | null
     uberStatus?: NullableStringFieldUpdateOperationsInput | string | null
     uberTrackingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    promoCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
     items?: CartItemUncheckedUpdateManyWithoutCartNestedInput
   }
 
@@ -28277,6 +28388,7 @@ export namespace Prisma {
     uberDeliveryId?: string | null
     uberStatus?: string | null
     uberTrackingUrl?: string | null
+    promoCampaignId?: string | null
   }
 
   export type CartUpdateManyMutationInput = {
@@ -28289,6 +28401,7 @@ export namespace Prisma {
     uberDeliveryId?: NullableStringFieldUpdateOperationsInput | string | null
     uberStatus?: NullableStringFieldUpdateOperationsInput | string | null
     uberTrackingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    promoCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CartUncheckedUpdateManyInput = {
@@ -28301,6 +28414,7 @@ export namespace Prisma {
     uberDeliveryId?: NullableStringFieldUpdateOperationsInput | string | null
     uberStatus?: NullableStringFieldUpdateOperationsInput | string | null
     uberTrackingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    promoCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CartItemCreateInput = {
@@ -29154,6 +29268,10 @@ export namespace Prisma {
     message: string
     type: string
     recipientCount: number
+    redemptionCode?: string | null
+    discountPercent?: number
+    costCents?: number | null
+    redemptionCount?: number
     sentAt?: Date | string
   }
 
@@ -29164,6 +29282,10 @@ export namespace Prisma {
     message: string
     type: string
     recipientCount: number
+    redemptionCode?: string | null
+    discountPercent?: number
+    costCents?: number | null
+    redemptionCount?: number
     sentAt?: Date | string
   }
 
@@ -29174,6 +29296,10 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     recipientCount?: IntFieldUpdateOperationsInput | number
+    redemptionCode?: NullableStringFieldUpdateOperationsInput | string | null
+    discountPercent?: IntFieldUpdateOperationsInput | number
+    costCents?: NullableIntFieldUpdateOperationsInput | number | null
+    redemptionCount?: IntFieldUpdateOperationsInput | number
     sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -29184,6 +29310,10 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     recipientCount?: IntFieldUpdateOperationsInput | number
+    redemptionCode?: NullableStringFieldUpdateOperationsInput | string | null
+    discountPercent?: IntFieldUpdateOperationsInput | number
+    costCents?: NullableIntFieldUpdateOperationsInput | number | null
+    redemptionCount?: IntFieldUpdateOperationsInput | number
     sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -29194,6 +29324,10 @@ export namespace Prisma {
     message: string
     type: string
     recipientCount: number
+    redemptionCode?: string | null
+    discountPercent?: number
+    costCents?: number | null
+    redemptionCount?: number
     sentAt?: Date | string
   }
 
@@ -29204,6 +29338,10 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     recipientCount?: IntFieldUpdateOperationsInput | number
+    redemptionCode?: NullableStringFieldUpdateOperationsInput | string | null
+    discountPercent?: IntFieldUpdateOperationsInput | number
+    costCents?: NullableIntFieldUpdateOperationsInput | number | null
+    redemptionCount?: IntFieldUpdateOperationsInput | number
     sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -29214,6 +29352,10 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     recipientCount?: IntFieldUpdateOperationsInput | number
+    redemptionCode?: NullableStringFieldUpdateOperationsInput | string | null
+    discountPercent?: IntFieldUpdateOperationsInput | number
+    costCents?: NullableIntFieldUpdateOperationsInput | number | null
+    redemptionCount?: IntFieldUpdateOperationsInput | number
     sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -29805,6 +29947,7 @@ export namespace Prisma {
     uberDeliveryId?: SortOrder
     uberStatus?: SortOrder
     uberTrackingUrl?: SortOrder
+    promoCampaignId?: SortOrder
   }
 
   export type CartAvgOrderByAggregateInput = {
@@ -29821,6 +29964,7 @@ export namespace Prisma {
     uberDeliveryId?: SortOrder
     uberStatus?: SortOrder
     uberTrackingUrl?: SortOrder
+    promoCampaignId?: SortOrder
   }
 
   export type CartMinOrderByAggregateInput = {
@@ -29833,6 +29977,7 @@ export namespace Prisma {
     uberDeliveryId?: SortOrder
     uberStatus?: SortOrder
     uberTrackingUrl?: SortOrder
+    promoCampaignId?: SortOrder
   }
 
   export type CartSumOrderByAggregateInput = {
@@ -30365,11 +30510,18 @@ export namespace Prisma {
     message?: SortOrder
     type?: SortOrder
     recipientCount?: SortOrder
+    redemptionCode?: SortOrder
+    discountPercent?: SortOrder
+    costCents?: SortOrder
+    redemptionCount?: SortOrder
     sentAt?: SortOrder
   }
 
   export type LoyaltyCampaignAvgOrderByAggregateInput = {
     recipientCount?: SortOrder
+    discountPercent?: SortOrder
+    costCents?: SortOrder
+    redemptionCount?: SortOrder
   }
 
   export type LoyaltyCampaignMaxOrderByAggregateInput = {
@@ -30379,6 +30531,10 @@ export namespace Prisma {
     message?: SortOrder
     type?: SortOrder
     recipientCount?: SortOrder
+    redemptionCode?: SortOrder
+    discountPercent?: SortOrder
+    costCents?: SortOrder
+    redemptionCount?: SortOrder
     sentAt?: SortOrder
   }
 
@@ -30389,11 +30545,18 @@ export namespace Prisma {
     message?: SortOrder
     type?: SortOrder
     recipientCount?: SortOrder
+    redemptionCode?: SortOrder
+    discountPercent?: SortOrder
+    costCents?: SortOrder
+    redemptionCount?: SortOrder
     sentAt?: SortOrder
   }
 
   export type LoyaltyCampaignSumOrderByAggregateInput = {
     recipientCount?: SortOrder
+    discountPercent?: SortOrder
+    costCents?: SortOrder
+    redemptionCount?: SortOrder
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -31628,6 +31791,7 @@ export namespace Prisma {
     uberDeliveryId?: string | null
     uberStatus?: string | null
     uberTrackingUrl?: string | null
+    promoCampaignId?: string | null
   }
 
   export type CartUncheckedCreateWithoutItemsInput = {
@@ -31640,6 +31804,7 @@ export namespace Prisma {
     uberDeliveryId?: string | null
     uberStatus?: string | null
     uberTrackingUrl?: string | null
+    promoCampaignId?: string | null
   }
 
   export type CartCreateOrConnectWithoutItemsInput = {
@@ -31694,6 +31859,7 @@ export namespace Prisma {
     uberDeliveryId?: NullableStringFieldUpdateOperationsInput | string | null
     uberStatus?: NullableStringFieldUpdateOperationsInput | string | null
     uberTrackingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    promoCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CartUncheckedUpdateWithoutItemsInput = {
@@ -31706,6 +31872,7 @@ export namespace Prisma {
     uberDeliveryId?: NullableStringFieldUpdateOperationsInput | string | null
     uberStatus?: NullableStringFieldUpdateOperationsInput | string | null
     uberTrackingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    promoCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CartItemSideUpsertWithWhereUniqueWithoutCartItemInput = {

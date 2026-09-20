@@ -81,6 +81,14 @@ export async function finalizeCart(
     console.error("finalizeCart: order rows failed (cart still completed):", (e as Error).message);
   }
 
+  // Loyalty redemption: a completed order that used a campaign promo code counts
+  // as one redemption for that campaign. Best-effort - never blocks the order.
+  if (cart.promoCampaignId) {
+    await db.loyaltyCampaign
+      .update({ where: { id: cart.promoCampaignId }, data: { redemptionCount: { increment: 1 } } })
+      .catch((e) => console.error("finalizeCart: redemption increment failed:", (e as Error).message));
+  }
+
   // Uber Direct dispatch (delivery only, when enabled). Best-effort.
   try {
     const uber = await getUberDirect();

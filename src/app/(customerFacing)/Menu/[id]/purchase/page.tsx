@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { deriveOrderType } from "@/lib/orderType"
 import { getLoyaltySettings, loyaltyIncentive } from "@/lib/loyalty"
+import { REDEMPTION_WINDOW_DAYS } from "@/lib/loyaltyPromo"
+import { PromoField } from "../../../_components/PromoField"
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -45,11 +47,27 @@ export default async function Page({ params }: PageProps) {
     0
   )
 
+  // Loyalty promo: a campaign code applied to this cart discounts the items
+  // subtotal (verified still inside the redemption window). Delivery is untouched.
+  let discountInCents = 0
+  let appliedPromoCode: string | null = null
+  if (cart.promoCampaignId) {
+    const since = new Date(Date.now() - REDEMPTION_WINDOW_DAYS * 86400_000)
+    const camp = await db.loyaltyCampaign.findFirst({
+      where: { id: cart.promoCampaignId, sentAt: { gte: since } },
+      select: { discountPercent: true, redemptionCode: true },
+    })
+    if (camp) {
+      discountInCents = Math.round((itemsTotal * camp.discountPercent) / 100)
+      appliedPromoCode = camp.redemptionCode
+    }
+  }
+
   // Add the real Uber Direct courier fee only for delivery orders (it's stored on
   // the cart at address entry). Pickup orders are unaffected.
   const isDelivery = cart.items[0] ? deriveOrderType(cart.items[0]) === "delivery" : false
   const deliveryFee = isDelivery ? cart.uberFeeCents ?? 0 : 0
-  const total = itemsTotal + deliveryFee
+  const total = Math.max(0, itemsTotal - discountInCents) + deliveryFee
 
   const paymentIntent = await stripe.paymentIntents.create({
     amount: total,
@@ -64,13 +82,18 @@ export default async function Page({ params }: PageProps) {
   const loyalty = await getLoyaltySettings()
 
   return (
-    <StripeCheckoutForm
-      priceInCents={total}
-      deliveryFeeInCents={deliveryFee}
-      clientSecret={paymentIntent.client_secret}
-      loyaltyEnabled={loyalty.enabled}
-      loyaltyConsentText={loyalty.consentText}
-      loyaltyIncentive={loyaltyIncentive()}
-    />
+    <>
+      <div className="mx-auto w-full max-w-md px-4 pt-4">
+        <PromoField appliedCode={appliedPromoCode} discountInCents={discountInCents} />
+      </div>
+      <StripeCheckoutForm
+        priceInCents={total}
+        deliveryFeeInCents={deliveryFee}
+        clientSecret={paymentIntent.client_secret}
+        loyaltyEnabled={loyalty.enabled}
+        loyaltyConsentText={loyalty.consentText}
+        loyaltyIncentive={loyaltyIncentive()}
+      />
+    </>
   )
 }

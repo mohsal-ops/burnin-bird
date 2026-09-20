@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { useMemo, useState, useTransition, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -39,7 +39,18 @@ const CARD = "rounded-2xl border border-stone-200 bg-white p-5 shadow-sm sm:p-6"
 const INPUT = "w-full rounded-lg border border-stone-200 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-stone-300";
 const SWITCH = "data-[state=unchecked]:bg-stone-300";
 
-type Campaign = { id: string; channel?: string; message: string; type: string; recipientCount: number; sentAt: string };
+type Campaign = {
+  id: string;
+  channel?: string;
+  message: string;
+  type: string;
+  recipientCount: number;
+  redemptionCode?: string | null;
+  discountPercent?: number;
+  costCents?: number | null;
+  redemptionCount?: number;
+  sentAt: string;
+};
 type Subscriber = {
   id: string;
   firstName: string | null;
@@ -113,6 +124,11 @@ export function LoyaltyDashboard({
   const preview = msg.trim() ? `${msg.trim()}\n${OPT_OUT_LINE}` : "";
   const total = subscribers.length;
 
+  // Quiet-list notice (visible up top, not buried): flag when no send in 3+ weeks.
+  const lastSentAt = campaigns.reduce<string | null>((max, c) => (!max || c.sentAt > max ? c.sentAt : max), null);
+  const weeksSince = lastSentAt ? Math.floor((Date.now() - new Date(lastSentAt).getTime()) / (7 * 86_400_000)) : null;
+  const listIsQuiet = lastSentAt === null || (weeksSince !== null && weeksSince >= 3);
+
   const toggleEnabled = (v: boolean) => {
     setEnabled(v);
     start(async () => { await setLoyaltyEnabled(v); });
@@ -152,6 +168,18 @@ export function LoyaltyDashboard({
         <StatTile icon={<Mail size={18} />} n={emailSubscribed} label="Email subscribers" accent="#1d4ed8" />
         <StatTile icon={<UserX size={18} />} n={optedOut} label="Opted out" accent="#dc2626" />
       </div>
+
+      {/* Quiet-list notice (prominent, not buried) */}
+      {listIsQuiet && (
+        <div className="flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+          <BellRing className="mt-0.5 size-5 shrink-0 text-amber-600" />
+          <span>
+            {lastSentAt
+              ? `No campaign sent in ${weeksSince} week${weeksSince === 1 ? "" : "s"}. Your list goes cold without regular offers - send one below to bring people back.`
+              : "You haven't sent a campaign yet. Send your first text or email special below to start earning redemptions."}
+          </span>
+        </div>
+      )}
 
       {/* Settings: master + popup toggles */}
       <div className={CARD}>
@@ -298,26 +326,143 @@ export function LoyaltyDashboard({
           </p>
         </div>
 
-        {/* Recent sends */}
-        {campaigns.length > 0 && (
-          <div className={CARD}>
-            <SectionHeader icon={<MessageSquare size={18} />} title="Recent sends" />
-            <ul className="mt-4 space-y-2 text-sm">
-              {campaigns.map((c) => (
-                <li key={c.id} className="flex items-center justify-between gap-3 border-b border-stone-100 pb-2 last:border-0">
-                  <span className="truncate text-stone-700">{c.message}</span>
-                  <span className="flex shrink-0 items-center gap-2 text-stone-500">
-                    <StatusPill tone={(c.channel === "email" ? "info" : "live") as PosTone} dot={false}>
-                      {c.channel === "email" ? "Email" : "SMS"}
-                    </StatusPill>
-                    {c.type === "birthday_auto" && <span title="Birthday automation">🎂</span>}
-                    {c.recipientCount} · {new Date(c.sentAt).toLocaleDateString()}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+        {/* Campaign performance + history */}
+        {campaigns.length > 0 && <CampaignHistory campaigns={campaigns} />}
+      </div>
+    </div>
+  );
+}
+
+// ── campaign performance + history ───────────────────────────────────────────
+function fmtUsd(cents?: number | null): string {
+  return cents == null ? "—" : `$${(cents / 100).toFixed(2)}`;
+}
+function redemptionRate(redemptions?: number, recipients?: number): number {
+  if (!recipients) return 0;
+  return Math.round(((redemptions ?? 0) / recipients) * 100);
+}
+
+type SortKey = "date" | "recipients" | "cost" | "redemptions" | "rate";
+
+function ChannelSummary({
+  label,
+  tone,
+  s,
+}: {
+  label: string;
+  tone: PosTone;
+  s: { sends: number; recipients: number; cost: number; redemptions: number; rate: number };
+}) {
+  return (
+    <div className="rounded-xl border border-stone-200 bg-stone-50 p-4">
+      <div className="flex items-center justify-between">
+        <StatusPill tone={tone} dot={false}>{label}</StatusPill>
+        <span className="text-xs text-stone-400">{s.sends} send{s.sends === 1 ? "" : "s"}</span>
+      </div>
+      <div className="mt-3 grid grid-cols-4 gap-2 text-center">
+        <div><div className="text-lg font-bold text-stone-800">{s.recipients}</div><div className="text-[10px] text-stone-500">sent</div></div>
+        <div><div className="text-lg font-bold text-stone-800">{fmtUsd(s.cost)}</div><div className="text-[10px] text-stone-500">cost</div></div>
+        <div><div className="text-lg font-bold text-stone-800">{s.redemptions}</div><div className="text-[10px] text-stone-500">redeemed</div></div>
+        <div><div className="text-lg font-bold text-green-600">{s.rate}%</div><div className="text-[10px] text-stone-500">rate</div></div>
+      </div>
+    </div>
+  );
+}
+
+function CampaignHistory({ campaigns }: { campaigns: Campaign[] }) {
+  const [sort, setSort] = useState<SortKey>("date");
+  const [desc, setDesc] = useState(true);
+
+  const sorted = useMemo(() => {
+    const val = (c: Campaign) => {
+      switch (sort) {
+        case "recipients": return c.recipientCount;
+        case "cost": return c.costCents ?? 0;
+        case "redemptions": return c.redemptionCount ?? 0;
+        case "rate": return redemptionRate(c.redemptionCount, c.recipientCount);
+        default: return new Date(c.sentAt).getTime();
+      }
+    };
+    return [...campaigns].sort((a, b) => (desc ? val(b) - val(a) : val(a) - val(b)));
+  }, [campaigns, sort, desc]);
+
+  // SMS and email kept as SEPARATE performance lines - never blended.
+  const summary = (ch: "sms" | "email") => {
+    const list = campaigns.filter((c) => (c.channel ?? "sms") === ch);
+    const recipients = list.reduce((n, c) => n + c.recipientCount, 0);
+    const redemptions = list.reduce((n, c) => n + (c.redemptionCount ?? 0), 0);
+    return {
+      sends: list.length,
+      recipients,
+      cost: list.reduce((n, c) => n + (c.costCents ?? 0), 0),
+      redemptions,
+      rate: redemptionRate(redemptions, recipients),
+    };
+  };
+
+  const Th = ({ k, children, right }: { k: SortKey; children: ReactNode; right?: boolean }) => (
+    <TableHead className={`text-stone-500 ${right ? "text-right" : ""}`}>
+      <button
+        onClick={() => (sort === k ? setDesc((d) => !d) : (setSort(k), setDesc(true)))}
+        className={`inline-flex items-center gap-1 hover:text-stone-800 ${sort === k ? "text-stone-800" : ""}`}
+      >
+        {children}
+        <ArrowUpDown className="size-3" />
+      </button>
+    </TableHead>
+  );
+
+  return (
+    <div className={CARD}>
+      <SectionHeader icon={<MessageSquare size={18} />} title="Campaign performance" desc="Every send, its cost, and how many orders redeemed its code." />
+
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+        <ChannelSummary label="SMS" tone="live" s={summary("sms")} />
+        <ChannelSummary label="Email" tone="info" s={summary("email")} />
+      </div>
+
+      <div className="mt-4 overflow-hidden rounded-xl border border-stone-200">
+        <div className="max-h-[28rem] overflow-y-auto">
+          <Table>
+            <TableHeader className="sticky top-0 z-10 bg-stone-50">
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="text-stone-500">Message</TableHead>
+                <TableHead className="text-stone-500">Channel</TableHead>
+                <Th k="date">Sent</Th>
+                <Th k="recipients" right>Recipients</Th>
+                <Th k="cost" right>Cost</Th>
+                <Th k="redemptions" right>Redeemed</Th>
+                <Th k="rate" right>Rate</Th>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {sorted.map((c) => {
+                const ch = (c.channel ?? "sms") === "email" ? "email" : "sms";
+                const r = redemptionRate(c.redemptionCount, c.recipientCount);
+                return (
+                  <TableRow key={c.id} className="border-stone-100">
+                    <TableCell className="max-w-[240px] truncate font-medium text-stone-800" title={c.message}>
+                      {c.message}
+                      {c.redemptionCode && (
+                        <span className="ml-2 rounded bg-stone-100 px-1.5 py-0.5 font-mono text-[10px] text-stone-500">{c.redemptionCode}</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <StatusPill tone={ch === "email" ? "info" : "live"} dot={false}>{ch === "email" ? "Email" : "SMS"}</StatusPill>
+                    </TableCell>
+                    <TableCell className="text-stone-500" suppressHydrationWarning>{new Date(c.sentAt).toLocaleDateString()}</TableCell>
+                    <TableCell className="text-right tabular-nums text-stone-700">{c.recipientCount}</TableCell>
+                    <TableCell className="text-right tabular-nums text-stone-700">{fmtUsd(c.costCents)}</TableCell>
+                    <TableCell className="text-right tabular-nums font-semibold text-stone-800">{c.redemptionCount ?? 0}</TableCell>
+                    <TableCell className="text-right tabular-nums">
+                      <span className={r >= 10 ? "font-semibold text-green-600" : "text-stone-600"}>{r}%</span>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </div>
       </div>
     </div>
   );

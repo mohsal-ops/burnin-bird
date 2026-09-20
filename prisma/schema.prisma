@@ -125,6 +125,11 @@ model Cart {
   uberDeliveryId  String?
   uberStatus      String? // pending|pickup|pickup_complete|dropoff|delivered|canceled|returned
   uberTrackingUrl String?
+
+  // Loyalty promo code applied at checkout (the LoyaltyCampaign whose code was
+  // entered). Set when the code is validated; on a completed order that campaign's
+  // redemptionCount is incremented.
+  promoCampaignId String?
 }
 
 model CartItem {
@@ -289,6 +294,14 @@ model LoyaltyCampaign {
   message        String
   type           String   // "manual_blast" | "birthday_auto"
   recipientCount Int
+  // Efficiency tracking. redemptionCode is entered at checkout to redeem the
+  // offer; discountPercent is the % it takes off the items subtotal; costCents is
+  // the real send cost (Brevo per-message rate * recipients, computed at send);
+  // redemptionCount counts completed orders that used the code.
+  redemptionCode  String?  @unique
+  discountPercent Int      @default(10)
+  costCents       Int?
+  redemptionCount Int      @default(0)
   sentAt         DateTime @default(now())
 
   @@index([projectId])

@@ -114,7 +114,7 @@ model Cart {
   items     CartItem[]
   status    String     @default("open") // open/completed/abandoned
 
-  // Uber Direct courier delivery (optional per restaurant — see SiteSetting
+  // Uber Direct courier delivery (optional per restaurant - see SiteSetting
   // "uber_direct_enabled"). A quote is fetched at checkout; the courier is
   // dispatched after payment; status is advanced by the Uber webhook.
   uberQuoteId     String?
@@ -122,6 +122,11 @@ model Cart {
   uberDeliveryId  String?
   uberStatus      String? // pending|pickup|pickup_complete|dropoff|delivered|canceled|returned
   uberTrackingUrl String?
+
+  // Loyalty promo code applied at checkout (the LoyaltyCampaign whose code was
+  // entered). Set when the code is validated; on a completed order that campaign's
+  // redemptionCount is incremented.
+  promoCampaignId String?
 }
 
 model CartItem {
@@ -260,7 +265,7 @@ model LoyaltyContact {
   email              String?
   firstName          String?
   birthday           DateTime?
-  // SMS (TCPA) and email (CAN-SPAM) are legally distinct consents — tracked
+  // SMS (TCPA) and email (CAN-SPAM) are legally distinct consents - tracked
   // separately so an email-only signup never counts as an SMS opt-in.
   smsSubscribed      Boolean   @default(false)
   emailSubscribed    Boolean   @default(false)
@@ -278,13 +283,21 @@ model LoyaltyContact {
 }
 
 model LoyaltyCampaign {
-  id             String   @id @default(cuid())
-  projectId      String
-  channel        String   @default("sms") // "sms" | "email"
-  message        String
-  type           String // "manual_blast" | "birthday_auto"
-  recipientCount Int
-  sentAt         DateTime @default(now())
+  id              String   @id @default(cuid())
+  projectId       String
+  channel         String   @default("sms") // "sms" | "email"
+  message         String
+  type            String // "manual_blast" | "birthday_auto"
+  recipientCount  Int
+  // Efficiency tracking. redemptionCode is entered at checkout to redeem the
+  // offer; discountPercent is the % it takes off the items subtotal; costCents is
+  // the real send cost (Brevo per-message rate * recipients, computed at send);
+  // redemptionCount counts completed orders that used the code.
+  redemptionCode  String?  @unique
+  discountPercent Int      @default(10)
+  costCents       Int?
+  redemptionCount Int      @default(0)
+  sentAt          DateTime @default(now())
 
   @@index([projectId])
 }
