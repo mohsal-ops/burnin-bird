@@ -150,7 +150,7 @@ const TicTacToeGame = () => {
           </div>
           <div className="bg-secondary/50 rounded-xl px-4 py-2">
             <p className="text-xs text-muted-foreground">Draws</p>
-            <p className="text-xl font-display text-primary">{scores.draws}</p>
+            <p className="text-xl font-display text-brand">{scores.draws}</p>
           </div>
           <div className="bg-ketchup/10 rounded-xl px-4 py-2">
             <p className="text-xs text-muted-foreground">AI 🍔</p>
@@ -165,8 +165,8 @@ const TicTacToeGame = () => {
               onClick={() => handleClick(i)}
               disabled={!!cell || gameOver || !isPlayerTurn}
               className={`w-20 h-20 rounded-xl text-4xl font-bold transition-all border-2 ${
-                cell ? "border-primary/20 bg-card" : "border-border bg-cream hover:bg-primary/10 hover:scale-105 cursor-pointer"
-              } ${!cell && !gameOver && isPlayerTurn ? "hover:border-primary/40" : ""}`}
+                cell ? "border-brand/20 bg-card" : "border-border bg-cream hover:bg-brand/10 hover:scale-105 cursor-pointer"
+              } ${!cell && !gameOver && isPlayerTurn ? "hover:border-brand/40" : ""}`}
             >
               {cell}
             </button>

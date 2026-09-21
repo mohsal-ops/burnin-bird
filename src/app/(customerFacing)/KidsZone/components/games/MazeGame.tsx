@@ -125,12 +125,12 @@ const MazeGame = () => {
         <div className="flex gap-4 text-center">
           <div className="bg-secondary/50 rounded-xl px-4 py-2">
             <p className="text-xs text-muted-foreground">Moves</p>
-            <p className="text-xl font-display text-primary">{moves}</p>
+            <p className="text-xl font-display text-brand">{moves}</p>
           </div>
           {timerMode && (
             <div className={`bg-secondary/50 rounded-xl px-4 py-2 ${timeLeft <= 10 ? "animate-pulse" : ""}`}>
               <p className="text-xs text-muted-foreground">Time</p>
-              <p className={`text-xl font-display ${timeLeft <= 10 ? "text-ketchup" : "text-primary"}`}>{formatTime(timeLeft)}</p>
+              <p className={`text-xl font-display ${timeLeft <= 10 ? "text-ketchup" : "text-brand"}`}>{formatTime(timeLeft)}</p>
             </div>
           )}
         </div>
@@ -155,10 +155,10 @@ const MazeGame = () => {
                 const x = c * config.cellSize + config.wallThickness / 2;
                 const y = r * config.cellSize + config.wallThickness / 2;
                 const lines: JSX.Element[] = [];
-                if (cell.top) lines.push(<line key={`${r}-${c}-t`} x1={x} y1={y} x2={x + config.cellSize} y2={y} stroke="hsl(var(--primary))" strokeWidth={config.wallThickness} strokeLinecap="round" />);
-                if (cell.left) lines.push(<line key={`${r}-${c}-l`} x1={x} y1={y} x2={x} y2={y + config.cellSize} stroke="hsl(var(--primary))" strokeWidth={config.wallThickness} strokeLinecap="round" />);
-                if (cell.right) lines.push(<line key={`${r}-${c}-r`} x1={x + config.cellSize} y1={y} x2={x + config.cellSize} y2={y + config.cellSize} stroke="hsl(var(--primary))" strokeWidth={config.wallThickness} strokeLinecap="round" />);
-                if (cell.bottom) lines.push(<line key={`${r}-${c}-b`} x1={x} y1={y + config.cellSize} x2={x + config.cellSize} y2={y + config.cellSize} stroke="hsl(var(--primary))" strokeWidth={config.wallThickness} strokeLinecap="round" />);
+                if (cell.top) lines.push(<line key={`${r}-${c}-t`} x1={x} y1={y} x2={x + config.cellSize} y2={y} stroke="var(--brand)" strokeWidth={config.wallThickness} strokeLinecap="round" />);
+                if (cell.left) lines.push(<line key={`${r}-${c}-l`} x1={x} y1={y} x2={x} y2={y + config.cellSize} stroke="var(--brand)" strokeWidth={config.wallThickness} strokeLinecap="round" />);
+                if (cell.right) lines.push(<line key={`${r}-${c}-r`} x1={x + config.cellSize} y1={y} x2={x + config.cellSize} y2={y + config.cellSize} stroke="var(--brand)" strokeWidth={config.wallThickness} strokeLinecap="round" />);
+                if (cell.bottom) lines.push(<line key={`${r}-${c}-b`} x1={x} y1={y + config.cellSize} x2={x + config.cellSize} y2={y + config.cellSize} stroke="var(--brand)" strokeWidth={config.wallThickness} strokeLinecap="round" />);
                 return lines;
               })
             )}

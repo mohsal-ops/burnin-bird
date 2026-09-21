@@ -2,8 +2,10 @@ import { Gamepad2, Star, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { SITE_CONFIG } from "@/lib/siteConfig";
+import { kidsTheme } from "@/lib/kidsTheme";
 
 const HeroSection = () => {
+  const theme = kidsTheme();
   return (
     <section className="hero-section w-full sm:pt-0 pt-3 relative overflow-hidden">
 
@@ -13,45 +15,45 @@ const HeroSection = () => {
       <div
         className="absolute inset-0 opacity-[0.03]"
         style={{
-          backgroundImage: `radial-gradient(hsl(var(--primary)) 1px, transparent 1px)`,
+          backgroundImage: `radial-gradient(var(--brand) 1px, transparent 1px)`,
           backgroundSize: "32px 32px",
         }}
       />
       {/* Floating food emojis */}
       <div className="absolute top-24 left-[10%] text-5xl opacity-20 animate-bounce-gentle select-none">
-        🍔
+        {theme.emojis[0]}
       </div>
       <div
         className="absolute bottom-20 right-[10%] text-5xl opacity-20 animate-bounce-gentle select-none"
         style={{ animationDelay: "0.7s" }}
       >
-        🍟
+        {theme.emojis[1]}
       </div>
       <div
         className="absolute top-1/3 right-[5%] text-4xl opacity-10 hidden lg:block select-none"
         style={{ animationDelay: "1.2s" }}
       >
-        🍗
+        {theme.emojis[2]}
       </div>
       <div
         className="absolute bottom-1/3 left-[5%] text-4xl opacity-10 hidden lg:block select-none"
         style={{ animationDelay: "0.3s" }}
       >
-        🥤
+        {theme.emojis[3]}
       </div>
       <div className="container mx-auto px-4 py-20 md:py-24 relative z-10">
         <div className="max-w-3xl mx-auto text-center">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-5 py-2 mb-8">
-            <Star className="w-4 h-4 text-primary" fill="currentColor" />
-            <span className="text-primary text-sm font-semibold tracking-wide">
-              #1 Family Restaurant in Eagle Pass
+          <div className="inline-flex items-center gap-2 bg-brand/10 border border-brand/20 rounded-full px-5 py-2 mb-8">
+            <Star className="w-4 h-4 text-brand" fill="currentColor" />
+            <span className="text-brand text-sm font-semibold tracking-wide">
+              #1 Family Restaurant in {SITE_CONFIG.city}
             </span>
           </div>
 
           <h1 className="text-5xl md:text-7xl font-display font-black text-white mb-6 leading-[1.1] tracking-tight">
             Good Food,{" "}
-            <span className="text-primary text relative inline-block">
+            <span className="text-brand text relative inline-block">
               Great Fun
               <svg
                 className="absolute -bottom-1 left-0 w-full"
@@ -60,7 +62,7 @@ const HeroSection = () => {
               >
                 <path
                   d="M2 6C50 1 150 1 198 6"
-                  stroke="hsl(var(--primary))"
+                  stroke="var(--brand)"
                   strokeWidth="3"
                   strokeLinecap="round"
                   opacity="0.4"
@@ -80,7 +82,7 @@ const HeroSection = () => {
             <a
               href="#games"
               aria-label="Play Games"
-              className="btn-primary-bold rounded-xl text-base px-8 h-12 gap-2 inline-flex items-center justify-center"
+              className="btn-brand-bold rounded-xl text-base px-8 h-12 gap-2 inline-flex items-center justify-center"
             >
               <Gamepad2 className="w-5 h-5" />
               Play Games
@@ -102,7 +104,7 @@ const HeroSection = () => {
               { value: "4.9", label: "Rating" },
             ].map((stat) => (
               <div key={stat.label} className="text-center">
-                <div className="text-3xl md:text-4xl font-display font-black text-primary">
+                <div className="text-3xl md:text-4xl font-display font-black text-brand">
                   {stat.value}
                 </div>
                 <div className="text-xs uppercase tracking-[0.15em] text-white/40 mt-1 font-medium">

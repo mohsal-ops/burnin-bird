@@ -275,10 +275,10 @@ const WordSearchGame = () => {
                 onPointerEnter={() => handlePointerEnter(r, c)}
                 className={`w-7 h-7 text-xs font-bold rounded transition-all ${
                   dragCells.has(`${r}-${c}`)
-                    ? "bg-primary text-primary-foreground scale-110"
+                    ? "bg-brand text-brand-foreground scale-110"
                     : isFound(r, c)
-                      ? "bg-primary text-pickle ring-1 ring-pickle"
-                      : "bg-cream text-foreground hover:bg-primary/10"
+                      ? "bg-brand text-pickle ring-1 ring-pickle"
+                      : "bg-cream text-foreground hover:bg-brand/10"
                 }`}
               >
                 {letter}
@@ -289,7 +289,7 @@ const WordSearchGame = () => {
 
         <div className="bg-secondary/50 rounded-xl px-4 py-2 text-center">
           <p className="text-xs text-muted-foreground">Found</p>
-          <p className="text-xl font-display text-primary">
+          <p className="text-xl font-display text-brand">
             {foundWords.size}/{placements.length}
           </p>
         </div>

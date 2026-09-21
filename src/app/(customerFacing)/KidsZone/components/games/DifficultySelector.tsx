@@ -47,7 +47,7 @@ const DifficultySelector = ({ currentDifficulty, onSelect, configs }: Difficulty
                     ? `${colors.active} border-current scale-110 shadow-lg`
                     : isPast
                     ? `${colors.active} border-transparent opacity-70`
-                    : "bg-secondary/60 border-border text-muted-foreground hover:border-primary/30 hover:scale-105"
+                    : "bg-secondary/60 border-border text-muted-foreground hover:border-brand/30 hover:scale-105"
                 }`}>
                   {configs[diff].emoji}
                 </div>

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { RotateCcw, Trophy, Timer } from "lucide-react";
 import type { Difficulty } from "./mazeConfigs";
 import DifficultySelector from "./DifficultySelector";
+import { kidsTheme } from "@/lib/kidsTheme";
 
 const configs: Record<Difficulty, { cols: number; rows: number; name: string; emoji: string }> = {
   easy: { cols: 3, rows: 4, name: "Easy", emoji: "🌟" },
@@ -11,7 +12,9 @@ const configs: Record<Difficulty, { cols: number; rows: number; name: string; em
   expert: { cols: 5, rows: 6, name: "Expert", emoji: "💎" },
 };
 
-const foodEmojis = ["🍗", "🍔", "🌭", "🍟", "🥪", "🍖", "🌮", "🧇", "🥓", "🍳", "🥤", "🍦", "🍩", "🧁", "🥧"];
+// Place-type themed card faces (burgers for a burger joint, pastries for a cafe,
+// etc.) - see src/lib/kidsTheme.ts.
+const foodEmojis = kidsTheme().cardEmojis;
 
 interface Card { id: number; emoji: string; flipped: boolean; matched: boolean; }
 
@@ -102,11 +105,11 @@ const MemoryGame = () => {
         <div className="flex gap-4 text-center">
           <div className="bg-secondary/50 rounded-xl px-4 py-2">
             <p className="text-xs text-muted-foreground">Moves</p>
-            <p className="text-xl font-display text-primary">{moves}</p>
+            <p className="text-xl font-display text-brand">{moves}</p>
           </div>
           <div className="bg-secondary/50 rounded-xl px-4 py-2">
             <p className="text-xs text-muted-foreground flex items-center gap-1"><Timer className="w-3 h-3" />Time</p>
-            <p className="text-xl font-display text-primary">{Math.floor(elapsed / 60)}:{(elapsed % 60).toString().padStart(2, "0")}</p>
+            <p className="text-xl font-display text-brand">{Math.floor(elapsed / 60)}:{(elapsed % 60).toString().padStart(2, "0")}</p>
           </div>
         </div>
 
@@ -117,8 +120,8 @@ const MemoryGame = () => {
               onClick={() => handleCardClick(i)}
               className={`w-14 h-14 sm:w-16 sm:h-16 rounded-xl text-2xl font-bold transition-all duration-300 transform ${
                 card.flipped || card.matched
-                  ? "bg-card border-2 border-primary/30 scale-100 rotate-0"
-                  : "bg-primary text-primary-foreground hover:scale-105 cursor-pointer"
+                  ? "bg-card border-2 border-brand/30 scale-100 rotate-0"
+                  : "bg-brand text-brand-foreground hover:scale-105 cursor-pointer"
               } ${card.matched ? "opacity-60 scale-95" : ""}`}
               disabled={card.matched}
             >

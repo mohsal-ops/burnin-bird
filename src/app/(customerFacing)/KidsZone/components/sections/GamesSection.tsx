@@ -15,6 +15,7 @@ import MemoryGame from "../games/MemoryGame";
 import WordSearchGame from "../games/WordSearchGame";
 import TicTacToeGame from "../games/TicTacToeGame";
 import SpotDifferenceGame from "../games/SpotDifferenceGame";
+import { kidsTheme } from "@/lib/kidsTheme";
 
 const games = [
   {
@@ -112,7 +113,7 @@ const GamesSection = () => {
               <button
                 key={game.id}
                 onClick={() => setActiveGame(game.id)}
-                className="group relative flex flex-col rounded-2xl overflow-hidden border border-border bg-card hover:shadow-glow hover:scale-[1.03] hover:border-primary/40 transition-all duration-300"
+                className="group relative flex flex-col rounded-2xl overflow-hidden border border-border bg-card hover:shadow-glow hover:scale-[1.03] hover:border-brand/40 transition-all duration-300"
               >
                 {/* Thumbnail */}
                 <div className="relative aspect-4/3 overflow-hidden">
@@ -137,7 +138,7 @@ const GamesSection = () => {
                
 
                 {/* Bottom accent line */}
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
               </button>
             ))}
           </div>
@@ -149,11 +150,7 @@ const GamesSection = () => {
             Did You Know? 🤔
           </h3>
           <div className="flex flex-wrap justify-center gap-4">
-            {[
-              "🍔 Americans eat 50 billion burgers a year!",
-              "🍗 Fried chicken was popularized in the American South!",
-              "🍦 The average American eats 23 lbs of ice cream per year!",
-            ].map((fact, index) => (
+            {kidsTheme().facts.map((fact, index) => (
               <div
                 key={index}
                 className="bg-card rounded-xl px-5 py-3.5 shadow-soft border border-border max-w-xs"

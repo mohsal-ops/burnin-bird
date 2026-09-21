@@ -154,15 +154,15 @@ const CrosswordGame = () => {
                   className={`relative ${
                     cell.isActive
                       ? selectedCell?.row === rowIndex && selectedCell?.col === colIndex
-                        ? "bg-primary/20"
+                        ? "bg-brand/20"
                         : "bg-cream"
-                      : "bg-primary/80"
+                      : "bg-brand/80"
                   } ${cell.isActive ? "cursor-pointer" : ""}`}
                   style={{ width: cellSize, height: cellSize }}
                   onClick={() => cell.isActive && setSelectedCell({ row: rowIndex, col: colIndex })}
                 >
                   {cell.clueNumber && (
-                    <span className="absolute top-0.5 left-1 text-[9px] font-bold text-primary">
+                    <span className="absolute top-0.5 left-1 text-[9px] font-bold text-brand">
                       {cell.clueNumber}
                     </span>
                   )}
@@ -172,7 +172,7 @@ const CrosswordGame = () => {
                       maxLength={1}
                       value={cell.userInput}
                       onChange={(e) => handleCellInput(rowIndex, colIndex, e.target.value)}
-                      className={`w-full h-full text-center font-display text-base uppercase bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/50 rounded ${
+                      className={`w-full h-full text-center font-display text-base uppercase bg-transparent focus:outline-none focus:ring-2 focus:ring-brand/50 rounded ${
                         cell.userInput && cell.userInput !== cell.letter
                           ? "text-ketchup"
                           : cell.userInput === cell.letter
@@ -192,7 +192,7 @@ const CrosswordGame = () => {
         <div className="flex-1 min-w-55 max-w-70">
           <div className="space-y-3">
             <div>
-              <h4 className="font-display text-primary text-sm mb-1">Across →</h4>
+              <h4 className="font-display text-brand text-sm mb-1">Across →</h4>
               <ul className="space-y-1 text-xs">
                 {config.clues
                   .filter((c) => c.direction === "across")
@@ -200,14 +200,14 @@ const CrosswordGame = () => {
                     <li key={clue.number} className="text-muted-foreground">
                       <span className="font-bold text-foreground">{clue.number}.</span> {clue.clue}
                       {showHint && (
-                        <span className="text-primary ml-1">({clue.answer.length})</span>
+                        <span className="text-brand ml-1">({clue.answer.length})</span>
                       )}
                     </li>
                   ))}
               </ul>
             </div>
             <div>
-              <h4 className="font-display text-primary text-sm mb-1">Down ↓</h4>
+              <h4 className="font-display text-brand text-sm mb-1">Down ↓</h4>
               <ul className="space-y-1 text-xs">
                 {config.clues
                   .filter((c) => c.direction === "down")
@@ -215,7 +215,7 @@ const CrosswordGame = () => {
                     <li key={clue.number} className="text-muted-foreground">
                       <span className="font-bold text-foreground">{clue.number}.</span> {clue.clue}
                       {showHint && (
-                        <span className="text-primary ml-1">({clue.answer.length})</span>
+                        <span className="text-brand ml-1">({clue.answer.length})</span>
                       )}
                     </li>
                   ))}
@@ -227,7 +227,7 @@ const CrosswordGame = () => {
           <div className="mt-4 space-y-2">
             <div className="bg-secondary/50 rounded-xl px-3 py-2 text-center">
               <p className="text-xs text-muted-foreground">Progress</p>
-              <p className="text-lg font-display text-primary">
+              <p className="text-lg font-display text-brand">
                 {result.correct}/{result.total}
               </p>
             </div>

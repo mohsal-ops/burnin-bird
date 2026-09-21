@@ -84,7 +84,7 @@ const SpotDifferenceGame = () => {
               className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg text-xl transition-all ${
                 isFound ? "bg-pickle/20 ring-2 ring-pickle scale-95" :
                 isWrong ? "bg-ketchup/20 ring-2 ring-ketchup animate-wiggle" :
-                "bg-cream hover:bg-primary/10"
+                "bg-cream hover:bg-brand/10"
               }`}
             >
               {emoji}
@@ -112,17 +112,17 @@ const SpotDifferenceGame = () => {
       <div className="flex flex-col items-center gap-4">
         <div className="bg-secondary/50 rounded-xl px-4 py-2 text-center">
           <p className="text-xs text-muted-foreground">Found</p>
-          <p className="text-xl font-display text-primary">{found.size}/{scene.diffs.length}</p>
+          <p className="text-xl font-display text-brand">{found.size}/{scene.diffs.length}</p>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 items-center">
           <div className="text-center">
-            <p className="text-sm font-display text-primary mb-2">Scene A</p>
+            <p className="text-sm font-display text-brand mb-2">Scene A</p>
             {renderGrid(scene.grid, false)}
           </div>
           <div className="text-2xl font-display text-muted-foreground hidden sm:block">VS</div>
           <div className="text-center">
-            <p className="text-sm font-display text-primary mb-2">Scene B</p>
+            <p className="text-sm font-display text-brand mb-2">Scene B</p>
             {renderGrid(scene.altGrid, true)}
           </div>
         </div>
