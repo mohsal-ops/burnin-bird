@@ -1,20 +1,15 @@
 import { useState, useEffect, useCallback, useRef, JSX } from "react";
-import { StaticImageData } from "next/image";
 import { Button } from "@/components/ui/button";
 import { ArrowUp, ArrowDown, ArrowLeft, ArrowRight, RotateCcw, Trophy, Timer, Shuffle } from "lucide-react";
 import { mazeSettings, generateMaze, type Difficulty, type MazeCell } from "./mazeConfigs";
 import DifficultySelector from "./DifficultySelector";
-import foodChicken from "public/games/food-chicken-fries.jpg";
-import foodTenders from "public/games/food-tenders-fries.jpg";
+import { kidsTheme } from "@/lib/kidsTheme";
 
 type Position = { x: number; y: number };
 
-const goalImages: Record<Difficulty, StaticImageData> = {
-  easy: foodChicken,
-  medium: foodTenders,
-  hard: foodChicken,
-  expert: foodTenders,
-};
+// The maze finish line = the restaurant's own food emoji (burger, pizza, coffee,
+// etc.), themed by place type - see src/lib/kidsTheme.ts.
+const goalEmoji = kidsTheme().emojis[0];
 
 const MazeGame = () => {
   const [difficulty, setDifficulty] = useState<Difficulty>("easy");
@@ -144,7 +139,7 @@ const MazeGame = () => {
                   {cell.isGoal && (
                     <>
                       <rect x={c * config.cellSize + config.wallThickness / 2} y={r * config.cellSize + config.wallThickness / 2} width={config.cellSize} height={config.cellSize} fill="hsl(var(--pickle) / 0.1)" />
-                      <image  href={goalImages[difficulty].src} x={c * config.cellSize + config.wallThickness / 2 + 2} y={r * config.cellSize + config.wallThickness / 2 + 2} width={config.cellSize - 4} height={config.cellSize - 4} preserveAspectRatio="xMidYMid slice" clipPath="inset(0 round 4px)" />
+                      <text x={c * config.cellSize + config.wallThickness / 2 + config.cellSize / 2} y={r * config.cellSize + config.wallThickness / 2 + config.cellSize / 2} textAnchor="middle" dominantBaseline="central" fontSize={config.cellSize * 0.68}>{goalEmoji}</text>
                     </>
                   )}
                 </g>
