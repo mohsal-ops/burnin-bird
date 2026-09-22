@@ -158,7 +158,9 @@ export const SITE_CONFIG = {
     "Late Night Food Dupont Circle",
     "Halal Fast Food Washington DC",
   ],
-  ogImage: "/general/generalPages/mainImage.jpg",
+  // Link previews now use the first gallery photo or the site logo (see
+  // lib/seo.ts + layout.tsx); this default is no longer the preview image.
+  ogImage: "/logo.png",
 
   // Structured-data / business info (used in JSON-LD)
   cuisines: ["American", "Hot Chicken", "Halal", "Fast Food"],

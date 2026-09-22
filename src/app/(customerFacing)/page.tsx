@@ -36,7 +36,20 @@ export type ItemWithSides = Item & {
   })[];
 };
 
-export const metadata = buildMetadata("home");
+export async function generateMetadata() {
+  const base = buildMetadata("home");
+  // Prefer the restaurant's OWN first gallery photo for the shared home-page
+  // link preview. buildMetadata already falls back to the site logo (never the
+  // packaged template photo), so an empty gallery still shows this client's brand.
+  const first = await db.galleryImage
+    .findFirst({ orderBy: { order: "asc" }, select: { url: true } })
+    .catch(() => null);
+  if (first?.url) {
+    if (base.openGraph) base.openGraph.images = [{ url: first.url, width: 1200, height: 630 }];
+    if (base.twitter) base.twitter.images = [first.url];
+  }
+  return base;
+}
 
 function FaqSchema() {
   // Mirrors the questions/answers rendered in Frequentlyaskedquestions below -

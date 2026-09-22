@@ -85,9 +85,13 @@ export function buildMetadata(page: PageKey): Metadata {
       description,
       url: def.path,
       siteName: name,
+      // Link-preview image = the site's OWN logo. Never the packaged template
+      // photo (SITE_CONFIG.ogImage) - a client must never show another
+      // restaurant's food in a shared link. The home page upgrades this to the
+      // first gallery photo when one exists (see (customerFacing)/page.tsx).
       images: [
         {
-          url: SITE_CONFIG.ogImage,
+          url: "/logo.png",
           width: 1200,
           height: 630,
           alt: `${name} in ${city}, ${state}`,
@@ -100,7 +104,7 @@ export function buildMetadata(page: PageKey): Metadata {
       card: "summary_large_image",
       title: ogTitle,
       description,
-      images: [SITE_CONFIG.ogImage],
+      images: ["/logo.png"],
     },
   };
 }

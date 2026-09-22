@@ -12,12 +12,14 @@ import "./globals.css";
 export async function generateMetadata(): Promise<Metadata> {
   // Link-preview (Open Graph / Twitter) image = the restaurant's OWN first
   // gallery photo, so a shared link shows this client's real food instead of the
-  // packaged template image. Falls back to SITE_CONFIG.ogImage when the gallery
+  // packaged template photo. Falls back to the site's OWN logo when the gallery
   // is empty, and never throws (a DB hiccup just uses the fallback).
   const firstGallery = await db.galleryImage
     .findFirst({ orderBy: { order: "asc" }, select: { url: true } })
     .catch(() => null);
-  const ogImage = firstGallery?.url || SITE_CONFIG.ogImage;
+  // Never the packaged template photo - fall back to the site's OWN logo so a
+  // client never shows another restaurant's food in a shared link.
+  const ogImage = firstGallery?.url || "/logo.png";
 
   return {
   // ── TITLE ────────────────────────────────────────────────────────────────
@@ -133,7 +135,7 @@ export default async function RootLayout({
               url: SITE_CONFIG.siteUrl,
               telephone: SITE_CONFIG.phone,
               email: SITE_CONFIG.email,
-              image: `${SITE_CONFIG.siteUrl}${SITE_CONFIG.ogImage}`,
+              image: `${SITE_CONFIG.siteUrl}/logo.png`,
               logo: `${SITE_CONFIG.siteUrl}/logo.png`,
               priceRange: SITE_CONFIG.priceRange,
               servesCuisine: SITE_CONFIG.cuisines,
