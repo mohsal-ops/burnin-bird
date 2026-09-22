@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useConfirm } from "@/components/ui/confirm-dialog";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -87,6 +88,7 @@ function ReviewRow({
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const confirm = useConfirm();
   const updateWithId = updateReview.bind(null, review.id);
   const [state, formAction, isPending] = useActionState(updateWithId, {});
 
@@ -102,7 +104,7 @@ function ReviewRow({
   }, [state]);
 
   async function handleDelete() {
-    if (!confirm(`Delete the review from "${review.name}"?`)) return;
+    if (!(await confirm({ title: `Delete the review from "${review.name}"?`, confirmText: "Delete", destructive: true }))) return;
     setIsDeleting(true);
     const res = await deleteReview(review.id);
     if (res.error) {

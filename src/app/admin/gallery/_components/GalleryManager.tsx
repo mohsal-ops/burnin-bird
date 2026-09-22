@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { useConfirm } from "@/components/ui/confirm-dialog";
 import Image from "next/image";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -50,6 +51,7 @@ export default function GalleryManager({
   const [overIndex, setOverIndex] = useState<number | null>(null);
 
   const router = useRouter();
+  const confirm = useConfirm();
   const [state, formAction, isUploading] = useActionState(addGalleryImage, {
     message: "",
   });
@@ -154,7 +156,7 @@ export default function GalleryManager({
   }
 
   async function handleDelete(id: string, alt: string) {
-    if (!confirm(`Remove "${alt || "this image"}" from the gallery?`)) return;
+    if (!(await confirm({ title: `Remove "${alt || "this image"}" from the gallery?`, confirmText: "Remove", destructive: true }))) return;
     setDeletingId(id);
     const res = await deleteGalleryImage(id);
     setDeletingId(null);

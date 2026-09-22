@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { useConfirm } from "@/components/ui/confirm-dialog";
 import { formatCurrency } from "@/lib/formatters";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -61,6 +62,7 @@ const STATUS_TABS = ["all", "new", "open", "completed", "abandoned"] as const;
 
 export default function OrdersDashboard({ orders, stats }: { orders: Order[]; stats: Stats }) {
   const router = useRouter();
+  const confirm = useConfirm();
 
   // One live poll: refresh every 5s while the tab is visible, pause when hidden,
   // and refresh immediately on return. Tight enough for a kitchen to feel live
@@ -332,8 +334,8 @@ export default function OrdersDashboard({ orders, stats }: { orders: Order[]; st
                       variant="destructive"
                       disabled={isPending}
                       className="gap-1.5"
-                      onClick={() => {
-                        if (!confirm("Delete this order permanently?")) return;
+                      onClick={async () => {
+                        if (!(await confirm({ title: "Delete this order permanently?", confirmText: "Delete", destructive: true }))) return;
                         startTransition(async () => {
                           await deleteCart(order.id);
                           router.refresh();

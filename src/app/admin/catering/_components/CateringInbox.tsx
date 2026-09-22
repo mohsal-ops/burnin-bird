@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { useConfirm } from "@/components/ui/confirm-dialog";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -40,6 +41,7 @@ const STATUS_TABS = ["all", "new", "contacted", "confirmed", "declined"] as cons
 
 export default function CateringInbox({ requests }: { requests: CateringRequestRow[] }) {
   const router = useRouter();
+  const confirm = useConfirm();
   const [isPending, startTransition] = useTransition();
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [filter, setFilter] = useState<(typeof STATUS_TABS)[number]>("all");
@@ -54,8 +56,8 @@ export default function CateringInbox({ requests }: { requests: CateringRequestR
     });
   };
 
-  const remove = (id: string) => {
-    if (!confirm("Delete this catering request? This cannot be undone.")) return;
+  const remove = async (id: string) => {
+    if (!(await confirm({ title: "Delete this catering request?", description: "This cannot be undone.", confirmText: "Delete", destructive: true }))) return;
     startTransition(async () => {
       await deleteCateringRequest(id);
       router.refresh();

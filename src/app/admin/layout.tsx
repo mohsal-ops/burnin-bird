@@ -1,4 +1,5 @@
 import { Toaster } from "@/components/ui/sonner";
+import { ConfirmProvider } from "@/components/ui/confirm-dialog";
 import { AdminNav } from "./_components/nav";
 import LoadingScreen from "@/components/LoadingScreen";
 import PreviewBanner from "./_components/PreviewBanner";
@@ -60,7 +61,7 @@ export default async function Adminlayout({
             ordersToday={today.ordersToday}
             newOrders={today.newOrders}
           />
-          {children}
+          <ConfirmProvider>{children}</ConfirmProvider>
         </main>
         <Toaster expand richColors closeButton duration={6000} />
       </div>
