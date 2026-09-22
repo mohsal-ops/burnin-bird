@@ -27,7 +27,7 @@ export function SideBar({
           <Image
             alt={`${SITE_CONFIG.name} logo`}
             priority
-            className="h-12 w-12 rounded-full object-cover"
+            className={`h-12 w-12 ${logoUrl ? "rounded-full object-cover" : "object-contain"}`}
             src={logoUrl || Logo}
             height={50}
             width={50}
@@ -111,7 +111,7 @@ export function TopNavBar({
           <Link href="/" aria-label={`${SITE_CONFIG.name} home`}>
             <Image
               alt={`${SITE_CONFIG.name} logo`}
-              className="h-14 w-14 rounded-full object-cover"
+              className={`h-14 w-14 ${logoUrl ? "rounded-full object-cover" : "object-contain"}`}
               src={logoUrl || Logo}
               height={60}
               width={60}

@@ -121,7 +121,7 @@ export default function HeroCarousel({
           src={logoUrl || Logo}
           width={120}
           height={120}
-          className="h-28 w-28 rounded-full object-cover shadow-lg"
+          className={`h-28 w-28 ${logoUrl ? "rounded-full object-cover shadow-lg" : "object-contain"}`}
         />
 
         <span className="font-semibold text-white sm:text-muted-foreground text-md">

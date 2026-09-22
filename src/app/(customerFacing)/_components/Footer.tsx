@@ -16,7 +16,7 @@ export function Footer({ logoUrl }: { logoUrl?: string }) {
           <Link href="/">
             <Image
               alt={`${SITE_CONFIG.name} logo`}
-              className="h-16 w-16 rounded-full object-cover"
+              className={`h-16 w-16 ${logoUrl ? "rounded-full object-cover" : "object-contain"}`}
               src={logoUrl || Logo}
               height={70}
               width={70}
