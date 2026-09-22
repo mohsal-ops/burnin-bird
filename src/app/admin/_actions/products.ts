@@ -195,6 +195,7 @@ export async function updateProduct(
       name: data.name,
       description: data.description,
       priceInCents: Math.round(data.price * 100),
+      typeId: data.category,
       isCaterable: data.isCaterable,
       cateringDescription: data.cateringDescription,
       cateringPriceInCents: data.cateringPrice ? Math.round(data.cateringPrice * 100) : null,
