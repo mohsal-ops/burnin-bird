@@ -176,6 +176,12 @@ export const SITE_CONFIG = {
   cuisines: ["American", "Hot Chicken", "Halal", "Fast Food"],
   priceRange: "$$",
 
+  // Primary cuisine/dish for SEO (Principle 1, menu-market fit). Use the BROAD,
+  // most-searched term first, specialty framing second — "Hot Chicken" before
+  // "Nashville Hot Halal Tenders", "Mexican Food" before "Oaxacan Cuisine". Feeds
+  // the home title fallback, keywords, and (in themed heroes) an SEO eyebrow.
+  primaryDish: "Hot Chicken",
+
   // Colors (Tailwind hex values - inspired by fiery orange & deep charcoal logo)
   primaryColor: "#f97316",
   secondaryColor: "#111827",

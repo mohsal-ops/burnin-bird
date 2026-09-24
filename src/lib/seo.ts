@@ -18,6 +18,22 @@ export type PageKey =
   | "blog";
 
 const { name, city, state } = SITE_CONFIG;
+const primaryDish = (SITE_CONFIG as { primaryDish?: string }).primaryDish?.trim() || "";
+
+// Keywords with the broad, most-searched dish/cuisine terms first (Principle 1),
+// merged with the client's hand-picked seoKeywords and de-duplicated.
+function seoKeywords(): string[] {
+  const dishLed = primaryDish
+    ? [primaryDish, `${primaryDish} ${city}`, `${primaryDish} near me`]
+    : [];
+  const seen = new Set<string>();
+  return [...dishLed, ...SITE_CONFIG.seoKeywords].filter((k) => {
+    const key = k.toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
 
 // Per-page label + path + description. Descriptions are written generically
 // from the restaurant name/city so they read correctly for ANY client without
@@ -69,15 +85,22 @@ const PAGE_DEFS: Record<PageKey, { label: string; path: string; blurb: string }>
 export function buildMetadata(page: PageKey): Metadata {
   const def = PAGE_DEFS[page];
   const isHome = page === "home";
-  const title = isHome ? SITE_CONFIG.seoTitle : `${def.label} | ${name} ${city}`;
-  const ogTitle = isHome ? SITE_CONFIG.seoTitle : `${def.label} | ${name}`;
+  // Home title leads with the broad dish term when no explicit seoTitle is set
+  // (Principle 1). Clients who wrote their own seoTitle keep it verbatim.
+  const homeTitle =
+    SITE_CONFIG.seoTitle ||
+    (primaryDish
+      ? `${name} | ${primaryDish} in ${city}, ${state}`
+      : `${name} in ${city}, ${state}`);
+  const title = isHome ? homeTitle : `${def.label} | ${name} ${city}`;
+  const ogTitle = isHome ? homeTitle : `${def.label} | ${name}`;
   const description = def.blurb;
 
   return {
     metadataBase: new URL(SITE_CONFIG.siteUrl),
     title,
     description,
-    keywords: SITE_CONFIG.seoKeywords,
+    keywords: seoKeywords(),
     alternates: { canonical: def.path },
     icons: { icon: "/logo.png" },
     openGraph: {
