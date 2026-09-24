@@ -2,6 +2,7 @@
 // To onboard a new restaurant client, this is the only file that should
 // need to change (plus swapping image assets in /public).
 import { atLeast, type PackageTier } from "./packages";
+import type { ThemeSlug } from "./themes/registry";
 
 // Product tier this client is on. The panel patches this line per client at
 // provision time. It gates which site + admin sections show (via `minTier`
@@ -56,6 +57,15 @@ export const SITE_CONFIG = {
     "",
   legalName: "Burnin Bird Hot Chicken LLC",
   trademark: "Burnin Bird",
+
+  // Design skin for the public site. The panel patches this per client at
+  // provision time; it controls fonts/colors/motion/component styling only, not
+  // the section structure or sales copy (those are identical across themes).
+  // Defaults to "classic-starvega" (the current design). Existing client sites
+  // omit this line entirely (siteConfig is sync-blocklisted) and fall back to
+  // classic via resolveThemeSlug(), so nothing already live changes look.
+  // Options: classic-starvega | smash-bold | diner-classic | refined-elegant
+  theme: "classic-starvega" as ThemeSlug,
 
   // Admin intro animation: "burger" (fast food) | "coffee" (café) | "pizza" (pizzeria)
   loaderStyle: "burger",

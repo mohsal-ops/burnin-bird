@@ -1,4 +1,8 @@
 @import "tailwindcss";
+/* Design-theme skin packs (smash-bold / diner-classic / refined-elegant),
+   scoped by html[data-theme]. classic-starvega is the base :root below, so a
+   site with no theme set renders unchanged. See src/lib/themes/. */
+@import "./themes.css";
 @plugin "tailwindcss-animate";
 @plugin 'tailwind-scrollbar';
 
@@ -16,6 +20,15 @@
   --color-brand: var(--brand);
   --color-brand-dark: var(--brand-dark);
   --color-brand-foreground: var(--brand-foreground);
+}
+
+/* Font-family utilities driven by the active theme's --ff-* vars. `inline` keeps
+   them as var() references (not copied values), so `font-display`/`font-body`/
+   `font-accent` re-resolve when data-theme changes on <html>. */
+@theme inline {
+  --font-display: var(--ff-display);
+  --font-body: var(--ff-body);
+  --font-accent: var(--ff-accent);
 }
 
 
@@ -68,6 +81,20 @@ html body[data-scroll-locked] {
 ================================ */
 
 :root {
+  /* Typography + motion for the DEFAULT theme (classic-starvega). Kept equal to
+     the system sans stack + the site's existing subtle motion, so declaring
+     these changes nothing about how the current design renders — they only give
+     the other themes a hook to override. --ff-* are consumed by the font-*
+     utilities (via @theme inline) and the base body/heading rules below. */
+  --font-system: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --ff-display: var(--font-system);
+  --ff-body: var(--font-system);
+  --ff-accent: var(--font-system);
+  --motion-duration: 400ms;
+  --motion-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --motion-distance: 10px;
+
    /* Sidebar sizes */
   --sidebar-width: 20rem;
   --sidebar-width-mobile: 20rem;
@@ -179,6 +206,14 @@ html body[data-scroll-locked] {
    the inherited `.dark` values) keeps the whole dashboard light regardless. */
 .admin-shell {
   color-scheme: light;
+  /* The dashboard is theme-agnostic: keep it on the system font and default
+     motion no matter which design skin the public site wears. */
+  --ff-display: var(--font-system);
+  --ff-body: var(--font-system);
+  --ff-accent: var(--font-system);
+  --motion-duration: 400ms;
+  --motion-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --motion-distance: 10px;
   /* `body` resolves `color: hsl(var(--foreground))` once and it inherits down;
      re-declaring the variable here isn't enough for elements that rely on the
      inherited color (e.g. inputs with no text-color class), so re-resolve the
@@ -414,6 +449,15 @@ html body[data-scroll-locked] {
 
   body {
      @apply bg-background text-foreground;
+     /* Active theme's body face. For classic-starvega this is the system sans
+        stack (--font-system), i.e. identical to the current rendering. */
+     font-family: var(--ff-body);
+  }
+
+  /* Headings pick up the active theme's display face. classic-starvega maps it
+     to the same system stack, so default sites look unchanged. */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--ff-display);
   }
 }
 
