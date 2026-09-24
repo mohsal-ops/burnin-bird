@@ -1,0 +1,69 @@
+/* ============================================================================
+   PER-THEME SIGNATURE TREATMENTS  (skin layer, component-level)
+   ----------------------------------------------------------------------------
+   Phase 1 already re-skins every component through the semantic tokens (colors,
+   fonts, radius, motion). This file adds each theme's SIGNATURE styling moves —
+   the things tokens alone can't express: heading case + tracking, CTA shape, the
+   accent font. Matched to the Phase-0 personality of each reference site.
+
+   Everything is scoped under `.theme-surface` (the public <main>), so the admin
+   dashboard — a different layout without that class — is never affected. classic
+   -starvega has no block here and renders unchanged.
+============================================================================ */
+
+/* ── smash-bold — Ender: loud, tight, uppercase, pill CTAs ─────────────────── */
+html[data-theme="smash-bold"] .theme-surface :is(h1, h2, h3) {
+  text-transform: uppercase;
+  letter-spacing: -0.03em;   /* Ender's tight -2.8px headline tracking */
+  font-weight: 700;
+  line-height: 1.02;
+}
+html[data-theme="smash-bold"] .theme-surface .cta-primary {
+  border-radius: 9999px;     /* Ender's pill CTA */
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  font-weight: 700;
+}
+/* Hand-drawn accent (Caveat) for anything opted into the accent font. */
+html[data-theme="smash-bold"] .theme-surface .font-accent {
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* ── diner-classic — Fame: warm, friendly, rounded, mono labels ───────────── */
+html[data-theme="diner-classic"] .theme-surface :is(h1, h2, h3) {
+  text-transform: none;
+  letter-spacing: -0.01em;
+  font-weight: 700;
+}
+html[data-theme="diner-classic"] .theme-surface .cta-primary {
+  border-radius: 0.75rem;    /* friendly rounded */
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+/* Courier "receipt" accent for small labels/eyebrows that opt into it. */
+html[data-theme="diner-classic"] .theme-surface .font-accent {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.9em;
+}
+
+/* ── refined-elegant — Fiorella: airy, wide, uppercase, sharp CTAs ────────── */
+html[data-theme="refined-elegant"] .theme-surface :is(h1, h2, h3) {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;    /* Fiorella's wide +8px display tracking */
+  font-weight: 400;          /* the display face is light, not bold */
+  line-height: 1.15;
+}
+html[data-theme="refined-elegant"] .theme-surface .cta-primary {
+  border-radius: 0.125rem;   /* minimal, refined */
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-weight: 400;
+  font-size: 0.95em;
+}
+html[data-theme="refined-elegant"] .theme-surface .font-accent {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}

@@ -24,6 +24,8 @@ import {
   Frequentlyaskedquestions,
 } from "./_components/HomeSections";
 import { ReviewsSection } from "./_components/ReviewsSection";
+import { CorePitch } from "./_components/CorePitch";
+import { resolveThemeSlug } from "@/lib/themes/registry";
 import {
   Item,
   SideGroup,
@@ -142,6 +144,7 @@ async function ReviewsDataSection() {
 }
 
 export default async function Home() {
+  const themeSlug = resolveThemeSlug();
   // TopSection and the static sections below render immediately; the two
   // heavier DB-backed sections stream in behind Suspense so they aren't
   // blocked on the featured-products and places queries. The hero image is a
@@ -220,6 +223,18 @@ export default async function Home() {
           <Frequentlyaskedquestions />
         </div>
       </FadeIn>
+      {/* Core-pitch block (section 5 of the contract) — the four Starvega
+          pillars. Rendered for the themed skins only; classic-starvega keeps its
+          existing native sections, which already carry this message, so the
+          default site is unchanged. */}
+      {themeSlug !== "classic-starvega" && (
+        <>
+          <SectionDivider />
+          <div className="w-full flex justify-center">
+            <CorePitch />
+          </div>
+        </>
+      )}
       <SectionDivider />
       <Suspense fallback={<div className="h-40 w-full sm:w-[75%] animate-pulse bg-muted rounded-4xl" />}>
         <LocationSection />

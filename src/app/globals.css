@@ -3,6 +3,9 @@
    scoped by html[data-theme]. classic-starvega is the base :root below, so a
    site with no theme set renders unchanged. See src/lib/themes/. */
 @import "./themes.css";
+/* Per-theme component signature treatments (heading case/tracking, CTA shape,
+   accent font), scoped to the public site via .theme-surface. */
+@import "./theme-components.css";
 @plugin "tailwindcss-animate";
 @plugin 'tailwind-scrollbar';
 

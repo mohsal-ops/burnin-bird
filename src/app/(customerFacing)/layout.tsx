@@ -42,7 +42,10 @@ export default async function Customerlayout({
         incentive={loyaltyIncentive()}
         name={SITE_CONFIG.name}
       />
-      <main className="flex relative flex-col w-full  pb- ">
+      {/* `theme-surface` scopes every per-theme signature treatment
+          (theme-components.css) to the PUBLIC site only — the admin dashboard
+          has its own layout without this class, so it never picks them up. */}
+      <main className="theme-surface flex relative flex-col w-full  pb- ">
         <div className="fixed top-0 left-0 right-0 z-50">
           <TopNavBar initialCartId={cartId} logoUrl={logoUrl} />
         </div>
