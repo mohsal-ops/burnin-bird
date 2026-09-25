@@ -11,6 +11,13 @@
    -starvega has no block here and renders unchanged.
 ============================================================================ */
 
+/* Horizontal marquee for the smash-bold announcement bar + menu-item scroller.
+   Content is duplicated 2x in the markup, so -50% loops seamlessly. */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
 /* ── smash-bold — Ender: loud, tight, uppercase, pill CTAs ─────────────────── */
 html[data-theme="smash-bold"] .theme-surface :is(h1, h2, h3) {
   text-transform: uppercase;

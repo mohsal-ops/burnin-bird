@@ -26,6 +26,7 @@ import {
 import { ReviewsSection } from "./_components/ReviewsSection";
 import { CorePitch } from "./_components/CorePitch";
 import { resolveThemeSlug } from "@/lib/themes/registry";
+import { SmashHome } from "./_components/themes/SmashHome";
 import {
   Item,
   SideGroup,
@@ -168,6 +169,33 @@ export default async function Home() {
     getSiteText(),
     getLogoUrl(),
   ]);
+
+  // Bespoke per-theme homepages (their own layout + motion, modeled on the
+  // reference designs). classic-starvega and any theme without a custom home
+  // fall through to the standard section stack below, unchanged.
+  if (themeSlug === "smash-bold") {
+    const [featured, reviews] = await Promise.all([
+      GetFeaturedProducts(),
+      db.review.findMany({ orderBy: { order: "asc" } }),
+    ]);
+    return (
+      <>
+        <FaqSchema />
+        <SmashHome
+          heroImages={[heroImage, heroImage2, heroImage3]}
+          logoUrl={logoUrl}
+          featured={featured.map((p) => ({
+            id: p.id,
+            name: p.name,
+            priceInCents: p.priceInCents,
+            description: p.description,
+            image: p.image,
+          }))}
+          reviews={reviews}
+        />
+      </>
+    );
+  }
 
   return (
     <div className="flex  pt-20 flex-col gap-5 items-center justify-center    [&>*:not(:first-child)]:m-2">
