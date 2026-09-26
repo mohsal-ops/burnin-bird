@@ -65,7 +65,7 @@ export const SITE_CONFIG = {
   // omit this line entirely (siteConfig is sync-blocklisted) and fall back to
   // classic via resolveThemeSlug(), so nothing already live changes look.
   // Options: classic-starvega | smash-bold | diner-classic | refined-elegant
-  theme: "classic-starvega" as ThemeSlug,
+  theme: "smash-bold" as ThemeSlug,
 
   // Admin intro animation: "burger" (fast food) | "coffee" (café) | "pizza" (pizzeria)
   loaderStyle: "burger",
