@@ -6,7 +6,10 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { CorePitch } from "../CorePitch";
-import { SmashMascot, WalkingSnack, mascotVariant } from "./SmashMascot";
+// NOTE: the character mascot (Ender's "Cajita" box-with-sunglasses) is a custom
+// paid illustration with no free license-clean equivalent, and the account's
+// AI image tool is plan-gated — so the hand-coded SVG mascot was pulled. Drop a
+// licensed mascot asset in /public and re-enable <SmashMascot> to bring it back.
 
 // ── smash-bold homepage — modeled closely on Ender Hamburguesería ────────────
 // Bespoke, not a re-skin: a bespoke marquee, a launch-style hero that CYCLES
@@ -30,28 +33,34 @@ function balloonSize(text: string): string {
   return "clamp(2.2rem, 6.5vw, 4.5rem)";
 }
 
-// The big "waved" balloon brand word — letters bob individually, but words stay
-// whole (wrap only at spaces), each letter with its own tilt.
-function BalloonWord({ text }: { text: string }) {
-  const words = text.split(/\s+/).filter(Boolean);
-  let n = 0;
+// The big balloon brand word — a STATIC hand-lettered logo like Ender's ENDY:
+// puffy face, the whole word on a slight upward tilt, with doodle scribbles
+// around it. No per-letter motion.
+function Doodles() {
   return (
-    <span aria-label={text} className="flex flex-wrap gap-x-[0.25em]" style={{ fontFamily: "var(--font-balloon), system-ui", lineHeight: 0.85 }}>
-      {words.map((word, wi) => (
-        <span key={wi} className="inline-flex whitespace-nowrap">
-          {[...word].map((ch, ci) => {
-            const i = n++;
-            return (
-              <span
-                key={ci}
-                aria-hidden
-                className="inline-block motion-safe:animate-[balloon-bob_2.6s_ease-in-out_infinite]"
-                style={{ ["--r" as string]: `${(i % 2 ? 1 : -1) * (2 + (i % 3))}deg`, animationDelay: `${i * 0.08}s` }}
-              >
-                {ch}
-              </span>
-            );
-          })}
+    <>
+      {/* little energy dashes, lower-left */}
+      <svg className="pointer-events-none absolute -bottom-3 -left-4 h-16 w-16 text-foreground" viewBox="0 0 64 64" fill="none" aria-hidden>
+        <path d="M8 40 l14 -6 M6 50 l16 -3 M12 60 l14 -8" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+      </svg>
+      {/* curved flourish, upper-right */}
+      <svg className="pointer-events-none absolute -right-6 -top-4 h-16 w-20 text-foreground" viewBox="0 0 80 64" fill="none" aria-hidden>
+        <path d="M6 44 q40 -44 70 -20" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+      </svg>
+    </>
+  );
+}
+
+function BalloonWord({ text }: { text: string }) {
+  return (
+    <span
+      className="relative inline-block"
+      style={{ fontFamily: "var(--font-balloon), system-ui", lineHeight: 0.85, transform: "rotate(-2.5deg)" }}
+    >
+      <Doodles />
+      {text.split(/\s+/).filter(Boolean).map((word, wi) => (
+        <span key={wi} className="block">
+          {word}
         </span>
       ))}
     </span>
@@ -76,8 +85,9 @@ function SpinBadge({ text }: { text: string }) {
 export function SmashHome({ heroImages, logoUrl, featured, reviews }: { heroImages: (string | null)[]; logoUrl: string | null; featured: P[]; reviews: R[] }) {
   const c = SITE_CONFIG;
   const brand = (c.trademark || c.name.split(" ")[0] || c.name).toUpperCase();
-  const variant = mascotVariant(c.loaderStyle, c.cuisines);
   const promo = c.tagline || `${c.name} — order direct`;
+  const heroPics = heroImages.filter(Boolean) as string[];
+  const locationImg = heroPics[1] ?? heroPics[0] ?? c.home.distinctiveFeatures?.[0]?.image ?? null;
 
   // Hero "slides" = the top featured products (fallback to a single brand slide).
   const slides: { title: string; image: string | null; desc: string | null }[] =
@@ -107,9 +117,6 @@ export function SmashHome({ heroImages, logoUrl, featured, reviews }: { heroImag
 
       {/* 2 · Launch hero — persistent balloon word + cycling product slide */}
       <section className="relative mx-auto grid max-w-7xl items-center gap-6 px-5 py-10 md:grid-cols-2 md:py-14">
-        {/* little walking snack strutting in */}
-        <WalkingSnack variant={variant} className="absolute left-5 top-2 h-12 w-12 text-foreground motion-safe:animate-[snack-walk_3s_ease-in-out_infinite]" />
-
         <div className="relative pt-8">
           <p className="font-accent mb-1 text-xl text-primary">{brand} · {c.city}</p>
           <h1 className="text-foreground" style={{ fontSize: balloonSize(brand) }}>
@@ -144,7 +151,6 @@ export function SmashHome({ heroImages, logoUrl, featured, reviews }: { heroImag
         {/* right: product card + mascot + spinning badge */}
         <div className="relative">
           <SpinBadge text={brand.slice(0, 8)} />
-          <SmashMascot variant={variant} brand={brand} className="absolute -bottom-4 -left-6 z-20 hidden h-52 w-40 drop-shadow-xl sm:block" />
           <div className="relative overflow-hidden rounded-[2rem] border-2 border-foreground bg-card shadow-2xl">
             <motion.div key={idx} initial={{ opacity: 0, scale: 1.04 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }}>
               {slide.image ? (
@@ -248,16 +254,19 @@ export function SmashHome({ heroImages, logoUrl, featured, reviews }: { heroImag
         </section>
       )}
 
-      {/* 7 · Numbered location */}
-      <section className="mx-auto max-w-7xl px-5 py-14">
-        <p className="font-accent text-xl text-primary">Find us</p>
-        <div className="mt-4 flex flex-wrap items-center gap-5 rounded-3xl border-2 border-foreground bg-card p-6">
-          <span className="text-4xl font-extrabold tracking-tighter text-primary">#001</span>
-          <div>
-            <h3 className="text-xl font-extrabold uppercase tracking-tight text-card-foreground">{c.city}</h3>
-            <p className="text-sm text-muted-foreground">{c.address}</p>
-          </div>
-          <Link href="/Menu" className="cta-primary ml-auto inline-flex rounded-full bg-primary px-6 py-2.5 text-sm font-bold uppercase text-primary-foreground">
+      {/* 7 · Full-bleed location (Ender's LOCALES) */}
+      <section className="relative flex min-h-[70vh] w-full items-center justify-center overflow-hidden">
+        {locationImg ? (
+          <Image src={locationImg} alt={c.city} fill className="object-cover" sizes="100vw" />
+        ) : (
+          <div className="absolute inset-0 bg-foreground" />
+        )}
+        <div className="absolute inset-0 bg-black/55" />
+        <div className="relative z-10 px-5 text-center text-white">
+          <p className="text-6xl font-extrabold tracking-tighter text-white/80 md:text-8xl">#001</p>
+          <h2 className="mt-1 text-[clamp(2.5rem,10vw,7rem)] font-extrabold uppercase leading-none tracking-tight">{c.city}</h2>
+          <p className="mt-3 font-accent text-2xl text-primary">{c.address}</p>
+          <Link href="/Menu" className="cta-primary mt-7 inline-flex rounded-full bg-white px-8 py-3 text-sm font-bold uppercase tracking-wide text-black transition-transform hover:scale-105">
             {c.menuCtaLabel}
           </Link>
         </div>
