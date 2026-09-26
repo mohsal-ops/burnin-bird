@@ -1,5 +1,7 @@
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { TopNavBar } from "./_components/navBar";
+import { SmashNav } from "./_components/themes/SmashNav";
+import { resolveThemeSlug } from "@/lib/themes/registry";
 import { Footer } from "./_components/Footer";
 import { Toaster } from "sonner";
 import { cookies } from "next/headers";
@@ -47,7 +49,11 @@ export default async function Customerlayout({
           has its own layout without this class, so it never picks them up. */}
       <main className="theme-surface flex relative flex-col w-full  pb- ">
         <div className="fixed top-0 left-0 right-0 z-50">
-          <TopNavBar initialCartId={cartId} logoUrl={logoUrl} />
+          {resolveThemeSlug() === "smash-bold" ? (
+            <SmashNav initialCartId={cartId} logoUrl={logoUrl} />
+          ) : (
+            <TopNavBar initialCartId={cartId} logoUrl={logoUrl} />
+          )}
         </div>
         <div id="main-content" className="flex flex-col md:items-center   ">{children}</div>
         <div className="flex flex-col w-full items-center ">

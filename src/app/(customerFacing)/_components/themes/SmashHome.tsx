@@ -1,59 +1,98 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { CorePitch } from "../CorePitch";
+import { SmashMascot, WalkingSnack, mascotVariant } from "./SmashMascot";
 
-// ── smash-bold homepage — modeled on Ender Hamburguesería's design language ──
-// Monochrome + warm-tan, playful and loud: a scrolling announcement marquee, a
-// big hand-lettered-feel display hero with doodle scribbles + a spinning badge +
-// product shot, a huge slide-in section band, a repeating menu-item marquee, bold
-// feature cards, reviews, and a numbered location. Uses the theme's tokens so it
-// still respects dark mode + the tenant --brand. Content/photos are the client's
-// own (from siteConfig + the DB) — only the DESIGN is modeled on the reference.
+// ── smash-bold homepage — modeled closely on Ender Hamburguesería ────────────
+// Bespoke, not a re-skin: a bespoke marquee, a launch-style hero that CYCLES
+// through product "slides" while the big puffy balloon brand word stays waving,
+// a cuisine-adaptive mascot + a little walking snack, a full-bleed slide-in
+// band, LARGE product cards with a hover lift, bold feature blocks, a dark
+// reviews band, a numbered location, and the in-voice core pitch. Content/photos
+// are the client's own — only the DESIGN is modeled on the reference.
 
 type P = { id: string; name: string; priceInCents: number; description: string | null; image: string | null };
 type R = { id: string; name: string; review: string; avatar: string };
 
 const usd = (c: number) => `$${(c / 100).toFixed(c % 100 === 0 ? 0 : 2)}`;
 
-// A slice of hand-drawn scribble marks, Ender-style, around the headline.
-function Doodles() {
+// Size the balloon word to the brand length so short names go huge (Ender's
+// "ENDY") and longer ones stay on two tidy lines without overflowing.
+function balloonSize(text: string): string {
+  const n = text.replace(/\s/g, "").length;
+  if (n <= 5) return "clamp(3.5rem, 13vw, 8.5rem)";
+  if (n <= 9) return "clamp(3rem, 9vw, 6rem)";
+  return "clamp(2.2rem, 6.5vw, 4.5rem)";
+}
+
+// The big "waved" balloon brand word — letters bob individually, but words stay
+// whole (wrap only at spaces), each letter with its own tilt.
+function BalloonWord({ text }: { text: string }) {
+  const words = text.split(/\s+/).filter(Boolean);
+  let n = 0;
   return (
-    <svg className="pointer-events-none absolute -left-4 -top-6 h-[130%] w-[130%] overflow-visible text-primary" viewBox="0 0 400 200" fill="none" aria-hidden>
-      <path d="M12 150 q-8 -14 4 -22" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
-      <path d="M20 168 q-10 -6 -2 -18" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
-      <path d="M356 40 q22 -10 30 14" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
-      <path d="M372 66 q14 -2 8 16" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
-    </svg>
+    <span aria-label={text} className="flex flex-wrap gap-x-[0.25em]" style={{ fontFamily: "var(--font-balloon), system-ui", lineHeight: 0.85 }}>
+      {words.map((word, wi) => (
+        <span key={wi} className="inline-flex whitespace-nowrap">
+          {[...word].map((ch, ci) => {
+            const i = n++;
+            return (
+              <span
+                key={ci}
+                aria-hidden
+                className="inline-block motion-safe:animate-[balloon-bob_2.6s_ease-in-out_infinite]"
+                style={{ ["--r" as string]: `${(i % 2 ? 1 : -1) * (2 + (i % 3))}deg`, animationDelay: `${i * 0.08}s` }}
+              >
+                {ch}
+              </span>
+            );
+          })}
+        </span>
+      ))}
+    </span>
   );
 }
 
-// Rotating circular badge (SVG text on a circle), like Ender's spinning seal.
 function SpinBadge({ text }: { text: string }) {
   const label = ` ${text} • ${text} • `;
   return (
-    <div className="absolute -left-6 -top-6 z-20 grid size-24 place-items-center rounded-full bg-foreground text-background shadow-xl md:-left-10 md:size-28">
+    <div className="absolute -right-3 -top-3 z-20 grid size-20 place-items-center rounded-full bg-foreground text-background shadow-xl md:size-24">
       <svg viewBox="0 0 100 100" className="absolute inset-0 size-full animate-[spin_9s_linear_infinite]">
-        <defs>
-          <path id="smashcircle" d="M50,50 m-36,0 a36,36 0 1,1 72,0 a36,36 0 1,1 -72,0" />
-        </defs>
-        <text className="fill-background" style={{ fontSize: 11, letterSpacing: 2, textTransform: "uppercase", fontWeight: 700 }}>
+        <defs><path id="smashcircle" d="M50,50 m-36,0 a36,36 0 1,1 72,0 a36,36 0 1,1 -72,0" /></defs>
+        <text className="fill-background" style={{ fontSize: 10, letterSpacing: 2, textTransform: "uppercase", fontWeight: 700 }}>
           <textPath href="#smashcircle">{label}</textPath>
         </text>
       </svg>
-      <span className="text-2xl">★</span>
+      <span className="text-xl">★</span>
     </div>
   );
 }
 
 export function SmashHome({ heroImages, logoUrl, featured, reviews }: { heroImages: (string | null)[]; logoUrl: string | null; featured: P[]; reviews: R[] }) {
   const c = SITE_CONFIG;
-  const hero = heroImages.find(Boolean) ?? null;
+  const brand = (c.trademark || c.name.split(" ")[0] || c.name).toUpperCase();
+  const variant = mascotVariant(c.loaderStyle, c.cuisines);
   const promo = c.tagline || `${c.name} — order direct`;
-  const items = featured.length ? [...featured, ...featured] : []; // doubled for a seamless marquee loop
+
+  // Hero "slides" = the top featured products (fallback to a single brand slide).
+  const slides: { title: string; image: string | null; desc: string | null }[] =
+    featured.length > 0
+      ? featured.slice(0, 4).map((p) => ({ title: p.name, image: p.image, desc: p.description }))
+      : [{ title: c.cuisines?.[0] ?? "Signature", image: heroImages.find(Boolean) ?? null, desc: c.home.heroSubHeadline }];
+  const [idx, setIdx] = useState(0);
+  useEffect(() => {
+    if (slides.length < 2) return;
+    const t = setInterval(() => setIdx((i) => (i + 1) % slides.length), 4200);
+    return () => clearInterval(t);
+  }, [slides.length]);
+  const slide = slides[idx];
+
+  const marqueeItems = featured.length ? [...featured, ...featured] : [];
 
   return (
     <div className="w-full pt-20">
@@ -66,32 +105,56 @@ export function SmashHome({ heroImages, logoUrl, featured, reviews }: { heroImag
         </div>
       </div>
 
-      {/* 2 · Hero */}
-      <section className="relative mx-auto grid max-w-7xl items-center gap-8 px-5 py-12 md:grid-cols-2 md:py-16">
-        <div className="relative">
-          <Doodles />
-          <p className="font-accent mb-3 text-lg text-primary">Limited run</p>
-          <h1 className="relative text-[clamp(3rem,11vw,7rem)] font-extrabold uppercase leading-[0.9] tracking-tighter text-foreground">
-            {c.home.heroHeadline || c.name}
+      {/* 2 · Launch hero — persistent balloon word + cycling product slide */}
+      <section className="relative mx-auto grid max-w-7xl items-center gap-6 px-5 py-10 md:grid-cols-2 md:py-14">
+        {/* little walking snack strutting in */}
+        <WalkingSnack variant={variant} className="absolute left-5 top-2 h-12 w-12 text-foreground motion-safe:animate-[snack-walk_3s_ease-in-out_infinite]" />
+
+        <div className="relative pt-8">
+          <p className="font-accent mb-1 text-xl text-primary">{brand} · {c.city}</p>
+          <h1 className="text-foreground" style={{ fontSize: balloonSize(brand) }}>
+            <BalloonWord text={brand} />
           </h1>
-          <p className="mt-5 max-w-md text-base text-muted-foreground">{c.home.heroSubHeadline || c.subTagline}</p>
-          <Link
-            href="/Menu"
-            className="cta-primary mt-7 inline-flex rounded-full bg-primary px-8 py-3 text-sm font-bold uppercase tracking-wide text-primary-foreground transition-transform hover:scale-105"
+          <motion.p
+            key={idx}
+            initial={{ y: 12, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.4 }}
+            className="mt-2 text-2xl font-extrabold uppercase tracking-tight text-foreground"
           >
-            {c.menuCtaLabel}
-          </Link>
-        </div>
-        <div className="relative">
-          <SpinBadge text={c.trademark || "Fresh"} />
-          <div className="overflow-hidden rounded-[2rem] border-2 border-foreground bg-card shadow-2xl">
-            {hero ? (
-              <Image src={hero} alt={c.name} width={720} height={560} className="h-[320px] w-full object-cover md:h-[440px]" priority />
-            ) : (
-              <div className="grid h-[320px] w-full place-items-center bg-muted md:h-[440px]">
-                {logoUrl && <Image src={logoUrl} alt={c.name} width={140} height={140} className="opacity-60" />}
+            {slide.title}
+          </motion.p>
+          <p className="mt-1 font-accent text-lg uppercase tracking-widest text-muted-foreground">Limited edition</p>
+          {slide.desc && <p className="mt-4 max-w-md text-sm text-muted-foreground">{slide.desc}</p>}
+          <div className="mt-6 flex items-center gap-4">
+            <Link href="/Menu" className="cta-primary inline-flex rounded-full bg-primary px-8 py-3 text-sm font-bold uppercase tracking-wide text-primary-foreground transition-transform hover:scale-105">
+              {c.menuCtaLabel}
+            </Link>
+            {/* slide dots */}
+            {slides.length > 1 && (
+              <div className="flex gap-2">
+                {slides.map((_, i) => (
+                  <button key={i} onClick={() => setIdx(i)} aria-label={`Slide ${i + 1}`} className={`h-2.5 rounded-full transition-all ${i === idx ? "w-7 bg-primary" : "w-2.5 bg-foreground/25"}`} />
+                ))}
               </div>
             )}
+          </div>
+        </div>
+
+        {/* right: product card + mascot + spinning badge */}
+        <div className="relative">
+          <SpinBadge text={brand.slice(0, 8)} />
+          <SmashMascot variant={variant} brand={brand} className="absolute -bottom-4 -left-6 z-20 hidden h-52 w-40 drop-shadow-xl sm:block" />
+          <div className="relative overflow-hidden rounded-[2rem] border-2 border-foreground bg-card shadow-2xl">
+            <motion.div key={idx} initial={{ opacity: 0, scale: 1.04 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }}>
+              {slide.image ? (
+                <Image src={slide.image} alt={slide.title} width={720} height={560} className="h-[300px] w-full object-cover md:h-[430px]" priority />
+              ) : (
+                <div className="grid h-[300px] w-full place-items-center bg-muted md:h-[430px]">
+                  {logoUrl && <Image src={logoUrl} alt={c.name} width={140} height={140} className="opacity-60" />}
+                </div>
+              )}
+            </motion.div>
           </div>
         </div>
       </section>
@@ -110,35 +173,42 @@ export function SmashHome({ heroImages, logoUrl, featured, reviews }: { heroImag
         <p className="mt-4 px-5 text-center font-accent text-lg text-primary">{c.cuisines?.slice(0, 3).join(" · ")}</p>
       </section>
 
-      {/* 4 · Menu-item marquee */}
-      {items.length > 0 && (
-        <section className="overflow-hidden bg-background py-12">
-          <div className="mb-6 flex items-baseline justify-between px-5">
-            <h3 className="text-2xl font-extrabold uppercase tracking-tight text-foreground">The lineup</h3>
-            <Link href="/Menu" className="font-accent text-primary hover:underline">See the menu →</Link>
+      {/* 4 · Big product cards with hover lift (the "lineup") */}
+      {featured.length > 0 && (
+        <section className="mx-auto max-w-7xl px-5 py-14">
+          <div className="mb-8 flex items-end justify-between">
+            <h3 className="text-3xl font-extrabold uppercase tracking-tight text-foreground">The lineup</h3>
+            <Link href="/Menu" className="font-accent text-xl text-primary hover:underline">See the full menu →</Link>
           </div>
-          <div className="group flex w-max animate-[marquee_30s_linear_infinite] gap-5 px-5 hover:[animation-play-state:paused]">
-            {items.map((p, i) => (
-              <div key={`${p.id}-${i}`} className="w-64 shrink-0 overflow-hidden rounded-2xl border-2 border-foreground bg-card">
-                <div className="h-40 w-full bg-muted">
-                  {p.image && <Image src={p.image} alt={p.name} width={320} height={200} className="h-40 w-full object-cover" />}
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {featured.slice(0, 6).map((p) => (
+              <Link
+                key={p.id}
+                href="/Menu"
+                className="group flex flex-col overflow-hidden rounded-3xl border-2 border-foreground bg-card transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.35)]"
+              >
+                <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
+                  {p.image ? (
+                    <Image src={p.image} alt={p.name} width={520} height={400} className="size-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                  ) : (
+                    <div className="grid size-full place-items-center">{logoUrl && <Image src={logoUrl} alt={p.name} width={90} height={90} className="opacity-50" />}</div>
+                  )}
+                  <span className="absolute right-3 top-3 rounded-full bg-primary px-3 py-1 text-sm font-bold text-primary-foreground shadow">{usd(p.priceInCents)}</span>
                 </div>
-                <div className="p-4">
-                  <div className="flex items-start justify-between gap-2">
-                    <h4 className="text-sm font-bold uppercase tracking-tight text-card-foreground">{p.name}</h4>
-                    <span className="shrink-0 rounded-full bg-primary px-2 py-0.5 text-xs font-bold text-primary-foreground">{usd(p.priceInCents)}</span>
-                  </div>
-                  {p.description && <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{p.description}</p>}
+                <div className="p-5">
+                  <h4 className="text-lg font-extrabold uppercase tracking-tight text-card-foreground">{p.name}</h4>
+                  {p.description && <p className="mt-1.5 line-clamp-2 text-sm text-muted-foreground">{p.description}</p>}
+                  <span className="mt-3 inline-flex font-accent text-lg text-primary opacity-0 transition-opacity group-hover:opacity-100">Order it →</span>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </section>
       )}
 
-      {/* 5 · Feature cards */}
+      {/* 5 · Feature blocks */}
       {c.home.distinctiveFeatures?.length > 0 && (
-        <section className="mx-auto grid max-w-7xl gap-5 px-5 py-14 md:grid-cols-2">
+        <section className="mx-auto grid max-w-7xl gap-5 px-5 pb-14 md:grid-cols-2">
           {c.home.distinctiveFeatures.map((f, i) => (
             <motion.div
               key={i}
@@ -180,14 +250,14 @@ export function SmashHome({ heroImages, logoUrl, featured, reviews }: { heroImag
 
       {/* 7 · Numbered location */}
       <section className="mx-auto max-w-7xl px-5 py-14">
-        <p className="font-accent text-lg text-primary">Find us</p>
-        <div className="mt-4 flex items-center gap-5 rounded-3xl border-2 border-foreground bg-card p-6">
+        <p className="font-accent text-xl text-primary">Find us</p>
+        <div className="mt-4 flex flex-wrap items-center gap-5 rounded-3xl border-2 border-foreground bg-card p-6">
           <span className="text-4xl font-extrabold tracking-tighter text-primary">#001</span>
           <div>
             <h3 className="text-xl font-extrabold uppercase tracking-tight text-card-foreground">{c.city}</h3>
             <p className="text-sm text-muted-foreground">{c.address}</p>
           </div>
-          <Link href="/Menu" className="cta-primary ml-auto hidden rounded-full bg-primary px-6 py-2.5 text-sm font-bold uppercase text-primary-foreground sm:inline-flex">
+          <Link href="/Menu" className="cta-primary ml-auto inline-flex rounded-full bg-primary px-6 py-2.5 text-sm font-bold uppercase text-primary-foreground">
             {c.menuCtaLabel}
           </Link>
         </div>

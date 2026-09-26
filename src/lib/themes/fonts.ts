@@ -12,9 +12,11 @@
 //             Courier New -> Courier Prime (free)
 //   Fiorella: FiorellaFace(bespoke) -> Marcellus, proxima-nova(paid) -> Jost,
 //             futura-pt(paid) -> Jost
-import { Poppins, Caveat, Montserrat, Courier_Prime, Marcellus, Jost } from "next/font/google";
+import { Poppins, Caveat, Montserrat, Courier_Prime, Marcellus, Jost, Chewy } from "next/font/google";
 
-// smash-bold (Ender): tight, bold, uppercase display + a hand-drawn accent.
+// smash-bold (Ender): tight, bold, uppercase display + a hand-drawn accent +
+// a puffy balloon face for the big "waved" brand word (Ender's bespoke ENDY
+// lettering → Chewy, the closest free bubbly display).
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -25,6 +27,12 @@ const caveat = Caveat({
   subsets: ["latin"],
   weight: ["400", "700"],
   variable: "--font-caveat",
+  display: "swap",
+});
+const chewy = Chewy({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-balloon",
   display: "swap",
 });
 
@@ -63,6 +71,7 @@ const jost = Jost({
 export const themeFontVariables = [
   poppins.variable,
   caveat.variable,
+  chewy.variable,
   montserrat.variable,
   courierPrime.variable,
   marcellus.variable,

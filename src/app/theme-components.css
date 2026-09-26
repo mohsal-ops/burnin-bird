@@ -18,6 +18,20 @@
   to { transform: translateX(-50%); }
 }
 
+/* Per-letter bob for the smash-bold "waved" balloon brand word. Each letter sets
+   its own --r (base tilt) and animation-delay in the markup. */
+@keyframes balloon-bob {
+  0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); }
+  50% { transform: translateY(-8px) rotate(var(--r, 0deg)); }
+}
+
+/* Little walking-snack stride across the top of the hero. */
+@keyframes snack-walk {
+  0% { transform: translateX(0) rotate(-4deg); }
+  50% { transform: translateX(14px) rotate(4deg); }
+  100% { transform: translateX(0) rotate(-4deg); }
+}
+
 /* ── smash-bold — Ender: loud, tight, uppercase, pill CTAs ─────────────────── */
 html[data-theme="smash-bold"] .theme-surface :is(h1, h2, h3) {
   text-transform: uppercase;
