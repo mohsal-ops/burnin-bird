@@ -30,9 +30,9 @@ export default function ProductCardClient({
   image,
 }: productObjectPath) {
   return (
-    <Link href={`/Menu`} className="group flex w-44 shrink-0 flex-col gap-2 p-2 rounded-2xl sm:w-60">
+    <Link href={`/Menu`} className="group flex w-44 shrink-0 flex-col gap-2 p-2 rounded-2xl sm:w-60 transition-transform duration-300 ease-out hover:-translate-y-1.5 hover:scale-[1.02]">
       <Card
-        className="relative aspect-square w-full overflow-hidden rounded-2xl"
+        className="relative aspect-square w-full overflow-hidden rounded-2xl transition-shadow duration-300 group-hover:shadow-[0_22px_36px_-18px_rgba(0,0,0,0.4)]"
         key={id}
       >
         <CardContent className="relative h-full w-full p-0">
@@ -42,7 +42,7 @@ export default function ProductCardClient({
               fill
               alt={name}
               sizes="(max-width: 768px) 60vw, 240px"
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.08]"
             />
           </div>
         </CardContent>
@@ -75,9 +75,9 @@ export function PopularDishesCardClient({
   };
 
   return (
-    <div className="group flex w-44 shrink-0 flex-col gap-2 p-2 rounded-2xl sm:w-48">
+    <div className="group flex w-44 shrink-0 flex-col gap-2 p-2 rounded-2xl sm:w-48 transition-transform duration-300 ease-out hover:-translate-y-1.5 hover:scale-[1.02]">
       <Card
-        className="relative aspect-square w-full overflow-hidden rounded-2xl"
+        className="relative aspect-square w-full overflow-hidden rounded-2xl transition-shadow duration-300 group-hover:shadow-[0_22px_36px_-18px_rgba(0,0,0,0.4)]"
         key={id}
       >
         <CardContent className="relative h-full w-full p-0">
@@ -87,7 +87,7 @@ export function PopularDishesCardClient({
               fill
               alt={name}
               sizes="(max-width: 768px) 60vw, 240px"
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.08]"
             />
           </div>
 
@@ -161,7 +161,7 @@ export function AllDishesCardClient({
                 src={image}
                 fill
                 alt={name}
-                className="object-cover transition-transform duration-300 group-hover:scale-105"
+                className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.08]"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
               />
             )}

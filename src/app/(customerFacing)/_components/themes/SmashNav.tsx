@@ -34,7 +34,7 @@ export function SmashNav({ initialCartId, logoUrl }: { initialCartId: string | n
   const { data } = useSWR(cartId ? ["/api/cart/get", cartId] : null, ([url, id]) => fetcher(url, id), { revalidateOnFocus: false });
   const cartItems = (data?.cart?.items ?? []) as CartItem[];
   const links = SITE_CONFIG.navLinks;
-  const wordmark = (SITE_CONFIG.name || "").toUpperCase();
+  const wordmark = (SITE_CONFIG.trademark || SITE_CONFIG.name || "").toUpperCase();
 
   return (
     <div className="border-b border-foreground/10 bg-background">
@@ -53,18 +53,18 @@ export function SmashNav({ initialCartId, logoUrl }: { initialCartId: string | n
       </div>
 
       {/* Desktop: wordmark · centered links · dark pill */}
-      <div className="mx-auto hidden h-20 max-w-7xl grid-cols-3 items-center px-6 md:grid">
-        <Link href="/" className="justify-self-start text-2xl font-extrabold uppercase tracking-[0.3em] text-foreground">
+      <div className="mx-auto hidden h-20 max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-6 px-6 md:grid">
+        <Link href="/" className="justify-self-start whitespace-nowrap text-xl font-extrabold uppercase tracking-[0.25em] text-foreground lg:text-2xl">
           {wordmark}
         </Link>
-        <nav className="flex items-center justify-center gap-8">
+        <nav className="flex items-center justify-center gap-5 lg:gap-8">
           {links.map((l) => {
             const active = l.href === pathname;
             return (
               <Link
                 key={l.href}
                 href={l.href}
-                className={`text-sm font-semibold uppercase tracking-wide transition-colors ${active ? "text-primary" : "text-foreground/70 hover:text-foreground"}`}
+                className={`whitespace-nowrap text-sm font-semibold uppercase tracking-wide transition-colors ${active ? "text-primary" : "text-foreground/70 hover:text-foreground"}`}
               >
                 {l.label}
               </Link>
