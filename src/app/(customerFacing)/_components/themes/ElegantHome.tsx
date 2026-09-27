@@ -191,7 +191,7 @@ export function ElegantHome({ heroImages, gallery, featured, reviews }: { heroIm
   const heroFade = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
 
   return (
-    <div className="theme-bespoke w-full bg-white" style={{ color: INK }}>
+    <div className="theme-bespoke w-full overflow-x-clip bg-white" style={{ color: INK }}>
       {/* 1 · Full-screen photo hero */}
       <section ref={heroRef} className="relative flex h-svh min-h-[560px] items-center justify-center overflow-hidden" style={{ background: INK }}>
         {pic(0) && (

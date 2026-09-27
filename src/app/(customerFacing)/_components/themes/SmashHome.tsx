@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { motion } from "motion/react";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { CorePitch } from "../CorePitch";
@@ -12,8 +11,7 @@ import { SmashLineup } from "./SmashLineup";
 // Bespoke, not a re-skin: Ender's rounded launch panel
 // (mascot + branded packaging · 3-up limited lineup · #001 location, auto-
 // rotating) → the huge "CATEGORY." headline with a drag row of big product
-// cards → feature blocks → dark reviews band → tilted tagline ticker →
-// full-bleed location → the
+// cards → feature blocks → dark reviews band → tilted tagline ticker → the
 // in-voice core pitch. Content/photos are the client's own — only the DESIGN
 // is modeled on the reference. The mascot adapts to the business type
 // (takeout bag · coffee cup · pizza box · bowl) via loaderStyle/cuisines, and
@@ -38,7 +36,7 @@ export function SmashHome({ heroImages, logoUrl, featured, reviews }: { heroImag
   const subList = (c.cuisines ?? []).filter((x) => x !== category).slice(0, 4).map((x) => `${x}.`).join(" ");
 
   return (
-    <div className="w-full pt-20">
+    <div className="w-full overflow-x-clip pt-20">
       {/* 2 · Launch panel (mascot · lineup · location), auto-rotating */}
       <SmashHero
         name={name}
@@ -98,32 +96,14 @@ export function SmashHome({ heroImages, logoUrl, featured, reviews }: { heroImag
         </section>
       )}
 
-      {/* Announcement marquee — a tilted ticker band between reviews and location */}
-      <div className="relative z-10 -my-6 overflow-hidden bg-foreground py-3 text-background shadow-xl" style={{ transform: "rotate(-1.5deg) scale(1.03)" }}>
+      {/* Announcement marquee — a tilted ticker band after the reviews */}
+      <div className="relative z-10 my-6 overflow-hidden bg-foreground py-3 text-background shadow-xl" style={{ transform: "rotate(-1.5deg) scale(1.03)" }}>
         <div className="flex w-max animate-[marquee_28s_linear_infinite] gap-14 whitespace-nowrap text-sm font-semibold uppercase md:text-lg">
           {Array.from({ length: 8 }).map((_, i) => (
             <span key={i} className="flex items-center gap-14">{promo}<span className="text-brand">★</span></span>
           ))}
         </div>
       </div>
-
-      {/* 7 · Full-bleed location (Ender's LOCALES) */}
-      <section className="relative flex min-h-[70vh] w-full items-center justify-center overflow-hidden">
-        {locationImg ? (
-          <Image src={locationImg} alt={c.city} fill className="object-cover" sizes="100vw" />
-        ) : (
-          <div className="absolute inset-0 bg-foreground" />
-        )}
-        <div className="absolute inset-0 bg-black/55" />
-        <div className="relative z-10 px-5 text-center text-white">
-          <p className="text-6xl font-extrabold tracking-tighter text-white/80 md:text-8xl">#001</p>
-          <h2 className="mt-1 text-[clamp(2.5rem,10vw,7rem)] font-extrabold uppercase leading-none tracking-tight">{c.city}</h2>
-          <p className="mt-3 font-accent text-2xl text-primary">{c.address}</p>
-          <Link href="/Menu" className="cta-primary mt-7 inline-flex rounded-full bg-white px-8 py-3 text-sm font-bold uppercase tracking-wide text-black transition-transform hover:scale-105">
-            {c.menuCtaLabel}
-          </Link>
-        </div>
-      </section>
 
       {/* 8 · Core pitch (the four Starvega pillars, in-theme) */}
       <div className="flex justify-center pb-8">

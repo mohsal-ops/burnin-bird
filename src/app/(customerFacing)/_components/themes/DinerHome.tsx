@@ -221,7 +221,7 @@ export function DinerHome({ menu, featured, reviews, heroImage }: { menu: Cat[];
   const banner = c.home.heroSubHeadline || c.tagline;
 
   return (
-    <div className="theme-bespoke w-full pt-20" style={{ background: CREAM, color: BROWN }}>
+    <div className="theme-bespoke w-full overflow-x-clip pt-20" style={{ background: CREAM, color: BROWN }}>
       {/* 1 · Golden hero */}
       <section className="relative overflow-visible" style={{ background: GOLD }}>
         <div className="relative mx-auto flex max-w-7xl flex-col items-center justify-center overflow-hidden px-4 pb-28 pt-16 md:min-h-[78svh] md:pb-24 md:pt-14">
