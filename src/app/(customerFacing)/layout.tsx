@@ -1,7 +1,9 @@
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { TopNavBar } from "./_components/navBar";
 import { SmashNav } from "./_components/themes/SmashNav";
-import { resolveThemeSlug } from "@/lib/themes/registry";
+import { DinerNav } from "./_components/themes/DinerNav";
+import { ElegantNav } from "./_components/themes/ElegantNav";
+import { getActiveTheme } from "@/lib/themes/active";
 import { Footer } from "./_components/Footer";
 import { Toaster } from "sonner";
 import { cookies } from "next/headers";
@@ -24,6 +26,7 @@ export default async function Customerlayout({
   const cartId = (await cookies()).get("cart_id")?.value ?? null;
   const logoUrl = await getLogoUrl();
   const loyalty = await getLoyaltySettings();
+  const theme = await getActiveTheme();
 
   return (
     <SidebarProvider>
@@ -49,8 +52,12 @@ export default async function Customerlayout({
           has its own layout without this class, so it never picks them up. */}
       <main className="theme-surface flex relative flex-col w-full  pb- ">
         <div className="fixed top-0 left-0 right-0 z-50">
-          {resolveThemeSlug() === "smash-bold" ? (
+          {theme === "smash-bold" ? (
             <SmashNav initialCartId={cartId} logoUrl={logoUrl} />
+          ) : theme === "diner-classic" ? (
+            <DinerNav initialCartId={cartId} logoUrl={logoUrl} />
+          ) : theme === "refined-elegant" ? (
+            <ElegantNav initialCartId={cartId} />
           ) : (
             <TopNavBar initialCartId={cartId} logoUrl={logoUrl} />
           )}

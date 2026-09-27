@@ -2,37 +2,19 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-import useSWR from "swr";
-import { CartItem } from "generated/prisma";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import AppSideBar from "../sideBar";
 import CartSideBar from "../Cart-SideBar";
+import { useNavCart } from "./useNavCart";
 
 // Bespoke navbar for smash-bold — modeled on Ender's: a wide-tracked wordmark on
 // the left, centered uppercase links, and a dark pill CTA on the right. Reuses
 // the same cart plumbing as the default TopNavBar.
 
-const fetcher = async (url: string, cartId: string | null) => {
-  const res = await fetch(url, { headers: { "Content-Type": "application/json", "x-cart-id": cartId ?? "" } });
-  return res.json();
-};
-
-export function SmashNav({ initialCartId, logoUrl }: { initialCartId: string | null; logoUrl?: string }) {
+export function SmashNav({ initialCartId }: { initialCartId: string | null; logoUrl?: string }) {
   const pathname = usePathname();
-  const [cartId, setCartId] = useState<string | null>(initialCartId);
-
-  useEffect(() => {
-    (async () => {
-      const res = await fetch("/api/getcartId");
-      const data = await res.json().catch(() => ({}));
-      if (data?.cartId) setCartId(data.cartId);
-    })();
-  }, []);
-
-  const { data } = useSWR(cartId ? ["/api/cart/get", cartId] : null, ([url, id]) => fetcher(url, id), { revalidateOnFocus: false });
-  const cartItems = (data?.cart?.items ?? []) as CartItem[];
+  const { cartId, cartItems } = useNavCart(initialCartId);
   const links = SITE_CONFIG.navLinks;
   const wordmark = (SITE_CONFIG.trademark || SITE_CONFIG.name || "").toUpperCase();
 

@@ -9,10 +9,10 @@
 // the closest freely-licensable Google font, noted per theme in themes.css:
 //   Ender:    Poppins (free, matches) + GoodDog(paid) -> Caveat
 //   Fame:     Montserrat (free, matches) + aktiv-grotesk(paid) -> Montserrat,
-//             Courier New -> Courier Prime (free)
-//   Fiorella: FiorellaFace(bespoke) -> Marcellus, proxima-nova(paid) -> Jost,
+//             Courier New -> Courier Prime (free), script -> Lobster
+//   Fiorella: FiorellaFace(bespoke) -> Saira Stencil One (bespoke homepage) / Marcellus, proxima-nova(paid) -> Jost,
 //             futura-pt(paid) -> Jost
-import { Poppins, Caveat, Montserrat, Courier_Prime, Marcellus, Jost, Chewy } from "next/font/google";
+import { Poppins, Caveat, Montserrat, Courier_Prime, Marcellus, Jost, Chewy, Lobster, Saira_Stencil_One } from "next/font/google";
 
 // smash-bold (Ender): tight, bold, uppercase display + a hand-drawn accent +
 // a puffy balloon face for the big "waved" brand word (Ender's bespoke ENDY
@@ -39,7 +39,7 @@ const chewy = Chewy({
 // diner-classic (Fame): friendly grotesk + a monospace "receipt" accent.
 const montserrat = Montserrat({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700", "800", "900"],
   variable: "--font-montserrat",
   display: "swap",
 });
@@ -47,6 +47,23 @@ const courierPrime = Courier_Prime({
   subsets: ["latin"],
   weight: ["400", "700"],
   variable: "--font-courier-prime",
+  display: "swap",
+});
+
+// Fame's retro sign-painter script ("Cheeeese!", "Appetizer") → Lobster.
+const lobster = Lobster({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-script",
+  display: "swap",
+});
+
+// Fiorella's bespoke geometric stencil display ("NEIGHBORHOOD ITALIAN") →
+// Saira Stencil One, the closest free heavy geometric stencil.
+const sairaStencil = Saira_Stencil_One({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-stencil",
   display: "swap",
 });
 
@@ -74,6 +91,8 @@ export const themeFontVariables = [
   chewy.variable,
   montserrat.variable,
   courierPrime.variable,
+  lobster.variable,
+  sairaStencil.variable,
   marcellus.variable,
   jost.variable,
 ].join(" ");

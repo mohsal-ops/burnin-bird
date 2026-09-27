@@ -66,8 +66,8 @@ const COPY: Record<ThemeSlug, { eyebrow: string; heading: string; body: Record<P
   },
 };
 
-export function CorePitch() {
-  const theme = resolveThemeSlug();
+export function CorePitch({ theme: themeProp }: { theme?: ThemeSlug } = {}) {
+  const theme = themeProp ?? resolveThemeSlug();
   const copy = COPY[theme];
 
   return (

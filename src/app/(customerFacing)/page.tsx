@@ -25,8 +25,10 @@ import {
 } from "./_components/HomeSections";
 import { ReviewsSection } from "./_components/ReviewsSection";
 import { CorePitch } from "./_components/CorePitch";
-import { resolveThemeSlug } from "@/lib/themes/registry";
+import { getActiveTheme } from "@/lib/themes/active";
 import { SmashHome } from "./_components/themes/SmashHome";
+import { DinerHome } from "./_components/themes/DinerHome";
+import { ElegantHome } from "./_components/themes/ElegantHome";
 import {
   Item,
   SideGroup,
@@ -144,8 +146,16 @@ async function ReviewsDataSection() {
   return <ReviewsSection reviews={reviews} />;
 }
 
+const slim = (p: { id: string; name: string; priceInCents: number; description: string | null; image: string | null }) => ({
+  id: p.id,
+  name: p.name,
+  priceInCents: p.priceInCents,
+  description: p.description,
+  image: p.image,
+});
+
 export default async function Home() {
-  const themeSlug = resolveThemeSlug();
+  const themeSlug = await getActiveTheme();
   // TopSection and the static sections below render immediately; the two
   // heavier DB-backed sections stream in behind Suspense so they aren't
   // blocked on the featured-products and places queries. The hero image is a
@@ -191,6 +201,47 @@ export default async function Home() {
             description: p.description,
             image: p.image,
           }))}
+          reviews={reviews}
+        />
+      </>
+    );
+  }
+
+  if (themeSlug === "diner-classic") {
+    const [types, featured, reviews] = await Promise.all([
+      db.types.findMany({
+        orderBy: { createdAt: "asc" },
+        include: { items: { where: { isAvailableForPurchase: true }, take: 6 } },
+      }),
+      GetFeaturedProducts(),
+      db.review.findMany({ orderBy: { order: "asc" } }),
+    ]);
+    return (
+      <>
+        <FaqSchema />
+        <DinerHome
+          heroImage={heroImage}
+          menu={types.map((t) => ({ id: t.id, name: t.name, items: t.items.map(slim) }))}
+          featured={featured.map(slim)}
+          reviews={reviews}
+        />
+      </>
+    );
+  }
+
+  if (themeSlug === "refined-elegant") {
+    const [featured, reviews, gallery] = await Promise.all([
+      GetFeaturedProducts(),
+      db.review.findMany({ orderBy: { order: "asc" } }),
+      db.galleryImage.findMany({ orderBy: { order: "asc" }, select: { url: true }, take: 6 }),
+    ]);
+    return (
+      <>
+        <FaqSchema />
+        <ElegantHome
+          heroImages={[heroImage, heroImage2, heroImage3]}
+          gallery={gallery.map((g) => g.url)}
+          featured={featured.map(slim)}
           reviews={reviews}
         />
       </>

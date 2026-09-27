@@ -8,7 +8,7 @@ import { getBusinessHours } from "@/lib/getHours";
 import { getThemeColor, DEFAULT_THEME_COLOR } from "@/lib/siteSettings";
 import { readableTextColor } from "@/lib/color";
 import { themeFontVariables } from "@/lib/themes/fonts";
-import { resolveThemeSlug } from "@/lib/themes/registry";
+import { getActiveTheme } from "@/lib/themes/active";
 import "./globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -120,7 +120,7 @@ export default async function RootLayout({
   const brandForeground = readableTextColor(themeColor);
   // Active design skin. Defaults to classic-starvega when siteConfig has no
   // `theme` (every existing client), so nothing already deployed changes look.
-  const themeSlug = resolveThemeSlug();
+  const themeSlug = await getActiveTheme();
   return (
     <html
       lang="en"

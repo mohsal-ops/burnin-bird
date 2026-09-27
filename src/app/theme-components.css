@@ -53,7 +53,7 @@ html[data-theme="smash-bold"] .theme-surface .font-accent {
 }
 
 /* ── diner-classic — Fame: warm, friendly, rounded, mono labels ───────────── */
-html[data-theme="diner-classic"] .theme-surface :is(h1, h2, h3) {
+html[data-theme="diner-classic"] .theme-surface :is(h1, h2, h3):not(.theme-bespoke *) {
   text-transform: none;
   letter-spacing: -0.01em;
   font-weight: 700;
@@ -71,7 +71,7 @@ html[data-theme="diner-classic"] .theme-surface .font-accent {
 }
 
 /* ── refined-elegant — Fiorella: airy, wide, uppercase, sharp CTAs ────────── */
-html[data-theme="refined-elegant"] .theme-surface :is(h1, h2, h3) {
+html[data-theme="refined-elegant"] .theme-surface :is(h1, h2, h3):not(.theme-bespoke *) {
   text-transform: uppercase;
   letter-spacing: 0.14em;    /* Fiorella's wide +8px display tracking */
   font-weight: 400;          /* the display face is light, not bold */
@@ -87,4 +87,25 @@ html[data-theme="refined-elegant"] .theme-surface .cta-primary {
 html[data-theme="refined-elegant"] .theme-surface .font-accent {
   text-transform: uppercase;
   letter-spacing: 0.18em;
+}
+
+/* diner-classic (Fame) hero: rising steam wisps + slowly stretching cheese drips */
+@keyframes dinerSteam {
+  0%   { transform: translateY(40px) scaleX(0.8); opacity: 0; }
+  35%  { opacity: 0.9; }
+  100% { transform: translateY(-120px) scaleX(1.25); opacity: 0; }
+}
+@keyframes dinerDrip {
+  0%, 100% { transform: scaleY(1); }
+  50%      { transform: scaleY(1.18); }
+}
+
+/* refined-elegant (Fiorella): slow Ken Burns on full-bleed photos */
+@keyframes elegantKenBurns {
+  from { transform: scale(1.12); }
+  to   { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [style*="dinerSteam"], [style*="dinerDrip"] { animation: none !important; }
 }

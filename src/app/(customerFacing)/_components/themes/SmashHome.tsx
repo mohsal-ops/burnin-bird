@@ -9,10 +9,11 @@ import { SmashHero, mascotFor, type MascotVariant } from "./SmashHero";
 import { SmashLineup } from "./SmashLineup";
 
 // ── smash-bold homepage — modeled closely on Ender Hamburguesería ────────────
-// Bespoke, not a re-skin: announcement marquee → Ender's rounded launch panel
+// Bespoke, not a re-skin: Ender's rounded launch panel
 // (mascot + branded packaging · 3-up limited lineup · #001 location, auto-
 // rotating) → the huge "CATEGORY." headline with a drag row of big product
-// cards → feature blocks → dark reviews band → full-bleed location → the
+// cards → feature blocks → dark reviews band → tilted tagline ticker →
+// full-bleed location → the
 // in-voice core pitch. Content/photos are the client's own — only the DESIGN
 // is modeled on the reference. The mascot adapts to the business type
 // (takeout bag · coffee cup · pizza box · bowl) via loaderStyle/cuisines, and
@@ -38,15 +39,6 @@ export function SmashHome({ heroImages, logoUrl, featured, reviews }: { heroImag
 
   return (
     <div className="w-full pt-20">
-      {/* 1 · Announcement marquee */}
-      <div className="overflow-hidden bg-foreground py-2.5 text-background">
-        <div className="flex w-max animate-[marquee_28s_linear_infinite] gap-14 whitespace-nowrap text-sm font-semibold uppercase md:text-base">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <span key={i}>{promo}</span>
-          ))}
-        </div>
-      </div>
-
       {/* 2 · Launch panel (mascot · lineup · location), auto-rotating */}
       <SmashHero
         name={name}
@@ -106,6 +98,15 @@ export function SmashHome({ heroImages, logoUrl, featured, reviews }: { heroImag
         </section>
       )}
 
+      {/* Announcement marquee — a tilted ticker band between reviews and location */}
+      <div className="relative z-10 -my-6 overflow-hidden bg-foreground py-3 text-background shadow-xl" style={{ transform: "rotate(-1.5deg) scale(1.03)" }}>
+        <div className="flex w-max animate-[marquee_28s_linear_infinite] gap-14 whitespace-nowrap text-sm font-semibold uppercase md:text-lg">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <span key={i} className="flex items-center gap-14">{promo}<span className="text-brand">★</span></span>
+          ))}
+        </div>
+      </div>
+
       {/* 7 · Full-bleed location (Ender's LOCALES) */}
       <section className="relative flex min-h-[70vh] w-full items-center justify-center overflow-hidden">
         {locationImg ? (
@@ -126,7 +127,7 @@ export function SmashHome({ heroImages, logoUrl, featured, reviews }: { heroImag
 
       {/* 8 · Core pitch (the four Starvega pillars, in-theme) */}
       <div className="flex justify-center pb-8">
-        <CorePitch />
+        <CorePitch theme="smash-bold" />
       </div>
     </div>
   );
