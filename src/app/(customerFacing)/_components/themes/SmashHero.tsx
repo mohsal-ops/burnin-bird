@@ -35,6 +35,10 @@ export { mascotFor };
 const INK = "#111315";
 const PANEL = "radial-gradient(ellipse at 60% 45%, #EEF1F0 0%, #E3E6E5 70%, #D6DAD8 100%)";
 
+// Font size (in container-width units) that makes a Chewy word of this length
+// fill ~90% of its box, capped. Use inside an element with container-type.
+export const fitCq = (text: string, max: string) => `min(${max}, ${(150 / Math.max(3, text.length)).toFixed(1)}cqw)`;
+
 export function Balloon({ text, size, className = "" }: { text: string; size: string; className?: string }) {
   return (
     <span
@@ -212,9 +216,9 @@ export function SmashHero({
                       {m.face && (
                         <span
                           className="absolute -translate-x-1/2 -translate-y-1/2 text-center"
-                          style={{ left: m.face.left, top: m.face.top, width: m.face.width, color: INK }}
+                          style={{ left: m.face.left, top: m.face.top, width: m.face.width, color: INK, containerType: "inline-size" }}
                         >
-                          <Balloon text={sub} size="clamp(1rem, 3.4vw, 2.6rem)" />
+                          <Balloon text={sub} size={fitCq(sub, "2.6rem")} />
                           <span className="mt-1 block text-right text-[clamp(0.45rem,0.9vw,0.75rem)] font-bold lowercase">{limitedLabel}</span>
                         </span>
                       )}
@@ -226,7 +230,9 @@ export function SmashHero({
                       animate={{ y: 0, rotate: -5, opacity: 1 }}
                       transition={{ type: "spring", stiffness: 160, damping: 14, delay: 0.55 }}
                     >
-                      <Balloon text={sub} size="clamp(0.9rem, 2.6vw, 2.1rem)" />
+                      <span className="w-[88%] text-center" style={{ containerType: "inline-size" }}>
+                        <Balloon text={sub} size={fitCq(sub, "2.1rem")} />
+                      </span>
                     </motion.div>
                   </motion.div>
                 </div>
@@ -247,22 +253,19 @@ export function SmashHero({
                   <p className="text-center text-lg font-semibold uppercase tracking-[0.18em] md:text-3xl">{name}</p>
                   <SpinBadge text={limitedLabel} />
                 </div>
-                <div className="no-scrollbar flex flex-1 snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-20 md:grid md:grid-cols-3 md:gap-6 md:overflow-visible md:px-12 md:pb-24">
+                <div className="no-scrollbar flex min-h-0 flex-1 snap-x snap-mandatory items-center gap-4 overflow-x-auto px-5 pb-24 md:grid md:grid-cols-3 md:gap-6 md:overflow-visible md:px-12 md:pb-28">
                   {lineup.map((p, i) => (
                     <motion.div
                       key={p.id}
-                      className="flex w-[78vw] shrink-0 snap-center flex-col items-center text-center md:w-auto"
+                      className="flex w-[78vw] shrink-0 snap-center flex-col items-center justify-center text-center md:w-auto"
                       initial={reduce ? false : { y: 40, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
                       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.08 * i }}
                     >
-                      <div className="relative mt-2">
-                        <Balloon text={sub} size="clamp(2.4rem, 5vw, 4.2rem)" />
-                        <span className="absolute -bottom-5 right-1 text-xs font-black uppercase md:-bottom-6 md:text-lg" style={{ fontFamily: "var(--font-balloon), system-ui" }}>
-                          {suffix(p.name, sub)}
-                        </span>
+                      <div className="relative w-full max-w-[340px]" style={{ containerType: "inline-size" }}>
+                        <Balloon text={sub} size={fitCq(sub, "4.2rem")} />
                       </div>
-                      <Link href="/Menu" className="group relative mt-4 aspect-square w-full max-w-[340px] flex-1">
+                      <Link href="/Menu" className="group relative mt-3 aspect-square w-full max-w-[min(300px,34vh)]">
                         {p.image && (
                           <Image
                             src={p.image}
@@ -273,11 +276,11 @@ export function SmashHero({
                           />
                         )}
                       </Link>
-                      {p.description && <p className="mt-4 line-clamp-2 max-w-xs text-sm font-bold md:text-base">{p.description}</p>}
+                      <p className="mt-3 line-clamp-2 max-w-xs text-base font-extrabold uppercase leading-tight tracking-tight md:text-xl">{p.name}</p>
                     </motion.div>
                   ))}
                 </div>
-                <p className="pointer-events-none absolute bottom-14 left-1/2 -translate-x-1/2 text-sm font-black md:text-base uppercase tracking-wide" style={{ fontFamily: "var(--font-balloon), system-ui" }}>
+                <p className="pointer-events-none absolute bottom-[3.75rem] left-1/2 -translate-x-1/2 whitespace-nowrap text-sm font-black md:text-base uppercase tracking-wide" style={{ fontFamily: "var(--font-balloon), system-ui" }}>
                   ⟋ {limitedLabel} ⟍
                 </p>
               </motion.div>
@@ -340,10 +343,4 @@ export function SmashHero({
       </div>
     </section>
   );
-}
-
-// "Classic Nashville" → "NASHVILLE"; drops the sub-brand word if the item repeats it.
-function suffix(item: string, sub: string) {
-  const words = item.split(/\s+/).filter((w) => w.toUpperCase() !== sub.toUpperCase());
-  return (words[words.length - 1] || item).toUpperCase();
 }

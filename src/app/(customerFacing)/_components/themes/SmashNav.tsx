@@ -46,9 +46,10 @@ export function SmashNav({ initialCartId }: { initialCartId: string | null; logo
               <Link
                 key={l.href}
                 href={l.href}
-                className={`whitespace-nowrap text-sm font-semibold uppercase tracking-wide transition-colors ${active ? "text-primary" : "text-foreground/70 hover:text-foreground"}`}
+                className={`group relative whitespace-nowrap text-sm font-semibold uppercase tracking-wide transition-colors ${active ? "text-foreground" : "text-foreground/55 hover:text-foreground"}`}
               >
                 {l.label}
+                <span className={`absolute -bottom-1.5 left-0 h-[3px] rounded-full bg-brand transition-all duration-300 ${active ? "w-full" : "w-0 group-hover:w-full"}`} />
               </Link>
             );
           })}

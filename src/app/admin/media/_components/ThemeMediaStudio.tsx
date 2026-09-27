@@ -10,7 +10,7 @@ import { setSiteImagePreset, updateSiteImage, updateThemeWords } from "@/app/adm
 import { MASCOT_PRESETS, THEME_MEDIA, type MediaSlot, type ThemeWord } from "@/lib/themes/mediaSlots";
 import type { ThemeSlug } from "@/lib/themes/registry";
 import { ThemeMap } from "./ThemeMap";
-import { MASCOTS } from "@/app/(customerFacing)/_components/themes/SmashHero";
+import { MASCOTS, fitCq } from "@/app/(customerFacing)/_components/themes/SmashHero";
 
 // Theme-aware Media studio. Shows ONLY the photo spots the site's current
 // design really uses, numbered, next to a live miniature of the homepage in
@@ -158,12 +158,14 @@ function MascotCard({ slot, n, value, autoSrc, sub, brand, active, onHover, onSa
             return (
               <>
                 {preset.face && (
-                  <span key={shown + "f"} className="absolute -translate-x-1/2 -translate-y-1/2 animate-[mascotIn_0.7s_ease_0.15s_both] text-center text-[#111315]" style={{ left: preset.face.left, top: preset.face.top, width: preset.face.width }}>
-                    <span className="inline-block -rotate-3 text-[clamp(1rem,3vw,1.7rem)] leading-none" style={{ fontFamily: "var(--font-balloon), system-ui" }}>{sub}</span>
+                  <span key={shown + "f"} className="absolute -translate-x-1/2 -translate-y-1/2 animate-[mascotIn_0.7s_ease_0.15s_both] text-center text-[#111315]" style={{ left: preset.face.left, top: preset.face.top, width: preset.face.width, containerType: "inline-size" }}>
+                    <span className="inline-block -rotate-3 whitespace-nowrap leading-none" style={{ fontFamily: "var(--font-balloon), system-ui", fontSize: fitCq(sub, "1.7rem") }}>{sub}</span>
                   </span>
                 )}
                 <span key={shown + "c"} className="absolute bottom-[8%] left-[38%] grid aspect-[1.6] w-[26%] -rotate-6 animate-[mascotIn_0.7s_cubic-bezier(0.34,1.56,0.64,1)_0.3s_both] place-items-center rounded-md text-white shadow-lg" style={{ background: brand }}>
-                  <span className="text-[clamp(0.8rem,2.2vw,1.3rem)]" style={{ fontFamily: "var(--font-balloon), system-ui" }}>{sub}</span>
+                  <span className="w-[88%] text-center" style={{ containerType: "inline-size" }}>
+                    <span className="whitespace-nowrap" style={{ fontFamily: "var(--font-balloon), system-ui", fontSize: fitCq(sub, "1.3rem") }}>{sub}</span>
+                  </span>
                 </span>
               </>
             );
@@ -296,9 +298,9 @@ function WordsCard({ theme, words, initial, bg }: { theme: ThemeSlug; words: The
 }
 
 export default function ThemeMediaStudio({
-  theme, rows, dishes, words, name, brand, autoMascot, defaults,
+  theme, rows, dishes, words, name, brand, autoMascot, defaults, gallery = [],
 }: {
-  theme: ThemeSlug; rows: Row[]; dishes: Dish[]; words: Record<string, string>; name: string; brand: string;
+  theme: ThemeSlug; rows: Row[]; dishes: Dish[]; words: Record<string, string>; name: string; brand: string; gallery?: string[];
   autoMascot: string; defaults: { sub: string; heroWord: string; headline: string };
 }) {
   const spec = THEME_MEDIA[theme];
@@ -347,6 +349,7 @@ export default function ThemeMediaStudio({
                   headline: (words.theme_headline || defaults.headline).toUpperCase(),
                 },
                 brand,
+                gallery,
               }}
               active={active}
               onHover={setActive}

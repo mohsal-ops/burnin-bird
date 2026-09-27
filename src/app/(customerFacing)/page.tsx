@@ -185,16 +185,18 @@ export default async function Home() {
   // reference designs). classic-starvega and any theme without a custom home
   // fall through to the standard section stack below, unchanged.
   if (themeSlug === "smash-bold") {
-    const [featured, reviews, content] = await Promise.all([
+    const [featured, reviews, content, gallery] = await Promise.all([
       GetFeaturedProducts(),
       db.review.findMany({ orderBy: { order: "asc" } }),
       getThemeHomeContent(themeSlug),
+      db.galleryImage.findMany({ orderBy: { order: "asc" }, select: { url: true, alt: true }, take: 24 }),
     ]);
     return (
       <>
         <FaqSchema />
         <SmashHome
           content={content}
+          gallery={gallery}
           heroImages={[heroImage, heroImage2, heroImage3]}
           logoUrl={logoUrl}
           featured={featured.map((p) => ({

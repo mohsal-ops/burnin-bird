@@ -17,6 +17,7 @@ export type MapData = {
   dishes: string[];
   words: { sub: string; heroWord: string; headline: string };
   brand: string;
+  gallery: string[];
 };
 
 type HotProps = { k: string; d: MapData; active: string | null; onHover: (k: string | null) => void; className?: string; round?: boolean; children?: React.ReactNode };
@@ -94,11 +95,22 @@ export function ThemeMap({ d, active, onHover }: { d: MapData; active: string | 
             </div>
           ))}
         </div>
-        <div className="grid grid-cols-2 gap-1.5">
-          {["home_feature_1", "home_feature_2"].map((k) => (
-            <div key={k} className="flex overflow-hidden rounded-md border border-[#111315] bg-white">
-              <Hot k={k} {...h} className="h-9 w-2/5" />
-              <div className="flex-1 p-1"><Lines n={2} c="#111315" /></div>
+        {["home_feature_1", "home_feature_2"].map((k, i) => (
+          <div key={k} className={`flex items-center gap-2 ${i ? "flex-row-reverse" : ""}`}>
+            <Hot k={k} {...h} className="h-12 w-3/5 rounded-lg" />
+            <div className="flex-1 text-center">
+              <p className="text-[10px] font-bold uppercase leading-none" style={{ fontFamily: "var(--font-caveat), cursive" }}>Story</p>
+              <div className="mx-auto mt-1 flex w-fit gap-0.5"><span className="h-1.5 w-4 rounded-full bg-[#111315]" /><span className="h-1.5 w-4 rounded-full bg-[#111315]" /></div>
+            </div>
+          </div>
+        ))}
+        <p className="text-center text-[9px] font-extrabold uppercase">Gallery wall</p>
+        <div className="space-y-1 overflow-hidden">
+          {[0, 1].map((r) => (
+            <div key={r} className="flex gap-1" style={{ marginLeft: r ? -12 : 0 }}>
+              {(d.gallery.length ? d.gallery : ["", "", "", ""]).slice(r * 3, r * 3 + 5).concat(d.gallery.slice(0, 2)).slice(0, 5).map((g, k) => (
+                <Dish key={k} src={g || undefined} className={`aspect-[4/5] w-9 shrink-0 ${k % 2 ? "rotate-2" : "-rotate-2"}`} />
+              ))}
             </div>
           ))}
         </div>

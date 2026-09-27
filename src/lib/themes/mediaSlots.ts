@@ -46,13 +46,13 @@ export const THEME_MEDIA: Record<ThemeSlug, { slots: MediaSlot[]; words: ThemeWo
         fallback: "home_hero_2",
         tip: "A wide shot of your storefront or dining room works best — it's darkened, so busy photos are fine.",
       },
-      { key: "home_feature_1", label: "Feature block 1", where: "First bold bordered card under the product row." },
-      { key: "home_feature_2", label: "Feature block 2", where: "Second bold bordered card under the product row." },
+      { key: "home_feature_1", label: "Story block 1", where: "Leads the first big rounded photo carousel, beside your first feature's hand-lettered title. Your first two gallery photos rotate in after it.", tip: "Wide, bright, appetising — it fills a big rounded frame." },
+      { key: "home_feature_2", label: "Story block 2", where: "Leads the second story carousel (mirrored side). Gallery photos 3–4 rotate in after it." },
     ],
     words: [
       { key: "theme_subbrand", label: "Sub-brand word", hint: "The huge bubbly word in the hero, on the box and on every lineup card (like Ender's ENDY). Short is best.", max: 10, font: "var(--font-balloon), system-ui", upper: true },
     ],
-    dishesNote: "The launch slide's three product cards and the big card row use your featured menu items' photos.",
+    dishesNote: "The launch slide's three product cards and the endless sliding card row use your featured menu items' photos. Your Gallery tab fills the two-row photo wall further down.",
   },
   "diner-classic": {
     slots: [

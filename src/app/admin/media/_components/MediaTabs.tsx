@@ -94,6 +94,7 @@ export default function MediaTabs({
           brand={brand}
           autoMascot={autoMascot}
           defaults={defaults}
+          gallery={galleryImages.map((g) => g.url)}
         />
       </div>
       <div className={tab === "pages" ? "" : "hidden"}>

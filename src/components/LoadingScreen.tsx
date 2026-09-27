@@ -51,6 +51,10 @@ const ACCENTS: Record<Variant, { fill: string; shine: string }> = {
   logo: { fill: "#FFB800", shine: "#FFB800" },
 };
 
+// Start downloading the 3D engine the moment this module loads (not when the
+// intro starts) so the first 3D frame is ready almost immediately.
+const enginePromise = typeof window !== "undefined" ? import("./loader3d/engine").catch(() => null) : null;
+
 // What the 3D coffee scene reads to pick matcha vs latte.
 const FLAVOR = [NAME, TAGLINE, ...(((SITE_CONFIG as { cuisines?: string[] }).cuisines) ?? [])].join(" ");
 
@@ -243,6 +247,8 @@ export default function LoadingScreen({
   const reduce = useRef(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [ready3d, setReady3d] = useState(false);
+  // the old line-art is only a fallback: shown if 3D hasn't drawn within 1.2s
+  const [showFallback, setShowFallback] = useState(false);
   const use3d = dish !== "logo";
 
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -278,9 +284,11 @@ export default function LoadingScreen({
     if (!play || !use3d || !canvasRef.current) return;
     let dispose: (() => void) | undefined;
     let cancelled = false;
-    import("./loader3d/engine")
-      .then(({ mountLoader3D }) => {
-        if (cancelled || !canvasRef.current) return;
+    const fb = setTimeout(() => setShowFallback(true), 1200);
+    (enginePromise ?? import("./loader3d/engine"))
+      .then((mod) => {
+        if (!mod || cancelled || !canvasRef.current) return;
+        const { mountLoader3D } = mod;
         dispose = mountLoader3D(canvasRef.current, dish as Exclude<Variant, "logo">, {
           brand: BRAND,
           flavor: FLAVOR,
@@ -291,6 +299,7 @@ export default function LoadingScreen({
       .catch(() => {});
     return () => {
       cancelled = true;
+      clearTimeout(fb);
       dispose?.();
     };
   }, [play, use3d, dish]);
@@ -386,8 +395,8 @@ export default function LoadingScreen({
             position: "absolute",
             top: "50%",
             left: "50%",
-            width: 420,
-            height: 420,
+            width: 300,
+            height: 300,
             transform: "translate(-50%, -60%)",
             borderRadius: "50%",
             background: `radial-gradient(circle, ${BRAND}22 0%, ${BRAND}00 66%)`,
@@ -425,7 +434,7 @@ export default function LoadingScreen({
             />
           </div>
         ) : (
-          <div style={{ position: "relative", width: "min(88vw, 340px)", height: "min(76vw, 290px)", marginBottom: -18 }}>
+          <div style={{ position: "relative", width: "min(66vw, 240px)", height: "min(58vw, 205px)", marginBottom: -12 }}>
             <canvas
               ref={canvasRef}
               style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: ready3d ? 1 : 0, transition: "opacity 0.45s ease" }}
@@ -437,7 +446,7 @@ export default function LoadingScreen({
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                opacity: ready3d ? 0 : 1,
+                opacity: ready3d || !showFallback ? 0 : 1,
                 transition: "opacity 0.3s ease",
                 pointerEvents: "none",
               }}

@@ -1,11 +1,11 @@
 "use client";
 
-import Image from "next/image";
-import { motion } from "motion/react";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { CorePitch } from "../CorePitch";
 import { SmashHero, mascotFor, type MascotVariant } from "./SmashHero";
 import { SmashLineup } from "./SmashLineup";
+import { SmashStory } from "./SmashStory";
+import { SmashGallery } from "./SmashGallery";
 import type { ThemeHomeContent } from "@/lib/themes/homeContent";
 
 // ── smash-bold homepage — modeled closely on Ender Hamburguesería ────────────
@@ -24,7 +24,7 @@ type R = { id: string; name: string; review: string; avatar: string };
 // Optional per-client knobs that older siteConfigs don't have.
 const opt = <T,>(key: string): T | undefined => (SITE_CONFIG as unknown as Record<string, T | undefined>)[key];
 
-export function SmashHome({ content, heroImages, featured, reviews }: { content: ThemeHomeContent; heroImages: (string | null)[]; logoUrl: string | null; featured: P[]; reviews: R[] }) {
+export function SmashHome({ content, heroImages, featured, reviews, gallery = [] }: { content: ThemeHomeContent; heroImages: (string | null)[]; logoUrl: string | null; featured: P[]; reviews: R[]; gallery?: { url: string; alt?: string }[] }) {
   const c = SITE_CONFIG;
   const name = (c.trademark || c.name).toUpperCase();
   // Ender | ENDY → the brand's short, shoutable first word is the sub-brand.
@@ -60,31 +60,9 @@ export function SmashHome({ content, heroImages, featured, reviews }: { content:
         <SmashLineup title={category} subtitle={subList} items={featured.slice(0, 10)} ctaLabel={c.menuCtaLabel} />
       )}
 
-      {/* 5 · Feature blocks */}
-      {content.features.length > 0 && (
-        <section className="mx-auto grid max-w-7xl gap-5 px-5 pb-14 md:grid-cols-2">
-          {content.features.map((f, i) => (
-            <motion.div
-              key={i}
-              initial={{ y: 30, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              viewport={{ once: true, margin: "-10%" }}
-              transition={{ duration: 0.5, delay: i * 0.08 }}
-              className="flex flex-col overflow-hidden rounded-3xl border-2 border-foreground bg-card md:flex-row"
-            >
-              {f.image && (
-                <div className="h-48 w-full shrink-0 md:h-auto md:w-2/5">
-                  <Image src={f.image} alt={f.title} width={400} height={300} className="h-full w-full object-cover" />
-                </div>
-              )}
-              <div className="p-6">
-                <h3 className="text-xl font-extrabold uppercase tracking-tight text-card-foreground">{f.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{f.description}</p>
-              </div>
-            </motion.div>
-          ))}
-        </section>
-      )}
+      {/* 5 · Story blocks (Ender café style) + the photo wall */}
+      <SmashStory features={content.features} gallery={gallery.map((g) => g.url)} ctaLabel={c.menuCtaLabel} instagram={c.instagram} instagramUrl={c.instagramUrl} />
+      <SmashGallery images={gallery} title="Straight from our kitchen" handle={c.instagram} handleUrl={c.instagramUrl} />
 
       {/* 6 · Reviews */}
       {reviews.length > 0 && (
