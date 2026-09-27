@@ -6,6 +6,7 @@ import Link from "next/link";
 import { AnimatePresence, motion, useInView, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { CorePitch } from "../CorePitch";
+import type { ThemeHomeContent } from "@/lib/themes/homeContent";
 
 // ── refined-elegant homepage — modeled closely on Fiorella SF ────────────────
 // Editorial and dark-lit: a full-screen photo hero (slow Ken Burns) with a heavy
@@ -23,7 +24,6 @@ const GOLD = "#FFD469";
 const INK = "#0F0606";
 const EASE = [0.16, 1, 0.3, 1] as const;
 const usd = (c: number) => `$${(c / 100).toFixed(2)}`;
-const opt = <T,>(key: string): T | undefined => (SITE_CONFIG as unknown as Record<string, T | undefined>)[key];
 const stencil: React.CSSProperties = { fontFamily: "var(--font-stencil), sans-serif", letterSpacing: "0.02em", textTransform: "uppercase" };
 const jost: React.CSSProperties = { fontFamily: "var(--font-jost), sans-serif" };
 
@@ -176,12 +176,14 @@ function Reviews({ reviews }: { reviews: R[] }) {
   );
 }
 
-export function ElegantHome({ heroImages, gallery, featured, reviews }: { heroImages: (string | null)[]; gallery: string[]; featured: P[]; reviews: R[] }) {
+export function ElegantHome({ content, heroImages, gallery, featured, reviews }: { content: ThemeHomeContent; heroImages: (string | null)[]; gallery: string[]; featured: P[]; reviews: R[] }) {
   const c = SITE_CONFIG;
   const reduce = useReducedMotion();
-  const photos = [...(heroImages.filter(Boolean) as string[]), ...gallery, ...(c.home.distinctiveFeatures?.map((f) => f.image).filter(Boolean) as string[])];
-  const pic = (n: number) => photos[n % Math.max(photos.length, 1)] ?? null;
-  const headline = (opt<string>("elegantHeadline") || `Neighborhood ${c.primaryDish || c.cuisines?.[0] || "kitchen"}`).toUpperCase();
+  const photos = [...(heroImages.filter(Boolean) as string[]), ...gallery, ...(content.features.map((f) => f.image).filter(Boolean) as string[])];
+  // Media's four Refined slots win; otherwise cycle the owner's other photos.
+  const slotKeys = ["elegant_hero", "elegant_intro", "elegant_visit", "elegant_story"];
+  const pic = (n: number) => content.images[slotKeys[n]] ?? photos[n % Math.max(photos.length, 1)] ?? null;
+  const headline = (content.words.theme_headline || `Neighborhood ${c.primaryDish || c.cuisines?.[0] || "kitchen"}`).toUpperCase();
   const words = headline.split(/\s+/);
   const lines = words.length > 2 ? [words.slice(0, Math.ceil(words.length / 2)).join(" "), words.slice(Math.ceil(words.length / 2)).join(" ")] : words;
 
@@ -250,11 +252,11 @@ export function ElegantHome({ heroImages, gallery, featured, reviews }: { heroIm
             <h2 className="text-2xl font-semibold md:text-[1.7rem]" style={jost}>Our doors are open in {c.city}!</h2>
           </FadeUp>
           <FadeUp delay={0.1}>
-            <p className="mt-8 text-lg leading-[1.75] text-[#737373]" style={jost}>{c.home.heroSubHeadline}. {c.home.distinctiveFeatures?.[0]?.description}</p>
+            <p className="mt-8 text-lg leading-[1.75] text-[#737373]" style={jost}>{content.subheadline}. {content.features[0]?.description}</p>
           </FadeUp>
-          {c.home.distinctiveFeatures?.[1] && (
+          {content.features[1] && (
             <FadeUp delay={0.2}>
-              <p className="mt-5 text-lg leading-[1.75] text-[#737373]" style={jost}>{c.home.distinctiveFeatures[1].description}</p>
+              <p className="mt-5 text-lg leading-[1.75] text-[#737373]" style={jost}>{content.features[1].description}</p>
             </FadeUp>
           )}
           <FadeUp delay={0.3} className="mt-10">
@@ -307,8 +309,8 @@ export function ElegantHome({ heroImages, gallery, featured, reviews }: { heroIm
           <RevealLines lines={["Our story"]} />
         </h2>
         <div className="mx-auto mt-8 max-w-3xl space-y-5 text-left text-lg leading-[1.8] text-white/90" style={jost}>
-          <FadeUp><p>{c.home.heroHeadline}. {c.home.heroSubHeadline}.</p></FadeUp>
-          {c.home.distinctiveFeatures?.slice(0, 2).map((f, i) => (
+          <FadeUp><p>{content.headline}. {content.subheadline}.</p></FadeUp>
+          {content.features.slice(0, 2).map((f, i) => (
             <FadeUp key={i} delay={0.1 * (i + 1)}><p><strong className="font-semibold text-white">{f.title}.</strong> {f.description}</p></FadeUp>
           ))}
         </div>

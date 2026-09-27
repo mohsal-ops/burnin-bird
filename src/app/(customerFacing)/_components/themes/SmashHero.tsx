@@ -18,25 +18,19 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 // The panel keeps Ender's light studio grey in both colour modes because the
 // mascot renders are shot on that grey.
 
-export type MascotVariant = "box" | "cup" | "pizza" | "bowl";
+import { mascotFor, type MascotVariant } from "@/lib/themes/mediaSlots";
+export type { MascotVariant };
 
 // Where the blank box face sits in each render (percent of the image), so the
 // client's brand word can be stamped onto the packaging.
-const MASCOTS: Record<MascotVariant, { src: string; face: { left: string; top: string; width: string } | null }> = {
+export const MASCOTS: Record<MascotVariant, { src: string; face: { left: string; top: string; width: string } | null }> = {
   box: { src: "/mascots/box.webp", face: { left: "61.5%", top: "60%", width: "27%" } },
   cup: { src: "/mascots/cup.webp", face: { left: "63.5%", top: "60%", width: "20%" } },
   bowl: { src: "/mascots/bowl.webp", face: { left: "65%", top: "63%", width: "24%" } },
   pizza: { src: "/mascots/pizza.webp", face: null },
 };
 
-export function mascotFor(loaderStyle?: string, cuisines?: readonly string[]): MascotVariant {
-  const s = (loaderStyle || "").toLowerCase();
-  const c = (cuisines || []).join(" ").toLowerCase();
-  if (s === "coffee" || /coffee|caf|espresso|matcha|latte|tea|bakery/.test(c)) return "cup";
-  if (s === "pizza" || /pizz/.test(c)) return "pizza";
-  if (s === "bowl" || /bowl|poke|ramen|salad|noodle|pho|rice/.test(c)) return "bowl";
-  return "box"; // burgers, chicken, grill, anything handheld → takeout bag + meal box
-}
+export { mascotFor };
 
 const INK = "#111315";
 const PANEL = "radial-gradient(ellipse at 60% 45%, #EEF1F0 0%, #E3E6E5 70%, #D6DAD8 100%)";
@@ -107,6 +101,7 @@ export function SmashHero({
   name,
   sub,
   mascot,
+  customMascot,
   items,
   city,
   address,
@@ -118,6 +113,7 @@ export function SmashHero({
   name: string;
   sub: string;
   mascot: MascotVariant;
+  customMascot?: string;
   items: Item[];
   city: string;
   address: string;
@@ -138,7 +134,8 @@ export function SmashHero({
     return () => clearTimeout(t);
   }, [idx, paused, reduce, go]);
 
-  const m = MASCOTS[mascot];
+  // an uploaded render has no known box face, so skip the printed brand word
+  const m = customMascot ? { src: customMascot, face: null } : MASCOTS[mascot];
   const current = slides[idx];
   const lineup = items.slice(0, 3);
   const heroWord = sub.length <= 6 ? "clamp(4.5rem, 15vw, 11rem)" : sub.length <= 10 ? "clamp(3.5rem, 10vw, 7.5rem)" : "clamp(2.6rem, 7vw, 5rem)";

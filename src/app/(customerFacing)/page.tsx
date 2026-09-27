@@ -27,6 +27,7 @@ import { ReviewsSection } from "./_components/ReviewsSection";
 import { CorePitch } from "./_components/CorePitch";
 import { getActiveTheme } from "@/lib/themes/active";
 import { SmashHome } from "./_components/themes/SmashHome";
+import { getThemeHomeContent } from "@/lib/themes/homeContent";
 import { DinerHome } from "./_components/themes/DinerHome";
 import { ElegantHome } from "./_components/themes/ElegantHome";
 import {
@@ -184,14 +185,16 @@ export default async function Home() {
   // reference designs). classic-starvega and any theme without a custom home
   // fall through to the standard section stack below, unchanged.
   if (themeSlug === "smash-bold") {
-    const [featured, reviews] = await Promise.all([
+    const [featured, reviews, content] = await Promise.all([
       GetFeaturedProducts(),
       db.review.findMany({ orderBy: { order: "asc" } }),
+      getThemeHomeContent(themeSlug),
     ]);
     return (
       <>
         <FaqSchema />
         <SmashHome
+          content={content}
           heroImages={[heroImage, heroImage2, heroImage3]}
           logoUrl={logoUrl}
           featured={featured.map((p) => ({
@@ -208,19 +211,21 @@ export default async function Home() {
   }
 
   if (themeSlug === "diner-classic") {
-    const [types, featured, reviews] = await Promise.all([
+    const [types, featured, reviews, content] = await Promise.all([
       db.types.findMany({
         orderBy: { createdAt: "asc" },
         include: { items: { where: { isAvailableForPurchase: true }, take: 6 } },
       }),
       GetFeaturedProducts(),
       db.review.findMany({ orderBy: { order: "asc" } }),
+      getThemeHomeContent(themeSlug),
     ]);
     return (
       <>
         <FaqSchema />
         <DinerHome
-          heroImage={heroImage}
+          content={content}
+          heroImage={content.images.diner_hero ?? heroImage}
           menu={types.map((t) => ({ id: t.id, name: t.name, items: t.items.map(slim) }))}
           featured={featured.map(slim)}
           reviews={reviews}
@@ -230,15 +235,17 @@ export default async function Home() {
   }
 
   if (themeSlug === "refined-elegant") {
-    const [featured, reviews, gallery] = await Promise.all([
+    const [featured, reviews, gallery, content] = await Promise.all([
       GetFeaturedProducts(),
       db.review.findMany({ orderBy: { order: "asc" } }),
       db.galleryImage.findMany({ orderBy: { order: "asc" }, select: { url: true }, take: 6 }),
+      getThemeHomeContent(themeSlug),
     ]);
     return (
       <>
         <FaqSchema />
         <ElegantHome
+          content={content}
           heroImages={[heroImage, heroImage2, heroImage3]}
           gallery={gallery.map((g) => g.url)}
           featured={featured.map(slim)}

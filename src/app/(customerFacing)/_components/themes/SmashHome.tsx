@@ -6,6 +6,7 @@ import { SITE_CONFIG } from "@/lib/siteConfig";
 import { CorePitch } from "../CorePitch";
 import { SmashHero, mascotFor, type MascotVariant } from "./SmashHero";
 import { SmashLineup } from "./SmashLineup";
+import type { ThemeHomeContent } from "@/lib/themes/homeContent";
 
 // ── smash-bold homepage — modeled closely on Ender Hamburguesería ────────────
 // Bespoke, not a re-skin: Ender's rounded launch panel
@@ -23,15 +24,19 @@ type R = { id: string; name: string; review: string; avatar: string };
 // Optional per-client knobs that older siteConfigs don't have.
 const opt = <T,>(key: string): T | undefined => (SITE_CONFIG as unknown as Record<string, T | undefined>)[key];
 
-export function SmashHome({ heroImages, logoUrl, featured, reviews }: { heroImages: (string | null)[]; logoUrl: string | null; featured: P[]; reviews: R[] }) {
+export function SmashHome({ content, heroImages, featured, reviews }: { content: ThemeHomeContent; heroImages: (string | null)[]; logoUrl: string | null; featured: P[]; reviews: R[] }) {
   const c = SITE_CONFIG;
   const name = (c.trademark || c.name).toUpperCase();
   // Ender | ENDY → the brand's short, shoutable first word is the sub-brand.
-  const sub = (opt<string>("subBrand") || (c.trademark || c.name).split(/\s+/)[0]).toUpperCase();
-  const mascot = opt<MascotVariant>("mascot") ?? mascotFor(c.loaderStyle, c.cuisines);
+  const sub = (content.words.theme_subbrand || (c.trademark || c.name).split(/\s+/)[0]).toUpperCase();
+  // Media → 3D mascot: a preset path, "auto", or the owner's own upload.
+  const picked = content.images.smash_mascot;
+  const preset = picked?.match(/^\/mascots\/(box|cup|pizza|bowl)\.webp$/)?.[1] as MascotVariant | undefined;
+  const mascot = preset ?? opt<MascotVariant>("mascot") ?? mascotFor(c.loaderStyle, c.cuisines);
+  const customMascot = picked && picked !== "auto" && !preset ? picked : undefined;
   const promo = c.tagline || `${c.name} — order direct`;
   const heroPics = heroImages.filter(Boolean) as string[];
-  const locationImg = heroPics[1] ?? heroPics[0] ?? c.home.distinctiveFeatures?.[0]?.image ?? null;
+  const locationImg = content.images.smash_location ?? heroPics[1] ?? heroPics[0] ?? content.features[0]?.image ?? null;
   const category = opt<string>("primaryDish") || c.cuisines?.[1] || c.cuisines?.[0] || "Our menu";
   const subList = (c.cuisines ?? []).filter((x) => x !== category).slice(0, 4).map((x) => `${x}.`).join(" ");
 
@@ -42,6 +47,7 @@ export function SmashHome({ heroImages, logoUrl, featured, reviews }: { heroImag
         name={name}
         sub={sub}
         mascot={mascot}
+        customMascot={customMascot}
         items={featured.filter((p) => p.image).slice(0, 3)}
         city={c.city}
         address={c.address}
@@ -55,9 +61,9 @@ export function SmashHome({ heroImages, logoUrl, featured, reviews }: { heroImag
       )}
 
       {/* 5 · Feature blocks */}
-      {c.home.distinctiveFeatures?.length > 0 && (
+      {content.features.length > 0 && (
         <section className="mx-auto grid max-w-7xl gap-5 px-5 pb-14 md:grid-cols-2">
-          {c.home.distinctiveFeatures.map((f, i) => (
+          {content.features.map((f, i) => (
             <motion.div
               key={i}
               initial={{ y: 30, opacity: 0 }}

@@ -6,6 +6,8 @@ import { motion, useReducedMotion } from "motion/react";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { CorePitch } from "../CorePitch";
 import { DINER, DinerButton } from "./DinerNav";
+import type { ThemeHomeContent } from "@/lib/themes/homeContent";
+import { stretchWord } from "@/lib/themes/mediaSlots";
 
 // ── diner-classic homepage — modeled closely on Fame Grilled Cheese ──────────
 // Menu-first and warm: a golden hero with a HUGE cream sign-painter script word
@@ -23,17 +25,7 @@ type R = { id: string; name: string; review: string; avatar: string };
 const { brown: BROWN, cream: CREAM, gold: GOLD } = DINER;
 const usd = (c: number) => `$${(c / 100).toFixed(2)}`;
 const EASE = [0.22, 1, 0.36, 1] as const;
-const opt = <T,>(key: string): T | undefined => (SITE_CONFIG as unknown as Record<string, T | undefined>)[key];
 
-// "Cheese" → "Cheeeese!", "Hot Chicken" → "Chiiicken!", "Pizza" → "Piiizza!"
-export function stretchWord(phrase: string): string {
-  const w = phrase.trim().split(/\s+/).pop() || phrase;
-  const word = w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
-  const m = word.match(/[aeiouy]+/i);
-  if (!m || m.index === undefined || m.index === 0) return `${word}!`;
-  const v = m[0];
-  return `${word.slice(0, m.index)}${v[v.length - 1].repeat(Math.max(3, v.length + 2))}${word.slice(m.index + v.length)}!`;
-}
 
 const Script = ({ children, className = "", style }: { children: React.ReactNode; className?: string; style?: React.CSSProperties }) => (
   <span className={className} style={{ fontFamily: "var(--font-script), cursive", ...style }}>
@@ -213,12 +205,12 @@ function Halftone({ side }: { side: "left" | "right" }) {
   );
 }
 
-export function DinerHome({ menu, featured, reviews, heroImage }: { menu: Cat[]; featured: P[]; reviews: R[]; heroImage: string | null }) {
+export function DinerHome({ content, menu, featured, reviews, heroImage }: { content: ThemeHomeContent; menu: Cat[]; featured: P[]; reviews: R[]; heroImage: string | null }) {
   const c = SITE_CONFIG;
-  const heroWord = opt<string>("heroWord") || stretchWord(c.primaryDish || c.cuisines?.[0] || "Delicious");
+  const heroWord = content.words.theme_heroword || stretchWord(c.primaryDish || c.cuisines?.[0] || "Delicious");
   const heroFood = featured.filter((p) => p.image).slice(0, 3);
   const cats = menu.filter((m) => m.items.length > 0).slice(0, 4);
-  const banner = c.home.heroSubHeadline || c.tagline;
+  const banner = content.subheadline || c.tagline;
 
   return (
     <div className="theme-bespoke w-full overflow-x-clip pt-20" style={{ background: CREAM, color: BROWN }}>
@@ -328,10 +320,10 @@ export function DinerHome({ menu, featured, reviews, heroImage }: { menu: Cat[];
       {/* 4 · Our story + FAQ */}
       <section className="relative overflow-hidden py-24">
         <SectionTitle>Our Story</SectionTitle>
-        <Banner>{c.home.heroHeadline}</Banner>
-        {c.home.distinctiveFeatures?.length > 0 && (
+        <Banner>{content.headline}</Banner>
+        {content.features.length > 0 && (
           <div className="mx-auto mt-16 grid max-w-5xl gap-16 px-6 md:grid-cols-2">
-            {c.home.distinctiveFeatures.slice(0, 2).map((f, i) => (
+            {content.features.slice(0, 2).map((f, i) => (
               <div key={i} className="group flex flex-col items-center text-center">
                 <Plate src={f.image || null} alt={f.title} />
                 <h3 className="mt-6 text-xl font-black uppercase tracking-tight">{f.title}</h3>
