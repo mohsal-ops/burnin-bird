@@ -1,13 +1,13 @@
 "use client";
 // TEMPORARY preview of the loading effect. Loops so it's easy to watch, and
-// accepts ?variant=burger|coffee|pizza|bowl|grill to preview any loader style
+// accepts ?variant=burger|coffee|pizza|bowl|grill|logo to preview any loader style
 // without changing SITE_CONFIG.loaderStyle.
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import LoadingScreen from "@/components/LoadingScreen";
 import { GenericSkeleton } from "@/app/admin/_components/AdminSkeletons";
 
-const VARIANTS = ["burger", "coffee", "pizza", "bowl", "grill"] as const;
+const VARIANTS = ["burger", "coffee", "pizza", "bowl", "grill", "logo"] as const;
 
 function LoadingTestInner() {
   const raw = useSearchParams().get("variant");
