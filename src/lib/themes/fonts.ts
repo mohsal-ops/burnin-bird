@@ -12,7 +12,7 @@
 //             Courier New -> Courier Prime (free), script -> Lobster
 //   Fiorella: FiorellaFace(bespoke) -> Saira Stencil One (bespoke homepage) / Marcellus, proxima-nova(paid) -> Jost,
 //             futura-pt(paid) -> Jost
-import { Poppins, Caveat, Montserrat, Courier_Prime, Marcellus, Jost, Chewy, Lobster, Saira_Stencil_One, Permanent_Marker } from "next/font/google";
+import { Poppins, Caveat, Montserrat, Courier_Prime, Marcellus, Jost, Chewy, Lobster, Saira_Stencil_One, Permanent_Marker, Antonio } from "next/font/google";
 
 // smash-bold (Ender): tight, bold, uppercase display + a hand-drawn accent +
 // a puffy balloon face for the big "waved" brand word (Ender's bespoke ENDY
@@ -47,6 +47,14 @@ const courierPrime = Courier_Prime({
   subsets: ["latin"],
   weight: ["400", "700"],
   variable: "--font-courier-prime",
+  display: "swap",
+});
+
+// Ender's tall condensed wordmark ("ENDER" in the navbar) → Antonio.
+const condensed = Antonio({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-condensed",
   display: "swap",
 });
 
@@ -101,6 +109,7 @@ export const themeFontVariables = [
   courierPrime.variable,
   lobster.variable,
   marker.variable,
+  condensed.variable,
   sairaStencil.variable,
   marcellus.variable,
   jost.variable,

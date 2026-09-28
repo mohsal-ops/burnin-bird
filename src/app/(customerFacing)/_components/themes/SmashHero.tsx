@@ -175,7 +175,7 @@ export function SmashHero({
                       {sub.toUpperCase() !== name.toUpperCase() && <span className="hidden md:inline">{sub}</span>}
                     </p>
                     <svg className="mt-1 h-3 w-28 md:w-40" viewBox="0 0 160 12" fill="none" aria-hidden>
-                      <path d="M4 9 q60 -8 152 -5" stroke="#E0301E" strokeWidth="3" strokeLinecap="round" />
+                      <path d="M4 9 q60 -8 152 -5" stroke="var(--brand)" strokeWidth="3" strokeLinecap="round" />
                     </svg>
                   </div>
                   <SpinBadge text={limitedLabel} />
