@@ -116,7 +116,15 @@ export function paletteCss(slug: ThemeSlug, palette: Palette, custom: boolean): 
   if (custom) {
     const t: string[] = [];
     if (accent) t.push(`--primary:${hslTriple(accent)}`, `--ring:${hslTriple(accent)}`, `--primary-foreground:${hslTriple(onColor(accent, ink))}`);
-    if (palette.ink) t.push(`--foreground:${hslTriple(ink)}`, `--secondary:${hslTriple(ink)}`, `--dark:${hslTriple(ink)}`, `--card-foreground:${hslTriple(ink)}`);
+    if (palette.ink && slug !== "smash-bold") {
+      t.push(`--secondary:${hslTriple(ink)}`, `--dark:${hslTriple(ink)}`);
+      // Body text / nav + footer links only follow the ink when it's a genuine
+      // text colour (near-black, reads like ink on white). A bright pick like
+      // sky-blue is a decoration colour — it must never repaint every link.
+      if (contrast(ink, "#ffffff") >= 9) {
+        t.push(`--foreground:${hslTriple(ink)}`, `--card-foreground:${hslTriple(ink)}`);
+      }
+    }
     if (palette.paper) t.push(`--background:${hslTriple(paper)}`, `--secondary-foreground:${hslTriple(paper)}`, `--dark-foreground:${hslTriple(paper)}`);
     if (t.length) css += `html[data-theme="${slug}"]:not(.dark){${t.join(";")}}`;
   }

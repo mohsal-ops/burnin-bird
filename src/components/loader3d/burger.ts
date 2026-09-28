@@ -11,7 +11,7 @@ export function burgerScene(): SceneDef {
   root.add(stack);
   const R = rng(11);
 
-  const bunMat = glossy("#ffffff", { vertexColors: true, roughness: 0.5, clearcoat: 0.45, clearcoatRoughness: 0.3, sheen: 0.4, sheenColor: new THREE.Color("#ffcf8a") });
+  const bunMat = glossy("#ffffff", { vertexColors: true, roughness: 0.5, clearcoat: 0.45, clearcoatRoughness: 0.3, sheen: 0.4, sheenColor: new THREE.Color("#ffcf8a"), bumpScale: 2.2 });
 
   // bottom bun
   const bunBottom = new THREE.Mesh(heightTint(lathe([[0, 0], [1.02, 0], [1.16, 0.06], [1.22, 0.18], [1.18, 0.3], [1.05, 0.34], [0, 0.34]]), "#b8641f", "#f2c27a", 0, 0.34), bunMat);
@@ -35,7 +35,7 @@ export function burgerScene(): SceneDef {
     cheeseGeo.rotateY(Math.PI / 4);
     cheeseGeo.computeVertexNormals();
   }
-  const cheese = new THREE.Mesh(cheeseGeo, glossy("#ffae00", { roughness: 0.42, clearcoat: 0.35, side: THREE.DoubleSide, sheen: 0 }));
+  const cheese = new THREE.Mesh(cheeseGeo, glossy("#ffc72e", { roughness: 0.42, clearcoat: 0.35, side: THREE.DoubleSide, sheen: 0 }));
 
   // lettuce — ruffled ring
   const lettuceGeo = new THREE.CylinderGeometry(1.52, 1.02, 0.08, 160, 3);

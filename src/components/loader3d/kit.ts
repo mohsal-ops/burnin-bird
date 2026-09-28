@@ -16,11 +16,61 @@ export type SceneDef = {
 export type SceneCtx = { brand: THREE.Color; flavor?: string };
 
 // ── materials ────────────────────────────────────────────────────────────────
+// A tiny procedural "grain" texture (two octaves of seeded value noise + fine
+// speckle) used as a bump + roughness map on every clay/glossy surface. It is
+// what turns smooth plastic into something that reads as real: crumb on the
+// bun, pores on meat, glaze variation on ceramics. Built once, shared.
+let grainTex: THREE.CanvasTexture | null = null;
+export function grain() {
+  if (grainTex || typeof document === "undefined") return grainTex;
+  const N = 256;
+  const r = rng(11);
+  const cell = (n: number) => Array.from({ length: n * n }, () => r());
+  const lo = cell(16), mid = cell(48);
+  const sample = (g: number[], n: number, x: number, y: number) => {
+    const fx = (x / N) * n, fy = (y / N) * n;
+    const x0 = Math.floor(fx) % n, y0 = Math.floor(fy) % n, x1 = (x0 + 1) % n, y1 = (y0 + 1) % n;
+    const tx = fx - Math.floor(fx), ty = fy - Math.floor(fy);
+    const sx = tx * tx * (3 - 2 * tx), sy = ty * ty * (3 - 2 * ty);
+    const a = g[y0 * n + x0] + (g[y0 * n + x1] - g[y0 * n + x0]) * sx;
+    const b = g[y1 * n + x0] + (g[y1 * n + x1] - g[y1 * n + x0]) * sx;
+    return a + (b - a) * sy;
+  };
+  const c = document.createElement("canvas");
+  c.width = c.height = N;
+  const ctx = c.getContext("2d")!;
+  const img = ctx.createImageData(N, N);
+  for (let y = 0; y < N; y++)
+    for (let x = 0; x < N; x++) {
+      const v = 0.45 * sample(lo, 16, x, y) + 0.35 * sample(mid, 48, x, y) + 0.2 * r();
+      const b = Math.round(70 + v * 150);
+      const i = (y * N + x) * 4;
+      img.data[i] = img.data[i + 1] = img.data[i + 2] = b;
+      img.data[i + 3] = 255;
+    }
+  ctx.putImageData(img, 0, 0);
+  grainTex = new THREE.CanvasTexture(c);
+  grainTex.wrapS = grainTex.wrapT = THREE.RepeatWrapping;
+  grainTex.repeat.set(3, 3);
+  grainTex.anisotropy = 4;
+  return grainTex;
+}
+
 export function clay(color: THREE.ColorRepresentation, o: Partial<THREE.MeshPhysicalMaterialParameters> = {}) {
-  return new THREE.MeshPhysicalMaterial({ color, roughness: 0.55, clearcoat: 0.25, clearcoatRoughness: 0.4, sheen: 0.3, sheenRoughness: 0.8, ...o });
+  const g = grain();
+  return new THREE.MeshPhysicalMaterial({
+    color,
+    roughness: 0.62,
+    clearcoat: 0.18,
+    clearcoatRoughness: 0.45,
+    sheen: 0.35,
+    sheenRoughness: 0.7,
+    ...(g ? { bumpMap: g, bumpScale: 1.6, roughnessMap: g } : {}),
+    ...o,
+  });
 }
 export const glossy = (color: THREE.ColorRepresentation, o: Partial<THREE.MeshPhysicalMaterialParameters> = {}) =>
-  clay(color, { roughness: 0.28, clearcoat: 1, clearcoatRoughness: 0.12, ...o });
+  clay(color, { roughness: 0.3, clearcoat: 1, clearcoatRoughness: 0.1, bumpScale: 0.5, ...o });
 export const glow = (color: THREE.ColorRepresentation, opacity = 0.9) =>
   new THREE.MeshBasicMaterial({ color, transparent: true, opacity, blending: THREE.AdditiveBlending, depthWrite: false });
 

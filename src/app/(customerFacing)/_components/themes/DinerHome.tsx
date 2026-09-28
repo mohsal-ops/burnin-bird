@@ -2,12 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { CorePitch } from "../CorePitch";
 import { DINER, DinerButton, tint } from "./DinerNav";
 import { DinerGallery } from "./DinerGallery";
+import { SmartDishImage } from "./SmartDishImage";
 import type { ThemeHomeContent } from "@/lib/themes/homeContent";
 import { stretchWord } from "@/lib/themes/mediaSlots";
 
@@ -107,26 +107,8 @@ function Drips() {
 // white box. Hover lifts it and pops a chocolate price tag.
 function HeroDish({ p, i, count }: { p: P; i: number; count: number }) {
   const reduce = useReducedMotion();
-  const jpg = /\.jpe?g(\?|$)/i.test(p.image ?? "");
-  const [kind, setKind] = useState<"?" | "cutout" | "photo">(jpg ? "photo" : "?");
   const center = count === 3 ? i === 1 : count === 1;
   const side = count === 3 ? i - 1 : count === 2 ? (i === 0 ? -1 : 1) : 0;
-
-  const detect = (img: HTMLImageElement) => {
-    if (kind !== "?") return;
-    try {
-      const cv = document.createElement("canvas");
-      cv.width = cv.height = 24;
-      const ctx = cv.getContext("2d", { willReadFrequently: true })!;
-      ctx.drawImage(img, 0, 0, 24, 24);
-      const d = ctx.getImageData(0, 0, 24, 24).data;
-      const a = (x: number, y: number) => d[(y * 24 + x) * 4 + 3];
-      const corners = [a(0, 0), a(23, 0), a(0, 23), a(23, 23), a(12, 0), a(0, 12)];
-      setKind(corners.filter((v) => v < 200).length >= 3 ? "cutout" : "photo");
-    } catch {
-      setKind("photo"); // unreadable (cross-origin) → the plate never shows a white box
-    }
-  };
 
   return (
     <motion.div
@@ -143,20 +125,17 @@ function HeroDish({ p, i, count }: { p: P; i: number; count: number }) {
         >
           {/* contact shadow */}
           <span aria-hidden className="absolute inset-x-[14%] bottom-[2%] h-[9%] rounded-[50%] blur-md transition-transform duration-500 group-hover:scale-x-90" style={{ background: tint(BROWN, 35) }} />
-          <span
-            className={`absolute block transition-transform duration-500 ease-out group-hover:-translate-y-3 group-hover:scale-[1.06] ${kind === "photo" ? "inset-[5%] overflow-hidden rounded-full" : "inset-0"}`}
-            style={kind === "photo" ? { boxShadow: `0 0 0 clamp(5px,0.9vw,10px) ${CREAM}, 0 24px 40px -18px ${tint(BROWN, 70)}` } : { filter: `drop-shadow(0 22px 26px ${tint(BROWN, 40)})` }}
-          >
-            <Image
-              src={p.image!}
-              alt={p.name}
-              fill
-              priority
-              sizes="(max-width: 768px) 46vw, 480px"
-              className={`${kind === "photo" ? "object-cover" : "object-contain"} transition-opacity duration-300 ${kind === "?" ? "opacity-0" : "opacity-100"}`}
-              onLoad={(e) => detect(e.currentTarget)}
-            />
-          </span>
+          <SmartDishImage
+            src={p.image!}
+            alt={p.name}
+            priority
+            sizes="(max-width: 768px) 46vw, 480px"
+            className="transition-transform duration-500 ease-out group-hover:-translate-y-3 group-hover:scale-[1.06]"
+            photoClassName="inset-[5%] overflow-hidden rounded-full"
+            cutoutClassName="inset-0"
+            photoStyle={{ boxShadow: `0 0 0 clamp(5px,0.9vw,10px) ${CREAM}, 0 24px 40px -18px ${tint(BROWN, 70)}` }}
+            cutoutStyle={{ filter: `drop-shadow(0 22px 26px ${tint(BROWN, 40)})` }}
+          />
         </motion.span>
         {/* price tag */}
         <span

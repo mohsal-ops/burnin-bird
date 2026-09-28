@@ -388,6 +388,10 @@ export default function LoadingScreen({
 
   if (!mounted) return null;
 
+  // The name + halo wait for the dish, so everything lands together (they used
+  // to appear first while the 3D engine was still warming up).
+  const artIn = !use3d || ready3d || showFallback;
+
   const floating = !reduce.current;
 
   return (
@@ -425,6 +429,8 @@ export default function LoadingScreen({
         {/* Soft brand halo behind the dish */}
         <div
           style={{
+            opacity: artIn ? 1 : 0,
+            transition: "opacity 0.5s ease",
             position: "absolute",
             top: "50%",
             left: "50%",
@@ -506,7 +512,7 @@ export default function LoadingScreen({
         )}
 
         {/* Noticeable, shimmering brand wordmark */}
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, animation: "cardIn 0.6s ease 0.3s both" }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, opacity: artIn ? undefined : 0, animation: artIn ? "cardIn 0.6s ease 0.12s both" : undefined }}>
           <div
             style={{
               fontSize: "clamp(1.05rem, 4.4vw, 1.5rem)",

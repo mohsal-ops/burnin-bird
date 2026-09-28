@@ -19,6 +19,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 // mascot renders are shot on that grey.
 
 import { mascotFor, type MascotVariant } from "@/lib/themes/mediaSlots";
+import { SmartDishImage } from "./SmartDishImage";
 export type { MascotVariant };
 
 // Where the blank box face sits in each render (percent of the image), so the
@@ -269,12 +270,15 @@ export function SmashHero({
                       </div>
                       <Link href="/Menu" className="group relative mt-3 aspect-square w-full max-w-[min(300px,34vh)]">
                         {p.image && (
-                          <Image
+                          <SmartDishImage
                             src={p.image}
                             alt={p.name}
-                            fill
                             sizes="(max-width: 768px) 78vw, 30vw"
-                            className="object-contain mix-blend-multiply transition-transform duration-500 ease-out group-hover:-translate-y-2 group-hover:scale-[1.04]"
+                            className="transition-transform duration-500 ease-out group-hover:-translate-y-2 group-hover:scale-[1.04]"
+                            cutoutClassName="inset-0"
+                            photoClassName="inset-[6%] overflow-hidden rounded-[1.75rem] bg-white"
+                            photoStyle={{ boxShadow: "0 0 0 6px #fff, 0 26px 40px -22px rgba(0,0,0,0.45)" }}
+                            cutoutStyle={{ filter: "drop-shadow(0 20px 22px rgba(0,0,0,0.28))" }}
                           />
                         )}
                       </Link>
