@@ -6,7 +6,7 @@ import { SITE_CONFIG } from "@/lib/siteConfig";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import AppSideBar from "../sideBar";
 import CartSideBar from "../Cart-SideBar";
-import { useNavCart } from "./useNavCart";
+import { shouldShowCart, useNavCart } from "./useNavCart";
 
 // Bespoke navbar for smash-bold — modeled on Ender's: a wide-tracked wordmark on
 // the left, centered uppercase links, and a dark pill CTA on the right. Reuses
@@ -18,7 +18,7 @@ export function SmashNav({ initialCartId }: { initialCartId: string | null; logo
   const links = SITE_CONFIG.navLinks;
   const wordmark = (SITE_CONFIG.trademark || SITE_CONFIG.name || "").toUpperCase();
   // Cart lives on the menu; anywhere else it only appears once something is in it.
-  const showCart = pathname.toLowerCase().startsWith("/menu") || cartItems.length > 0;
+  const showCart = shouldShowCart(pathname, cartItems.length);
 
   return (
     <div className="border-b border-foreground/10 bg-background">

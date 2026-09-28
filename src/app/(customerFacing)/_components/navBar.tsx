@@ -4,6 +4,7 @@ import Link from "next/link";
 import Logo from "@/../public/general/logo/logo.png";
 import AppSideBar from "./sideBar";
 import CartSideBar from "./Cart-SideBar";
+import { shouldShowCart } from "./themes/useNavCart";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
@@ -148,9 +149,11 @@ export function TopNavBar({
           </Button>
         </Link>
           <ThemeToggle />
-          <div>
-            <CartSideBar cartId={cartId} cartItems={cartItems} />
-          </div>
+          {shouldShowCart(pathname, cartItems.length) && (
+            <div>
+              <CartSideBar cartId={cartId} cartItems={cartItems} />
+            </div>
+          )}
         </div>
       </div>
     </div>

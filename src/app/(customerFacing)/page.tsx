@@ -213,7 +213,7 @@ export default async function Home() {
   }
 
   if (themeSlug === "diner-classic") {
-    const [types, featured, reviews, content] = await Promise.all([
+    const [types, featured, reviews, content, gallery] = await Promise.all([
       db.types.findMany({
         orderBy: { createdAt: "asc" },
         include: { items: { where: { isAvailableForPurchase: true }, take: 6 } },
@@ -221,11 +221,13 @@ export default async function Home() {
       GetFeaturedProducts(),
       db.review.findMany({ orderBy: { order: "asc" } }),
       getThemeHomeContent(themeSlug),
+      db.galleryImage.findMany({ orderBy: { order: "asc" }, select: { url: true, alt: true }, take: 8 }),
     ]);
     return (
       <>
         <FaqSchema />
         <DinerHome
+          gallery={gallery}
           content={content}
           heroImage={content.images.diner_hero ?? heroImage}
           menu={types.map((t) => ({ id: t.id, name: t.name, items: t.items.map(slim) }))}
@@ -240,7 +242,7 @@ export default async function Home() {
     const [featured, reviews, gallery, content] = await Promise.all([
       GetFeaturedProducts(),
       db.review.findMany({ orderBy: { order: "asc" } }),
-      db.galleryImage.findMany({ orderBy: { order: "asc" }, select: { url: true }, take: 6 }),
+      db.galleryImage.findMany({ orderBy: { order: "asc" }, select: { url: true, alt: true }, take: 10 }),
       getThemeHomeContent(themeSlug),
     ]);
     return (
@@ -249,7 +251,8 @@ export default async function Home() {
         <ElegantHome
           content={content}
           heroImages={[heroImage, heroImage2, heroImage3]}
-          gallery={gallery.map((g) => g.url)}
+          gallery={gallery.slice(0, 6).map((g) => g.url)}
+          galleryItems={gallery}
           featured={featured.map(slim)}
           reviews={reviews}
         />

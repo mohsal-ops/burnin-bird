@@ -45,6 +45,7 @@ export function burgerScene(): SceneDef {
       const x = p.getX(i), y = p.getY(i), z = p.getZ(i);
       const a = Math.atan2(z, x);
       const r = Math.hypot(x, z);
+      if (r < 1e-6) continue; // cap centre vertex — x/r would be NaN
       const k = Math.max(0, (r - 1.0) / 0.52);
       const rr = r * (1 + 0.05 * Math.sin(a * 7) * k);
       p.setXYZ(i, (x / r) * rr, y + k * (0.09 * Math.sin(a * 11) + 0.05 * Math.sin(a * 23 + 1)), (z / r) * rr);

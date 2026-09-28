@@ -115,3 +115,37 @@ export async function updateHomeText(headline: string, subheadline: string) {
     return { error: "Couldn't save the text. Try again." };
   }
 }
+
+// Save the owner's colours for ONE design (other designs keep theirs). An empty
+// object resets that design to its built-in palette.
+export async function updateThemePalette(slug: string, colors: Record<string, string>) {
+  await assertWritable();
+  const { isThemeSlug } = await import("@/lib/themes/registry");
+  const { THEME_PALETTES, isHex6 } = await import("@/lib/themes/palette");
+  if (!isThemeSlug(slug) || !THEME_PALETTES[slug]) return { error: "This design has no editable colours." };
+  const clean: Record<string, string> = {};
+  for (const s of THEME_PALETTES[slug]!) {
+    const v = colors[s.role];
+    if (v === undefined) continue;
+    if (!isHex6(v)) return { error: `“${s.label}” needs a 6-digit hex colour like #FCB931.` };
+    clean[s.role] = v;
+  }
+  try {
+    const row = await db.siteSetting.findUnique({ where: { key: "theme_palette" } });
+    let all: Record<string, unknown> = {};
+    try {
+      all = JSON.parse(row?.value || "{}") ?? {};
+    } catch {
+      all = {};
+    }
+    if (Object.keys(clean).length) all[slug] = clean;
+    else delete all[slug];
+    const value = JSON.stringify(all);
+    await db.siteSetting.upsert({ where: { key: "theme_palette" }, update: { value }, create: { key: "theme_palette", value } });
+    revalidatePath("/", "layout");
+    return { ok: true };
+  } catch (error) {
+    console.error("updateThemePalette error:", error);
+    return { error: "Couldn't save the colours. Try again." };
+  }
+}

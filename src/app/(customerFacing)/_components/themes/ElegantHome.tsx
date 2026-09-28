@@ -6,6 +6,7 @@ import Link from "next/link";
 import { AnimatePresence, motion, useInView, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { CorePitch } from "../CorePitch";
+import { ElegantGallery } from "./ElegantGallery";
 import type { ThemeHomeContent } from "@/lib/themes/homeContent";
 
 // ── refined-elegant homepage — modeled closely on Fiorella SF ────────────────
@@ -20,8 +21,11 @@ import type { ThemeHomeContent } from "@/lib/themes/homeContent";
 type P = { id: string; name: string; priceInCents: number; description: string | null; image: string | null };
 type R = { id: string; name: string; review: string; avatar: string };
 
-const GOLD = "#FFD469";
-const INK = "#0F0606";
+// Owner-editable palette (admin → Branding → Design colours) via --tp-* vars;
+// defaults = Fiorella's soft gold #FFD469 on warm near-black #0F0606.
+const GOLD = "var(--tp-accent)";
+const INK = "var(--tp-ink)";
+const ON_GOLD = "var(--tp-on-accent)";
 const EASE = [0.16, 1, 0.3, 1] as const;
 const usd = (c: number) => `$${(c / 100).toFixed(2)}`;
 const stencil: React.CSSProperties = { fontFamily: "var(--font-stencil), sans-serif", letterSpacing: "0.02em", textTransform: "uppercase" };
@@ -69,8 +73,8 @@ function FadeUp({ children, className = "", delay = 0 }: { children: React.React
 
 function Pill({ href, children, solid = false, external = false }: { href: string; children: React.ReactNode; solid?: boolean; external?: boolean }) {
   const cls = solid
-    ? "bg-[#FFD469] text-[#0F0606] hover:bg-white"
-    : "border-2 border-white/90 text-white hover:bg-white hover:text-[#0F0606]";
+    ? "bg-[var(--tp-accent)] text-[var(--tp-on-accent)] hover:bg-white hover:text-[var(--tp-ink)]"
+    : "border-2 border-white/90 text-white hover:bg-white hover:text-[var(--tp-ink)]";
   const body = (
     <span className={`inline-flex min-w-[11rem] items-center justify-center rounded-full px-8 py-3.5 text-sm font-semibold uppercase tracking-[0.08em] transition-colors duration-300 ${cls}`} style={jost}>
       {children}
@@ -117,7 +121,7 @@ function MenuList({ items }: { items: P[] }) {
         <FadeUp key={p.id} delay={(i % 2) * 0.08}>
           <Link href="/Menu" onMouseEnter={() => setHover(p.image ? p : null)} className="group block border-b border-black/10 py-6">
             <div className="flex items-baseline gap-4">
-              <h3 className="text-base font-semibold uppercase tracking-[0.12em] transition-colors group-hover:text-[#B8860B] md:text-lg" style={jost}>{p.name}</h3>
+              <h3 className="text-base font-semibold uppercase tracking-[0.12em] transition-colors group-hover:text-[var(--tp-accent-deep)] md:text-lg" style={jost}>{p.name}</h3>
               <span className="mb-1 flex-1 border-b border-dotted border-black/25" />
               <span className="text-base font-medium" style={jost}>{usd(p.priceInCents)}</span>
             </div>
@@ -153,9 +157,9 @@ function Reviews({ reviews }: { reviews: R[] }) {
   }, [reviews.length]);
   const r = reviews[i];
   return (
-    <section className="bg-white px-6 py-28 text-center" style={{ color: INK }}>
+    <section className="px-6 py-28 text-center" style={{ color: INK, background: "var(--tp-paper)" }}>
       <FadeUp>
-        <p className="text-sm font-semibold uppercase tracking-[0.3em]" style={{ ...jost, color: "#B8860B" }}>★ ★ ★ ★ ★</p>
+        <p className="text-sm font-semibold uppercase tracking-[0.3em]" style={{ ...jost, color: "var(--tp-accent-deep)" }}>★ ★ ★ ★ ★</p>
       </FadeUp>
       <div className="relative mx-auto mt-8 min-h-[14rem] max-w-3xl">
         <AnimatePresence mode="wait">
@@ -176,7 +180,7 @@ function Reviews({ reviews }: { reviews: R[] }) {
   );
 }
 
-export function ElegantHome({ content, heroImages, gallery, featured, reviews }: { content: ThemeHomeContent; heroImages: (string | null)[]; gallery: string[]; featured: P[]; reviews: R[] }) {
+export function ElegantHome({ content, heroImages, gallery, galleryItems = [], featured, reviews }: { content: ThemeHomeContent; heroImages: (string | null)[]; gallery: string[]; galleryItems?: { url: string; alt?: string | null }[]; featured: P[]; reviews: R[] }) {
   const c = SITE_CONFIG;
   const reduce = useReducedMotion();
   const photos = [...(heroImages.filter(Boolean) as string[]), ...gallery, ...(content.features.map((f) => f.image).filter(Boolean) as string[])];
@@ -193,7 +197,7 @@ export function ElegantHome({ content, heroImages, gallery, featured, reviews }:
   const heroFade = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
 
   return (
-    <div className="theme-bespoke w-full overflow-x-clip bg-white" style={{ color: INK }}>
+    <div className="theme-bespoke w-full overflow-x-clip" style={{ color: INK, background: "var(--tp-paper)" }}>
       {/* 1 · Full-screen photo hero */}
       <section ref={heroRef} className="relative flex h-svh min-h-[560px] items-center justify-center overflow-hidden" style={{ background: INK }}>
         {pic(0) && (
@@ -236,7 +240,7 @@ export function ElegantHome({ content, heroImages, gallery, featured, reviews }:
         <Link
           href="/Menu"
           className="inline-flex w-[18rem] items-center justify-center rounded-full py-3 text-[0.95rem] font-semibold uppercase tracking-[0.06em] shadow-[0_12px_30px_-10px_rgba(0,0,0,0.5)] transition-transform duration-300 hover:scale-[1.04]"
-          style={{ ...jost, background: GOLD, color: INK }}
+          style={{ ...jost, background: GOLD, color: ON_GOLD }}
         >
           Order online
         </Link>
@@ -276,7 +280,7 @@ export function ElegantHome({ content, heroImages, gallery, featured, reviews }:
           </h2>
           <MenuList items={featured.slice(0, 8)} />
           <div className="mt-14 flex justify-center">
-            <Link href="/Menu" className="inline-flex rounded-full border-2 border-black px-10 py-3.5 text-sm font-semibold uppercase tracking-[0.1em] transition-colors duration-300 hover:bg-black hover:text-white" style={jost}>
+            <Link href="/Menu" className="inline-flex rounded-full border-2 border-[var(--tp-ink)] px-10 py-3.5 text-sm font-semibold uppercase tracking-[0.1em] transition-colors duration-300 hover:bg-[var(--tp-ink)] hover:text-white" style={jost}>
               View full menu
             </Link>
           </div>
@@ -302,6 +306,9 @@ export function ElegantHome({ content, heroImages, gallery, featured, reviews }:
 
       {/* 5 · Reviews */}
       {reviews.length > 0 && <Reviews reviews={reviews} />}
+
+      {/* 5b · Gallery — pinned sideways "exhibition walk" of the dashboard gallery */}
+      {galleryItems.length > 0 && <ElegantGallery images={galleryItems} />}
 
       {/* 6 · Our story (long-form over photo) */}
       <PhotoBand src={pic(3)} minH="min-h-[100svh]">

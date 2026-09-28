@@ -247,8 +247,13 @@ export default function LoadingScreen({
   const reduce = useRef(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [ready3d, setReady3d] = useState(false);
-  // the old line-art is only a fallback: shown if 3D hasn't drawn within 1.2s
+  // The old line-art is ONLY a failure fallback (no WebGL / chunk error / no
+  // frame after 5s). It used to pop in after 1.2s on slow loads and then get
+  // swapped for the 3D scene — two animations back to back. Now a slow download
+  // just holds the halo + wordmark until the 3D scene draws its first frame.
   const [showFallback, setShowFallback] = useState(false);
+  const artSettled = useRef(false); // 3D drew, or we gave up and showed line-art
+  const onArtSettled = useRef<() => void>(() => {});
   const use3d = dish !== "logo";
 
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -284,19 +289,33 @@ export default function LoadingScreen({
     if (!play || !use3d || !canvasRef.current) return;
     let dispose: (() => void) | undefined;
     let cancelled = false;
-    const fb = setTimeout(() => setShowFallback(true), 1200);
+    const settle = () => {
+      artSettled.current = true;
+      onArtSettled.current();
+    };
+    const fail = () => {
+      if (cancelled || artSettled.current) return;
+      setShowFallback(true);
+      settle();
+    };
+    const fb = setTimeout(fail, 5000);
     (enginePromise ?? import("./loader3d/engine"))
       .then((mod) => {
-        if (!mod || cancelled || !canvasRef.current) return;
+        if (cancelled || !canvasRef.current) return;
+        if (!mod) return fail();
         const { mountLoader3D } = mod;
         dispose = mountLoader3D(canvasRef.current, dish as Exclude<Variant, "logo">, {
           brand: BRAND,
           flavor: FLAVOR,
           reduced: reduce.current,
-          onFirstFrame: () => setReady3d(true),
+          onFirstFrame: () => {
+            if (artSettled.current) return; // line-art already took over — never swap mid-intro
+            setReady3d(true);
+            settle();
+          },
         });
       })
-      .catch(() => {});
+      .catch(fail);
     return () => {
       cancelled = true;
       clearTimeout(fb);
@@ -337,10 +356,24 @@ export default function LoadingScreen({
     };
     if (!keepLooping && !loaded) window.addEventListener("load", onLoad);
 
+    // For 3D, the minimum cycle is also counted from the first drawn frame, so
+    // a slow engine download still gets its full scene on screen.
+    let floorDone = false;
+    let artDone = !use3d || artSettled.current;
+    const startArtClock = () => push(() => {
+      artDone = true;
+      minDone = floorDone;
+      maybeLeave();
+    }, 2400);
     push(() => {
-      minDone = true;
+      floorDone = true;
+      minDone = artDone;
       maybeLeave();
     }, MIN_SHOW_MS);
+    if (use3d) {
+      if (artSettled.current) startArtClock();
+      else onArtSettled.current = startArtClock;
+    }
 
     // Safety net: never hang past this even if `load` never fires.
     const cap = setTimeout(leave, 8000);

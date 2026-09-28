@@ -2,10 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { CorePitch } from "../CorePitch";
-import { DINER, DinerButton } from "./DinerNav";
+import { DINER, DinerButton, tint } from "./DinerNav";
+import { DinerGallery } from "./DinerGallery";
 import type { ThemeHomeContent } from "@/lib/themes/homeContent";
 import { stretchWord } from "@/lib/themes/mediaSlots";
 
@@ -22,7 +24,7 @@ type P = { id: string; name: string; priceInCents: number; description: string |
 type Cat = { id: string; name: string; items: P[] };
 type R = { id: string; name: string; review: string; avatar: string };
 
-const { brown: BROWN, cream: CREAM, gold: GOLD } = DINER;
+const { brown: BROWN, cream: CREAM, gold: GOLD, onGold: ON_GOLD, onBrown: ON_BROWN } = DINER;
 const usd = (c: number) => `$${(c / 100).toFixed(2)}`;
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -43,7 +45,7 @@ function PopWord({ text }: { text: string }) {
           key={i}
           aria-hidden
           className="inline-block"
-          style={{ fontFamily: "var(--font-script), cursive", textShadow: "0 6px 0 rgba(59,37,23,0.12)" }}
+          style={{ fontFamily: "var(--font-script), cursive", textShadow: `0 6px 0 ${tint(BROWN, 14)}` }}
           initial={reduce ? false : { y: 80, opacity: 0, rotate: -12, scale: 0.6 }}
           animate={{ y: 0, opacity: 1, rotate: 0, scale: 1 }}
           transition={{ type: "spring", stiffness: 420, damping: 16, delay: 0.25 + i * 0.055 }}
@@ -98,6 +100,76 @@ function Drips() {
   );
 }
 
+// A hero dish, BIG and true-colour (no multiply blend — that's what tinted the
+// food yellow). Cut-out photos (transparent PNG/WebP) float free with a soft
+// contact shadow; ordinary rectangular photos are detected on load (corner
+// alpha) and served as a round plate with a cream rim instead of showing a
+// white box. Hover lifts it and pops a chocolate price tag.
+function HeroDish({ p, i, count }: { p: P; i: number; count: number }) {
+  const reduce = useReducedMotion();
+  const jpg = /\.jpe?g(\?|$)/i.test(p.image ?? "");
+  const [kind, setKind] = useState<"?" | "cutout" | "photo">(jpg ? "photo" : "?");
+  const center = count === 3 ? i === 1 : count === 1;
+  const side = count === 3 ? i - 1 : count === 2 ? (i === 0 ? -1 : 1) : 0;
+
+  const detect = (img: HTMLImageElement) => {
+    if (kind !== "?") return;
+    try {
+      const cv = document.createElement("canvas");
+      cv.width = cv.height = 24;
+      const ctx = cv.getContext("2d", { willReadFrequently: true })!;
+      ctx.drawImage(img, 0, 0, 24, 24);
+      const d = ctx.getImageData(0, 0, 24, 24).data;
+      const a = (x: number, y: number) => d[(y * 24 + x) * 4 + 3];
+      const corners = [a(0, 0), a(23, 0), a(0, 23), a(23, 23), a(12, 0), a(0, 12)];
+      setKind(corners.filter((v) => v < 200).length >= 3 ? "cutout" : "photo");
+    } catch {
+      setKind("photo"); // unreadable (cross-origin) → the plate never shows a white box
+    }
+  };
+
+  return (
+    <motion.div
+      className={`group relative aspect-square ${center ? "z-[3] w-[46%] max-w-[440px] md:w-[38%]" : "z-[2] w-[40%] max-w-[380px] md:w-[32%]"} ${count > 1 ? "-mx-[3%] md:-mx-[2.5%]" : ""}`}
+      initial={reduce ? false : { y: 160, opacity: 0, rotate: side * 18 }}
+      animate={{ y: center ? -6 : 10, opacity: 1, rotate: side * 6 }}
+      transition={{ type: "spring", stiffness: 110, damping: 14, delay: 0.9 + i * 0.12 }}
+    >
+      <Link href="/Menu" aria-label={p.name} className="absolute inset-0 block">
+        <motion.span
+          className="absolute inset-0 block"
+          animate={reduce ? undefined : { y: [0, -10, 0] }}
+          transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut", delay: i * 0.5 }}
+        >
+          {/* contact shadow */}
+          <span aria-hidden className="absolute inset-x-[14%] bottom-[2%] h-[9%] rounded-[50%] blur-md transition-transform duration-500 group-hover:scale-x-90" style={{ background: tint(BROWN, 35) }} />
+          <span
+            className={`absolute block transition-transform duration-500 ease-out group-hover:-translate-y-3 group-hover:scale-[1.06] ${kind === "photo" ? "inset-[5%] overflow-hidden rounded-full" : "inset-0"}`}
+            style={kind === "photo" ? { boxShadow: `0 0 0 clamp(5px,0.9vw,10px) ${CREAM}, 0 24px 40px -18px ${tint(BROWN, 70)}` } : { filter: `drop-shadow(0 22px 26px ${tint(BROWN, 40)})` }}
+          >
+            <Image
+              src={p.image!}
+              alt={p.name}
+              fill
+              priority
+              sizes="(max-width: 768px) 46vw, 480px"
+              className={`${kind === "photo" ? "object-cover" : "object-contain"} transition-opacity duration-300 ${kind === "?" ? "opacity-0" : "opacity-100"}`}
+              onLoad={(e) => detect(e.currentTarget)}
+            />
+          </span>
+        </motion.span>
+        {/* price tag */}
+        <span
+          className="absolute bottom-[8%] left-1/2 z-10 -translate-x-1/2 translate-y-3 whitespace-nowrap rounded-md px-3 py-1.5 text-xs font-extrabold uppercase tracking-wide opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 md:text-sm"
+          style={{ background: BROWN, color: ON_BROWN, boxShadow: `3px 3px 0 ${GOLD}`, fontFamily: "var(--font-courier-prime), monospace" }}
+        >
+          {p.name} · {usd(p.priceInCents)}
+        </span>
+      </Link>
+    </motion.div>
+  );
+}
+
 // ── menu pieces ──────────────────────────────────────────────────────────────
 function DottedRule({ flip = false }: { flip?: boolean }) {
   return (
@@ -136,7 +208,7 @@ function Banner({ children }: { children: React.ReactNode }) {
   return (
     <motion.p
       className="mx-auto mt-8 max-w-5xl px-6 py-5 text-center text-base font-bold uppercase leading-relaxed tracking-wide md:px-10 md:text-xl"
-      style={{ background: BROWN, color: CREAM, fontFamily: "var(--font-courier-prime), monospace" }}
+      style={{ background: BROWN, color: ON_BROWN, fontFamily: "var(--font-courier-prime), monospace" }}
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-10%" }}
@@ -161,7 +233,7 @@ function Plate({ src, alt, size = "md", priority }: { src: string | null; alt: s
         transition={{ type: "spring", stiffness: 200, damping: 16 }}
       />
       <motion.div
-        className="absolute bottom-0 right-0 size-[86%] overflow-hidden rounded-full bg-white shadow-[10px_16px_24px_-10px_rgba(59,37,23,0.45)] transition-transform duration-500 ease-out group-hover:-translate-y-2 group-hover:rotate-[-5deg] group-hover:scale-[1.04]"
+        className="absolute bottom-0 right-0 size-[86%] overflow-hidden rounded-full bg-white shadow-[10px_16px_24px_-10px_color-mix(in_srgb,var(--tp-ink)_45%,transparent)] transition-transform duration-500 ease-out group-hover:-translate-y-2 group-hover:rotate-[-5deg] group-hover:scale-[1.04]"
         initial={{ opacity: 0, rotate: -24, x: 24, y: 24 }}
         whileInView={{ opacity: 1, rotate: 0, x: 0, y: 0 }}
         viewport={{ once: true, margin: "-10%" }}
@@ -196,7 +268,7 @@ function Halftone({ side }: { side: "left" | "right" }) {
       aria-hidden
       className={`pointer-events-none absolute top-10 hidden size-[30rem] md:block ${side === "left" ? "-left-64" : "-right-64"}`}
       style={{
-        backgroundImage: `radial-gradient(circle, ${BROWN}22 2.2px, transparent 2.6px)`,
+        backgroundImage: `radial-gradient(circle, ${tint(BROWN, 13)} 2.2px, transparent 2.6px)`,
         backgroundSize: "14px 14px",
         WebkitMaskImage: "radial-gradient(circle, transparent 28%, #000 30%, #000 48%, transparent 70%)",
         maskImage: "radial-gradient(circle, transparent 28%, #000 30%, #000 48%, transparent 70%)",
@@ -205,7 +277,7 @@ function Halftone({ side }: { side: "left" | "right" }) {
   );
 }
 
-export function DinerHome({ content, menu, featured, reviews, heroImage }: { content: ThemeHomeContent; menu: Cat[]; featured: P[]; reviews: R[]; heroImage: string | null }) {
+export function DinerHome({ content, menu, featured, reviews, heroImage, gallery = [] }: { content: ThemeHomeContent; menu: Cat[]; featured: P[]; reviews: R[]; heroImage: string | null; gallery?: { url: string; alt?: string | null }[] }) {
   const c = SITE_CONFIG;
   const heroWord = content.words.theme_heroword || stretchWord(c.primaryDish || c.cuisines?.[0] || "Delicious");
   const heroFood = featured.filter((p) => p.image).slice(0, 3);
@@ -219,26 +291,9 @@ export function DinerHome({ content, menu, featured, reviews, heroImage }: { con
         <div className="relative mx-auto flex max-w-7xl flex-col items-center justify-center overflow-hidden px-4 pb-28 pt-16 md:min-h-[78svh] md:pb-24 md:pt-14">
           <Steam />
           <PopWord text={heroWord} />
-          <div className="relative -mt-[3vw] flex w-full max-w-5xl items-end justify-center">
+          <div className="relative z-10 -mt-[1vw] flex w-full max-w-6xl items-end justify-center">
             {heroFood.length > 0 ? (
-              heroFood.map((p, i) => (
-                <motion.div
-                  key={p.id}
-                  className="relative aspect-square w-[40%] max-w-[330px] -mx-[3%] mix-blend-multiply md:w-[34%] md:-mx-[2%]"
-                  style={{ zIndex: i === 1 ? 2 : 1 }}
-                  initial={{ y: 120, opacity: 0, rotate: i === 0 ? -14 : i === 2 ? 14 : 0 }}
-                  animate={{ y: i === 1 ? -18 : 0, opacity: 1, rotate: i === 0 ? -6 : i === 2 ? 6 : 0 }}
-                  transition={{ type: "spring", stiffness: 110, damping: 14, delay: 0.9 + i * 0.12 }}
-                >
-                  <motion.div
-                    className="relative size-full"
-                    animate={{ y: [0, -8, 0] }}
-                    transition={{ duration: 3.6, repeat: Infinity, ease: "easeInOut", delay: i * 0.5 }}
-                  >
-                    <Image src={p.image!} alt={p.name} fill priority sizes="30vw" className="object-contain" />
-                  </motion.div>
-                </motion.div>
-              ))
+              heroFood.map((p, i) => <HeroDish key={p.id} p={p} i={i} count={heroFood.length} />)
             ) : heroImage ? (
               <motion.div className="relative aspect-[16/9] w-full max-w-3xl overflow-hidden rounded-3xl" initial={{ y: 60, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.8, delay: 0.8 }}>
                 <Image src={heroImage} alt={c.name} fill priority sizes="80vw" className="object-cover" />
@@ -271,7 +326,7 @@ export function DinerHome({ content, menu, featured, reviews, heroImage }: { con
                       <h3 className="text-3xl font-black uppercase tracking-tight">{lead.name}</h3>
                       {lead.description && <p className="mx-auto mt-5 max-w-sm text-sm leading-7" style={{ fontFamily: "var(--font-courier-prime), monospace" }}>{lead.description}</p>}
                       <p className="mt-5 text-xl font-extrabold">{usd(lead.priceInCents)}</p>
-                      <span className="mt-7 inline-block"><span className="inline-flex rounded-md px-7 py-3 text-base font-extrabold lowercase shadow-[5px_5px_0_#3B2517] transition-all duration-200 group-hover:translate-x-[2px] group-hover:translate-y-[2px] group-hover:shadow-[2px_2px_0_#3B2517]" style={{ background: GOLD }}>{c.menuCtaLabel}</span></span>
+                      <span className="mt-7 inline-block"><span className="inline-flex rounded-md px-7 py-3 text-base font-extrabold lowercase shadow-[5px_5px_0_var(--tp-ink)] transition-all duration-200 group-hover:translate-x-[2px] group-hover:translate-y-[2px] group-hover:shadow-[2px_2px_0_var(--tp-ink)]" style={{ background: GOLD, color: ON_GOLD }}>{c.menuCtaLabel}</span></span>
                     </div>
                   </Link>
                   {rest.length > 0 && (
@@ -317,6 +372,15 @@ export function DinerHome({ content, menu, featured, reviews, heroImage }: { con
         </section>
       )}
 
+      {/* 3b · Snapshots (the dashboard gallery as a polaroid pinboard) */}
+      {gallery.length > 0 && (
+        <section className="relative overflow-hidden pb-6 pt-24">
+          <Halftone side="right" />
+          <SectionTitle>Snapshots</SectionTitle>
+          <DinerGallery images={gallery} instagramUrl={c.instagramUrl} />
+        </section>
+      )}
+
       {/* 4 · Our story + FAQ */}
       <section className="relative overflow-hidden py-24">
         <SectionTitle>Our Story</SectionTitle>
@@ -336,10 +400,10 @@ export function DinerHome({ content, menu, featured, reviews, heroImage }: { con
           <div className="mx-auto mt-20 max-w-3xl px-6">
             <h3 className="mb-6 text-center text-4xl" style={{ fontFamily: "var(--font-script), cursive" }}>Good Questions</h3>
             {c.home.faq.slice(0, 5).map((q, i) => (
-              <details key={i} className="group border-b-2 border-dashed py-4" style={{ borderColor: `${BROWN}40` }}>
+              <details key={i} className="group border-b-2 border-dashed py-4" style={{ borderColor: tint(BROWN, 25) }}>
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-extrabold uppercase">
                   {q.question}
-                  <span className="grid size-8 shrink-0 place-items-center rounded-md text-xl transition-transform duration-300 group-open:rotate-45" style={{ background: GOLD }}>+</span>
+                  <span className="grid size-8 shrink-0 place-items-center rounded-md text-xl transition-transform duration-300 group-open:rotate-45" style={{ background: GOLD, color: ON_GOLD }}>+</span>
                 </summary>
                 <p className="pt-3 text-sm leading-7" style={{ fontFamily: "var(--font-courier-prime), monospace" }}>{q.answer}</p>
               </details>
@@ -352,7 +416,7 @@ export function DinerHome({ content, menu, featured, reviews, heroImage }: { con
       <section className="px-5 pb-20">
         <motion.div
           className="relative mx-auto flex max-w-5xl flex-col items-center overflow-hidden rounded-2xl px-6 py-14 text-center"
-          style={{ background: BROWN, color: CREAM }}
+          style={{ background: BROWN, color: ON_BROWN }}
           initial={{ y: 40, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
           viewport={{ once: true, margin: "-10%" }}
@@ -363,7 +427,7 @@ export function DinerHome({ content, menu, featured, reviews, heroImage }: { con
           <div className="mt-8 flex flex-wrap justify-center gap-5">
             <DinerButton href="/Menu" shadow={CREAM}>{c.menuCtaLabel}</DinerButton>
             {c.googleMapsUrl && (
-              <a href={c.googleMapsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center rounded-md border-2 px-7 py-3 font-extrabold lowercase transition-colors hover:bg-[#F9F4ED] hover:text-[#3B2517]" style={{ borderColor: CREAM }}>
+              <a href={c.googleMapsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center rounded-md border-2 border-current px-7 py-3 font-extrabold lowercase transition-colors hover:bg-[var(--tp-on-ink)] hover:text-[var(--tp-ink)]">
                 get directions
               </a>
             )}

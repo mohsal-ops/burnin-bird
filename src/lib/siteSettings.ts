@@ -22,6 +22,17 @@ export async function getThemeColor(): Promise<string> {
   return getSetting("theme_color", DEFAULT_THEME_COLOR);
 }
 
+// Raw saved per-theme palettes (admin → Branding → Design colours); resolve
+// with resolvePalette() from lib/themes/palette.
+export async function getSavedThemePalettes(): Promise<Record<string, unknown>> {
+  try {
+    const v = JSON.parse(await getSetting("theme_palette", "{}"));
+    return v && typeof v === "object" ? v : {};
+  } catch {
+    return {};
+  }
+}
+
 export type UberDirectMode = "both" | "delivery_only" | "pickup_only";
 export type UberDirectSettings = { enabled: boolean; mode: UberDirectMode };
 

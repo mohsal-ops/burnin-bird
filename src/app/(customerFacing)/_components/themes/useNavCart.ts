@@ -23,3 +23,9 @@ export function useNavCart(initialCartId: string | null) {
   const { data } = useSWR(cartId ? ["/api/cart/get", cartId] : null, ([url, id]) => fetcher(url, id), { revalidateOnFocus: false });
   return { cartId, cartItems: (data?.cart?.items ?? []) as CartItem[] };
 }
+
+// Every theme: the cart lives on the menu page; anywhere else it only appears
+// once something is in it (no empty basket cluttering the nav).
+export function shouldShowCart(pathname: string, itemCount: number) {
+  return pathname.toLowerCase().startsWith("/menu") || itemCount > 0;
+}

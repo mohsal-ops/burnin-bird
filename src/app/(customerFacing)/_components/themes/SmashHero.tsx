@@ -32,8 +32,10 @@ export const MASCOTS: Record<MascotVariant, { src: string; face: { left: string;
 
 export { mascotFor };
 
-const INK = "#111315";
-const PANEL = "radial-gradient(ellipse at 60% 45%, #EEF1F0 0%, #E3E6E5 70%, #D6DAD8 100%)";
+// Owner-editable (admin → Branding → Design colours) via --tp-* vars;
+// defaults = Ender's near-black #111315 on concrete #EEF1F0.
+const INK = "var(--tp-ink)";
+const PANEL = "radial-gradient(ellipse at 60% 45%, var(--tp-panel) 0%, color-mix(in srgb, var(--tp-panel) 95%, #000) 70%, color-mix(in srgb, var(--tp-panel) 89%, #000) 100%)";
 
 // Font size (in container-width units) that makes a Chewy word of this length
 // fill ~90% of its box, capped. Use inside an element with container-type.

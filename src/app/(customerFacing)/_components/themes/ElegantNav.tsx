@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import AppSideBar from "../sideBar";
 import CartSideBar from "../Cart-SideBar";
-import { useNavCart } from "./useNavCart";
+import { shouldShowCart, useNavCart } from "./useNavCart";
 
 // Bespoke navbar for refined-elegant — modeled on Fiorella: a wide-tracked
 // wordmark on the left and small bold uppercase links on the right, floating
@@ -31,7 +31,7 @@ export function ElegantNav({ initialCartId }: { initialCartId: string | null }) 
 
   return (
     <div
-      className={`text-white transition-[background-color,backdrop-filter,box-shadow] duration-500 ${overHero ? "bg-transparent" : "bg-[#0F0606]/95 shadow-[0_1px_0_rgba(255,255,255,0.06)] backdrop-blur"}`}
+      className={`text-white transition-[background-color,backdrop-filter,box-shadow] duration-500 ${overHero ? "bg-transparent" : "bg-[var(--tp-ink)]/95 shadow-[0_1px_0_rgba(255,255,255,0.06)] backdrop-blur"}`}
     >
       <div className="mx-auto flex h-20 items-center justify-between gap-6 px-6 md:px-10">
         <Link href="/" className="whitespace-nowrap text-lg font-semibold tracking-[0.22em] md:text-xl" style={{ fontFamily: "var(--font-jost), sans-serif" }}>
@@ -42,15 +42,17 @@ export function ElegantNav({ initialCartId }: { initialCartId: string | null }) 
             <Link
               key={l.href}
               href={l.href}
-              className={`group relative whitespace-nowrap text-[0.8rem] font-semibold uppercase tracking-[0.08em] ${l.href === pathname ? "text-[#FFD469]" : "text-white/90 hover:text-white"}`}
+              className={`group relative whitespace-nowrap text-[0.8rem] font-semibold uppercase tracking-[0.08em] ${l.href === pathname ? "text-[var(--tp-accent)]" : "text-white/90 hover:text-white"}`}
             >
               {l.label}
               <span className="absolute -bottom-1.5 left-1/2 h-px w-0 -translate-x-1/2 bg-current transition-all duration-300 group-hover:w-full" />
             </Link>
           ))}
-          <span className="[&_button>div]:!border-white/30 [&_button>div]:!bg-transparent [&_button>div]:!text-white">
-            <CartSideBar cartId={cartId} cartItems={cartItems} />
-          </span>
+          {shouldShowCart(pathname, cartItems.length) && (
+            <span className="[&_button>div]:!border-white/30 [&_button>div]:!bg-transparent [&_button>div]:!text-white">
+              <CartSideBar cartId={cartId} cartItems={cartItems} />
+            </span>
+          )}
         </nav>
         <div className="lg:hidden [&_button]:text-white">
           <AppSideBar />
