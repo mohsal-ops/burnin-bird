@@ -18,7 +18,7 @@ export default async function RewardsPage() {
   return (
     <div className="max-w-5xl mx-auto mt-10 space-y-16">
       {/* 🔥 HERO */}
-      <section className="relative overflow-hidden mt-2 rounded-3xl bg-white px-10 py-24 text-center shadow-xl text-brand">
+      <section className="relative overflow-hidden mt-2 rounded-3xl bg-card px-10 py-24 text-center shadow-xl text-brand">
         <div
           className="absolute inset-0"
           style={{

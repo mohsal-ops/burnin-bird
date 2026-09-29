@@ -99,6 +99,12 @@ export function hslTriple(hex: string) {
   return `${Math.round(h)} ${Math.round(s * 100)}% ${Math.round(l * 100)}%`;
 }
 
+/** Blend two hex colours (t = share of b). */
+export function mixHex(a: string, b: string, t: number) {
+  const [x, y] = [rgb(a), rgb(b)];
+  return "#" + x.map((c, k) => Math.round((c + (y[k] - c) * t) * 255).toString(16).padStart(2, "0")).join("");
+}
+
 /** The CSS injected by the root layout for the active theme. Only hex values we validated reach it. */
 export function paletteCss(slug: ThemeSlug, palette: Palette, custom: boolean): string {
   const slots = THEME_PALETTES[slug];
@@ -106,8 +112,27 @@ export function paletteCss(slug: ThemeSlug, palette: Palette, custom: boolean): 
   const accent = palette.accent;
   const ink = palette.ink ?? "#111111";
   const paper = palette.paper ?? "#ffffff";
-  const vars: string[] = [`--tp-ink:${ink}`, `--tp-paper:${paper}`, `--tp-on-ink:${onColor(ink, paper)}`];
-  if (accent) vars.push(`--tp-accent:${accent}`, `--tp-on-accent:${onColor(accent, ink)}`, `--tp-accent-deep:color-mix(in srgb, ${accent} 62%, #000)`);
+  // A dark page background flips every text colour to light — owners pick
+  // black backgrounds (Astoria BBQ) and dark-grey-on-black text was unreadable.
+  const paperDark = lum(paper) < 0.18;
+  // Body text: the ink when it actually reads on the page, else neutral.
+  const text = contrast(ink, paper) >= 4.5 ? ink : paperDark ? "#F4F4F5" : "#141414";
+  const vars: string[] = [
+    `--tp-ink:${ink}`,
+    `--tp-paper:${paper}`,
+    `--tp-on-ink:${onColor(ink, paper)}`,
+    `--tp-text:${text}`,
+    `--tp-muted:${paperDark ? "rgba(255,255,255,0.72)" : "#737373"}`,
+    `--tp-line:${paperDark ? "rgba(255,255,255,0.14)" : "rgba(0,0,0,0.1)"}`,
+    `--tp-line-strong:${paperDark ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.25)"}`,
+  ];
+  if (accent)
+    vars.push(
+      `--tp-accent:${accent}`,
+      `--tp-on-accent:${onColor(accent, ink)}`,
+      // hover tint: deeper on light pages, brighter on dark ones
+      `--tp-accent-deep:${paperDark ? mixHex(accent, "#ffffff", 0.2) : mixHex(accent, "#000000", 0.38)}`,
+    );
   if (palette.panel) vars.push(`--tp-panel:${palette.panel}`);
   let css = `:root{${vars.join(";")}}`;
 
@@ -121,11 +146,34 @@ export function paletteCss(slug: ThemeSlug, palette: Palette, custom: boolean): 
       // Body text / nav + footer links only follow the ink when it's a genuine
       // text colour (near-black, reads like ink on white). A bright pick like
       // sky-blue is a decoration colour — it must never repaint every link.
-      if (contrast(ink, "#ffffff") >= 9) {
+      if (!paperDark && contrast(ink, "#ffffff") >= 9) {
         t.push(`--foreground:${hslTriple(ink)}`, `--card-foreground:${hslTriple(ink)}`);
       }
     }
-    if (palette.paper) t.push(`--background:${hslTriple(paper)}`, `--secondary-foreground:${hslTriple(paper)}`, `--dark-foreground:${hslTriple(paper)}`);
+    if (palette.paper) {
+      t.push(`--background:${hslTriple(paper)}`, `--secondary-foreground:${hslTriple(paper)}`, `--dark-foreground:${hslTriple(paper)}`);
+      if (paperDark) {
+        // A full dark surface set, so cards/menus/popovers/borders all read.
+        const card = mixHex(paper, "#ffffff", 0.07);
+        const muted = mixHex(paper, "#ffffff", 0.11);
+        const line = mixHex(paper, "#ffffff", 0.18);
+        t.push(
+          `--foreground:0 0% 96%`,
+          `--card:${hslTriple(card)}`,
+          `--card-foreground:0 0% 96%`,
+          `--popover:${hslTriple(card)}`,
+          `--popover-foreground:0 0% 96%`,
+          `--muted:${hslTriple(muted)}`,
+          `--muted-foreground:0 0% 72%`,
+          `--accent:${hslTriple(muted)}`,
+          `--accent-foreground:0 0% 96%`,
+          `--border:${hslTriple(line)}`,
+          `--input:${hslTriple(line)}`,
+          `--secondary-foreground:0 0% 96%`,
+          `--dark-foreground:0 0% 96%`,
+        );
+      }
+    }
     if (t.length) css += `html[data-theme="${slug}"]:not(.dark){${t.join(";")}}`;
   }
   return css;

@@ -84,7 +84,7 @@ export default function CateringPageClient({
   return (
     <div className="flex flex-col items-center md:w-[90vw] pt-20 p-2 space-y-16">
       {/* Hero */}
-      <section className="relative p-3 max-w-6xl w-full min-h-120 overflow-hidden bg-white rounded-2xl flex flex-col md:flex-row items-center gap-5 sm:gap-10">
+      <section className="relative p-3 max-w-6xl w-full min-h-120 overflow-hidden bg-card text-card-foreground rounded-2xl flex flex-col md:flex-row items-center gap-5 sm:gap-10">
         {/* REPEATED LOGO BACKGROUND */}
         <div
           className="absolute inset-0"
@@ -175,7 +175,7 @@ export default function CateringPageClient({
               desc: "Tailor your event menu with ease.",
             },
           ].map((f, i) => (
-            <Card key={i} className="rounded-2xl shadow-md bg-white">
+            <Card key={i} className="rounded-2xl shadow-md bg-card text-card-foreground">
               <CardContent className="p-6">
                 <h3 className="font-semibold text-lg mb-2">{f.title}</h3>
                 <p className="text-gray-500 text-sm">{f.desc}</p>

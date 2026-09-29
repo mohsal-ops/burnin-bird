@@ -76,7 +76,7 @@ export default function GiftCardPageClient({ logoUrl }: { logoUrl?: string }) {
   return (
     <div className="max-w-5xl mx-auto mt-10 space-y-10">
       {/* 🔥 HERO */}
-      <section className="relative overflow-hidden rounded-3xl bg-white px-10 py-24 text-center shadow-xl text-brand">
+      <section className="relative overflow-hidden rounded-3xl bg-card px-10 py-24 text-center shadow-xl text-brand">
         {/* REPEATED LOGO BACKGROUND */}
         <div
           className="absolute inset-0"
@@ -89,7 +89,7 @@ export default function GiftCardPageClient({ logoUrl }: { logoUrl?: string }) {
         />
 
         {/* DARK OVERLAY */}
-        <div className="absolute inset-0 bg-white/90" />
+        <div className="absolute inset-0 bg-card/90" />
 
         {/* CONTENT */}
         <div className="relative z-10">
