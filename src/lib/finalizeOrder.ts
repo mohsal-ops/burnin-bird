@@ -92,10 +92,17 @@ export async function finalizeCart(
   // Uber Direct dispatch (delivery only, when enabled). Best-effort.
   try {
     const uber = await getUberDirect();
-    if (uber.enabled && deriveOrderType(first) === "delivery" && first.deliveryAddress) {
-      if (!cart.uberQuoteId) {
+    if (deriveOrderType(first) === "delivery" && first.deliveryAddress) {
+      if (!cart.uberQuoteId || !uber.enabled) {
+        // Checkout now refuses delivery without a quote, so this is a safety net
+        // (e.g. a cart paid before that guard shipped). Always tell the owner
+        // WHY, so a missing courier never needs a code read to diagnose.
+        const reason =
+          cart.uberQuoteError ||
+          (!uber.enabled ? "Uber Direct delivery is turned off in the dashboard." : "");
         await sendTelegramMessage(
-          `⚠️ Delivery order ${cart.id} has no Uber quote - please arrange delivery manually.`,
+          `⚠️ Delivery order ${cart.id} has no Uber quote - please arrange delivery manually.` +
+            (reason ? ` Reason: ${reason}` : ""),
         ).catch(() => {});
       } else {
         const dropoffNotes = [first.apt ? `Apt/Suite: ${first.apt}` : "", first.instructions || ""]

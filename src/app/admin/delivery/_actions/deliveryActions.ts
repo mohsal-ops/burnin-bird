@@ -31,3 +31,12 @@ export async function saveUberDirect(input: { enabled: boolean; mode: UberDirect
     return { error: "Couldn't save delivery settings. Try again." };
   }
 }
+
+// Live check the owner can run from the Delivery page: authenticates with Uber
+// and requests a real quote (nothing is dispatched), returning Uber's exact
+// answer - e.g. an account Uber has disabled, which env vars alone can't show.
+export async function testUberDirect(): Promise<{ ok: boolean; message: string }> {
+  const { testUberConnection } = await import("@/lib/uber");
+  const { SITE_CONFIG } = await import("@/lib/siteConfig");
+  return testUberConnection({ formatted: SITE_CONFIG.address, lat: SITE_CONFIG.lat, lng: SITE_CONFIG.lng });
+}

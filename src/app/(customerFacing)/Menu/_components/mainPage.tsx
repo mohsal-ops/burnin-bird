@@ -22,6 +22,8 @@ type PropsTypes = {
   products: ItemWithSides[];
   featuredProducts: ItemWithSides[];
   hours: BusinessHourRow[];
+  /** Owner has Uber Direct delivery on (Delivery settings). */
+  deliveryOn?: boolean;
 } & React.HTMLAttributes<HTMLDivElement>;
 
 
@@ -47,12 +49,15 @@ export default function MainPageMenu({
   gategories,
   products,
   hours,
+  deliveryOn = false,
 }: PropsTypes) {
   const [filtered, setfiltered] = useState<ItemWithSides[] | undefined>();
   // Delivery is a Standard+ tier capability; Starter sites are pickup-only.
   // tierOf() defaults a tier-less (pre-tiers) siteConfig to PRO, so existing
   // clients that get new template code but keep their old siteConfig keep delivery.
-  const deliveryAllowed = atLeast(tierOf(SITE_CONFIG), "STANDARD");
+  // Delivery IS Uber Direct, so it also needs the owner's Delivery setting on -
+  // otherwise customers could pick a delivery no courier will ever fulfil.
+  const deliveryAllowed = atLeast(tierOf(SITE_CONFIG), "STANDARD") && deliveryOn;
   // Default to pickup so ordering works out of the box; the toggle can switch to delivery.
   const [choice, setChoice] = useState<"delivery" | "pickup" | null>("pickup");
   const [query, setQuery] = useState("");

@@ -3,9 +3,9 @@
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { saveUberDirect } from "../_actions/deliveryActions";
+import { saveUberDirect, testUberDirect } from "../_actions/deliveryActions";
 import type { UberDirectMode, UberDirectSettings } from "@/lib/siteSettings";
-import { Truck, Check } from "lucide-react";
+import { Truck, Check, AlertTriangle, PlugZap, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 
 const MODES: { value: UberDirectMode; label: string; desc: string }[] = [
@@ -14,10 +14,21 @@ const MODES: { value: UberDirectMode; label: string; desc: string }[] = [
   { value: "pickup_only", label: "Pickup only", desc: "Customers collect in store." },
 ];
 
-export function DeliverySettingsForm({ initial }: { initial: UberDirectSettings }) {
+export function DeliverySettingsForm({ initial, configured }: { initial: UberDirectSettings; configured: boolean }) {
   const [enabled, setEnabled] = useState(initial.enabled);
   const [mode, setMode] = useState<UberDirectMode>(initial.mode);
   const [pending, startTransition] = useTransition();
+  const [testing, startTest] = useTransition();
+  const [test, setTest] = useState<{ ok: boolean; message: string } | null>(null);
+  const runTest = () =>
+    startTest(async () => {
+      setTest(null);
+      try {
+        setTest(await testUberDirect());
+      } catch {
+        setTest({ ok: false, message: "Couldn't reach the server. Try again." });
+      }
+    });
 
   // Delivery on this platform IS Uber Direct - so pickup/delivery options only
   // matter once it's on. Turning it off falls back to pickup-only.
@@ -60,6 +71,42 @@ export function DeliverySettingsForm({ initial }: { initial: UberDirectSettings 
           />
         </div>
       </div>
+
+      {/* Is Uber Direct actually reachable? Env vars alone can't tell (a disabled
+          Uber account still has valid credentials) - so offer a live test. */}
+      {enabled && !configured && (
+        <div role="alert" className="flex items-start gap-3 rounded-2xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
+          <AlertTriangle size={18} className="mt-0.5 shrink-0" />
+          <p>
+            <span className="font-semibold">Uber Direct isn&apos;t connected yet</span> - turning this on won&apos;t actually
+            offer delivery to customers. Your Uber Direct credentials need to be added to the site first.
+          </p>
+        </div>
+      )}
+      {enabled && configured && (
+        <div className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="font-semibold text-stone-800">Check the Uber connection</p>
+              <p className="text-sm text-stone-500">Runs a real test quote from your restaurant. Nothing is dispatched or charged.</p>
+            </div>
+            <Button type="button" variant="outline" size="sm" onClick={runTest} disabled={testing}>
+              <PlugZap size={14} /> {testing ? "Testing…" : "Test connection"}
+            </Button>
+          </div>
+          {test && (
+            <div
+              role={test.ok ? "status" : "alert"}
+              className={`mt-3 flex items-start gap-2 rounded-xl p-3 text-sm ${test.ok ? "bg-emerald-50 text-emerald-900" : "bg-red-50 text-red-900"}`}
+            >
+              {test.ok ? <CheckCircle2 size={16} className="mt-0.5 shrink-0" /> : <AlertTriangle size={16} className="mt-0.5 shrink-0" />}
+              <p>
+                {test.ok ? test.message : <>Customers can&apos;t get delivery right now. Uber says: <span className="font-medium">{test.message}</span></>}
+              </p>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* What customers can order */}
       <div

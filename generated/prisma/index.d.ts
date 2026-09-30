@@ -11629,6 +11629,7 @@ export namespace Prisma {
     uberDeliveryId: string | null
     uberStatus: string | null
     uberTrackingUrl: string | null
+    uberQuoteError: string | null
     promoCampaignId: string | null
   }
 
@@ -11642,6 +11643,7 @@ export namespace Prisma {
     uberDeliveryId: string | null
     uberStatus: string | null
     uberTrackingUrl: string | null
+    uberQuoteError: string | null
     promoCampaignId: string | null
   }
 
@@ -11655,6 +11657,7 @@ export namespace Prisma {
     uberDeliveryId: number
     uberStatus: number
     uberTrackingUrl: number
+    uberQuoteError: number
     promoCampaignId: number
     _all: number
   }
@@ -11678,6 +11681,7 @@ export namespace Prisma {
     uberDeliveryId?: true
     uberStatus?: true
     uberTrackingUrl?: true
+    uberQuoteError?: true
     promoCampaignId?: true
   }
 
@@ -11691,6 +11695,7 @@ export namespace Prisma {
     uberDeliveryId?: true
     uberStatus?: true
     uberTrackingUrl?: true
+    uberQuoteError?: true
     promoCampaignId?: true
   }
 
@@ -11704,6 +11709,7 @@ export namespace Prisma {
     uberDeliveryId?: true
     uberStatus?: true
     uberTrackingUrl?: true
+    uberQuoteError?: true
     promoCampaignId?: true
     _all?: true
   }
@@ -11804,6 +11810,7 @@ export namespace Prisma {
     uberDeliveryId: string | null
     uberStatus: string | null
     uberTrackingUrl: string | null
+    uberQuoteError: string | null
     promoCampaignId: string | null
     _count: CartCountAggregateOutputType | null
     _avg: CartAvgAggregateOutputType | null
@@ -11836,6 +11843,7 @@ export namespace Prisma {
     uberDeliveryId?: boolean
     uberStatus?: boolean
     uberTrackingUrl?: boolean
+    uberQuoteError?: boolean
     promoCampaignId?: boolean
     items?: boolean | Cart$itemsArgs<ExtArgs>
     _count?: boolean | CartCountOutputTypeDefaultArgs<ExtArgs>
@@ -11851,6 +11859,7 @@ export namespace Prisma {
     uberDeliveryId?: boolean
     uberStatus?: boolean
     uberTrackingUrl?: boolean
+    uberQuoteError?: boolean
     promoCampaignId?: boolean
   }, ExtArgs["result"]["cart"]>
 
@@ -11864,6 +11873,7 @@ export namespace Prisma {
     uberDeliveryId?: boolean
     uberStatus?: boolean
     uberTrackingUrl?: boolean
+    uberQuoteError?: boolean
     promoCampaignId?: boolean
   }, ExtArgs["result"]["cart"]>
 
@@ -11877,10 +11887,11 @@ export namespace Prisma {
     uberDeliveryId?: boolean
     uberStatus?: boolean
     uberTrackingUrl?: boolean
+    uberQuoteError?: boolean
     promoCampaignId?: boolean
   }
 
-  export type CartOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "status" | "uberQuoteId" | "uberFeeCents" | "uberDeliveryId" | "uberStatus" | "uberTrackingUrl" | "promoCampaignId", ExtArgs["result"]["cart"]>
+  export type CartOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "status" | "uberQuoteId" | "uberFeeCents" | "uberDeliveryId" | "uberStatus" | "uberTrackingUrl" | "uberQuoteError" | "promoCampaignId", ExtArgs["result"]["cart"]>
   export type CartInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     items?: boolean | Cart$itemsArgs<ExtArgs>
     _count?: boolean | CartCountOutputTypeDefaultArgs<ExtArgs>
@@ -11903,6 +11914,7 @@ export namespace Prisma {
       uberDeliveryId: string | null
       uberStatus: string | null
       uberTrackingUrl: string | null
+      uberQuoteError: string | null
       promoCampaignId: string | null
     }, ExtArgs["result"]["cart"]>
     composites: {}
@@ -12337,6 +12349,7 @@ export namespace Prisma {
     readonly uberDeliveryId: FieldRef<"Cart", 'String'>
     readonly uberStatus: FieldRef<"Cart", 'String'>
     readonly uberTrackingUrl: FieldRef<"Cart", 'String'>
+    readonly uberQuoteError: FieldRef<"Cart", 'String'>
     readonly promoCampaignId: FieldRef<"Cart", 'String'>
   }
     
@@ -25957,6 +25970,7 @@ export namespace Prisma {
     uberDeliveryId: 'uberDeliveryId',
     uberStatus: 'uberStatus',
     uberTrackingUrl: 'uberTrackingUrl',
+    uberQuoteError: 'uberQuoteError',
     promoCampaignId: 'promoCampaignId'
   };
 
@@ -26809,6 +26823,7 @@ export namespace Prisma {
     uberDeliveryId?: StringNullableFilter<"Cart"> | string | null
     uberStatus?: StringNullableFilter<"Cart"> | string | null
     uberTrackingUrl?: StringNullableFilter<"Cart"> | string | null
+    uberQuoteError?: StringNullableFilter<"Cart"> | string | null
     promoCampaignId?: StringNullableFilter<"Cart"> | string | null
     items?: CartItemListRelationFilter
   }
@@ -26823,6 +26838,7 @@ export namespace Prisma {
     uberDeliveryId?: SortOrderInput | SortOrder
     uberStatus?: SortOrderInput | SortOrder
     uberTrackingUrl?: SortOrderInput | SortOrder
+    uberQuoteError?: SortOrderInput | SortOrder
     promoCampaignId?: SortOrderInput | SortOrder
     items?: CartItemOrderByRelationAggregateInput
   }
@@ -26840,6 +26856,7 @@ export namespace Prisma {
     uberDeliveryId?: StringNullableFilter<"Cart"> | string | null
     uberStatus?: StringNullableFilter<"Cart"> | string | null
     uberTrackingUrl?: StringNullableFilter<"Cart"> | string | null
+    uberQuoteError?: StringNullableFilter<"Cart"> | string | null
     promoCampaignId?: StringNullableFilter<"Cart"> | string | null
     items?: CartItemListRelationFilter
   }, "id">
@@ -26854,6 +26871,7 @@ export namespace Prisma {
     uberDeliveryId?: SortOrderInput | SortOrder
     uberStatus?: SortOrderInput | SortOrder
     uberTrackingUrl?: SortOrderInput | SortOrder
+    uberQuoteError?: SortOrderInput | SortOrder
     promoCampaignId?: SortOrderInput | SortOrder
     _count?: CartCountOrderByAggregateInput
     _avg?: CartAvgOrderByAggregateInput
@@ -26875,6 +26893,7 @@ export namespace Prisma {
     uberDeliveryId?: StringNullableWithAggregatesFilter<"Cart"> | string | null
     uberStatus?: StringNullableWithAggregatesFilter<"Cart"> | string | null
     uberTrackingUrl?: StringNullableWithAggregatesFilter<"Cart"> | string | null
+    uberQuoteError?: StringNullableWithAggregatesFilter<"Cart"> | string | null
     promoCampaignId?: StringNullableWithAggregatesFilter<"Cart"> | string | null
   }
 
@@ -28332,6 +28351,7 @@ export namespace Prisma {
     uberDeliveryId?: string | null
     uberStatus?: string | null
     uberTrackingUrl?: string | null
+    uberQuoteError?: string | null
     promoCampaignId?: string | null
     items?: CartItemCreateNestedManyWithoutCartInput
   }
@@ -28346,6 +28366,7 @@ export namespace Prisma {
     uberDeliveryId?: string | null
     uberStatus?: string | null
     uberTrackingUrl?: string | null
+    uberQuoteError?: string | null
     promoCampaignId?: string | null
     items?: CartItemUncheckedCreateNestedManyWithoutCartInput
   }
@@ -28360,6 +28381,7 @@ export namespace Prisma {
     uberDeliveryId?: NullableStringFieldUpdateOperationsInput | string | null
     uberStatus?: NullableStringFieldUpdateOperationsInput | string | null
     uberTrackingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    uberQuoteError?: NullableStringFieldUpdateOperationsInput | string | null
     promoCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
     items?: CartItemUpdateManyWithoutCartNestedInput
   }
@@ -28374,6 +28396,7 @@ export namespace Prisma {
     uberDeliveryId?: NullableStringFieldUpdateOperationsInput | string | null
     uberStatus?: NullableStringFieldUpdateOperationsInput | string | null
     uberTrackingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    uberQuoteError?: NullableStringFieldUpdateOperationsInput | string | null
     promoCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
     items?: CartItemUncheckedUpdateManyWithoutCartNestedInput
   }
@@ -28388,6 +28411,7 @@ export namespace Prisma {
     uberDeliveryId?: string | null
     uberStatus?: string | null
     uberTrackingUrl?: string | null
+    uberQuoteError?: string | null
     promoCampaignId?: string | null
   }
 
@@ -28401,6 +28425,7 @@ export namespace Prisma {
     uberDeliveryId?: NullableStringFieldUpdateOperationsInput | string | null
     uberStatus?: NullableStringFieldUpdateOperationsInput | string | null
     uberTrackingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    uberQuoteError?: NullableStringFieldUpdateOperationsInput | string | null
     promoCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -28414,6 +28439,7 @@ export namespace Prisma {
     uberDeliveryId?: NullableStringFieldUpdateOperationsInput | string | null
     uberStatus?: NullableStringFieldUpdateOperationsInput | string | null
     uberTrackingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    uberQuoteError?: NullableStringFieldUpdateOperationsInput | string | null
     promoCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -29947,6 +29973,7 @@ export namespace Prisma {
     uberDeliveryId?: SortOrder
     uberStatus?: SortOrder
     uberTrackingUrl?: SortOrder
+    uberQuoteError?: SortOrder
     promoCampaignId?: SortOrder
   }
 
@@ -29964,6 +29991,7 @@ export namespace Prisma {
     uberDeliveryId?: SortOrder
     uberStatus?: SortOrder
     uberTrackingUrl?: SortOrder
+    uberQuoteError?: SortOrder
     promoCampaignId?: SortOrder
   }
 
@@ -29977,6 +30005,7 @@ export namespace Prisma {
     uberDeliveryId?: SortOrder
     uberStatus?: SortOrder
     uberTrackingUrl?: SortOrder
+    uberQuoteError?: SortOrder
     promoCampaignId?: SortOrder
   }
 
@@ -31791,6 +31820,7 @@ export namespace Prisma {
     uberDeliveryId?: string | null
     uberStatus?: string | null
     uberTrackingUrl?: string | null
+    uberQuoteError?: string | null
     promoCampaignId?: string | null
   }
 
@@ -31804,6 +31834,7 @@ export namespace Prisma {
     uberDeliveryId?: string | null
     uberStatus?: string | null
     uberTrackingUrl?: string | null
+    uberQuoteError?: string | null
     promoCampaignId?: string | null
   }
 
@@ -31859,6 +31890,7 @@ export namespace Prisma {
     uberDeliveryId?: NullableStringFieldUpdateOperationsInput | string | null
     uberStatus?: NullableStringFieldUpdateOperationsInput | string | null
     uberTrackingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    uberQuoteError?: NullableStringFieldUpdateOperationsInput | string | null
     promoCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -31872,6 +31904,7 @@ export namespace Prisma {
     uberDeliveryId?: NullableStringFieldUpdateOperationsInput | string | null
     uberStatus?: NullableStringFieldUpdateOperationsInput | string | null
     uberTrackingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    uberQuoteError?: NullableStringFieldUpdateOperationsInput | string | null
     promoCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 

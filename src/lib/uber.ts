@@ -24,6 +24,15 @@ function creds() {
   return { clientId, clientSecret, customerId };
 }
 
+/** True when all three Uber Direct env vars are set. No network call; never exposes values. */
+export function isUberDirectConfigured(): boolean {
+  return !!(
+    process.env.UBER_DIRECT_CLIENT_ID &&
+    process.env.UBER_DIRECT_CLIENT_SECRET &&
+    process.env.UBER_DIRECT_CUSTOMER_ID
+  );
+}
+
 // Cache the token across requests (client-credential calls are rate-limited).
 let cached: { token: string; expiresAt: number } | null = null;
 
@@ -66,9 +75,10 @@ async function uberFetch(path: string, body: unknown) {
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    const msg = (data as { message?: string; code?: string })?.message
-      || (data as { code?: string })?.code
-      || `Uber Direct request failed (${res.status})`;
+    const e = data as { message?: string; code?: string; metadata?: { param_details?: string; details?: string } };
+    const detail = e?.metadata?.param_details || e?.metadata?.details;
+    const base = e?.message || e?.code || `Uber Direct request failed (${res.status})`;
+    const msg = detail ? `${base} - ${detail}` : base;
     const err = new Error(msg) as Error & { status?: number; body?: unknown };
     err.status = res.status;
     err.body = data;
@@ -92,6 +102,22 @@ export type UberQuote = {
   expiresMs?: number;
 };
 
+// Uber returns dropoff_eta as an ISO timestamp; tolerate epoch numbers too.
+function parseEta(v: unknown): number | undefined {
+  const n = typeof v === "number" ? v : new Date(String(v)).getTime();
+  return Number.isFinite(n) ? n : undefined;
+}
+
+/** Minutes until drop-off for a quote (duration if given, else from the ETA). */
+export function quoteEtaMinutes(q: UberQuote): number | undefined {
+  if (q.durationMin && Number.isFinite(q.durationMin)) return Math.round(q.durationMin);
+  if (q.dropoffEtaMs) {
+    const m = Math.round((q.dropoffEtaMs - Date.now()) / 60000);
+    return m > 0 ? m : undefined;
+  }
+  return undefined;
+}
+
 /** Real delivery quote for a pickup→dropoff pair. Throws on no-courier / out-of-range. */
 export async function getQuote(pickup: UberAddress, dropoff: UberAddress): Promise<UberQuote> {
   const d = await uberFetch("/delivery_quotes", {
@@ -104,7 +130,7 @@ export async function getQuote(pickup: UberAddress, dropoff: UberAddress): Promi
     id: String(d.id),
     feeCents: Number(d.fee ?? 0),
     currency: String(d.currency ?? "usd"),
-    dropoffEtaMs: d.dropoff_eta ? Number(d.dropoff_eta) : undefined,
+    dropoffEtaMs: d.dropoff_eta ? parseEta(d.dropoff_eta) : undefined,
     durationMin: d.duration ? Number(d.duration) : undefined,
     expiresMs: d.expires ? new Date(String(d.expires)).getTime() : undefined,
   };
@@ -166,4 +192,28 @@ export async function getDelivery(deliveryId: string): Promise<UberDelivery> {
     trackingUrl: d.tracking_url ? String(d.tracking_url) : undefined,
     feeCents: Number(d.fee ?? 0),
   };
+}
+
+/**
+ * Live health check for the admin page: authenticates and requests a real
+ * quote (nothing is dispatched) from the restaurant to a point ~1 km away.
+ * Returns Uber's exact reason on failure so the owner can act on it.
+ */
+export async function testUberConnection(pickup: UberAddress): Promise<{ ok: boolean; message: string }> {
+  if (!isUberDirectConfigured()) {
+    return { ok: false, message: "Uber Direct credentials aren't set on the server." };
+  }
+  try {
+    const lat = pickup.lat ?? null;
+    const lng = pickup.lng ?? null;
+    const dropoff: UberAddress =
+      lat != null && lng != null
+        ? { formatted: pickup.formatted, lat: lat + 0.009, lng }
+        : { formatted: pickup.formatted };
+    const q = await getQuote(pickup, dropoff);
+    const eta = quoteEtaMinutes(q);
+    return { ok: true, message: `Connected - a nearby test quote came back at $${(q.feeCents / 100).toFixed(2)}${eta ? `, ~${eta} min` : ""}.` };
+  } catch (e) {
+    return { ok: false, message: (e as Error).message };
+  }
 }

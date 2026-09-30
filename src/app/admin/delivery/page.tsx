@@ -1,4 +1,5 @@
 import { getUberDirect } from "@/lib/siteSettings";
+import { isUberDirectConfigured } from "@/lib/uber";
 import { DeliverySettingsForm } from "./_components/DeliverySettingsForm";
 import PageHeader from "../_components/pageHeader";
 
@@ -17,7 +18,7 @@ export default async function DeliverySettingsPage() {
             your own site, with no marketplace commission.
           </p>
         </div>
-        <DeliverySettingsForm initial={settings} />
+        <DeliverySettingsForm initial={settings} configured={isUberDirectConfigured()} />
       </div>
     </div>
   );

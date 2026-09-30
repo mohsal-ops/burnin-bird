@@ -66,6 +66,25 @@ export default async function Page({ params }: PageProps) {
   // Add the real Uber Direct courier fee only for delivery orders (it's stored on
   // the cart at address entry). Pickup orders are unaffected.
   const isDelivery = cart.items[0] ? deriveOrderType(cart.items[0]) === "delivery" : false
+
+  // A delivery order is only payable with a real courier quote. Without one there
+  // is no courier to dispatch, so never take payment for a "free" delivery that
+  // won't happen - send the customer back to fix the address or pick up.
+  if (isDelivery && !cart.uberQuoteId) {
+    return (
+      <div className="mx-auto flex min-h-[60svh] w-full max-w-md flex-col items-center justify-center gap-4 px-6 pt-24 text-center">
+        <h1 className="text-xl font-semibold">Delivery isn&apos;t available for this order</h1>
+        <p className="text-muted-foreground">
+          We couldn&apos;t get a courier for your delivery address, so nothing has been charged.
+          Please go back and choose pickup, or try a different address.
+        </p>
+        <Button asChild variant="mainButton">
+          <Link href="/Menu">Back to the menu</Link>
+        </Button>
+      </div>
+    )
+  }
+
   const deliveryFee = isDelivery ? cart.uberFeeCents ?? 0 : 0
   const total = Math.max(0, itemsTotal - discountInCents) + deliveryFee
 

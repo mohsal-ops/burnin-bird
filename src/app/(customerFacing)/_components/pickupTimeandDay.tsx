@@ -25,6 +25,8 @@ import { loadCustomer, saveCustomer } from "@/lib/customerMemory";
  * two Radix Dialog roots at once (which caused focus/accessibility bugs).
  * `PickupDetails` below wraps this in its own Dialog for standalone use.
  */
+const formatFee = (cents: number) => `${(cents / 100).toFixed(2)}`;
+
 export function PickupDetailsContent({
   orderType,
   onComplete,
@@ -53,6 +55,11 @@ export function PickupDetailsContent({
   const [customerName, setCustomerName] = useState<string | undefined>("");
   const [customerPhone, setCustomerPhone] = useState<string | undefined>("");
   const [isLoading, setIsLoading] = useState(false);
+  // Result of the real Uber Direct quote for the chosen address. null = not
+  // checked yet; {available:false} keeps the customer on this step.
+  const [deliveryQuote, setDeliveryQuote] = useState<
+    { available: boolean; feeCents?: number; etaMin?: number; reason?: string } | null
+  >(null);
   const [showMoreDays, setShowMoreDays] = useState(false);
   // Gate the save-on-change effect until the mount hydrate has run, so we never
   // overwrite stored details with the initial empty state.
@@ -127,6 +134,12 @@ export function PickupDetailsContent({
   }, [selectedDay]);
 
   const handleAddDelivery = async () => {
+    // Second click after a successful quote = "Continue": the fee is already
+    // saved on the cart, just move on.
+    if (deliveryQuote?.available) {
+      onComplete();
+      return;
+    }
     setIsLoading(true);
     if (!selectedPlace) {
       toast("Please select delivery address");
@@ -150,22 +163,42 @@ export function PickupDetailsContent({
         }),
       });
 
-      const data = await res.json();
+      const data = (await res.json().catch(() => ({}))) as {
+        ok?: boolean;
+        message?: string;
+        delivery?: { available: boolean; feeCents?: number; etaMin?: number; reason?: string };
+      };
       await mutate(["/api/cart/get", cartId]);
       router.refresh();
 
-      if (res.ok) {
-        // Remember these for the customer's next order (this browser only).
-        saveCustomer({ name: customerName, phone: customerPhone, apt, instructions, place: selectedPlace ?? undefined });
-        toast(`${data.message}`);
-        onComplete();
-      } else {
-        toast(`${data.message}`);
-        throw new Error("Failed adding delevey details");
+      if (!res.ok || !data.ok) {
+        toast.error(data.message || "Couldn't confirm delivery. Please try again.");
+        return;
       }
+
+      const delivery = data.delivery;
+      if (orderType === "delivery" && delivery && !delivery.available) {
+        // No courier for this address: say so plainly and stay on this step.
+        setDeliveryQuote(delivery);
+        toast.error(delivery.reason || "Delivery isn't available for this address right now.");
+        return;
+      }
+
+      // Remember these for the customer's next order (this browser only).
+      saveCustomer({ name: customerName, phone: customerPhone, apt, instructions, place: selectedPlace ?? undefined });
+
+      if (orderType === "delivery" && delivery?.available && typeof delivery.feeCents === "number") {
+        // Show the real fee + ETA in the address card; the button becomes "Continue".
+        setDeliveryQuote(delivery);
+        toast.success(`Delivery available - ${formatFee(delivery.feeCents)} fee`);
+        return;
+      }
+
+      toast(data.message || "Delivery confirmed");
+      onComplete();
     } catch (error) {
       console.error(error);
-      toast(`${error}`);
+      toast.error("Couldn't confirm delivery. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -244,11 +277,34 @@ export function PickupDetailsContent({
                 </div>
                 <button
                   className="text-sm text-blue-500"
-                  onClick={() => setSelectedPlace(null)}
+                  onClick={() => {
+                    setSelectedPlace(null);
+                    setDeliveryQuote(null);
+                  }}
                 >
                   Change
                 </button>
               </div>
+
+              {/* Live Uber Direct quote for this address */}
+              {orderType === "delivery" && deliveryQuote?.available && typeof deliveryQuote.feeCents === "number" && (
+                <div className="rounded-xl border border-emerald-300 bg-emerald-50 p-3 text-sm text-emerald-900 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-200">
+                  <p className="font-semibold">
+                    Delivery fee: {formatFee(deliveryQuote.feeCents)} · Uber courier
+                    {deliveryQuote.etaMin ? ` · ~${deliveryQuote.etaMin} min` : ""}
+                  </p>
+                  <p className="mt-0.5 text-xs opacity-80">This fee is added to your total at checkout.</p>
+                </div>
+              )}
+              {orderType === "delivery" && deliveryQuote && !deliveryQuote.available && (
+                <div role="alert" className="rounded-xl border border-red-300 bg-red-50 p-3 text-sm text-red-900 dark:border-red-900 dark:bg-red-950/40 dark:text-red-200">
+                  <p className="font-semibold">Delivery isn&apos;t available here</p>
+                  <p className="mt-0.5">
+                    {deliveryQuote.reason || "We couldn't get a courier for this address."} You can try another address, or
+                    close this and switch to <span className="font-semibold">Pickup</span> at the top of the menu.
+                  </p>
+                </div>
+              )}
 
               <input
                 placeholder="Apt / Suite / Floor"
@@ -450,7 +506,11 @@ export function PickupDetailsContent({
             className="w-full"
             onClick={handleAddDelivery}
           >
-            {isLoading ? "Confirming..." : "Confirm Delivery"}
+            {isLoading
+              ? "Checking delivery..."
+              : deliveryQuote?.available && typeof deliveryQuote.feeCents === "number"
+                ? `Continue · ${formatFee(deliveryQuote.feeCents)} delivery`
+                : "Confirm Delivery"}
           </Button>
         )}
       </DialogFooter>
