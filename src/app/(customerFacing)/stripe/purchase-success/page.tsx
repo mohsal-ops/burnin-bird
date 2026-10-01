@@ -2,16 +2,16 @@ import { Button } from "@/components/ui/button";
 import db from "@/db/db";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import Stripe from "stripe";
+import { requireStripe } from "@/lib/stripeConfig";
 import { finalizeCart } from "@/lib/finalizeOrder";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_placeholder");
 
 export default async function Success(props: any) {
   const searchParams = await Promise.resolve(props.searchParams);
   const payment_intent = searchParams?.payment_intent;
 
   if (!payment_intent) return notFound();
+  const stripe = await requireStripe();
 
   const paymentIntent = await stripe.paymentIntents.retrieve(payment_intent);
 

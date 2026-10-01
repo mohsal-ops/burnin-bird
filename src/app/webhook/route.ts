@@ -1,16 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import Stripe from "stripe";
+import type Stripe from "stripe";
+import { getStripe } from "@/lib/stripeConfig";
 import { finalizeCart } from "@/lib/finalizeOrder";
 
 // Stripe payment webhook. Verifies the signature, then finalizes the paid cart
 // via the shared, idempotent finalizeCart (same path the success page uses, so
 // orders complete even if this webhook isn't configured - see finalizeOrder.ts).
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_placeholder");
+// LEGACY: env-configured sites. admin → Payments uses /api/stripe/webhook.
 
 export async function POST(req: NextRequest) {
   try {
     const sig = req.headers.get("stripe-signature");
     if (!sig) return new NextResponse("Missing signature", { status: 400 });
+    const stripe = await getStripe();
+    if (!stripe) return new NextResponse("Not configured", { status: 503 });
 
     const event = stripe.webhooks.constructEvent(
       await req.text(),

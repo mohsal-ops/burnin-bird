@@ -2,9 +2,7 @@
 // form to the Stripe PaymentIntent's metadata, so the webhook can include
 // them in the purchase notification email.
 import { NextResponse } from "next/server";
-import Stripe from "stripe";
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_placeholder");
+import { getStripe } from "@/lib/stripeConfig";
 
 function clip(value: unknown, max = 500): string {
   return String(value ?? "").slice(0, max);
@@ -18,6 +16,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Missing required form fields" }, { status: 400 });
   }
 
+  const stripe = await getStripe();
+  if (!stripe) return NextResponse.json({ error: "Payments not configured" }, { status: 503 });
+
   try {
     await stripe.paymentIntents.update(paymentIntentId, {
       metadata: {
@@ -27,6 +28,7 @@ export async function POST(req: Request) {
         toEmail: clip(toEmail),
         note: clip(note),
         delivery: clip(delivery || "now"),
+        kind: "giftcard",
       },
     });
 

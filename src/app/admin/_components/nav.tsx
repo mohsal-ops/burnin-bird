@@ -29,6 +29,7 @@ import {
   FileText,
   Truck,
   Gift,
+  CreditCard,
   type LucideIcon,
 } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/siteConfig";
@@ -102,6 +103,7 @@ const NAV_GROUPS: NavGroup[] = [
   {
     label: "Settings",
     items: [
+      { href: "/admin/payments", label: "Payments", icon: CreditCard },
       { href: "/admin/branding", label: "Branding", icon: Palette, minTier: "STANDARD" },
       { href: "/admin/delivery", label: "Delivery", icon: Truck, minTier: "STANDARD" },
       { href: "/admin/loyalty", label: "Loyalty", icon: Gift },

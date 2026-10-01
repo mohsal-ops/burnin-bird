@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import Stripe from "stripe";
+import { requireStripe } from "@/lib/stripeConfig";
 
 export default async function Success(props: any) {
   const searchParams = await Promise.resolve(props.searchParams);
   const payment_intent = searchParams?.payment_intent;
 
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_placeholder");
+  const stripe = await requireStripe();
 
   if (!payment_intent) {
     return (

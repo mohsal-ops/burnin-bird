@@ -20,11 +20,18 @@ import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY as string,
-);
+// Publishable key comes from the server (admin → Payments, else the env var).
+let stripePromise: ReturnType<typeof loadStripe> | null = null;
+let stripeKey = "";
+function stripeFor(key: string) {
+  if (!stripePromise || stripeKey !== key) {
+    stripeKey = key;
+    stripePromise = loadStripe(key);
+  }
+  return stripePromise;
+}
 
-export default function GiftCardPageClient({ logoUrl }: { logoUrl?: string }) {
+export default function GiftCardPageClient({ logoUrl, publishableKey }: { logoUrl?: string; publishableKey: string }) {
   const [clientSecret, setClientSecret] = useState<string>();
   const [price, setPrice] = useState(50 * 100);
   const route = useRouter();
@@ -172,7 +179,7 @@ export default function GiftCardPageClient({ logoUrl }: { logoUrl?: string }) {
 
       {/* 💳 PAYMENT */}
       {clientSecret ? (
-        <Elements options={{ clientSecret }} stripe={stripePromise}>
+        <Elements options={{ clientSecret }} stripe={stripeFor(publishableKey)}>
           <CheckoutForm
             priceInCents={price}
             paymentIntentId={clientSecret.split("_secret_")[0]}

@@ -13,19 +13,32 @@ import { useFormState } from "react-dom"
 import PageHeader from "../../_components/PageHeader"
 import LoyaltySignupForm from "../../rewards/_components/LoyaltySignupForm"
 
+// One Stripe.js instance per key (the key now comes from the server: admin →
+// Payments, else the env var), not a new one on every render.
+const stripeCache = new Map<string, ReturnType<typeof loadStripe>>()
+function stripeFor(key: string) {
+    let p = stripeCache.get(key)
+    if (!p) {
+        p = loadStripe(key)
+        stripeCache.set(key, p)
+    }
+    return p
+}
+
 type CheckoutFormProps = {
     priceInCents: number
     deliveryFeeInCents?: number
     clientSecret: string
+    publishableKey: string
     loyaltyEnabled?: boolean
     loyaltyConsentText?: string
     loyaltyIncentive?: string
 }
 export function StripeCheckoutForm(
-    { priceInCents, deliveryFeeInCents = 0, clientSecret, loyaltyEnabled = false, loyaltyConsentText = "", loyaltyIncentive = ""
+    { priceInCents, deliveryFeeInCents = 0, clientSecret, publishableKey, loyaltyEnabled = false, loyaltyConsentText = "", loyaltyIncentive = ""
 
     }: CheckoutFormProps) {
-    const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY as string)
+    const stripePromise = stripeFor(publishableKey)
 
 
     return (

@@ -1,8 +1,6 @@
 // app/api/GiftCard/create-intent/route.ts
 import { NextResponse } from "next/server";
-import Stripe from "stripe";
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_placeholder");
+import { getStripe } from "@/lib/stripeConfig";
 
 const MIN_AMOUNT_CENTS = 500; // $5
 const MAX_AMOUNT_CENTS = 100_000; // $1,000
@@ -22,11 +20,17 @@ export async function POST(req: Request) {
     );
   }
 
+  const stripe = await getStripe();
+  if (!stripe) {
+    return NextResponse.json({ error: "Online payments aren't set up yet." }, { status: 503 });
+  }
+
   try {
     const paymentIntent = await stripe.paymentIntents.create({
       amount,
       currency: "usd",
       automatic_payment_methods: { enabled: true },
+      metadata: { kind: "giftcard" }, // lets the webhook tell gift cards from food orders
     });
 
     return NextResponse.json({

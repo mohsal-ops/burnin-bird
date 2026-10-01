@@ -1,5 +1,5 @@
 import db from "@/db/db"
-import Stripe from "stripe"
+import { getStripe, getStripeConfig } from "@/lib/stripeConfig"
 import { StripeCheckoutForm } from "../../_components/StripeCheckoutForm"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -12,7 +12,6 @@ interface PageProps {
   params: Promise<{ id: string }>
 }
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_placeholder")
 
 // ✅ FIX: await the params
 export default async function Page({ params }: PageProps) {
@@ -88,6 +87,21 @@ export default async function Page({ params }: PageProps) {
   const deliveryFee = isDelivery ? cart.uberFeeCents ?? 0 : 0
   const total = Math.max(0, itemsTotal - discountInCents) + deliveryFee
 
+  const [stripe, stripeCfg] = await Promise.all([getStripe(), getStripeConfig()])
+  if (!stripe || !stripeCfg.publishableKey) {
+    return (
+      <div className="mx-auto flex min-h-[60svh] w-full max-w-md flex-col items-center justify-center gap-4 px-6 pt-24 text-center">
+        <h1 className="text-xl font-semibold">Online payment isn&apos;t open yet</h1>
+        <p className="text-muted-foreground">
+          This restaurant hasn&apos;t switched on card payments yet, so nothing has been charged. Please call to order.
+        </p>
+        <Button asChild variant="mainButton">
+          <Link href="/Menu">Back to the menu</Link>
+        </Button>
+      </div>
+    )
+  }
+
   const paymentIntent = await stripe.paymentIntents.create({
     amount: total,
     currency: "USD",
@@ -109,6 +123,7 @@ export default async function Page({ params }: PageProps) {
         priceInCents={total}
         deliveryFeeInCents={deliveryFee}
         clientSecret={paymentIntent.client_secret}
+        publishableKey={stripeCfg.publishableKey}
         loyaltyEnabled={loyalty.enabled}
         loyaltyConsentText={loyalty.consentText}
         loyaltyIncentive={loyaltyIncentive()}
