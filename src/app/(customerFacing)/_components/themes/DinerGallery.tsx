@@ -71,8 +71,12 @@ function Polaroid({ g, i, onOpen, dragArea }: { g: G; i: number; onOpen: () => v
 export function DinerGallery({ images, instagramUrl }: { images: G[]; instagramUrl?: string }) {
   const [open, setOpen] = useState<number | null>(null);
   const area = useRef<HTMLDivElement>(null);
-  const shown = images.slice(0, 8);
+  // Every photo from the dashboard gallery is reachable: 8 on the board, the
+  // rest one tap away ("see all"), and the lightbox walks through all of them.
+  const [all, setAll] = useState(false);
+  const shown = images;
   const n = shown.length;
+  const board = all ? shown : shown.slice(0, 8);
   const go = useCallback((d: number) => setOpen((o) => (o === null ? o : (o + d + n) % n)), [n]);
 
   useEffect(() => {
@@ -96,10 +100,22 @@ export function DinerGallery({ images, instagramUrl }: { images: G[]; instagramU
   return (
     <>
       <div ref={area} className="relative mx-auto mt-16 grid max-w-6xl grid-cols-2 gap-x-5 gap-y-10 px-5 sm:gap-x-8 md:grid-cols-4 md:gap-y-14 md:px-8">
-        {shown.map((g, i) => (
+        {board.map((g, i) => (
           <Polaroid key={g.url + i} g={g} i={i} onOpen={() => setOpen(i)} dragArea={area} />
         ))}
       </div>
+      {n > 8 && (
+        <div className="mt-14 flex justify-center">
+          <button
+            type="button"
+            onClick={() => setAll((v) => !v)}
+            className="inline-flex items-center justify-center rounded-md px-7 py-3 text-base font-extrabold lowercase transition-all duration-200 hover:translate-x-[2px] hover:translate-y-[2px]"
+            style={{ background: DINER.brown, color: DINER.onBrown, boxShadow: `5px 5px 0 ${DINER.gold}` }}
+          >
+            {all ? "show fewer" : `see all ${n} snapshots`}
+          </button>
+        </div>
+      )}
       <p className="mt-10 text-center text-sm" style={{ fontFamily: "var(--font-courier-prime), monospace", color: tint(DINER.brown, 70) }}>
         psst — you can pick them up.
         {instagramUrl && (

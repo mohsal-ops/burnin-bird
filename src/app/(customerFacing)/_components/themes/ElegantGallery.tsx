@@ -43,7 +43,7 @@ function Print({ g, i, onOpen, className = "" }: { g: G; i: number; onOpen: () =
 
 export function ElegantGallery({ images }: { images: G[] }) {
   const reduce = useReducedMotion();
-  const shown = images.slice(0, 10);
+  const shown = images; // every dashboard photo — the walk simply gets longer
   const n = shown.length;
   const wrap = useRef<HTMLElement>(null);
   const track = useRef<HTMLDivElement>(null);

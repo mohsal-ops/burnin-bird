@@ -189,7 +189,7 @@ export default async function Home() {
       GetFeaturedProducts(),
       db.review.findMany({ orderBy: { order: "asc" } }),
       getThemeHomeContent(themeSlug),
-      db.galleryImage.findMany({ orderBy: { order: "asc" }, select: { url: true, alt: true }, take: 24 }),
+      db.galleryImage.findMany({ orderBy: { order: "asc" }, select: { url: true, alt: true }, take: 80 }),
     ]);
     return (
       <>
@@ -221,7 +221,7 @@ export default async function Home() {
       GetFeaturedProducts(),
       db.review.findMany({ orderBy: { order: "asc" } }),
       getThemeHomeContent(themeSlug),
-      db.galleryImage.findMany({ orderBy: { order: "asc" }, select: { url: true, alt: true }, take: 8 }),
+      db.galleryImage.findMany({ orderBy: { order: "asc" }, select: { url: true, alt: true }, take: 80 }),
     ]);
     return (
       <>
@@ -242,7 +242,7 @@ export default async function Home() {
     const [featured, reviews, gallery, content] = await Promise.all([
       GetFeaturedProducts(),
       db.review.findMany({ orderBy: { order: "asc" } }),
-      db.galleryImage.findMany({ orderBy: { order: "asc" }, select: { url: true, alt: true }, take: 10 }),
+      db.galleryImage.findMany({ orderBy: { order: "asc" }, select: { url: true, alt: true }, take: 80 }),
       getThemeHomeContent(themeSlug),
     ]);
     return (

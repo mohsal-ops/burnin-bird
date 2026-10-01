@@ -198,33 +198,47 @@ function Banner({ children }: { children: React.ReactNode }) {
   );
 }
 
+// "Diner window" frame — ONE clean arched photo (no stacked discs), framed in
+// white with the theme's signature hard golden offset shadow (same language as
+// the buttons). It wipes up into view; on hover it lifts and the shadow tucks in.
+// Arch radius: half-width round top (40% of a 4:5 frame's height = 50% of its
+// width) + soft bottom corners. "rounded-t-full" made browsers scale ALL radii
+// down, flattening the bottom.
+const ARCH = (px: number) => `50% 50% ${px}px ${px}px / 40% 40% ${px}px ${px}px`;
+
 function Plate({ src, alt, size = "md", priority }: { src: string | null; alt: string; size?: "md" | "lg"; priority?: boolean }) {
-  const dim = size === "lg" ? "size-64 md:size-80" : "size-48 md:size-56";
+  const reduce = useReducedMotion();
+  const dim = size === "lg" ? "w-64 md:w-80" : "w-52 md:w-60";
   return (
-    <div className={`relative ${dim}`}>
-      {/* chocolate disc peeking out up-left, like Fame's plates */}
-      <motion.span
-        className="absolute left-0 top-0 size-[86%] rounded-full"
-        style={{ background: BROWN }}
-        initial={{ scale: 0 }}
-        whileInView={{ scale: 1 }}
-        viewport={{ once: true, margin: "-10%" }}
-        transition={{ type: "spring", stiffness: 200, damping: 16 }}
-      />
-      <motion.div
-        className="absolute bottom-0 right-0 size-[86%] overflow-hidden rounded-full bg-white shadow-[10px_16px_24px_-10px_color-mix(in_srgb,var(--tp-ink)_45%,transparent)] transition-transform duration-500 ease-out group-hover:-translate-y-2 group-hover:rotate-[-5deg] group-hover:scale-[1.04]"
-        initial={{ opacity: 0, rotate: -24, x: 24, y: 24 }}
-        whileInView={{ opacity: 1, rotate: 0, x: 0, y: 0 }}
-        viewport={{ once: true, margin: "-10%" }}
-        transition={{ type: "spring", stiffness: 140, damping: 15, delay: 0.12 }}
+    <motion.div
+      className={`relative aspect-[4/5] ${dim}`}
+      initial={reduce ? false : { y: 36, opacity: 0 }}
+      whileInView={{ y: 0, opacity: 1 }}
+      viewport={{ once: true, margin: "-10%" }}
+      transition={{ type: "spring", stiffness: 130, damping: 18 }}
+    >
+      <div
+        className="absolute inset-0 overflow-hidden border-[5px] border-white bg-white transition-all duration-300 ease-out group-hover:-translate-x-1 group-hover:-translate-y-1.5"
+        style={{ boxShadow: `10px 10px 0 ${GOLD}`, borderRadius: ARCH(26) }}
       >
-        {src ? (
-          <Image src={src} alt={alt} fill priority={priority} sizes="(max-width: 768px) 60vw, 320px" className="object-cover transition-transform duration-700 group-hover:scale-110" />
-        ) : (
-          <span className="grid size-full place-items-center text-5xl" style={{ fontFamily: "var(--font-script), cursive", color: BROWN }}>{alt.charAt(0)}</span>
-        )}
-      </motion.div>
-    </div>
+        <motion.div
+          className="absolute inset-0 overflow-hidden"
+          style={{ borderRadius: ARCH(20) }}
+          initial={reduce ? false : { clipPath: "inset(100% 0% 0% 0%)" }}
+          whileInView={{ clipPath: "inset(0% 0% 0% 0%)" }}
+          viewport={{ once: true, margin: "-10%" }}
+          transition={{ duration: 0.9, ease: EASE, delay: 0.1 }}
+        >
+          {src ? (
+            <Image src={src} alt={alt} fill priority={priority} sizes="(max-width: 768px) 60vw, 320px" className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.07]" />
+          ) : (
+            <span className="grid size-full place-items-center text-6xl" style={{ fontFamily: "var(--font-script), cursive", color: BROWN, background: GOLD }}>{alt.charAt(0)}</span>
+          )}
+          {/* soft top sheen, like light on a window */}
+          <span aria-hidden className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.18),transparent_38%)]" />
+        </motion.div>
+      </div>
+    </motion.div>
   );
 }
 
@@ -360,25 +374,12 @@ export function DinerHome({ content, menu, featured, reviews, heroImage, gallery
         </section>
       )}
 
-      {/* 4 · Our story + FAQ */}
-      <section className="relative overflow-hidden py-24">
-        <SectionTitle>Our Story</SectionTitle>
-        <Banner>{content.headline}</Banner>
-        {content.features.length > 0 && (
-          <div className="mx-auto mt-16 grid max-w-5xl gap-16 px-6 md:grid-cols-2">
-            {content.features.slice(0, 2).map((f, i) => (
-              <div key={i} className="group flex flex-col items-center text-center">
-                <Plate src={f.image || null} alt={f.title} />
-                <h3 className="mt-6 text-xl font-black uppercase tracking-tight">{f.title}</h3>
-                <p className="mt-3 max-w-md text-sm leading-7" style={{ fontFamily: "var(--font-courier-prime), monospace" }}>{f.description}</p>
-              </div>
-            ))}
-          </div>
-        )}
-        {c.home.faq?.length > 0 && (
-          <div className="mx-auto mt-20 max-w-3xl px-6">
-            <h3 className="mb-6 text-center text-4xl" style={{ fontFamily: "var(--font-script), cursive" }}>Good Questions</h3>
-            {c.home.faq.slice(0, 5).map((q, i) => (
+      {/* 4 · Good questions (Our Story lives on its own page now) */}
+      {c.home.faq?.length > 0 && (
+        <section className="relative overflow-hidden py-24">
+          <SectionTitle>Good Questions</SectionTitle>
+          <div className="mx-auto mt-12 max-w-3xl px-6">
+            {c.home.faq.slice(0, 6).map((q, i) => (
               <details key={i} className="group border-b-2 border-dashed py-4" style={{ borderColor: tint(BROWN, 25) }}>
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-extrabold uppercase">
                   {q.question}
@@ -388,8 +389,8 @@ export function DinerHome({ content, menu, featured, reviews, heroImage, gallery
               </details>
             ))}
           </div>
-        )}
-      </section>
+        </section>
+      )}
 
       {/* 5 · Come say hi */}
       <section className="px-5 pb-20">
