@@ -21,7 +21,7 @@ import { stretchWord } from "@/lib/themes/mediaSlots";
 // and the in-voice core pitch. Content/photos are the client's own.
 
 type P = { id: string; name: string; priceInCents: number; description: string | null; image: string | null };
-type Cat = { id: string; name: string; items: P[] };
+type Cat = { id: string; name: string; count?: number; items: P[] };
 type R = { id: string; name: string; review: string; avatar: string };
 
 const { brown: BROWN, cream: CREAM, gold: GOLD, onGold: ON_GOLD, onBrown: ON_BROWN } = DINER;
@@ -274,7 +274,10 @@ export function DinerHome({ content, menu, featured, reviews, heroImage, gallery
   const c = SITE_CONFIG;
   const heroWord = content.words.theme_heroword || stretchWord(c.primaryDish || c.cuisines?.[0] || "Delicious");
   const heroFood = featured.filter((p) => p.image).slice(0, 3);
-  const cats = menu.filter((m) => m.items.length > 0).slice(0, 4);
+  const cats = menu.filter((m) => m.items.length > 0).map((m) => ({ id: m.id, name: m.name, count: m.count ?? m.items.length }));
+  const favPool = featured.length > 0 ? featured : (menu.find((m) => m.items.length > 0)?.items ?? []);
+  const favorites = favPool.slice(0, 5);
+  const [lead, ...more] = favorites;
   const banner = content.subheadline || c.tagline;
 
   return (
@@ -300,43 +303,66 @@ export function DinerHome({ content, menu, featured, reviews, heroImage, gallery
         <Drips />
       </section>
 
-      {/* 2 · The menu, category by category */}
+      {/* 2 · Favorites, not the whole menu — a long menu used to scroll forever
+          here. The owner's featured dishes (else the first category) as one
+          big lead + up to 4, then every category as a tag that jumps straight
+          to it on the menu page. */}
       <div className="relative overflow-hidden pb-10 pt-40">
         <Halftone side="left" />
         <Halftone side="right" />
-        {cats.map((cat, ci) => {
-          const [lead, ...rest] = cat.items;
-          const single = ci === 0 && cat.items.length > 0;
-          return (
-            <section key={cat.id} className={ci === 0 ? "" : "pt-24"}>
-              <SectionTitle>{cat.name}</SectionTitle>
-              {ci === 1 && banner && <Banner>{banner}</Banner>}
-              {single ? (
-                <>
-                  <Link href="/Menu" className="group mx-auto mt-14 grid max-w-5xl items-center gap-10 px-6 md:grid-cols-2">
-                    <div className="flex justify-center"><Plate src={lead.image} alt={lead.name} size="lg" /></div>
-                    <div className="text-center">
-                      <h3 className="text-3xl font-black uppercase tracking-tight">{lead.name}</h3>
-                      {lead.description && <p className="mx-auto mt-5 max-w-sm text-sm leading-7" style={{ fontFamily: "var(--font-courier-prime), monospace" }}>{lead.description}</p>}
-                      <p className="mt-5 text-xl font-extrabold">{usd(lead.priceInCents)}</p>
-                      <span className="mt-7 inline-block"><span className="inline-flex rounded-md px-7 py-3 text-base font-extrabold lowercase shadow-[5px_5px_0_var(--tp-ink)] transition-all duration-200 group-hover:translate-x-[2px] group-hover:translate-y-[2px] group-hover:shadow-[2px_2px_0_var(--tp-ink)]" style={{ background: GOLD, color: ON_GOLD }}>{c.menuCtaLabel}</span></span>
-                    </div>
+        {favorites.length > 0 && (
+          <section>
+            <SectionTitle>Our Favorites</SectionTitle>
+            {banner && <Banner>{banner}</Banner>}
+            <Link href="/Menu" className="group mx-auto mt-14 grid max-w-5xl items-center gap-10 px-6 md:grid-cols-2">
+              <div className="flex justify-center"><Plate src={lead.image} alt={lead.name} size="lg" /></div>
+              <div className="text-center">
+                <p className="text-xs font-extrabold uppercase tracking-[0.3em]" style={{ color: tint(BROWN, 60) }}>the one everyone orders</p>
+                <h3 className="mt-3 text-3xl font-black uppercase tracking-tight">{lead.name}</h3>
+                {lead.description && <p className="mx-auto mt-5 max-w-sm text-sm leading-7" style={{ fontFamily: "var(--font-courier-prime), monospace" }}>{lead.description}</p>}
+                <p className="mt-5 text-xl font-extrabold">{usd(lead.priceInCents)}</p>
+                <span className="mt-7 inline-block"><span className="inline-flex rounded-md px-7 py-3 text-base font-extrabold lowercase shadow-[5px_5px_0_var(--tp-ink)] transition-all duration-200 group-hover:translate-x-[2px] group-hover:translate-y-[2px] group-hover:shadow-[2px_2px_0_var(--tp-ink)]" style={{ background: GOLD, color: ON_GOLD }}>{c.menuCtaLabel}</span></span>
+              </div>
+            </Link>
+            {more.length > 0 && (
+              <div className={`mx-auto mt-20 grid max-w-5xl gap-x-8 gap-y-16 sm:grid-cols-2 ${more.length > 2 ? "lg:max-w-6xl lg:grid-cols-4" : ""}`}>
+                {more.map((p) => <Dish key={p.id} p={p} />)}
+              </div>
+            )}
+          </section>
+        )}
+
+        {cats.length > 0 && (
+          <section className="pt-24">
+            <SectionTitle>On the Menu</SectionTitle>
+            <div className="mx-auto mt-12 flex max-w-4xl flex-wrap justify-center gap-x-4 gap-y-5 px-6">
+              {cats.map((cat, i) => (
+                <motion.div
+                  key={cat.id}
+                  initial={{ y: 24, opacity: 0, rotate: i % 2 ? 3 : -3 }}
+                  whileInView={{ y: 0, opacity: 1, rotate: i % 2 ? 1.5 : -1.5 }}
+                  viewport={{ once: true, margin: "-10%" }}
+                  transition={{ type: "spring", stiffness: 200, damping: 16, delay: (i % 6) * 0.05 }}
+                >
+                  <Link
+                    href={`/Menu#cat-${cat.id}`}
+                    className="group relative flex items-center gap-3 rounded-md border-[3px] py-2.5 pl-4 pr-3 transition-all duration-200 hover:-translate-y-1 hover:rotate-0"
+                    style={{ background: CREAM, borderColor: BROWN, boxShadow: `4px 4px 0 ${BROWN}` }}
+                  >
+                    {/* receipt-tag punch hole */}
+                    <span aria-hidden className="size-2.5 rounded-full border-2" style={{ borderColor: BROWN }} />
+                    <span className="text-2xl leading-none" style={{ fontFamily: "var(--font-script), cursive" }}>{cat.name}</span>
+                    <span className="rounded px-1.5 py-0.5 text-[0.65rem] font-extrabold" style={{ background: GOLD, color: ON_GOLD, fontFamily: "var(--font-courier-prime), monospace" }}>
+                      {cat.count}
+                    </span>
+                    <span aria-hidden className="text-lg font-black transition-transform duration-200 group-hover:translate-x-1">→</span>
                   </Link>
-                  {rest.length > 0 && (
-                    <div className="mx-auto mt-16 grid max-w-5xl gap-x-8 gap-y-16 sm:grid-cols-2">
-                      {rest.slice(0, 4).map((p) => <Dish key={p.id} p={p} />)}
-                    </div>
-                  )}
-                </>
-              ) : (
-                <div className="mx-auto mt-14 grid max-w-5xl gap-x-8 gap-y-16 sm:grid-cols-2">
-                  {cat.items.slice(0, 4).map((p) => <Dish key={p.id} p={p} />)}
-                </div>
-              )}
-            </section>
-          );
-        })}
-        <div className="mt-20 flex justify-center">
+                </motion.div>
+              ))}
+            </div>
+          </section>
+        )}
+        <div className="mt-16 flex justify-center">
           <DinerButton href="/Menu">see the whole menu</DinerButton>
         </div>
       </div>

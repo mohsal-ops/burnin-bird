@@ -216,7 +216,10 @@ export default async function Home() {
     const [types, featured, reviews, content, gallery] = await Promise.all([
       db.types.findMany({
         orderBy: { createdAt: "asc" },
-        include: { items: { where: { isAvailableForPurchase: true }, take: 6 } },
+        include: {
+          items: { where: { isAvailableForPurchase: true }, take: 5 },
+          _count: { select: { items: { where: { isAvailableForPurchase: true } } } },
+        },
       }),
       GetFeaturedProducts(),
       db.review.findMany({ orderBy: { order: "asc" } }),
@@ -230,7 +233,7 @@ export default async function Home() {
           gallery={gallery}
           content={content}
           heroImage={content.images.diner_hero ?? heroImage}
-          menu={types.map((t) => ({ id: t.id, name: t.name, items: t.items.map(slim) }))}
+          menu={types.map((t) => ({ id: t.id, name: t.name, count: t._count.items, items: t.items.map(slim) }))}
           featured={featured.map(slim)}
           reviews={reviews}
         />

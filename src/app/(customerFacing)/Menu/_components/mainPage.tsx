@@ -101,6 +101,22 @@ export default function MainPageMenu({
   }
 
   // Tracks the serachbar so it fiex it or un-fix it
+  // Deep links like /Menu#cat-<id> (the homepage category tags): wait for that
+  // category to render, then glide to it below the fixed nav.
+  useEffect(() => {
+    const id = window.location.hash.slice(1);
+    if (!id.startsWith("cat-")) return;
+    let tries = 0;
+    const t = setInterval(() => {
+      const el = document.getElementById(id);
+      if (el || ++tries > 40) {
+        clearInterval(t);
+        if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 110, behavior: "smooth" });
+      }
+    }, 100);
+    return () => clearInterval(t);
+  }, []);
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
