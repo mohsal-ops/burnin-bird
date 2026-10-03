@@ -110,11 +110,24 @@ export function paletteCss(slug: ThemeSlug, palette: Palette, custom: boolean): 
   const slots = THEME_PALETTES[slug];
   if (!slots) return "";
   const accent = palette.accent;
-  const ink = palette.ink ?? "#111111";
   const paper = palette.paper ?? "#ffffff";
   // A dark page background flips every text colour to light — owners pick
   // black backgrounds (Astoria BBQ) and dark-grey-on-black text was unreadable.
   const paperDark = lum(paper) < 0.18;
+  // The ink is the designs' heading/text colour ON the paper (Diner's chocolate
+  // on cream). If the owner picks one that vanishes on the page (white on white,
+  // Koreatgo), swap in a readable one: a deep shade of their brand colour, else
+  // near-black / near-white.
+  const rawInk = palette.ink ?? "#111111";
+  const deepAccent = accent ? mixHex(accent, paperDark ? "#ffffff" : "#000000", 0.62) : "";
+  const ink =
+    contrast(rawInk, paper) >= 3
+      ? rawInk
+      : deepAccent && contrast(deepAccent, paper) >= 4.5
+        ? deepAccent
+        : paperDark
+          ? "#F4F4F5"
+          : "#1A1A1A";
   // Body text: the ink when it actually reads on the page, else neutral.
   const text = contrast(ink, paper) >= 4.5 ? ink : paperDark ? "#F4F4F5" : "#141414";
   const vars: string[] = [
