@@ -65,6 +65,7 @@ export function SmartDishImage({
         fill
         priority={priority}
         sizes={sizes}
+        crossOrigin="anonymous" // Blob sends CORS * — lets the alpha check read the pixels
         className={`${photo ? "object-cover" : "object-contain"} transition-opacity duration-300 ${kind === "?" ? "opacity-0" : "opacity-100"}`}
         onLoad={(e) => {
           if (kind !== "?") return;
