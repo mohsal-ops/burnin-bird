@@ -1,4 +1,6 @@
 "use client";
+import { LayoutDashboard } from "lucide-react";
+import { useDashboardAccess } from "./DashboardBubble";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -13,6 +15,8 @@ import { Gamepad2, TextAlignJustify } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 
 export default function AppSideBar() {
+  // Closed "Your dashboard" bubble lives here on phones.
+  const dash = useDashboardAccess();
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
 
@@ -53,6 +57,15 @@ export default function AppSideBar() {
                   </div>
                 </Link>
               ))}
+              {dash.available && dash.hidden && (
+                <a
+                  href={dash.href}
+                  className="mt-3 flex w-full items-center justify-center gap-2 rounded-md border border-[#c85a1e]/30 bg-[#c85a1e]/10 px-4 py-2 font-medium text-[#c85a1e] transition-colors hover:bg-[#c85a1e] hover:text-white"
+                >
+                  <LayoutDashboard className="h-4 w-4" />
+                  Your dashboard
+                </a>
+              )}
             </div>
           </SheetContent>
         </Sheet>

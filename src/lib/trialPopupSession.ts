@@ -47,3 +47,26 @@ export function markTrialDismissed(): void {
     /* ignore */
   }
 }
+
+// The visitor closed the floating "Your dashboard" bubble: it then lives in the
+// phone menu + a slim desktop edge tab instead of floating over the page.
+const BUBBLE_HIDDEN_KEY = "vega:dashBubbleHidden";
+export const BUBBLE_EVENT = "vega:dash-bubble";
+
+export function isBubbleHidden(): boolean {
+  try {
+    return !!localStorage.getItem(BUBBLE_HIDDEN_KEY);
+  } catch {
+    return false;
+  }
+}
+
+export function setBubbleHidden(hidden: boolean): void {
+  try {
+    if (hidden) localStorage.setItem(BUBBLE_HIDDEN_KEY, "1");
+    else localStorage.removeItem(BUBBLE_HIDDEN_KEY);
+    window.dispatchEvent(new Event(BUBBLE_EVENT));
+  } catch {
+    /* ignore */
+  }
+}
