@@ -20,11 +20,10 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    // Serve images as-is: Vercel Image Optimization is capped per ACCOUNT on the
-    // free plan, and once the monthly quota is used every NEW size returns 402 —
-    // phones (which request small widths) lost every photo while desktop sizes
-    // still came from cache. Uploads are already web-sized (webp/jpg from Blob).
-    unoptimized: true,
+    // Vercel Image Optimization is OFF (account-wide quota → 402s on new sizes;
+    // phones lost photos). Remote images go through wsrv.nl instead — see image-loader.ts.
+    loader: "custom",
+    loaderFile: "./image-loader.ts",
     remotePatterns: [
       {
         protocol: "https",
