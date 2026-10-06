@@ -126,7 +126,7 @@ export async function updateThemePalette(slug: string, colors: Record<string, st
   const clean: Record<string, string> = {};
   for (const s of THEME_PALETTES[slug]!) {
     const v = colors[s.role];
-    if (v === undefined) continue;
+    if (v === undefined || v === "") continue; // "" = automatic text colour
     if (!isHex6(v)) return { error: `“${s.label}” needs a 6-digit hex colour like #FCB931.` };
     clean[s.role] = v;
   }

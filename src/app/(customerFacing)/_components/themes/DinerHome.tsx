@@ -24,7 +24,7 @@ type P = { id: string; name: string; priceInCents: number; description: string |
 type Cat = { id: string; name: string; count?: number; items: P[] };
 type R = { id: string; name: string; review: string; avatar: string };
 
-const { brown: BROWN, cream: CREAM, gold: GOLD, onGold: ON_GOLD, onBrown: ON_BROWN } = DINER;
+const { brown: BROWN, cream: CREAM, gold: GOLD, onGold: ON_GOLD, onBrown: ON_BROWN, text: TEXT, heroText: HERO_TEXT } = DINER;
 const usd = (c: number) => `$${(c / 100).toFixed(2)}`;
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -39,7 +39,7 @@ const Script = ({ children, className = "", style }: { children: React.ReactNode
 function PopWord({ text }: { text: string }) {
   const reduce = useReducedMotion();
   return (
-    <h1 aria-label={text} className="relative z-10 select-none text-center leading-[0.8]" style={{ color: CREAM, fontSize: "clamp(4.5rem, 15vw, 13.5rem)", transform: "rotate(-7deg)" }}>
+    <h1 aria-label={text} className="relative z-10 select-none text-center leading-[0.8]" style={{ color: HERO_TEXT, fontSize: "clamp(4.5rem, 15vw, 13.5rem)", transform: "rotate(-7deg)" }}>
       {Array.from(text).map((ch, i) => (
         <motion.span
           key={i}
@@ -170,7 +170,7 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
       <DottedRule />
       <motion.h2
         className="shrink-0 text-center text-[clamp(3rem,7vw,5rem)] leading-none"
-        style={{ color: BROWN, fontFamily: "var(--font-script), cursive" }}
+        style={{ color: TEXT, fontFamily: "var(--font-script), cursive" }}
         initial={{ y: 24, opacity: 0, rotate: -4 }}
         whileInView={{ y: 0, opacity: 1, rotate: -2 }}
         viewport={{ once: true, margin: "-10%" }}
@@ -246,11 +246,11 @@ function Dish({ p }: { p: P }) {
   return (
     <Link href="/Menu" className="group flex flex-col items-center px-4 text-center">
       <Plate src={p.image} alt={p.name} />
-      <h3 className="mt-6 text-2xl font-black uppercase tracking-tight md:text-[1.7rem]" style={{ color: BROWN }}>{p.name}</h3>
+      <h3 className="mt-6 text-2xl font-black uppercase tracking-tight md:text-[1.7rem]" style={{ color: TEXT }}>{p.name}</h3>
       {p.description && (
-        <p className="mt-4 line-clamp-3 max-w-md text-sm leading-7" style={{ color: BROWN, fontFamily: "var(--font-courier-prime), monospace" }}>{p.description}</p>
+        <p className="mt-4 line-clamp-3 max-w-md text-sm leading-7" style={{ color: TEXT, fontFamily: "var(--font-courier-prime), monospace" }}>{p.description}</p>
       )}
-      <p className="mt-4 text-lg font-extrabold" style={{ color: BROWN }}>{usd(p.priceInCents)}</p>
+      <p className="mt-4 text-lg font-extrabold" style={{ color: TEXT }}>{usd(p.priceInCents)}</p>
     </Link>
   );
 }
@@ -281,7 +281,7 @@ export function DinerHome({ content, menu, featured, reviews, heroImage, gallery
   const banner = content.subheadline || c.tagline;
 
   return (
-    <div className="theme-bespoke w-full overflow-x-clip pt-20" style={{ background: CREAM, color: BROWN }}>
+    <div className="theme-bespoke w-full overflow-x-clip pt-20" style={{ background: CREAM, color: TEXT }}>
       {/* 1 · Golden hero */}
       <section className="relative overflow-visible" style={{ background: GOLD }}>
         <div className="relative mx-auto flex max-w-7xl flex-col items-center justify-center overflow-hidden px-4 pb-28 pt-16 md:min-h-[78svh] md:pb-24 md:pt-14">

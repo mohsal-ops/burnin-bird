@@ -5,7 +5,8 @@ import { toast } from "sonner";
 import { RotateCcw, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { updateThemePalette } from "../_actions/brandingActions";
-import { THEME_PALETTES, isHex6, onColor, type Palette, type PaletteRole } from "@/lib/themes/palette";
+import { useRouter } from "next/navigation";
+import { THEME_PALETTES, contrast, isHex6, onColor, resolveTextColors, type Palette, type PaletteRole } from "@/lib/themes/palette";
 import type { ThemeSlug } from "@/lib/themes/registry";
 
 // "Design colours" — the active design's own palette (Diner: golden/chocolate/
@@ -40,15 +41,20 @@ function Mini({ slug, p, brand, name }: { slug: ThemeSlug; p: Palette; brand: st
   const accent = p.accent ?? brand;
   const ink = p.ink ?? "#111";
   const paper = p.paper ?? "#fff";
+  // Same text-colour rules as the live site (lib/themes/palette.ts).
+  const tc = resolveTextColors({ ...p, accent });
   if (slug === "diner-classic") {
     return (
       <div className="overflow-hidden rounded-xl border border-stone-200" style={{ background: paper }}>
         <div className="flex h-7 items-center justify-between px-3" style={{ background: ink }}>
-          <span className="text-[13px] leading-none" style={{ fontFamily: "var(--font-script), cursive", color: accent }}>{name}</span>
-          <span className="rounded-[3px] px-2 py-0.5 text-[8px] font-extrabold" style={{ background: accent, color: onColor(accent, ink), boxShadow: `2px 2px 0 ${paper}` }}>order now</span>
+          <span className="text-[13px] leading-none" style={{ fontFamily: "var(--font-script), cursive", color: contrast(accent, ink) >= 2 ? accent : tc.navText }}>{name}</span>
+          <span className="flex items-center gap-2">
+            <span className="text-[8px] font-bold" style={{ color: tc.navText }}>menu</span>
+            <span className="rounded-[3px] px-2 py-0.5 text-[8px] font-extrabold" style={{ background: accent, color: onColor(accent, ink), boxShadow: `2px 2px 0 ${paper}` }}>order now</span>
+          </span>
         </div>
         <div className="relative flex h-28 flex-col items-center justify-center" style={{ background: accent }}>
-          <span className="-rotate-6 text-4xl leading-none" style={{ fontFamily: "var(--font-script), cursive", color: paper, textShadow: `0 3px 0 ${ink}22` }}>Yummm!</span>
+          <span className="-rotate-6 text-4xl leading-none" style={{ fontFamily: "var(--font-script), cursive", color: tc.heroText, textShadow: `0 3px 0 ${ink}22` }}>Yummm!</span>
           <div className="mt-2 flex gap-2">
             {[0, 1, 2].map((i) => (
               <span key={i} className="size-7 rounded-full" style={{ background: `radial-gradient(circle at 35% 35%, #fff8 0 18%, ${ink}cc 19% 100%)` }} />
@@ -62,7 +68,7 @@ function Mini({ slug, p, brand, name }: { slug: ThemeSlug; p: Palette; brand: st
         </div>
         <div className="flex items-center gap-2 px-3 pb-3 pt-7">
           <span className="h-1 flex-1" style={{ backgroundImage: `radial-gradient(circle, ${ink} 1px, transparent 1.4px)`, backgroundSize: "6px 4px" }} />
-          <span className="text-lg leading-none" style={{ fontFamily: "var(--font-script), cursive", color: ink }}>Menu</span>
+          <span className="text-lg leading-none" style={{ fontFamily: "var(--font-script), cursive", color: tc.text }}>Menu</span>
           <span className="h-1 flex-1" style={{ backgroundImage: `radial-gradient(circle, ${ink} 1px, transparent 1.4px)`, backgroundSize: "6px 4px" }} />
         </div>
       </div>
@@ -78,7 +84,7 @@ function Mini({ slug, p, brand, name }: { slug: ThemeSlug; p: Palette; brand: st
         </div>
         <div className="space-y-1.5 px-4 py-3">
           {["Burrata", "Tagliatelle"].map((d) => (
-            <div key={d} className="flex items-baseline gap-2 text-[9px] font-semibold uppercase tracking-[0.14em]" style={{ color: ink }}>
+            <div key={d} className="flex items-baseline gap-2 text-[9px] font-semibold uppercase tracking-[0.14em]" style={{ color: tc.text }}>
               {d}
               <span className="flex-1 border-b border-dotted" style={{ borderColor: `${ink}44` }} />
               <span style={{ color: accent === "#FFFFFF" ? ink : accent, filter: "brightness(0.8)" }}>$18</span>
@@ -118,24 +124,36 @@ export default function ThemePaletteCard({
   restaurant: string;
 }) {
   const slots = THEME_PALETTES[slug] ?? [];
+  const colorSlots = slots.filter((s) => !s.text);
+  const textSlots = slots.filter((s) => s.text);
+  const router = useRouter();
   const [p, setP] = useState<Palette>(initial);
+  // what's actually saved on the site — "dirty" compares against this, so the
+  // button flips to "Saved ✓" after a real save (it used to keep saying "Save")
+  const [saved, setSaved] = useState<Palette>(initial);
   const [saving, start] = useTransition();
   const set = (role: PaletteRole, v: string) => setP((cur) => ({ ...cur, [role]: v }));
-  const dirty = slots.some((s) => (p[s.role] ?? "").toLowerCase() !== (initial[s.role] ?? "").toLowerCase());
+  const clear = (role: PaletteRole) => setP((cur) => { const n = { ...cur }; delete n[role]; return n; });
+  const dirty = slots.some((s) => (p[s.role] ?? "").toLowerCase() !== (saved[s.role] ?? "").toLowerCase());
+  const auto = resolveTextColors({ ...p, text: undefined, navText: undefined, heroText: undefined });
 
-  const save = (next: Palette, msg = "Design colours saved") =>
+  const save = (next: Palette, msg = "Design colours saved — live on your site") =>
     start(async () => {
       const bad = slots.find((s) => next[s.role] && !isHex6(next[s.role]));
       if (bad) return void toast.error(`“${bad.label}” needs a 6-digit hex like #FCB931`);
       const res = await updateThemePalette(slug, next as Record<string, string>);
-      if (res.ok) toast.success(msg);
-      else toast.error(res.error ?? "Failed to save");
+      if (res.ok) {
+        setSaved(next);
+        toast.success(msg);
+        router.refresh();
+      } else toast.error(res.error ?? "Failed to save");
     });
 
   const reset = () => {
     const d: Palette = {};
-    slots.forEach((s) => (d[s.role] = s.default));
+    colorSlots.forEach((s) => (d[s.role] = s.default));
     setP(d);
+    setSaved(d);
     save({}, "Back to the original colours");
   };
 
@@ -159,7 +177,7 @@ export default function ThemePaletteCard({
         </div>
 
         <div className="space-y-4">
-          {slots.map((s) => (
+          {colorSlots.map((s) => (
             <div key={s.role} className="flex items-center gap-3">
               <label className="relative size-11 shrink-0 cursor-pointer overflow-hidden rounded-xl ring-1 ring-stone-200 transition hover:scale-105" style={{ background: p[s.role] }}>
                 <input type="color" value={isHex6(p[s.role]) ? p[s.role] : s.default} onChange={(e) => set(s.role, e.target.value.toUpperCase())} className="absolute inset-0 cursor-pointer opacity-0" aria-label={`Pick ${s.label}`} />
@@ -179,6 +197,33 @@ export default function ThemePaletteCard({
             </div>
           ))}
 
+          {textSlots.length > 0 && (
+            <div className="rounded-xl border border-stone-200 bg-stone-50/60 p-3">
+              <p className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-stone-400">Text colours <span className="normal-case tracking-normal">— auto picks a readable one; tap to choose your own</span></p>
+              <div className="flex flex-wrap gap-2">
+                {textSlots.map((s) => {
+                  const own = isHex6(p[s.role]) ? p[s.role]! : null;
+                  const shown = own ?? auto[s.role as "text" | "navText" | "heroText"];
+                  return (
+                    <div key={s.role} className="flex items-center gap-2 rounded-full border border-stone-200 bg-white py-1 pl-1 pr-2" title={s.hint}>
+                      <label className="relative size-6 shrink-0 cursor-pointer overflow-hidden rounded-full ring-1 ring-stone-300" style={{ background: shown }}>
+                        <input type="color" value={shown} onChange={(e) => set(s.role, e.target.value.toUpperCase())} className="absolute inset-0 cursor-pointer opacity-0" aria-label={`Pick ${s.label} colour`} />
+                      </label>
+                      <span className="text-xs font-medium text-stone-700">{s.label}</span>
+                      {own ? (
+                        <button type="button" onClick={() => clear(s.role)} className="rounded-full bg-stone-100 px-1.5 text-[10px] text-stone-500 hover:bg-stone-200" title="Back to automatic">
+                          auto
+                        </button>
+                      ) : (
+                        <span className="text-[10px] text-stone-400">auto</span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           {COMBOS[slug] && (
             <div>
               <p className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-stone-400">Quick looks</p>
@@ -186,7 +231,7 @@ export default function ThemePaletteCard({
                 {COMBOS[slug]!.map((c) => (
                   <button key={c.name} type="button" onClick={() => setP((cur) => ({ ...cur, ...c.p }))} className="group flex items-center gap-2 rounded-full border border-stone-200 py-1 pl-1 pr-3 text-xs text-stone-600 transition hover:border-stone-400">
                     <span className="flex -space-x-1.5">
-                      {slots.map((s) => (
+                      {colorSlots.map((s) => (
                         <span key={s.role} className="size-5 rounded-full ring-2 ring-white" style={{ background: c.p[s.role] ?? s.default }} />
                       ))}
                     </span>
@@ -198,7 +243,7 @@ export default function ThemePaletteCard({
           )}
 
           <Button variant="mainButton" disabled={saving || !dirty} onClick={() => save(p)}>
-            {saving ? "Saving..." : dirty ? "Save design colours" : "Saved"}
+            {saving ? "Saving..." : dirty ? "Save design colours" : "Saved ✓"}
           </Button>
         </div>
       </div>

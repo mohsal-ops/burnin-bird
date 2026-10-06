@@ -10,13 +10,14 @@
 // tokens (--primary, --background…) so the menu/other pages follow along.
 import type { ThemeSlug } from "./registry";
 
-export type PaletteRole = "accent" | "ink" | "paper" | "panel";
+export type PaletteRole = "accent" | "ink" | "paper" | "panel" | "text" | "navText" | "heroText";
 
 export type PaletteSlot = {
   role: PaletteRole;
   label: string; // owner-facing name
   hint: string; // where it shows up
-  default: string;
+  default: string; // "" for text roles = automatic (readable on its background)
+  text?: boolean; // a text-colour override shown as a small chip, not a big swatch
 };
 
 export const THEME_PALETTES: Partial<Record<ThemeSlug, PaletteSlot[]>> = {
@@ -24,11 +25,15 @@ export const THEME_PALETTES: Partial<Record<ThemeSlug, PaletteSlot[]>> = {
     { role: "accent", label: "Golden", hint: "Hero, buttons, melting drips, reviews band", default: "#FCB931" },
     { role: "ink", label: "Chocolate", hint: "Top bar, headings, receipt banners, plates", default: "#3B2517" },
     { role: "paper", label: "Cream", hint: "Page background, button text", default: "#F9F4ED" },
+    { role: "heroText", label: "Hero word", hint: "The big word in the hero", default: "", text: true },
+    { role: "navText", label: "Bar text", hint: "Top bar links & banner text", default: "", text: true },
+    { role: "text", label: "Page text", hint: "Headings & dish text", default: "", text: true },
   ],
   "refined-elegant": [
     { role: "accent", label: "Gold", hint: "Order pill, active link, stars, hovers", default: "#FFD469" },
     { role: "ink", label: "Ink", hint: "Hero, top bar, dark photo bands", default: "#0F0606" },
     { role: "paper", label: "Paper", hint: "Page background behind the menu & reviews", default: "#FFFFFF" },
+    { role: "text", label: "Page text", hint: "Headings, menu & reviews", default: "", text: true },
   ],
   "smash-bold": [
     { role: "ink", label: "Ink", hint: "Headlines, badges, the location slide", default: "#111315" },
@@ -43,7 +48,7 @@ export const isHex6 = (v: unknown): v is string => typeof v === "string" && HEX.
 
 export function defaultPalette(slug: ThemeSlug): Palette {
   const out: Palette = {};
-  for (const s of THEME_PALETTES[slug] ?? []) out[s.role] = s.default;
+  for (const s of THEME_PALETTES[slug] ?? []) if (!s.text) out[s.role] = s.default;
   return out;
 }
 
@@ -55,7 +60,7 @@ export function resolvePalette(slug: ThemeSlug, saved: unknown): { palette: Pale
   if (mine && typeof mine === "object") {
     for (const s of THEME_PALETTES[slug] ?? []) {
       const v = (mine as Record<string, unknown>)[s.role];
-      if (isHex6(v) && v.toLowerCase() !== s.default.toLowerCase()) {
+      if (isHex6(v) && (s.text || v.toLowerCase() !== s.default.toLowerCase())) {
         palette[s.role] = v;
         custom = true;
       }
@@ -105,6 +110,18 @@ export function mixHex(a: string, b: string, t: number) {
   return "#" + x.map((c, k) => Math.round((c + (y[k] - c) * t) * 255).toString(16).padStart(2, "0")).join("");
 }
 
+/** Text colours: the owner's explicit pick, else readable on its background. */
+export function resolveTextColors(palette: Palette) {
+  const paper = palette.paper ?? "#ffffff";
+  const ink = palette.ink ?? "#111111";
+  const accent = palette.accent;
+  const paperDark = lum(paper) < 0.18;
+  const text = palette.text ?? (contrast(ink, paper) >= 4.5 ? ink : paperDark ? "#F4F4F5" : "#1A1A1A");
+  const navText = palette.navText ?? onColor(ink, paper);
+  const heroText = palette.heroText ?? (accent ? (contrast(paper, accent) >= 1.6 ? paper : onColor(accent, ink)) : paper);
+  return { text, navText, heroText };
+}
+
 /** The CSS injected by the root layout for the active theme. Only hex values we validated reach it. */
 export function paletteCss(slug: ThemeSlug, palette: Palette, custom: boolean): string {
   const slots = THEME_PALETTES[slug];
@@ -114,26 +131,19 @@ export function paletteCss(slug: ThemeSlug, palette: Palette, custom: boolean): 
   // A dark page background flips every text colour to light — owners pick
   // black backgrounds (Astoria BBQ) and dark-grey-on-black text was unreadable.
   const paperDark = lum(paper) < 0.18;
-  // The ink is the designs' heading/text colour ON the paper (Diner's chocolate
-  // on cream). If the owner picks one that vanishes on the page (white on white,
-  // Koreatgo), swap in a readable one: a deep shade of their brand colour, else
-  // near-black / near-white.
-  const rawInk = palette.ink ?? "#111111";
-  const deepAccent = accent ? mixHex(accent, paperDark ? "#ffffff" : "#000000", 0.62) : "";
-  const ink =
-    contrast(rawInk, paper) >= 3
-      ? rawInk
-      : deepAccent && contrast(deepAccent, paper) >= 4.5
-        ? deepAccent
-        : paperDark
-          ? "#F4F4F5"
-          : "#1A1A1A";
-  // Body text: the ink when it actually reads on the page, else neutral.
-  const text = contrast(ink, paper) >= 4.5 ? ink : paperDark ? "#F4F4F5" : "#141414";
+  // Background colours are used EXACTLY as the owner set them (never swapped).
+  // Only TEXT adapts: each text colour is automatic (readable on its own
+  // background) unless the owner set it explicitly.
+  const ink = palette.ink ?? "#111111";
+  const { text, navText, heroText } = resolveTextColors(palette);
   const vars: string[] = [
     `--tp-ink:${ink}`,
     `--tp-paper:${paper}`,
-    `--tp-on-ink:${onColor(ink, paper)}`,
+    `--tp-on-ink:${navText}`,
+    `--tp-nav-text:${navText}`,
+    `--tp-hero-text:${heroText}`,
+    // the brand name on the bar: accent when it reads there, else the bar text
+    `--tp-nav-accent:${accent && contrast(accent, ink) >= 2 ? accent : navText}`,
     `--tp-text:${text}`,
     `--tp-muted:${paperDark ? "rgba(255,255,255,0.72)" : "#737373"}`,
     `--tp-line:${paperDark ? "rgba(255,255,255,0.14)" : "rgba(0,0,0,0.1)"}`,
@@ -155,16 +165,16 @@ export function paletteCss(slug: ThemeSlug, palette: Palette, custom: boolean): 
     const t: string[] = [];
     if (accent) t.push(`--primary:${hslTriple(accent)}`, `--ring:${hslTriple(accent)}`, `--primary-foreground:${hslTriple(onColor(accent, ink))}`);
     if (palette.ink && slug !== "smash-bold") {
-      t.push(`--secondary:${hslTriple(ink)}`, `--dark:${hslTriple(ink)}`);
+      t.push(`--secondary:${hslTriple(ink)}`, `--dark:${hslTriple(ink)}`, `--secondary-foreground:${hslTriple(navText)}`, `--dark-foreground:${hslTriple(navText)}`);
       // Body text / nav + footer links only follow the ink when it's a genuine
       // text colour (near-black, reads like ink on white). A bright pick like
       // sky-blue is a decoration colour — it must never repaint every link.
-      if (!paperDark && contrast(ink, "#ffffff") >= 9) {
-        t.push(`--foreground:${hslTriple(ink)}`, `--card-foreground:${hslTriple(ink)}`);
+      if (!paperDark && (palette.text || contrast(text, "#ffffff") >= 9)) {
+        t.push(`--foreground:${hslTriple(text)}`, `--card-foreground:${hslTriple(text)}`);
       }
     }
     if (palette.paper) {
-      t.push(`--background:${hslTriple(paper)}`, `--secondary-foreground:${hslTriple(paper)}`, `--dark-foreground:${hslTriple(paper)}`);
+      t.push(`--background:${hslTriple(paper)}`);
       if (paperDark) {
         // A full dark surface set, so cards/menus/popovers/borders all read.
         const card = mixHex(paper, "#ffffff", 0.07);

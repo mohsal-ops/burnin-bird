@@ -60,7 +60,7 @@ function Polaroid({ g, i, onOpen, dragArea }: { g: G; i: number; onOpen: () => v
           <Image src={g.url} alt={g.alt || ""} fill draggable={false} sizes="(max-width: 640px) 45vw, 22vw" className="pointer-events-none object-cover transition-transform duration-700 group-hover:scale-110" />
           <span className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(255,255,255,0.25),transparent_60%)]" />
         </span>
-        <span className="absolute inset-x-3 bottom-3 truncate text-center text-2xl leading-none sm:bottom-4" style={{ fontFamily: "var(--font-script), cursive", color: DINER.brown }}>
+        <span className="absolute inset-x-3 bottom-3 truncate text-center text-2xl leading-none sm:bottom-4" style={{ fontFamily: "var(--font-script), cursive", color: DINER.text }}>
           {niceCaption(g.alt) || ["yum!", "so good", "fresh!", "our fave", "hi there", "mmm…", "come by!", "cheers"][i % 8]}
         </span>
       </motion.button>
@@ -116,7 +116,7 @@ export function DinerGallery({ images, instagramUrl }: { images: G[]; instagramU
           </button>
         </div>
       )}
-      <p className="mt-10 text-center text-sm" style={{ fontFamily: "var(--font-courier-prime), monospace", color: tint(DINER.brown, 70) }}>
+      <p className="mt-10 text-center text-sm" style={{ fontFamily: "var(--font-courier-prime), monospace", color: tint(DINER.text, 70) }}>
         psst — you can pick them up.
         {instagramUrl && (
           <>
@@ -158,8 +158,8 @@ export function DinerGallery({ images, instagramUrl }: { images: G[]; instagramU
                   <Image src={shown[open].url} alt={shown[open].alt || ""} fill sizes="90vw" className="pointer-events-none object-cover" />
                 </span>
                 <figcaption className="absolute inset-x-4 bottom-4 flex items-end justify-between sm:bottom-6">
-                  <span className="truncate text-3xl leading-none" style={{ fontFamily: "var(--font-script), cursive", color: DINER.brown }}>{niceCaption(shown[open].alt) || "snapshot"}</span>
-                  <span className="shrink-0 text-xs font-bold" style={{ fontFamily: "var(--font-courier-prime), monospace", color: DINER.brown }}>
+                  <span className="truncate text-3xl leading-none" style={{ fontFamily: "var(--font-script), cursive", color: DINER.text }}>{niceCaption(shown[open].alt) || "snapshot"}</span>
+                  <span className="shrink-0 text-xs font-bold" style={{ fontFamily: "var(--font-courier-prime), monospace", color: DINER.text }}>
                     {String(open + 1).padStart(2, "0")}/{String(n).padStart(2, "0")}
                   </span>
                 </figcaption>
@@ -186,7 +186,7 @@ export function DinerGallery({ images, instagramUrl }: { images: G[]; instagramU
               aria-label="Close"
               onClick={() => setOpen(null)}
               className="absolute right-5 top-5 grid size-11 place-items-center rounded-md text-xl font-black"
-              style={{ background: DINER.cream, color: DINER.brown }}
+              style={{ background: DINER.cream, color: DINER.text }}
             >
               ✕
             </button>
