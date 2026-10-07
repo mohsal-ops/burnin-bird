@@ -5,7 +5,7 @@
 // presigned URL from /api/storage/presign. Returns the public URL, or null when
 // R2 isn't configured on this site (caller falls back to its old upload path).
 
-async function shrink(file: File, maxSide = 2400): Promise<File> {
+export async function shrinkPhoto(file: File, maxSide = 2400): Promise<File> {
   if (!/^image\/(jpeg|png|webp)$/.test(file.type) || file.size < 900_000) return file;
   try {
     const bmp = await createImageBitmap(file);
@@ -25,7 +25,7 @@ async function shrink(file: File, maxSide = 2400): Promise<File> {
 }
 
 export async function uploadPhotoDirect(input: File, folder: "gallery" | "site-images" | "products" | "partners"): Promise<string | null> {
-  const file = await shrink(input);
+  const file = await shrinkPhoto(input);
   const res = await fetch("/api/storage/presign", {
     method: "POST",
     headers: { "Content-Type": "application/json" },

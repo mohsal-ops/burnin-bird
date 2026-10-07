@@ -1,5 +1,5 @@
 "use client";
-import { uploadPhotoDirect } from "@/lib/clientUpload";
+import { shrinkPhoto, uploadPhotoDirect } from "@/lib/clientUpload";
 
 import { useActionState, useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -121,7 +121,9 @@ export default function GalleryManager({
     setProg({ done: 0, total: selected.length });
     let added = 0;
     let failed = 0;
+    let lastErr = "";
     for (const file of selected) {
+      const altText = alt || file.name.replace(/\.[^.]+$/, "");
       try {
         // Cloudflare R2 first (shrunk in the browser, uploaded directly); the old
         // Vercel Blob client upload only if this site has no R2 configured.
@@ -134,13 +136,24 @@ export default function GalleryManager({
           });
           url = blob.url;
         }
-        const altText = alt || file.name.replace(/\.[^.]+$/, "");
         const res = await registerGalleryImage(url, altText);
-        if (res.error) failed++;
+        if (res.error) { failed++; lastErr = res.error; }
         else added++;
       } catch (err) {
-        console.error("gallery upload failed for", file.name, err);
-        failed++;
+        // Direct upload blocked (e.g. the bucket's CORS policy) → send the
+        // (already shrunk) photo through the server instead.
+        console.warn("direct upload failed, using server upload for", file.name, err);
+        try {
+          const fd = new FormData();
+          fd.append("image", await shrinkPhoto(file));
+          fd.append("alt", altText);
+          const res = await addGalleryImage(null, fd);
+          if (res?.error) { failed++; lastErr = res.error; }
+          else added++;
+        } catch (err2) {
+          failed++;
+          lastErr = (err2 as Error)?.message || (err as Error)?.message || "unknown error";
+        }
       }
       setProg((p) => ({ ...p, done: p.done + 1 }));
     }
@@ -158,7 +171,7 @@ export default function GalleryManager({
       setSelected([]);
       router.refresh();
     } else {
-      toast.error("Upload failed. Please try again, or check your connection.");
+      toast.error(`Upload failed${lastErr ? `: ${lastErr}` : ""}. Please try again.`);
     }
   }
 
