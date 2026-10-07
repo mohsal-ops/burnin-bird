@@ -1,8 +1,6 @@
 import { Suspense } from "react";
 import { buildMetadata } from "@/lib/seo";
-import { cookies } from "next/headers";
 import {
-  GetCartItems,
   GetFeaturedProducts,
 } from "./Menu/_actions/getDataNeeded";
 import GetPlaces from "./_components/getPlaces";
@@ -116,13 +114,9 @@ function SectionDivider() {
 }
 
 async function FeaturedProductsSection() {
-  const cartId = (await cookies()).get("cart_id")?.value;
-  const [products, cart] = await Promise.all([
-    GetFeaturedProducts(),
-    cartId ? GetCartItems(cartId) : Promise.resolve(null),
-  ]);
-
-  return <SecondSection products={products} cartItems={cart?.items ?? []} />;
+  // cart items are resolved in the browser; the cached page carries none
+  const products = await GetFeaturedProducts();
+  return <SecondSection products={products} cartItems={[]} />;
 }
 
 async function LocationSection() {
@@ -154,6 +148,8 @@ const slim = (p: { id: string; name: string; priceInCents: number; description: 
   description: p.description,
   image: p.image,
 });
+
+export const revalidate = 300;
 
 export default async function Home() {
   const themeSlug = await getActiveTheme();

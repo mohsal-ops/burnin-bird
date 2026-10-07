@@ -6,7 +6,6 @@ import { ElegantNav } from "./_components/themes/ElegantNav";
 import { getActiveTheme } from "@/lib/themes/active";
 import { Footer } from "./_components/Footer";
 import { Toaster } from "sonner";
-import { cookies } from "next/headers";
 import Link from "next/link";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import VisitAlert from "./_components/VisitAlert";
@@ -17,13 +16,18 @@ import TrialPopup from "./_components/TrialPopup";
 import DashboardBubble from "./_components/DashboardBubble";
 import LoyaltyPopup from "@/components/LoyaltyPopup";
 
+// Public pages are cached and rebuilt at most every 5 min (owner edits also
+// revalidate instantly) — rendering on every visit blew the free CPU limit.
+export const revalidate = 300;
+
 export default async function Customerlayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const dynamic = "force-dynamic";
-  const cartId = (await cookies()).get("cart_id")?.value ?? null;
+  // No per-visitor cookies here: the public site is statically cached (ISR) and
+  // the navbars resolve the cart id in the browser (useNavCart / /api/getcartId).
+  const cartId = null;
   const logoUrl = await getLogoUrl();
   const loyalty = await getLoyaltySettings();
   const theme = await getActiveTheme();
