@@ -1,4 +1,5 @@
 "use client";
+import { uploadPhotoDirect } from "@/lib/clientUpload";
 
 import { useActionState, useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -122,13 +123,19 @@ export default function GalleryManager({
     let failed = 0;
     for (const file of selected) {
       try {
-        const blob = await upload(`gallery/${file.name}`, file, {
-          access: "public",
-          handleUploadUrl: "/api/gallery/upload",
-          contentType: file.type || undefined,
-        });
+        // Cloudflare R2 first (shrunk in the browser, uploaded directly); the old
+        // Vercel Blob client upload only if this site has no R2 configured.
+        let url = await uploadPhotoDirect(file, "gallery");
+        if (!url) {
+          const blob = await upload(`gallery/${file.name}`, file, {
+            access: "public",
+            handleUploadUrl: "/api/gallery/upload",
+            contentType: file.type || undefined,
+          });
+          url = blob.url;
+        }
         const altText = alt || file.name.replace(/\.[^.]+$/, "");
-        const res = await registerGalleryImage(blob.url, altText);
+        const res = await registerGalleryImage(url, altText);
         if (res.error) failed++;
         else added++;
       } catch (err) {

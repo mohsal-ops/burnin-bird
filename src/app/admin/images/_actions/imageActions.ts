@@ -1,4 +1,5 @@
 "use server";
+import { removeStoredFile, storeFile } from "@/lib/storage";
 import { assertWritable } from "@/lib/previewGuard";
 import db from "@/db/db";
 import { revalidatePath } from "next/cache";
@@ -14,11 +15,7 @@ async function saveImage(file: File): Promise<string> {
     await fs.writeFile(`public${path}`, new Uint8Array(await file.arrayBuffer()));
     return path;
   } else {
-    const { put } = await import("@vercel/blob");
-    const blob = await put(`site-images/${crypto.randomUUID()}-${file.name}`, file, {
-      access: "public",
-    });
-    return blob.url;
+    return storeFile("site-images", file); // R2 (or Blob fallback) — lib/storage.ts
   }
 }
 
@@ -47,7 +44,7 @@ export async function updateSiteImage(key: string, formData: FormData) {
     console.error("updateSiteImage error:", error);
     return {
       error:
-        "Couldn't save the image. On the live site this usually means image storage (Vercel Blob) isn't connected yet.",
+        `Couldn't save the image: ${(error as Error)?.message || "storage error"}. Try again in a minute.`,
     };
   }
 }

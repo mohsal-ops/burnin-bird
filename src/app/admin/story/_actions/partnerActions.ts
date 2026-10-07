@@ -1,4 +1,5 @@
 "use server";
+import { removeStoredFile, storeFile } from "@/lib/storage";
 import { assertWritable } from "@/lib/previewGuard";
 
 import db from "@/db/db";
@@ -15,13 +16,7 @@ async function saveImage(file: File, folder = "partners"): Promise<string> {
     await fs.writeFile(`public${path}`, new Uint8Array(await file.arrayBuffer()));
     return path;
   } else {
-    const { put } = await import("@vercel/blob");
-    const blob = await put(
-      `${folder}/${crypto.randomUUID()}-${file.name}`,
-      file,
-      { access: "public" }
-    );
-    return blob.url;
+    return storeFile(folder, file); // R2 (or Blob fallback) — lib/storage.ts
   }
 }
 

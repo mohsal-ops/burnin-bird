@@ -1,4 +1,5 @@
 "use server";
+import { removeStoredFile, storeFile } from "@/lib/storage";
 import { assertWritable } from "@/lib/previewGuard";
 
 import { z } from "zod";
@@ -27,13 +28,7 @@ async function saveImage(file: File, folder = "products"): Promise<string> {
     return path;
   } else {
     // Production (Vercel) - upload to Vercel Blob
-    const { put } = await import("@vercel/blob");
-    const blob = await put(
-      `${folder}/${crypto.randomUUID()}-${file.name}`,
-      file,
-      { access: "public" }
-    );
-    return blob.url; // full https:// URL
+    return storeFile(folder, file); // R2 (or Blob fallback) — lib/storage.ts
   }
 }
 
@@ -44,8 +39,7 @@ async function deleteImage(imagePath: string) {
       const fs = await import("node:fs/promises");
       await fs.unlink(`public${imagePath}`);
     } else if (imagePath.startsWith("https://")) {
-      const { del } = await import("@vercel/blob");
-      await del(imagePath);
+      await removeStoredFile(imagePath);
     }
   } catch (err) {
     console.warn("Image delete failed, skipping:", err);
