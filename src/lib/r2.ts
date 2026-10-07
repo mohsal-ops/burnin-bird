@@ -9,11 +9,14 @@ import crypto from "node:crypto";
 type R2Env = { bucket: string; publicUrl: string; endpoint: string; keyId: string; secret: string };
 
 function env(): R2Env | null {
-  const bucket = process.env.R2_BUCKET;
-  const publicUrl = process.env.R2_PUBLIC_URL;
-  const endpoint = process.env.R2_ENDPOINT;
-  const keyId = process.env.R2_ACCESS_KEY_ID;
-  const secret = process.env.R2_SECRET_ACCESS_KEY;
+  // .trim(): values pasted into Vercel often carry a trailing newline, which
+  // ended up inside the signed credential and broke every upload.
+  const v = (k: string) => (process.env[k] ?? "").trim();
+  const bucket = v("R2_BUCKET");
+  const publicUrl = v("R2_PUBLIC_URL");
+  const endpoint = v("R2_ENDPOINT");
+  const keyId = v("R2_ACCESS_KEY_ID");
+  const secret = v("R2_SECRET_ACCESS_KEY");
   if (!bucket || !publicUrl || !endpoint || !keyId || !secret) return null;
   return { bucket, publicUrl: publicUrl.replace(/\/$/, ""), endpoint: endpoint.replace(/\/$/, ""), keyId, secret };
 }

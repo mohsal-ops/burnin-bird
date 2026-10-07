@@ -25,7 +25,7 @@ export async function storeFile(folder: string, file: File): Promise<string> {
 export async function removeStoredFile(url: string | null | undefined): Promise<void> {
   if (!url || !url.startsWith("https://")) return;
   try {
-    if (process.env.R2_PUBLIC_URL && url.startsWith(process.env.R2_PUBLIC_URL)) return await r2DeleteByUrl(url);
+    if (process.env.R2_PUBLIC_URL && url.startsWith(process.env.R2_PUBLIC_URL.trim())) return await r2DeleteByUrl(url);
     if (url.includes(".blob.vercel-storage.com")) {
       const { del } = await import("@vercel/blob");
       await del(url);
