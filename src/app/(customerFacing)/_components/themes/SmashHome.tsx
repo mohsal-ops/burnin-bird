@@ -41,7 +41,7 @@ export function SmashHome({ content, heroImages, featured, reviews, gallery = []
   const subList = (c.cuisines ?? []).filter((x) => x !== category).slice(0, 4).map((x) => `${x}.`).join(" ");
 
   return (
-    <div className="w-full overflow-x-clip pt-20">
+    <div className="tp-home w-full overflow-x-clip pt-20">
       {/* 2 · Launch panel (mascot · lineup · location), auto-rotating */}
       <SmashHero
         name={name}

@@ -69,6 +69,8 @@ const COPY: Record<ThemeSlug, { eyebrow: string; heading: string; body: Record<P
 export function CorePitch({ theme: themeProp }: { theme?: ThemeSlug } = {}) {
   const theme = themeProp ?? resolveThemeSlug();
   const copy = COPY[theme];
+  // Smash wears its brutal look: thick ink outlines + hard offset shadow.
+  const bold = theme === "smash-bold";
 
   return (
     <FadeIn>
@@ -79,16 +81,32 @@ export function CorePitch({ theme: themeProp }: { theme?: ThemeSlug } = {}) {
           </p>
           <h2 className="text-3xl md:text-4xl font-bold text-foreground">{copy.heading}</h2>
         </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {PILLARS.map(({ key, title, Icon }) => (
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {PILLARS.map(({ key, title, Icon }, i) => (
             <div
               key={key}
-              className="flex flex-col items-start gap-3 rounded-[var(--radius)] border border-border bg-card p-6 shadow-sm transition-transform duration-200 hover:-translate-y-1"
+              className={
+                bold
+                  ? "group relative flex flex-col gap-4 overflow-hidden rounded-2xl border-[2.5px] border-foreground bg-card p-6 shadow-[6px_6px_0_hsl(var(--foreground))] transition-all duration-200 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[9px_9px_0_hsl(var(--foreground))]"
+                  : "group relative flex flex-col gap-4 overflow-hidden rounded-[var(--radius)] border border-border bg-card p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_18px_40px_-20px_rgba(0,0,0,0.35)]"
+              }
             >
-              <span className="grid size-12 place-items-center rounded-[var(--radius)] bg-primary/15 text-primary">
-                <Icon className="size-6" strokeWidth={1.75} />
-              </span>
-              <h3 className="text-lg font-semibold text-card-foreground">{title}</h3>
+              {/* accent bar that grows on hover */}
+              {!bold && <span aria-hidden className="absolute inset-x-0 top-0 h-1 origin-left scale-x-0 bg-primary transition-transform duration-300 group-hover:scale-x-100" />}
+              <div className="flex items-start justify-between">
+                <span
+                  className={`grid size-12 place-items-center transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110 ${bold ? "rounded-xl border-2 border-foreground bg-brand text-brand-foreground" : "rounded-[var(--radius)] bg-primary text-primary-foreground shadow-sm"}`}
+                >
+                  <Icon className="size-6" strokeWidth={2} />
+                </span>
+                <span
+                  aria-hidden
+                  className={`select-none font-black leading-none tabular-nums ${bold ? "text-4xl text-foreground/15" : "text-4xl text-transparent [-webkit-text-stroke:1.5px_hsl(var(--primary)/0.45)]"}`}
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+              </div>
+              <h3 className={`text-card-foreground ${bold ? "text-xl font-black uppercase leading-tight tracking-tight" : "text-lg font-semibold"}`}>{title}</h3>
               <p className="text-sm leading-relaxed text-muted-foreground">{copy.body[key]}</p>
             </div>
           ))}

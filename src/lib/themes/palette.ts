@@ -168,48 +168,42 @@ export function paletteCss(slug: ThemeSlug, palette: Palette, custom: boolean): 
   if (palette.panel) vars.push(`--tp-panel:${palette.panel}`);
   let css = `:root{${vars.join(";")}}`;
 
-  // Re-tint the shared tokens (menu, cart, other pages) — light mode only, and
-  // only once the owner changed something, so default sites stay byte-identical.
+  // Re-tint shared tokens — light mode only, and only once the owner changed
+  // something, so default sites stay byte-identical.
+  //  • site-wide: brand accent (buttons) + the ink as the dark/secondary colour
+  //  • HOMEPAGE ONLY (.tp-home): page background + page text. The menu,
+  //    checkout, nav and footer always stay the normal white/standard look —
+  //    a yellow or black "page background" must never paint the menu page.
   if (custom) {
     const t: string[] = [];
     if (accent) t.push(`--primary:${hslTriple(accent)}`, `--ring:${hslTriple(accent)}`, `--primary-foreground:${hslTriple(onColor(accent, ink))}`);
     if (palette.ink && slug !== "smash-bold") {
       t.push(`--secondary:${hslTriple(ink)}`, `--dark:${hslTriple(ink)}`, `--secondary-foreground:${hslTriple(navText)}`, `--dark-foreground:${hslTriple(navText)}`);
-      // Body text / nav + footer links only follow the ink when it's a genuine
-      // text colour (near-black, reads like ink on white). A bright pick like
-      // sky-blue is a decoration colour — it must never repaint every link.
-      if (!paperDark && (palette.text || contrast(text, "#ffffff") >= 9)) {
-        t.push(`--foreground:${hslTriple(text)}`, `--card-foreground:${hslTriple(text)}`);
-      }
     }
     // owner-set bar text, light mode only (dark mode keeps the theme colours)
     if (palette.navText) t.push(`--tp-nav-text-o:${navText}`);
-    if (palette.text && !paperDark) t.push(`--foreground:${hslTriple(text)}`, `--card-foreground:${hslTriple(text)}`);
+    if (t.length) css += `html[data-theme="${slug}"]:not(.dark){${t.join(";")}}`;
+
+    const h: string[] = [];
     if (palette.paper) {
-      t.push(`--background:${hslTriple(paper)}`);
+      h.push(`--background:${hslTriple(paper)}`);
       if (paperDark) {
-        // A full dark surface set, so cards/menus/popovers/borders all read.
+        // A full dark surface set, so cards/borders on the homepage all read.
         const card = mixHex(paper, "#ffffff", 0.07);
         const muted = mixHex(paper, "#ffffff", 0.11);
         const line = mixHex(paper, "#ffffff", 0.18);
-        t.push(
-          `--foreground:${palette.text ? hslTriple(text) : "0 0% 96%"}`,
+        h.push(
+          `--foreground:0 0% 96%`,
           `--card:${hslTriple(card)}`,
           `--card-foreground:0 0% 96%`,
-          `--popover:${hslTriple(card)}`,
-          `--popover-foreground:0 0% 96%`,
           `--muted:${hslTriple(muted)}`,
           `--muted-foreground:0 0% 72%`,
-          `--accent:${hslTriple(muted)}`,
-          `--accent-foreground:0 0% 96%`,
           `--border:${hslTriple(line)}`,
-          `--input:${hslTriple(line)}`,
-          `--secondary-foreground:0 0% 96%`,
-          `--dark-foreground:0 0% 96%`,
         );
       }
     }
-    if (t.length) css += `html[data-theme="${slug}"]:not(.dark){${t.join(";")}}`;
+    if (palette.text) h.push(`--foreground:${hslTriple(text)}`);
+    if (h.length) css += `html[data-theme="${slug}"]:not(.dark) .tp-home{${h.join(";")};background-color:hsl(var(--background));color:hsl(var(--foreground))}`;
   }
   return css;
 }
