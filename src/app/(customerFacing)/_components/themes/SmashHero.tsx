@@ -36,6 +36,7 @@ export { mascotFor };
 // Owner-editable (admin → Branding → Design colours) via --tp-* vars;
 // defaults = Ender's near-black #111315 on concrete #EEF1F0.
 const INK = "var(--tp-ink)";
+const HERO_TEXT = "var(--tp-hero-text)"; // owner-editable (Design colours → Hero text); defaults to the ink
 const PANEL = "radial-gradient(ellipse at 60% 45%, var(--tp-panel) 0%, color-mix(in srgb, var(--tp-panel) 95%, #000) 70%, color-mix(in srgb, var(--tp-panel) 89%, #000) 100%)";
 
 // Font size (in container-width units) that makes a Chewy word of this length
@@ -151,7 +152,7 @@ export function SmashHero({
     <section className="px-3 pb-6 pt-3 md:px-5" aria-roledescription="carousel" aria-label={`${name} highlights`}>
       <div
         className="relative overflow-hidden rounded-[1.75rem] md:rounded-[2.25rem]"
-        style={{ background: current === "location" ? INK : PANEL, color: INK, transition: "background 500ms" }}
+        style={{ background: current === "location" ? INK : PANEL, color: HERO_TEXT, transition: "background 500ms" }}
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
         onFocus={() => setPaused(true)}
@@ -192,7 +193,7 @@ export function SmashHero({
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
                   >
-                    <h1 className="relative" style={{ color: INK }}>
+                    <h1 className="relative" style={{ color: HERO_TEXT }}>
                       <Scribbles />
                       <Balloon text={sub} size={heroWord} />
                     </h1>
@@ -219,7 +220,7 @@ export function SmashHero({
                       {m.face && (
                         <span
                           className="absolute -translate-x-1/2 -translate-y-1/2 text-center"
-                          style={{ left: m.face.left, top: m.face.top, width: m.face.width, color: INK, containerType: "inline-size" }}
+                          style={{ left: m.face.left, top: m.face.top, width: m.face.width, color: HERO_TEXT, containerType: "inline-size" }}
                         >
                           <Balloon text={sub} size={fitCq(sub, "2.6rem")} />
                           <span className="mt-1 block text-right text-[clamp(0.45rem,0.9vw,0.75rem)] font-bold lowercase">{limitedLabel}</span>

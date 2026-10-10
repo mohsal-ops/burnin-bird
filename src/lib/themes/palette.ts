@@ -38,6 +38,10 @@ export const THEME_PALETTES: Partial<Record<ThemeSlug, PaletteSlot[]>> = {
   "smash-bold": [
     { role: "ink", label: "Ink", hint: "Headlines, badges, the location slide", default: "#111315" },
     { role: "panel", label: "Hero panel", hint: "The big rounded hero card", default: "#EEF1F0" },
+    { role: "paper", label: "Page background", hint: "Top bar & the page behind every section", default: "#EEF1F0" },
+    { role: "heroText", label: "Hero text", hint: "Words inside the hero card", default: "", text: true },
+    { role: "navText", label: "Bar text", hint: "Top bar name & links", default: "", text: true },
+    { role: "text", label: "Page text", hint: "Section titles & body text", default: "", text: true },
   ],
 };
 
@@ -111,11 +115,16 @@ export function mixHex(a: string, b: string, t: number) {
 }
 
 /** Text colours: the owner's explicit pick, else readable on its background. */
-export function resolveTextColors(palette: Palette) {
+export function resolveTextColors(palette: Palette, slug?: ThemeSlug) {
   const paper = palette.paper ?? "#ffffff";
   const ink = palette.ink ?? "#111111";
   const accent = palette.accent;
   const paperDark = lum(paper) < 0.18;
+  if (slug === "smash-bold") {
+    // Smash: the bar sits on the page colour, and the hero words were the ink.
+    const text = palette.text ?? (paperDark ? "#F4F4F5" : "#111315");
+    return { text, navText: palette.navText ?? text, heroText: palette.heroText ?? ink };
+  }
   const text = palette.text ?? (contrast(ink, paper) >= 4.5 ? ink : paperDark ? "#F4F4F5" : "#1A1A1A");
   const navText = palette.navText ?? onColor(ink, paper);
   const heroText = palette.heroText ?? (accent ? (contrast(paper, accent) >= 1.6 ? paper : onColor(accent, ink)) : paper);
@@ -135,7 +144,7 @@ export function paletteCss(slug: ThemeSlug, palette: Palette, custom: boolean): 
   // Only TEXT adapts: each text colour is automatic (readable on its own
   // background) unless the owner set it explicitly.
   const ink = palette.ink ?? "#111111";
-  const { text, navText, heroText } = resolveTextColors(palette);
+  const { text, navText, heroText } = resolveTextColors(palette, slug);
   const vars: string[] = [
     `--tp-ink:${ink}`,
     `--tp-paper:${paper}`,
@@ -173,6 +182,9 @@ export function paletteCss(slug: ThemeSlug, palette: Palette, custom: boolean): 
         t.push(`--foreground:${hslTriple(text)}`, `--card-foreground:${hslTriple(text)}`);
       }
     }
+    // owner-set bar text, light mode only (dark mode keeps the theme colours)
+    if (palette.navText) t.push(`--tp-nav-text-o:${navText}`);
+    if (palette.text && !paperDark) t.push(`--foreground:${hslTriple(text)}`, `--card-foreground:${hslTriple(text)}`);
     if (palette.paper) {
       t.push(`--background:${hslTriple(paper)}`);
       if (paperDark) {
@@ -181,7 +193,7 @@ export function paletteCss(slug: ThemeSlug, palette: Palette, custom: boolean): 
         const muted = mixHex(paper, "#ffffff", 0.11);
         const line = mixHex(paper, "#ffffff", 0.18);
         t.push(
-          `--foreground:0 0% 96%`,
+          `--foreground:${palette.text ? hslTriple(text) : "0 0% 96%"}`,
           `--card:${hslTriple(card)}`,
           `--card-foreground:0 0% 96%`,
           `--popover:${hslTriple(card)}`,

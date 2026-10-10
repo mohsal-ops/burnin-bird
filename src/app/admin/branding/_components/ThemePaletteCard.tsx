@@ -42,7 +42,7 @@ function Mini({ slug, p, brand, name }: { slug: ThemeSlug; p: Palette; brand: st
   const ink = p.ink ?? "#111";
   const paper = p.paper ?? "#fff";
   // Same text-colour rules as the live site (lib/themes/palette.ts).
-  const tc = resolveTextColors({ ...p, accent });
+  const tc = resolveTextColors({ ...p, accent }, slug);
   if (slug === "diner-classic") {
     return (
       <div className="overflow-hidden rounded-xl border border-stone-200" style={{ background: paper }}>
@@ -97,15 +97,20 @@ function Mini({ slug, p, brand, name }: { slug: ThemeSlug; p: Palette; brand: st
   // smash-bold
   const panel = p.panel ?? "#EEF1F0";
   return (
-    <div className="rounded-xl border border-stone-200 bg-white p-2">
+    <div className="rounded-xl border border-stone-200 p-2" style={{ background: p.paper ?? "#EEF1F0" }}>
+      <div className="mb-2 flex items-center justify-between px-1">
+        <span className="text-sm font-black uppercase tracking-tight" style={{ color: tc.navText }}>{name.split(" ")[0]}</span>
+        <span className="text-[8px] font-semibold uppercase" style={{ color: tc.navText, opacity: 0.6 }}>menu · story</span>
+      </div>
       <div className="relative flex h-36 items-center justify-between overflow-hidden rounded-lg px-4" style={{ background: `radial-gradient(ellipse at 60% 45%, ${panel}, color-mix(in srgb, ${panel} 88%, #000))` }}>
         <div>
-          <p className="text-[9px] font-bold" style={{ color: ink, fontFamily: "var(--font-caveat), cursive" }}>since forever</p>
-          <p className="text-2xl font-extrabold uppercase leading-[0.9] tracking-tight" style={{ color: ink }}>{name.split(" ")[0]}<br />smash</p>
+          <p className="text-[9px] font-bold" style={{ color: tc.heroText, fontFamily: "var(--font-caveat), cursive" }}>since forever</p>
+          <p className="text-2xl font-extrabold uppercase leading-[0.9] tracking-tight" style={{ color: tc.heroText }}>{name.split(" ")[0]}<br />smash</p>
         </div>
         <span className="grid size-16 animate-[spin_12s_linear_infinite] place-items-center rounded-full text-[8px] font-black uppercase" style={{ background: ink, color: panel }}>★ order ★</span>
         <span className="absolute bottom-2 right-3 rounded-md px-2 py-1 text-[9px] font-black uppercase" style={{ background: brand, color: onColor(brand, "#000000") }}>brand</span>
       </div>
+      <p className="mt-2 px-1 text-[10px] font-extrabold uppercase" style={{ color: tc.text }}>100% fresh smash burgers</p>
     </div>
   );
 }
@@ -135,7 +140,7 @@ export default function ThemePaletteCard({
   const set = (role: PaletteRole, v: string) => setP((cur) => ({ ...cur, [role]: v }));
   const clear = (role: PaletteRole) => setP((cur) => { const n = { ...cur }; delete n[role]; return n; });
   const dirty = slots.some((s) => (p[s.role] ?? "").toLowerCase() !== (saved[s.role] ?? "").toLowerCase());
-  const auto = resolveTextColors({ ...p, text: undefined, navText: undefined, heroText: undefined });
+  const auto = resolveTextColors({ ...p, text: undefined, navText: undefined, heroText: undefined }, slug);
 
   const save = (next: Palette, msg = "Design colours saved — live on your site") =>
     start(async () => {

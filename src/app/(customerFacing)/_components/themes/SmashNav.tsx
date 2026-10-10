@@ -24,8 +24,8 @@ export function SmashNav({ initialCartId }: { initialCartId: string | null; logo
     <div className="border-b border-foreground/10 bg-background">
       {/* Mobile */}
       <div className="flex h-20 items-center justify-between px-5 md:hidden">
-        <Link href="/" className="whitespace-nowrap text-[2.1rem] leading-none text-foreground" style={{ fontFamily: "var(--font-condensed), sans-serif", letterSpacing: "-0.01em" }}>{wordmark}</Link>
-        <div className="flex items-center gap-3">
+        <Link href="/" className="whitespace-nowrap text-[2.1rem] leading-none text-[var(--tp-nav-text-o,var(--color-foreground))]" style={{ fontFamily: "var(--font-condensed), sans-serif", letterSpacing: "-0.01em" }}>{wordmark}</Link>
+        <div className="flex items-center gap-3 text-[var(--tp-nav-text-o,var(--color-foreground))]">
           <ThemeToggle />
           <AppSideBar />
         </div>
@@ -39,7 +39,7 @@ export function SmashNav({ initialCartId }: { initialCartId: string | null; logo
       {/* Desktop: wordmark · centered links · dark pill */}
       <div className="mx-auto hidden h-20 max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-6 px-6 md:grid">
         {/* Ender-style wordmark: tall, condensed, tight */}
-        <Link href="/" className="justify-self-start whitespace-nowrap text-[2.4rem] leading-none text-foreground transition-opacity hover:opacity-70 lg:text-[2.9rem]" style={{ fontFamily: "var(--font-condensed), sans-serif", letterSpacing: "-0.01em" }}>
+        <Link href="/" className="justify-self-start whitespace-nowrap text-[2.4rem] leading-none text-[var(--tp-nav-text-o,var(--color-foreground))] transition-opacity hover:opacity-70 lg:text-[2.9rem]" style={{ fontFamily: "var(--font-condensed), sans-serif", letterSpacing: "-0.01em" }}>
           {wordmark}
         </Link>
         <nav className="flex items-center justify-center gap-5 lg:gap-8">
@@ -49,7 +49,7 @@ export function SmashNav({ initialCartId }: { initialCartId: string | null; logo
               <Link
                 key={l.href}
                 href={l.href}
-                className={`group relative whitespace-nowrap text-sm font-semibold uppercase tracking-wide transition-colors ${active ? "text-foreground" : "text-foreground/55 hover:text-foreground"}`}
+                className={`group relative whitespace-nowrap text-sm font-semibold uppercase tracking-wide transition-colors ${active ? "text-[var(--tp-nav-text-o,var(--color-foreground))]" : "text-[var(--tp-nav-text-o,var(--color-foreground))] opacity-55 hover:opacity-100"}`}
               >
                 {l.label}
                 <span className={`absolute -bottom-1.5 left-0 h-[3px] rounded-full bg-brand transition-all duration-300 ${active ? "w-full" : "w-0 group-hover:w-full"}`} />
