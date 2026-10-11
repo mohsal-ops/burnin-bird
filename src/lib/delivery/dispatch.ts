@@ -6,6 +6,7 @@ import { SITE_CONFIG } from "@/lib/siteConfig";
 import { toE164 } from "./phone";
 import { dispatchWithFailover } from "./router";
 import { enabledProviders, providerById } from "./settings";
+import { opsAlert } from "@/lib/ops/alert";
 
 // Dispatch for carts whose courier was chosen by the delivery router (any cart
 // with deliveryProvider set). Carts from before the router / with the flag off
@@ -93,6 +94,7 @@ export async function dispatchRoutedDelivery(cart: Cart, first: First, email: st
     }
   } catch (e) {
     console.error("Courier dispatch failed (order still saved):", (e as Error).message);
+    await opsAlert("courier_dispatch", `Order ${cart.id}: ${(e as Error).message}`);
     await sendTelegramMessage(
       `⚠️ Delivery dispatch FAILED for order ${cart.id}: ${(e as Error).message}. Please arrange delivery manually or call the customer to offer pickup.`,
     ).catch(() => {});

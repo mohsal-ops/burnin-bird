@@ -27,12 +27,25 @@ export interface HealthFacts {
   lastOrderAt: Date | null;
   jobsSecret: boolean;
   now: Date;
+  /** Homepage answered (null = not checked here). */
+  uptime?: { ok: boolean; ms: number; status?: number } | null;
+  /** Loyalty SMS on -> is the SMS provider configured? null = loyalty off. */
+  smsProvider?: boolean | null;
+  siteUrl?: string;
+  lastFailures?: { kind: string; at: Date; detail: string }[];
 }
 
 export function evaluateHealth(f: HealthFacts): Check[] {
   const c: Check[] = [];
   const add = (id: string, label: string, status: CheckStatus, detail: string) => c.push({ id, label, status, detail });
 
+  if (f.uptime)
+    add(
+      "uptime",
+      "Website responds",
+      f.uptime.ok ? (f.uptime.ms > 4000 ? "warn" : "ok") : "fail",
+      f.uptime.ok ? `Homepage answered in ${f.uptime.ms} ms` : `Homepage did not answer${f.uptime.status ? ` (HTTP ${f.uptime.status})` : ""}`,
+    );
   add("db", "Database", f.dbOk ? "ok" : "fail", f.dbOk ? "Reachable" : "Can't reach the database");
   add(
     "schema",
@@ -53,6 +66,23 @@ export function evaluateHealth(f: HealthFacts): Check[] {
     f.smtp && f.ownerEmail ? "ok" : f.telegram ? "warn" : "fail",
     [f.smtp && f.ownerEmail ? "email" : "no email", f.telegram ? "Telegram" : "no Telegram"].join(" · "),
   );
+  if (f.smsProvider !== undefined && f.smsProvider !== null)
+    add("sms", "SMS provider", f.smsProvider ? "ok" : "fail", f.smsProvider ? "Brevo configured" : "Loyalty SMS is on but BREVO_API_KEY is missing");
+  if (f.siteUrl) {
+    const host = new URL(f.siteUrl).hostname;
+    const vercel = /\.vercel\.app$/i.test(host);
+    add(
+      "domain",
+      "Domain & certificate",
+      vercel ? "warn" : "ok",
+      vercel ? "Still on the free vercel.app address (no custom domain yet)" : `${host}: HTTPS certificate auto-renewed by Vercel`,
+    );
+  }
+  for (const lf of f.lastFailures ?? []) {
+    const hours = (f.now.getTime() - lf.at.getTime()) / 3600_000;
+    if (hours <= 24)
+      add(`recent_${lf.kind}`, `Recent ${lf.kind.replace(/_/g, " ")} failure`, "warn", `${Math.round(hours)}h ago: ${lf.detail}`);
+  }
   add("uploads", "Photo uploads", f.r2 ? "ok" : "warn", f.r2 ? "R2 storage set" : "R2 not set — uploads use the fallback path");
 
   if (!f.delivery.switchOn) add("delivery", "Delivery", "off", "Pickup only");

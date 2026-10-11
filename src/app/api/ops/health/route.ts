@@ -14,15 +14,16 @@ export const dynamic = "force-dynamic";
 // something is wrong (no "all good" spam). Never includes secrets.
 async function handle(req: Request) {
   if (!isJobRequest(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const checks = await gatherHealth();
+  const checks = await gatherHealth({ pingSite: true });
   const { status, problems } = summarise(checks);
 
   const notify = new URL(req.url).searchParams.get("notify") === "1";
-  const to = process.env.AGENCY_ALERT_EMAIL;
+  const to = process.env.OPS_ALERT_EMAIL || process.env.AGENCY_ALERT_EMAIL;
   if (notify && to && problems.length && (await isEnabled("ops_health"))) {
     await sendMail({
       to,
-      subject: `[${status.toUpperCase()}] ${SITE_CONFIG.name}: ${problems.length} health issue(s)`,
+      // One-line digest per site: status + the problem names in the subject.
+      subject: `[${status.toUpperCase()}] ${SITE_CONFIG.name}: ${problems.map((p) => p.label).join(", ")}`.slice(0, 200),
       html: `<div style="font-family:system-ui,sans-serif;font-size:14px"><p><b>${SITE_CONFIG.name}</b> — ${SITE_CONFIG.siteUrl}/admin/health</p><ul>${problems
         .map((p) => `<li><b>${p.label}</b> (${p.status}): ${p.detail.replace(/</g, "&lt;")}</li>`)
         .join("")}</ul></div>`,

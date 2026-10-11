@@ -11,6 +11,7 @@ const state = vi.hoisted(() => ({
 }));
 
 vi.mock("@/lib/flags", () => ({ isEnabled: async () => state.flagOn }));
+vi.mock("@/lib/ops/alert", () => ({ opsAlert: async () => {} }));
 vi.mock("@/lib/telegram", () => ({ sendTelegramMessage: state.telegram }));
 vi.mock("@/lib/email", () => ({ sendMail: state.mail }));
 vi.mock("@/lib/siteConfig", () => ({ SITE_CONFIG: { name: "Test Grill", timezone: "America/New_York" } }));

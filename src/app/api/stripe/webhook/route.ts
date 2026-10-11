@@ -3,6 +3,7 @@ import type Stripe from "stripe";
 import { getStripe, getStripeConfig } from "@/lib/stripeConfig";
 import { finalizeCart } from "@/lib/finalizeOrder";
 import { isGiftCardIntent, notifyGiftCardPurchase } from "@/lib/giftCardNotify";
+import { opsAlert } from "@/lib/ops/alert";
 
 // The ONE Stripe webhook for this site. admin → Payments creates it in the
 // restaurant's Stripe account automatically (payment_intent.succeeded only) and
@@ -45,6 +46,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ received: true, ignored: "not from this site" });
   } catch (err) {
     console.error("stripe webhook error:", err);
+    await opsAlert("stripe_webhook", `Payment webhook failed for ${pi.id}: ${(err as Error).message}`);
     // 500 → Stripe retries later (finalize + email are both safe to repeat)
     return new NextResponse("Webhook handler failed", { status: 500 });
   }

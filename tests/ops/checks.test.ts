@@ -54,3 +54,26 @@ describe("evaluateHealth", () => {
     expect(byId({ ...healthy(), smtp: false, telegram: false }).alerts.status).toBe("fail");
   });
 });
+
+describe("evaluateHealth extras", () => {
+  it("uptime, SMS provider, domain and recent failures", () => {
+    const now = new Date("2026-10-11T12:00:00Z");
+    const c = byId({
+      ...healthy(),
+      uptime: { ok: false, ms: 8000, status: 502 },
+      smsProvider: false,
+      siteUrl: "https://burnin-bird.vercel.app",
+      lastFailures: [
+        { kind: "stripe_webhook", at: new Date("2026-10-11T10:00:00Z"), detail: "boom" },
+        { kind: "pos_manual", at: new Date("2026-10-01T10:00:00Z"), detail: "old" },
+      ],
+      now,
+    });
+    expect(c.uptime.status).toBe("fail");
+    expect(c.sms.status).toBe("fail");
+    expect(c.domain.status).toBe("warn");
+    expect(c.recent_stripe_webhook.detail).toBe("2h ago: boom");
+    expect(c.recent_pos_manual).toBeUndefined();
+    expect(byId({ ...healthy(), siteUrl: "https://eatburnin.com" }).domain.status).toBe("ok");
+  });
+});

@@ -8,6 +8,7 @@ import { deriveOrderType } from "@/lib/orderType";
 import { getActiveConnection, loadContext } from "./connection";
 import { cartToPosOrder } from "./fromCart";
 import { getAdapter, POS_LABELS } from "./registry";
+import { opsAlert } from "@/lib/ops/alert";
 import { PosError, type PosOrderInput, type PosProvider } from "./types";
 
 // Paid order → POS. Called at the END of finalizeCart, after the owner's normal
@@ -119,6 +120,7 @@ async function attempt(syncId: string, email: string): Promise<PushOutcome> {
         data: { status: "manual", attempts, lastError: message, nextRetryAt: null },
       });
       await alertManual(sync.cartId, provider, message, order);
+      await opsAlert("pos_manual", `Order ${sync.cartId} needs manual entry in ${provider}: ${message}`);
       return "manual";
     }
     await db.posOrderSync.update({
