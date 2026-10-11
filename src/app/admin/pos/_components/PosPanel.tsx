@@ -13,6 +13,7 @@ import {
   previewPosMenu,
   resolvePosOrder,
   retryPosOrder,
+  sendPosTestOrder,
   selectPosLocation,
   setPosFeature,
   type PreviewRow,
@@ -63,6 +64,7 @@ export function PosPanel(props: {
   connection: Connection | null;
   flags: { pos_push: Flag; pos_menu_sync: Flag };
   syncs: Sync[];
+  unmapped: string[];
 }) {
   const { connection: conn, flags } = props;
   const [pending, start] = useTransition();
@@ -256,6 +258,31 @@ export function PosPanel(props: {
               </Button>
             </div>
           </details>
+        </div>
+      )}
+
+      {/* mapping health + test order */}
+      {conn?.status === "connected" && (
+        <div className={card}>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="font-semibold text-stone-900">Menu links</p>
+              <p className="text-sm text-stone-500">
+                {props.unmapped.length === 0
+                  ? `Every item on your site is linked to ${conn.label}.`
+                  : `${props.unmapped.length} item(s) on your site aren't linked to ${conn.label} yet (run "Check menu"): ${props.unmapped.slice(0, 6).join(", ")}${props.unmapped.length > 6 ? "…" : ""}`}
+              </p>
+            </div>
+            {conn.environment === "sandbox" && (
+              <Button
+                variant="outline"
+                disabled={pending}
+                onClick={() => run(sendPosTestOrder, (r) => toast.success(`Test order sent (${r.posOrderId})`))}
+              >
+                Send a TEST order
+              </Button>
+            )}
+          </div>
         </div>
       )}
 

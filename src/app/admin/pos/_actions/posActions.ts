@@ -127,6 +127,33 @@ export async function retryPosOrder(syncId: string): Promise<R<{ outcome: string
   }
 }
 
+/**
+ * Sends a clearly labelled TEST order to the POS. Refused unless the connection
+ * is in sandbox/test mode, so it can never put a fake order on a live kitchen.
+ */
+export async function sendPosTestOrder(): Promise<R<{ posOrderId: string }>> {
+  try {
+    await assertWritable();
+    const conn = await getActiveConnection();
+    if (!conn) return { ok: false, error: "No POS connected" };
+    if (conn.environment !== "sandbox") return { ok: false, error: "Test orders only work in test (sandbox) mode." };
+    const { SITE_CONFIG } = await import("@/lib/siteConfig");
+    const r = await getAdapter(conn.provider as never).pushOrder(await loadContext(conn), {
+      externalId: `test-${Date.now()}`,
+      lines: [{ name: "TEST ORDER - please ignore", quantity: 1, unitPriceCents: 100, modifiers: [] }],
+      customer: { name: "TEST - Starvega" },
+      fulfillment: { type: "pickup", timezone: SITE_CONFIG.timezone, note: "TEST ORDER from the website dashboard" },
+      discountCents: 0,
+      deliveryFeeCents: 0,
+      tipCents: 0,
+      totalCents: 100,
+    });
+    return { ok: true, posOrderId: r.posOrderId };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
 /** Owner keyed the order in by hand: stop showing it as a problem. */
 export async function resolvePosOrder(syncId: string): Promise<R> {
   try {

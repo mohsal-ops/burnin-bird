@@ -39,3 +39,10 @@ Everything is behind flags `pos_push` and `pos_menu_sync`, both OFF. No client s
 2. **Clover**: developer account → sandbox test merchant → API token + merchant id for `npm run sandbox:clover`. Before the first real Clover client, submit the app for approval.
 3. **n8n**: add one workflow that calls `GET <site>/api/pos/retry?key=<STARVEGA_JOBS_SECRET>` every 5 min for sites with POS on. Optionally add `/api/pos/menu-sync` every 30 min. Without it, failed pushes go straight to "enter by hand" (safe, but no auto-retry).
 4. Run `scripts/migrate-client-dbs.mjs` (panel) **before** porting this branch to any client. It adds the 3 new tables, additive only.
+
+## Update (feat/spec-gaps): aligned to the spec
+- Retries are now **5 attempts in ~15 minutes** (1, 2, 4, 8 min). n8n should call `/api/pos/retry` every 1–2 minutes for POS sites. Idle cost is one indexed query.
+- When the system gives up, the owner's email now contains the **full order** (items, modifiers, pickup/delivery, customer, total). A **red banner** shows on every admin page while any order is in "enter by hand".
+- `/admin/pos`: **mapping health** (site items not linked to the POS) and a **"Send a TEST order"** button that only works when the connection is in sandbox/test mode.
+- Toast, Lightspeed K and Shift4 docs now carry "BUILD ONLY AFTER A CLIENT HAS SIGNED AND PAID A DEPOSIT", the access path, what we need from the client, and effort. The middleware doc now compares **Deliverect, Otter, OrderOut** using public info (with sources, dated 2026-10-11) and gives a recommendation.
+- Interface note: the spec's `capabilities()`, `healthCheck()` and `getOrderStatus()` aren't separate methods. Capabilities are expressed by `support` + the docs, and health is in `/admin/health`. Order status back from the POS is not built (Square/Clover order-state webhooks would need the relay). Listed as a follow-up.

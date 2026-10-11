@@ -16,6 +16,23 @@ export default async function PosPage({ searchParams }: { searchParams: Promise<
     getAllFlags(),
     db.posOrderSync.findMany({ orderBy: { createdAt: "desc" }, take: 25 }),
   ]);
+  // Mapping health: site items not linked to anything in the POS yet.
+  const unmapped = conn
+    ? await db.item
+        .findMany({
+          where: { isAvailableForPurchase: true },
+          select: { id: true, name: true },
+        })
+        .then(async (items) => {
+          const linked = new Set(
+            (await db.posMenuMap.findMany({ where: { provider: conn.provider, localType: "item" }, select: { localId: true } })).map(
+              (m) => m.localId,
+            ),
+          );
+          return items.filter((i) => !linked.has(i.id)).map((i) => i.name);
+        })
+        .catch(() => [])
+    : [];
 
   const providers = (Object.keys(POS_ADAPTERS) as PosProvider[]).map((p) => ({
     id: p,
@@ -57,6 +74,7 @@ export default async function PosPage({ searchParams }: { searchParams: Promise<
               : null
           }
           flags={{ pos_push: flags.pos_push, pos_menu_sync: flags.pos_menu_sync }}
+          unmapped={unmapped}
           syncs={syncs.map((s) => ({
             id: s.id,
             cartId: s.cartId,

@@ -8,14 +8,14 @@ import { deriveOrderType } from "@/lib/orderType";
 import { getActiveConnection, loadContext } from "./connection";
 import { cartToPosOrder } from "./fromCart";
 import { getAdapter, POS_LABELS } from "./registry";
-import { PosError, type PosProvider } from "./types";
+import { PosError, type PosOrderInput, type PosProvider } from "./types";
 
 // Paid order → POS. Called at the END of finalizeCart, after the owner's normal
 // Telegram/email alert has already gone out, so a POS problem can never stop
 // the owner hearing about an order.
 //
 //   attempt now ─ok→ sent
-//        └─fail→ retryable? schedule nextRetryAt (1m, 5m, 15m, 1h, 6h)
+//        └─fail→ retryable? schedule nextRetryAt (1m, 2m, 4m, 8m → 5 attempts in ~15 min)
 //                 └ n8n calls /api/pos/retry → retryDuePosOrders()
 //        └─gives up (non-retryable / max attempts / no scheduler)
 //                 → status "manual" + owner told to key the order in by hand.
@@ -23,7 +23,7 @@ import { PosError, type PosProvider } from "./types";
 // Off unless flag "pos_push" is on AND a POS is connected. Kill switch:
 // STARVEGA_KILL_POS_PUSH=1. Never logs tokens or customer phone numbers.
 
-export const BACKOFF_MINUTES = [1, 5, 15, 60, 360];
+export const BACKOFF_MINUTES = [1, 2, 4, 8];
 export const MAX_ATTEMPTS = BACKOFF_MINUTES.length + 1;
 
 /** Without a scheduler (n8n + STARVEGA_JOBS_SECRET) nothing would retry later. */
@@ -71,6 +71,7 @@ async function attempt(syncId: string, email: string): Promise<PushOutcome> {
   const provider = sync.provider as PosProvider;
   const adapter = getAdapter(provider);
   const attempts = sync.attempts + 1;
+  let order: PosOrderInput | undefined;
 
   try {
     const conn = await db.posConnection.findUnique({ where: { provider } });
@@ -84,7 +85,7 @@ async function attempt(syncId: string, email: string): Promise<PushOutcome> {
     const camp = cart.promoCampaignId
       ? await db.loyaltyCampaign.findUnique({ where: { id: cart.promoCampaignId }, select: { discountPercent: true } })
       : null;
-    const order = cartToPosOrder(cart, {
+    order = cartToPosOrder(cart, {
       email, // only known on the first (inline) attempt; optional for the POS
       discountPercent: camp?.discountPercent,
       isDelivery: deriveOrderType(cart.items[0]) === "delivery",
@@ -117,7 +118,7 @@ async function attempt(syncId: string, email: string): Promise<PushOutcome> {
         where: { id: syncId },
         data: { status: "manual", attempts, lastError: message, nextRetryAt: null },
       });
-      await alertManual(sync.cartId, provider, message);
+      await alertManual(sync.cartId, provider, message, order);
       return "manual";
     }
     await db.posOrderSync.update({
@@ -133,7 +134,25 @@ async function attempt(syncId: string, email: string): Promise<PushOutcome> {
   }
 }
 
-async function alertManual(cartId: string, provider: PosProvider, reason: string) {
+const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+
+function orderHtml(o: PosOrderInput): string {
+  const f = o.fulfillment;
+  const lines = o.lines
+    .map(
+      (l) =>
+        `<li>${l.quantity} × ${esc(l.name)} ($${((l.unitPriceCents * l.quantity) / 100).toFixed(2)})${
+          l.modifiers.length ? `<br><span style="color:#78716c">${l.modifiers.map((m) => esc(m.name)).join(", ")}</span>` : ""
+        }</li>`,
+    )
+    .join("");
+  return `<p><b>${f.type === "delivery" ? `Delivery to ${esc(f.deliveryAddress ?? "")}` : `Pickup ${f.pickupAt ? new Date(f.pickupAt).toLocaleString("en-US", { timeZone: f.timezone }) : "ASAP"}`}</b><br>
+    ${esc(o.customer.name ?? "")} ${esc(o.customer.phone ?? "")}${f.note ? `<br>Note: ${esc(f.note)}` : ""}</p>
+    <ul>${lines}</ul>
+    <p>Total paid: <b>$${(o.totalCents / 100).toFixed(2)}</b> (paid online)</p>`;
+}
+
+async function alertManual(cartId: string, provider: PosProvider, reason: string, order?: PosOrderInput) {
   const pos = POS_LABELS[provider];
   const short = cartId.slice(0, 8);
   await sendTelegramMessage(
@@ -146,8 +165,8 @@ async function alertManual(cartId: string, provider: PosProvider, reason: string
     subject: `Action needed: order ${short} didn't reach ${pos} - ${SITE_CONFIG.name}`,
     html: `<div style="font-family:system-ui,Segoe UI,sans-serif;font-size:15px;color:#1c1917">
       <h2 style="margin:0 0 12px">Please enter this order in ${pos} by hand</h2>
-      <p>Order <strong>${short}</strong> was paid on your website, but sending it to ${pos} failed.
-      The full order is in the "New order" email you already received.</p>
+      <p>Order <strong>${short}</strong> was paid on your website, but sending it to ${pos} failed.</p>
+      ${order ? orderHtml(order) : `<p>The full order is in the "New order" email you already received.</p>`}
       <p style="color:#78716c;font-size:13px">Reason: ${reason.replace(/</g, "&lt;")}</p>
       <p style="color:#78716c;font-size:13px">You can retry from your dashboard → POS.</p></div>`,
   }).catch((e) => console.error("POS manual-alert email failed:", (e as Error).message));
