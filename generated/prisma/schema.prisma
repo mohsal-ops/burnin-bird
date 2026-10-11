@@ -363,3 +363,22 @@ model PosOrderSync {
   @@unique([cartId, provider])
   @@index([status, nextRetryAt])
 }
+
+// ── Web push (platform build, Phase 3; flag "web_push", OFF) ─────────────────
+// A browser that agreed to notifications. audience "owner" = new-order alerts
+// on the owner's phone/computer; "customer" = status of ONE order (cartId).
+model PushSubscription {
+  id            String    @id @default(cuid())
+  endpoint      String    @unique
+  p256dh        String
+  auth          String
+  audience      String // "owner" | "customer"
+  cartId        String?
+  userAgent     String?
+  failures      Int       @default(0)
+  lastSuccessAt DateTime?
+  createdAt     DateTime  @default(now())
+
+  @@index([audience])
+  @@index([cartId])
+}

@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { deriveOrderType } from "@/lib/orderType";
 import { PAID_STATUSES, isPaid } from "@/lib/orderStatus";
+import { notifyOrderReady } from "@/lib/push/notify";
 
 export type CartOrderStatus = "open" | "new" | "completed" | "abandoned";
 
@@ -21,8 +22,10 @@ export async function getOrdersWithItems(status?: CartOrderStatus) {
 
 export async function updateCartStatus(cartId: string, status: CartOrderStatus) {
   await assertWritable();
+  const prev = await db.cart.findUnique({ where: { id: cartId }, select: { status: true } });
   await db.cart.update({ where: { id: cartId }, data: { status } });
   revalidatePath("/admin/orders");
+  if (status === "completed" && prev?.status !== "completed") await notifyOrderReady(cartId);
 }
 
 export async function deleteCart(cartId: string) {

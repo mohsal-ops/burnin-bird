@@ -390,6 +390,19 @@ exports.Prisma.PosOrderSyncScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.PushSubscriptionScalarFieldEnum = {
+  id: 'id',
+  endpoint: 'endpoint',
+  p256dh: 'p256dh',
+  auth: 'auth',
+  audience: 'audience',
+  cartId: 'cartId',
+  userAgent: 'userAgent',
+  failures: 'failures',
+  lastSuccessAt: 'lastSuccessAt',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -443,7 +456,8 @@ exports.Prisma.ModelName = {
   LoyaltyCampaign: 'LoyaltyCampaign',
   PosConnection: 'PosConnection',
   PosMenuMap: 'PosMenuMap',
-  PosOrderSync: 'PosOrderSync'
+  PosOrderSync: 'PosOrderSync',
+  PushSubscription: 'PushSubscription'
 };
 
 /**

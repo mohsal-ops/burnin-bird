@@ -3,6 +3,7 @@ import { timingSafeEqual } from "node:crypto";
 import db from "@/db/db";
 import { cartIdFromExternal, mapDoorDashStatus } from "@/lib/delivery/doordash";
 import { getDoorDashSettings } from "@/lib/delivery/settings";
+import { notifyCourierStatus } from "@/lib/push/notify";
 
 export const dynamic = "force-dynamic";
 
@@ -44,12 +45,16 @@ export async function POST(req: Request) {
   const status = body.delivery_status
     ? mapDoorDashStatus(body.delivery_status)
     : EVENT_STATUS[body.event_name ?? ""] ?? null;
+  const cartId = cartIdFromExternal(body.external_delivery_id);
+  const prev = await db.cart.findUnique({ where: { id: cartId }, select: { uberStatus: true, deliveryProvider: true } });
+  if (prev?.deliveryProvider !== "doordash_drive") return NextResponse.json({ ok: true });
   await db.cart.updateMany({
-    where: { id: cartIdFromExternal(body.external_delivery_id), deliveryProvider: "doordash_drive" },
+    where: { id: cartId, deliveryProvider: "doordash_drive" },
     data: {
       ...(status ? { uberStatus: status } : {}),
       ...(body.tracking_url ? { uberTrackingUrl: body.tracking_url } : {}),
     },
   });
+  if (status) await notifyCourierStatus(cartId, prev.uberStatus, status);
   return NextResponse.json({ ok: true });
 }

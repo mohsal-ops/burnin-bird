@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { timingSafeEqual } from "crypto";
 import db from "@/db/db";
 import { revalidatePath } from "next/cache";
+import { notifyCourierStatus } from "@/lib/push/notify";
 
 // Receives Uber delivery-status updates relayed by the ONE central webhook on
 // the builder (which verifies Uber's signature). Authed with a shared bearer
@@ -31,6 +32,7 @@ export async function POST(req: NextRequest) {
   if (!cartId) return NextResponse.json({ error: "missing cartId" }, { status: 400 });
 
   try {
+    const prev = await db.cart.findUnique({ where: { id: cartId }, select: { uberStatus: true } });
     await db.cart.updateMany({
       where: { id: cartId },
       data: {
@@ -39,6 +41,7 @@ export async function POST(req: NextRequest) {
       },
     });
     revalidatePath("/admin/orders");
+    await notifyCourierStatus(cartId, prev?.uberStatus, status);
     return NextResponse.json({ ok: true });
   } catch (e) {
     console.error("uber status-callback update failed:", (e as Error).message);

@@ -15,6 +15,8 @@ import LoadingScreen from "@/components/LoadingScreen";
 import TrialPopup from "./_components/TrialPopup";
 import DashboardBubble from "./_components/DashboardBubble";
 import LoyaltyPopup from "@/components/LoyaltyPopup";
+import PwaBoot from "@/components/pwa/PwaBoot";
+import { isEnabled } from "@/lib/flags";
 
 // Public pages are cached and rebuilt at most every 5 min (owner edits also
 // revalidate instantly) — rendering on every visit blew the free CPU limit.
@@ -31,6 +33,7 @@ export default async function Customerlayout({
   const logoUrl = await getLogoUrl();
   const loyalty = await getLoyaltySettings();
   const theme = await getActiveTheme();
+  const pwaOn = await isEnabled("pwa");
 
   return (
     <SidebarProvider>
@@ -42,6 +45,7 @@ export default async function Customerlayout({
           would just be customer noise). Dashboard/preview visits are tracked
           separately in admin/layout.tsx. */}
       {(SITE_CONFIG as { trackWebsiteVisits?: boolean }).trackWebsiteVisits !== false && <VisitAlert source="site" />}
+      {pwaOn && <PwaBoot name={SITE_CONFIG.name} />}
       <TrialPopup />
       <DashboardBubble />
       <LoyaltyPopup

@@ -10,6 +10,8 @@ import { deriveOrderType } from "@/lib/orderType";
 import { NEW_ORDER, PAID_STATUSES, isPaid } from "@/lib/orderStatus";
 import { pushOrderToPos } from "@/lib/pos/pipeline";
 import { dispatchRoutedDelivery } from "@/lib/delivery/dispatch";
+import { pushToOwners } from "@/lib/push/send";
+import { ownerNewOrderMessage } from "@/lib/push/messages";
 
 // One place that finalizes a paid cart: mark it "new" (a real, paid order
 // waiting on the kitchen - it counts as revenue AND triggers the kitchen
@@ -224,6 +226,9 @@ export async function finalizeCart(
         : `Pickup: ${first.pickupDay ? new Date(first.pickupDay).toDateString() : ""} ${first.pickupTime ?? ""}\n`) +
       `Items: ${itemsList}`,
   ).catch(() => {});
+
+  // Owner web push (flag "web_push"; no-op otherwise). Best-effort.
+  await pushToOwners(ownerNewOrderMessage(Math.round(total * 100), orderType)).catch(() => 0);
 
   // Owner email (best-effort).
   try {
