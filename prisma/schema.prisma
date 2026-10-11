@@ -134,6 +134,14 @@ model Cart {
   // entered). Set when the code is validated; on a completed order that campaign's
   // redemptionCount is incremented.
   promoCampaignId String?
+
+  // Delivery router (platform build, flag "delivery_router"). Which courier
+  // the quote came from: null/"uber_direct" = Uber (today's behaviour),
+  // "doordash_drive" = DoorDash Drive. The uber* fields above hold the quote /
+  // delivery for WHICHEVER courier was chosen (historic names, kept so the
+  // existing checkout, orders and success pages work unchanged).
+  deliveryProvider       String?
+  deliveryQuoteExpiresAt DateTime?
 }
 
 model CartItem {

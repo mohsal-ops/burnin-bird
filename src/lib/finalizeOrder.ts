@@ -9,6 +9,7 @@ import { createDelivery } from "@/lib/uber";
 import { deriveOrderType } from "@/lib/orderType";
 import { NEW_ORDER, PAID_STATUSES, isPaid } from "@/lib/orderStatus";
 import { pushOrderToPos } from "@/lib/pos/pipeline";
+import { dispatchRoutedDelivery } from "@/lib/delivery/dispatch";
 
 // One place that finalizes a paid cart: mark it "new" (a real, paid order
 // waiting on the kitchen - it counts as revenue AND triggers the kitchen
@@ -90,8 +91,14 @@ export async function finalizeCart(
       .catch((e) => console.error("finalizeCart: redemption increment failed:", (e as Error).message));
   }
 
+  // Courier chosen by the delivery router (DoorDash Drive). Uber carts —
+  // deliveryProvider null or "uber_direct" — use the original block below.
+  const routedCourier =
+    cart.deliveryProvider && cart.deliveryProvider !== "uber_direct" && deriveOrderType(first) === "delivery";
+  if (routedCourier) await dispatchRoutedDelivery(cart, first, email);
+
   // Uber Direct dispatch (delivery only, when enabled). Best-effort.
-  try {
+  if (!routedCourier) try {
     const uber = await getUberDirect();
     if (deriveOrderType(first) === "delivery" && first.deliveryAddress) {
       if (!cart.uberQuoteId || !uber.enabled) {

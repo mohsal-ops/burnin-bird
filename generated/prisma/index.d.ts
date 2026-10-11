@@ -11904,6 +11904,8 @@ export namespace Prisma {
     uberTrackingUrl: string | null
     uberQuoteError: string | null
     promoCampaignId: string | null
+    deliveryProvider: string | null
+    deliveryQuoteExpiresAt: Date | null
   }
 
   export type CartMaxAggregateOutputType = {
@@ -11918,6 +11920,8 @@ export namespace Prisma {
     uberTrackingUrl: string | null
     uberQuoteError: string | null
     promoCampaignId: string | null
+    deliveryProvider: string | null
+    deliveryQuoteExpiresAt: Date | null
   }
 
   export type CartCountAggregateOutputType = {
@@ -11932,6 +11936,8 @@ export namespace Prisma {
     uberTrackingUrl: number
     uberQuoteError: number
     promoCampaignId: number
+    deliveryProvider: number
+    deliveryQuoteExpiresAt: number
     _all: number
   }
 
@@ -11956,6 +11962,8 @@ export namespace Prisma {
     uberTrackingUrl?: true
     uberQuoteError?: true
     promoCampaignId?: true
+    deliveryProvider?: true
+    deliveryQuoteExpiresAt?: true
   }
 
   export type CartMaxAggregateInputType = {
@@ -11970,6 +11978,8 @@ export namespace Prisma {
     uberTrackingUrl?: true
     uberQuoteError?: true
     promoCampaignId?: true
+    deliveryProvider?: true
+    deliveryQuoteExpiresAt?: true
   }
 
   export type CartCountAggregateInputType = {
@@ -11984,6 +11994,8 @@ export namespace Prisma {
     uberTrackingUrl?: true
     uberQuoteError?: true
     promoCampaignId?: true
+    deliveryProvider?: true
+    deliveryQuoteExpiresAt?: true
     _all?: true
   }
 
@@ -12085,6 +12097,8 @@ export namespace Prisma {
     uberTrackingUrl: string | null
     uberQuoteError: string | null
     promoCampaignId: string | null
+    deliveryProvider: string | null
+    deliveryQuoteExpiresAt: Date | null
     _count: CartCountAggregateOutputType | null
     _avg: CartAvgAggregateOutputType | null
     _sum: CartSumAggregateOutputType | null
@@ -12118,6 +12132,8 @@ export namespace Prisma {
     uberTrackingUrl?: boolean
     uberQuoteError?: boolean
     promoCampaignId?: boolean
+    deliveryProvider?: boolean
+    deliveryQuoteExpiresAt?: boolean
     items?: boolean | Cart$itemsArgs<ExtArgs>
     _count?: boolean | CartCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cart"]>
@@ -12134,6 +12150,8 @@ export namespace Prisma {
     uberTrackingUrl?: boolean
     uberQuoteError?: boolean
     promoCampaignId?: boolean
+    deliveryProvider?: boolean
+    deliveryQuoteExpiresAt?: boolean
   }, ExtArgs["result"]["cart"]>
 
   export type CartSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -12148,6 +12166,8 @@ export namespace Prisma {
     uberTrackingUrl?: boolean
     uberQuoteError?: boolean
     promoCampaignId?: boolean
+    deliveryProvider?: boolean
+    deliveryQuoteExpiresAt?: boolean
   }, ExtArgs["result"]["cart"]>
 
   export type CartSelectScalar = {
@@ -12162,9 +12182,11 @@ export namespace Prisma {
     uberTrackingUrl?: boolean
     uberQuoteError?: boolean
     promoCampaignId?: boolean
+    deliveryProvider?: boolean
+    deliveryQuoteExpiresAt?: boolean
   }
 
-  export type CartOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "status" | "uberQuoteId" | "uberFeeCents" | "uberDeliveryId" | "uberStatus" | "uberTrackingUrl" | "uberQuoteError" | "promoCampaignId", ExtArgs["result"]["cart"]>
+  export type CartOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "status" | "uberQuoteId" | "uberFeeCents" | "uberDeliveryId" | "uberStatus" | "uberTrackingUrl" | "uberQuoteError" | "promoCampaignId" | "deliveryProvider" | "deliveryQuoteExpiresAt", ExtArgs["result"]["cart"]>
   export type CartInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     items?: boolean | Cart$itemsArgs<ExtArgs>
     _count?: boolean | CartCountOutputTypeDefaultArgs<ExtArgs>
@@ -12189,6 +12211,8 @@ export namespace Prisma {
       uberTrackingUrl: string | null
       uberQuoteError: string | null
       promoCampaignId: string | null
+      deliveryProvider: string | null
+      deliveryQuoteExpiresAt: Date | null
     }, ExtArgs["result"]["cart"]>
     composites: {}
   }
@@ -12624,6 +12648,8 @@ export namespace Prisma {
     readonly uberTrackingUrl: FieldRef<"Cart", 'String'>
     readonly uberQuoteError: FieldRef<"Cart", 'String'>
     readonly promoCampaignId: FieldRef<"Cart", 'String'>
+    readonly deliveryProvider: FieldRef<"Cart", 'String'>
+    readonly deliveryQuoteExpiresAt: FieldRef<"Cart", 'DateTime'>
   }
     
 
@@ -29432,7 +29458,9 @@ export namespace Prisma {
     uberStatus: 'uberStatus',
     uberTrackingUrl: 'uberTrackingUrl',
     uberQuoteError: 'uberQuoteError',
-    promoCampaignId: 'promoCampaignId'
+    promoCampaignId: 'promoCampaignId',
+    deliveryProvider: 'deliveryProvider',
+    deliveryQuoteExpiresAt: 'deliveryQuoteExpiresAt'
   };
 
   export type CartScalarFieldEnum = (typeof CartScalarFieldEnum)[keyof typeof CartScalarFieldEnum]
@@ -30332,6 +30360,8 @@ export namespace Prisma {
     uberTrackingUrl?: StringNullableFilter<"Cart"> | string | null
     uberQuoteError?: StringNullableFilter<"Cart"> | string | null
     promoCampaignId?: StringNullableFilter<"Cart"> | string | null
+    deliveryProvider?: StringNullableFilter<"Cart"> | string | null
+    deliveryQuoteExpiresAt?: DateTimeNullableFilter<"Cart"> | Date | string | null
     items?: CartItemListRelationFilter
   }
 
@@ -30347,6 +30377,8 @@ export namespace Prisma {
     uberTrackingUrl?: SortOrderInput | SortOrder
     uberQuoteError?: SortOrderInput | SortOrder
     promoCampaignId?: SortOrderInput | SortOrder
+    deliveryProvider?: SortOrderInput | SortOrder
+    deliveryQuoteExpiresAt?: SortOrderInput | SortOrder
     items?: CartItemOrderByRelationAggregateInput
   }
 
@@ -30365,6 +30397,8 @@ export namespace Prisma {
     uberTrackingUrl?: StringNullableFilter<"Cart"> | string | null
     uberQuoteError?: StringNullableFilter<"Cart"> | string | null
     promoCampaignId?: StringNullableFilter<"Cart"> | string | null
+    deliveryProvider?: StringNullableFilter<"Cart"> | string | null
+    deliveryQuoteExpiresAt?: DateTimeNullableFilter<"Cart"> | Date | string | null
     items?: CartItemListRelationFilter
   }, "id">
 
@@ -30380,6 +30414,8 @@ export namespace Prisma {
     uberTrackingUrl?: SortOrderInput | SortOrder
     uberQuoteError?: SortOrderInput | SortOrder
     promoCampaignId?: SortOrderInput | SortOrder
+    deliveryProvider?: SortOrderInput | SortOrder
+    deliveryQuoteExpiresAt?: SortOrderInput | SortOrder
     _count?: CartCountOrderByAggregateInput
     _avg?: CartAvgOrderByAggregateInput
     _max?: CartMaxOrderByAggregateInput
@@ -30402,6 +30438,8 @@ export namespace Prisma {
     uberTrackingUrl?: StringNullableWithAggregatesFilter<"Cart"> | string | null
     uberQuoteError?: StringNullableWithAggregatesFilter<"Cart"> | string | null
     promoCampaignId?: StringNullableWithAggregatesFilter<"Cart"> | string | null
+    deliveryProvider?: StringNullableWithAggregatesFilter<"Cart"> | string | null
+    deliveryQuoteExpiresAt?: DateTimeNullableWithAggregatesFilter<"Cart"> | Date | string | null
   }
 
   export type CartItemWhereInput = {
@@ -32085,6 +32123,8 @@ export namespace Prisma {
     uberTrackingUrl?: string | null
     uberQuoteError?: string | null
     promoCampaignId?: string | null
+    deliveryProvider?: string | null
+    deliveryQuoteExpiresAt?: Date | string | null
     items?: CartItemCreateNestedManyWithoutCartInput
   }
 
@@ -32100,6 +32140,8 @@ export namespace Prisma {
     uberTrackingUrl?: string | null
     uberQuoteError?: string | null
     promoCampaignId?: string | null
+    deliveryProvider?: string | null
+    deliveryQuoteExpiresAt?: Date | string | null
     items?: CartItemUncheckedCreateNestedManyWithoutCartInput
   }
 
@@ -32115,6 +32157,8 @@ export namespace Prisma {
     uberTrackingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     uberQuoteError?: NullableStringFieldUpdateOperationsInput | string | null
     promoCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryQuoteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     items?: CartItemUpdateManyWithoutCartNestedInput
   }
 
@@ -32130,6 +32174,8 @@ export namespace Prisma {
     uberTrackingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     uberQuoteError?: NullableStringFieldUpdateOperationsInput | string | null
     promoCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryQuoteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     items?: CartItemUncheckedUpdateManyWithoutCartNestedInput
   }
 
@@ -32145,6 +32191,8 @@ export namespace Prisma {
     uberTrackingUrl?: string | null
     uberQuoteError?: string | null
     promoCampaignId?: string | null
+    deliveryProvider?: string | null
+    deliveryQuoteExpiresAt?: Date | string | null
   }
 
   export type CartUpdateManyMutationInput = {
@@ -32159,6 +32207,8 @@ export namespace Prisma {
     uberTrackingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     uberQuoteError?: NullableStringFieldUpdateOperationsInput | string | null
     promoCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryQuoteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type CartUncheckedUpdateManyInput = {
@@ -32173,6 +32223,8 @@ export namespace Prisma {
     uberTrackingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     uberQuoteError?: NullableStringFieldUpdateOperationsInput | string | null
     promoCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryQuoteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type CartItemCreateInput = {
@@ -33966,6 +34018,8 @@ export namespace Prisma {
     uberTrackingUrl?: SortOrder
     uberQuoteError?: SortOrder
     promoCampaignId?: SortOrder
+    deliveryProvider?: SortOrder
+    deliveryQuoteExpiresAt?: SortOrder
   }
 
   export type CartAvgOrderByAggregateInput = {
@@ -33984,6 +34038,8 @@ export namespace Prisma {
     uberTrackingUrl?: SortOrder
     uberQuoteError?: SortOrder
     promoCampaignId?: SortOrder
+    deliveryProvider?: SortOrder
+    deliveryQuoteExpiresAt?: SortOrder
   }
 
   export type CartMinOrderByAggregateInput = {
@@ -33998,6 +34054,8 @@ export namespace Prisma {
     uberTrackingUrl?: SortOrder
     uberQuoteError?: SortOrder
     promoCampaignId?: SortOrder
+    deliveryProvider?: SortOrder
+    deliveryQuoteExpiresAt?: SortOrder
   }
 
   export type CartSumOrderByAggregateInput = {
@@ -35943,6 +36001,8 @@ export namespace Prisma {
     uberTrackingUrl?: string | null
     uberQuoteError?: string | null
     promoCampaignId?: string | null
+    deliveryProvider?: string | null
+    deliveryQuoteExpiresAt?: Date | string | null
   }
 
   export type CartUncheckedCreateWithoutItemsInput = {
@@ -35957,6 +36017,8 @@ export namespace Prisma {
     uberTrackingUrl?: string | null
     uberQuoteError?: string | null
     promoCampaignId?: string | null
+    deliveryProvider?: string | null
+    deliveryQuoteExpiresAt?: Date | string | null
   }
 
   export type CartCreateOrConnectWithoutItemsInput = {
@@ -36013,6 +36075,8 @@ export namespace Prisma {
     uberTrackingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     uberQuoteError?: NullableStringFieldUpdateOperationsInput | string | null
     promoCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryQuoteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type CartUncheckedUpdateWithoutItemsInput = {
@@ -36027,6 +36091,8 @@ export namespace Prisma {
     uberTrackingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     uberQuoteError?: NullableStringFieldUpdateOperationsInput | string | null
     promoCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryQuoteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type CartItemSideUpsertWithWhereUniqueWithoutCartItemInput = {

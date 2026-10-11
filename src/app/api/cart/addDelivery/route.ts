@@ -6,6 +6,8 @@ import { revalidatePath } from "next/cache";
 import { getUberDirect } from "@/lib/siteSettings";
 import { getQuote, quoteEtaMinutes } from "@/lib/uber";
 import { SITE_CONFIG } from "@/lib/siteConfig";
+import { isEnabled } from "@/lib/flags";
+import { routedQuote } from "@/lib/delivery/quoteForCart";
 
 // Delivery on this platform IS Uber Direct: a delivery address is only accepted
 // with a REAL courier quote. If there's no quote (owner has it off, credentials
@@ -43,7 +45,13 @@ export async function POST(req: Request) {
       const uber = await getUberDirect();
       let failure: string | null = null;
 
-      if (!uber.enabled || uber.mode === "pickup_only") {
+      if (await isEnabled("delivery_router")) {
+        // Multi-courier path (Uber + DoorDash). Off by default; when off, the
+        // Uber-only code below runs exactly as before.
+        const r = await routedQuote({ cartId: cart.id, address, lat, lng, customerName, customerPhone });
+        if (r.ok) delivery = { available: true, feeCents: r.feeCents, etaMin: r.etaMin };
+        else failure = r.reason;
+      } else if (!uber.enabled || uber.mode === "pickup_only") {
         failure = "Uber Direct delivery is turned off in the dashboard (Delivery settings).";
       } else {
         try {

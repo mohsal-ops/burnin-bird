@@ -214,7 +214,9 @@ exports.Prisma.CartScalarFieldEnum = {
   uberStatus: 'uberStatus',
   uberTrackingUrl: 'uberTrackingUrl',
   uberQuoteError: 'uberQuoteError',
-  promoCampaignId: 'promoCampaignId'
+  promoCampaignId: 'promoCampaignId',
+  deliveryProvider: 'deliveryProvider',
+  deliveryQuoteExpiresAt: 'deliveryQuoteExpiresAt'
 };
 
 exports.Prisma.CartItemScalarFieldEnum = {
