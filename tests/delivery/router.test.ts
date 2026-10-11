@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { pickQuote, quoteAll } from "@/lib/delivery/router";
+import { dispatchWithFailover, pickQuote, quoteAll } from "@/lib/delivery/router";
 import type { DeliveryProvider, DeliveryQuote } from "@/lib/delivery/types";
 
 const q = (provider: DeliveryQuote["provider"], feeCents: number, etaMinutes?: number): DeliveryQuote => ({
@@ -53,5 +53,40 @@ describe("quoteAll", () => {
     const r = await quoteAll([fake("uber_direct", async () => { throw new Error("x"); })], input, "cheapest");
     expect(r.chosen).toBeNull();
     expect(r.errors).toHaveLength(1);
+  });
+});
+
+describe("pickQuote preferred", () => {
+  it("uses the preferred courier when it quoted, else the cheapest", () => {
+    const qs = [q("uber_direct", 899, 30), q("doordash_drive", 799, 45)];
+    expect(pickQuote(qs, "preferred", "uber_direct")?.provider).toBe("uber_direct");
+    expect(pickQuote([q("doordash_drive", 799)], "preferred", "uber_direct")?.provider).toBe("doordash_drive");
+  });
+});
+
+describe("dispatchWithFailover", () => {
+  const dispatchInput = {
+    quote: q("uber_direct", 899), externalId: "c", items: [], orderValueCents: 1000, siteUrl: "https://x.test",
+    pickup: { formatted: "a", businessName: "b", phone: "+1" }, dropoff: { formatted: "d", name: "n", phone: "+1" },
+  };
+  const mk = (id: DeliveryQuote["provider"], ok: boolean): DeliveryProvider => ({
+    id, label: id, isConfigured: async () => true,
+    quote: async () => q(id, 1000),
+    dispatch: async () => { if (!ok) throw new Error(`${id} down`); return { deliveryId: `${id}-1`, status: "pending" }; },
+  });
+
+  it("primary works → no failover", async () => {
+    const r = await dispatchWithFailover(mk("uber_direct", true), [mk("doordash_drive", true)], dispatchInput, input);
+    expect(r).toMatchObject({ failedOver: false, result: { deliveryId: "uber_direct-1" } });
+  });
+  it("primary fails → re-quotes and dispatches with the other once", async () => {
+    const u = mk("uber_direct", false);
+    const r = await dispatchWithFailover(u, [u, mk("doordash_drive", true)], dispatchInput, input);
+    expect(r).toMatchObject({ failedOver: true, result: { deliveryId: "doordash_drive-1" }, quote: { feeCents: 1000 } });
+  });
+  it("both fail → throws with both reasons", async () => {
+    await expect(dispatchWithFailover(mk("uber_direct", false), [mk("doordash_drive", false)], dispatchInput, input)).rejects.toThrow(
+      "uber_direct: uber_direct down | doordash_drive: doordash_drive down",
+    );
   });
 });

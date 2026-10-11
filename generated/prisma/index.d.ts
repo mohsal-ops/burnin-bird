@@ -11977,10 +11977,12 @@ export namespace Prisma {
 
   export type CartAvgAggregateOutputType = {
     uberFeeCents: number | null
+    deliveryCourierFeeCents: number | null
   }
 
   export type CartSumAggregateOutputType = {
     uberFeeCents: number | null
+    deliveryCourierFeeCents: number | null
   }
 
   export type CartMinAggregateOutputType = {
@@ -11997,6 +11999,7 @@ export namespace Prisma {
     promoCampaignId: string | null
     deliveryProvider: string | null
     deliveryQuoteExpiresAt: Date | null
+    deliveryCourierFeeCents: number | null
   }
 
   export type CartMaxAggregateOutputType = {
@@ -12013,6 +12016,7 @@ export namespace Prisma {
     promoCampaignId: string | null
     deliveryProvider: string | null
     deliveryQuoteExpiresAt: Date | null
+    deliveryCourierFeeCents: number | null
   }
 
   export type CartCountAggregateOutputType = {
@@ -12029,16 +12033,19 @@ export namespace Prisma {
     promoCampaignId: number
     deliveryProvider: number
     deliveryQuoteExpiresAt: number
+    deliveryCourierFeeCents: number
     _all: number
   }
 
 
   export type CartAvgAggregateInputType = {
     uberFeeCents?: true
+    deliveryCourierFeeCents?: true
   }
 
   export type CartSumAggregateInputType = {
     uberFeeCents?: true
+    deliveryCourierFeeCents?: true
   }
 
   export type CartMinAggregateInputType = {
@@ -12055,6 +12062,7 @@ export namespace Prisma {
     promoCampaignId?: true
     deliveryProvider?: true
     deliveryQuoteExpiresAt?: true
+    deliveryCourierFeeCents?: true
   }
 
   export type CartMaxAggregateInputType = {
@@ -12071,6 +12079,7 @@ export namespace Prisma {
     promoCampaignId?: true
     deliveryProvider?: true
     deliveryQuoteExpiresAt?: true
+    deliveryCourierFeeCents?: true
   }
 
   export type CartCountAggregateInputType = {
@@ -12087,6 +12096,7 @@ export namespace Prisma {
     promoCampaignId?: true
     deliveryProvider?: true
     deliveryQuoteExpiresAt?: true
+    deliveryCourierFeeCents?: true
     _all?: true
   }
 
@@ -12190,6 +12200,7 @@ export namespace Prisma {
     promoCampaignId: string | null
     deliveryProvider: string | null
     deliveryQuoteExpiresAt: Date | null
+    deliveryCourierFeeCents: number | null
     _count: CartCountAggregateOutputType | null
     _avg: CartAvgAggregateOutputType | null
     _sum: CartSumAggregateOutputType | null
@@ -12225,6 +12236,7 @@ export namespace Prisma {
     promoCampaignId?: boolean
     deliveryProvider?: boolean
     deliveryQuoteExpiresAt?: boolean
+    deliveryCourierFeeCents?: boolean
     items?: boolean | Cart$itemsArgs<ExtArgs>
     _count?: boolean | CartCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cart"]>
@@ -12243,6 +12255,7 @@ export namespace Prisma {
     promoCampaignId?: boolean
     deliveryProvider?: boolean
     deliveryQuoteExpiresAt?: boolean
+    deliveryCourierFeeCents?: boolean
   }, ExtArgs["result"]["cart"]>
 
   export type CartSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -12259,6 +12272,7 @@ export namespace Prisma {
     promoCampaignId?: boolean
     deliveryProvider?: boolean
     deliveryQuoteExpiresAt?: boolean
+    deliveryCourierFeeCents?: boolean
   }, ExtArgs["result"]["cart"]>
 
   export type CartSelectScalar = {
@@ -12275,9 +12289,10 @@ export namespace Prisma {
     promoCampaignId?: boolean
     deliveryProvider?: boolean
     deliveryQuoteExpiresAt?: boolean
+    deliveryCourierFeeCents?: boolean
   }
 
-  export type CartOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "status" | "uberQuoteId" | "uberFeeCents" | "uberDeliveryId" | "uberStatus" | "uberTrackingUrl" | "uberQuoteError" | "promoCampaignId" | "deliveryProvider" | "deliveryQuoteExpiresAt", ExtArgs["result"]["cart"]>
+  export type CartOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "status" | "uberQuoteId" | "uberFeeCents" | "uberDeliveryId" | "uberStatus" | "uberTrackingUrl" | "uberQuoteError" | "promoCampaignId" | "deliveryProvider" | "deliveryQuoteExpiresAt" | "deliveryCourierFeeCents", ExtArgs["result"]["cart"]>
   export type CartInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     items?: boolean | Cart$itemsArgs<ExtArgs>
     _count?: boolean | CartCountOutputTypeDefaultArgs<ExtArgs>
@@ -12304,6 +12319,7 @@ export namespace Prisma {
       promoCampaignId: string | null
       deliveryProvider: string | null
       deliveryQuoteExpiresAt: Date | null
+      deliveryCourierFeeCents: number | null
     }, ExtArgs["result"]["cart"]>
     composites: {}
   }
@@ -12741,6 +12757,7 @@ export namespace Prisma {
     readonly promoCampaignId: FieldRef<"Cart", 'String'>
     readonly deliveryProvider: FieldRef<"Cart", 'String'>
     readonly deliveryQuoteExpiresAt: FieldRef<"Cart", 'DateTime'>
+    readonly deliveryCourierFeeCents: FieldRef<"Cart", 'Int'>
   }
     
 
@@ -30645,7 +30662,8 @@ export namespace Prisma {
     uberQuoteError: 'uberQuoteError',
     promoCampaignId: 'promoCampaignId',
     deliveryProvider: 'deliveryProvider',
-    deliveryQuoteExpiresAt: 'deliveryQuoteExpiresAt'
+    deliveryQuoteExpiresAt: 'deliveryQuoteExpiresAt',
+    deliveryCourierFeeCents: 'deliveryCourierFeeCents'
   };
 
   export type CartScalarFieldEnum = (typeof CartScalarFieldEnum)[keyof typeof CartScalarFieldEnum]
@@ -31563,6 +31581,7 @@ export namespace Prisma {
     promoCampaignId?: StringNullableFilter<"Cart"> | string | null
     deliveryProvider?: StringNullableFilter<"Cart"> | string | null
     deliveryQuoteExpiresAt?: DateTimeNullableFilter<"Cart"> | Date | string | null
+    deliveryCourierFeeCents?: IntNullableFilter<"Cart"> | number | null
     items?: CartItemListRelationFilter
   }
 
@@ -31580,6 +31599,7 @@ export namespace Prisma {
     promoCampaignId?: SortOrderInput | SortOrder
     deliveryProvider?: SortOrderInput | SortOrder
     deliveryQuoteExpiresAt?: SortOrderInput | SortOrder
+    deliveryCourierFeeCents?: SortOrderInput | SortOrder
     items?: CartItemOrderByRelationAggregateInput
   }
 
@@ -31600,6 +31620,7 @@ export namespace Prisma {
     promoCampaignId?: StringNullableFilter<"Cart"> | string | null
     deliveryProvider?: StringNullableFilter<"Cart"> | string | null
     deliveryQuoteExpiresAt?: DateTimeNullableFilter<"Cart"> | Date | string | null
+    deliveryCourierFeeCents?: IntNullableFilter<"Cart"> | number | null
     items?: CartItemListRelationFilter
   }, "id">
 
@@ -31617,6 +31638,7 @@ export namespace Prisma {
     promoCampaignId?: SortOrderInput | SortOrder
     deliveryProvider?: SortOrderInput | SortOrder
     deliveryQuoteExpiresAt?: SortOrderInput | SortOrder
+    deliveryCourierFeeCents?: SortOrderInput | SortOrder
     _count?: CartCountOrderByAggregateInput
     _avg?: CartAvgOrderByAggregateInput
     _max?: CartMaxOrderByAggregateInput
@@ -31641,6 +31663,7 @@ export namespace Prisma {
     promoCampaignId?: StringNullableWithAggregatesFilter<"Cart"> | string | null
     deliveryProvider?: StringNullableWithAggregatesFilter<"Cart"> | string | null
     deliveryQuoteExpiresAt?: DateTimeNullableWithAggregatesFilter<"Cart"> | Date | string | null
+    deliveryCourierFeeCents?: IntNullableWithAggregatesFilter<"Cart"> | number | null
   }
 
   export type CartItemWhereInput = {
@@ -33405,6 +33428,7 @@ export namespace Prisma {
     promoCampaignId?: string | null
     deliveryProvider?: string | null
     deliveryQuoteExpiresAt?: Date | string | null
+    deliveryCourierFeeCents?: number | null
     items?: CartItemCreateNestedManyWithoutCartInput
   }
 
@@ -33422,6 +33446,7 @@ export namespace Prisma {
     promoCampaignId?: string | null
     deliveryProvider?: string | null
     deliveryQuoteExpiresAt?: Date | string | null
+    deliveryCourierFeeCents?: number | null
     items?: CartItemUncheckedCreateNestedManyWithoutCartInput
   }
 
@@ -33439,6 +33464,7 @@ export namespace Prisma {
     promoCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryProvider?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryQuoteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryCourierFeeCents?: NullableIntFieldUpdateOperationsInput | number | null
     items?: CartItemUpdateManyWithoutCartNestedInput
   }
 
@@ -33456,6 +33482,7 @@ export namespace Prisma {
     promoCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryProvider?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryQuoteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryCourierFeeCents?: NullableIntFieldUpdateOperationsInput | number | null
     items?: CartItemUncheckedUpdateManyWithoutCartNestedInput
   }
 
@@ -33473,6 +33500,7 @@ export namespace Prisma {
     promoCampaignId?: string | null
     deliveryProvider?: string | null
     deliveryQuoteExpiresAt?: Date | string | null
+    deliveryCourierFeeCents?: number | null
   }
 
   export type CartUpdateManyMutationInput = {
@@ -33489,6 +33517,7 @@ export namespace Prisma {
     promoCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryProvider?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryQuoteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryCourierFeeCents?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type CartUncheckedUpdateManyInput = {
@@ -33505,6 +33534,7 @@ export namespace Prisma {
     promoCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryProvider?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryQuoteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryCourierFeeCents?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type CartItemCreateInput = {
@@ -35391,10 +35421,12 @@ export namespace Prisma {
     promoCampaignId?: SortOrder
     deliveryProvider?: SortOrder
     deliveryQuoteExpiresAt?: SortOrder
+    deliveryCourierFeeCents?: SortOrder
   }
 
   export type CartAvgOrderByAggregateInput = {
     uberFeeCents?: SortOrder
+    deliveryCourierFeeCents?: SortOrder
   }
 
   export type CartMaxOrderByAggregateInput = {
@@ -35411,6 +35443,7 @@ export namespace Prisma {
     promoCampaignId?: SortOrder
     deliveryProvider?: SortOrder
     deliveryQuoteExpiresAt?: SortOrder
+    deliveryCourierFeeCents?: SortOrder
   }
 
   export type CartMinOrderByAggregateInput = {
@@ -35427,10 +35460,12 @@ export namespace Prisma {
     promoCampaignId?: SortOrder
     deliveryProvider?: SortOrder
     deliveryQuoteExpiresAt?: SortOrder
+    deliveryCourierFeeCents?: SortOrder
   }
 
   export type CartSumOrderByAggregateInput = {
     uberFeeCents?: SortOrder
+    deliveryCourierFeeCents?: SortOrder
   }
 
   export type FloatNullableFilter<$PrismaModel = never> = {
@@ -37421,6 +37456,7 @@ export namespace Prisma {
     promoCampaignId?: string | null
     deliveryProvider?: string | null
     deliveryQuoteExpiresAt?: Date | string | null
+    deliveryCourierFeeCents?: number | null
   }
 
   export type CartUncheckedCreateWithoutItemsInput = {
@@ -37437,6 +37473,7 @@ export namespace Prisma {
     promoCampaignId?: string | null
     deliveryProvider?: string | null
     deliveryQuoteExpiresAt?: Date | string | null
+    deliveryCourierFeeCents?: number | null
   }
 
   export type CartCreateOrConnectWithoutItemsInput = {
@@ -37495,6 +37532,7 @@ export namespace Prisma {
     promoCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryProvider?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryQuoteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryCourierFeeCents?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type CartUncheckedUpdateWithoutItemsInput = {
@@ -37511,6 +37549,7 @@ export namespace Prisma {
     promoCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryProvider?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryQuoteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryCourierFeeCents?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type CartItemSideUpsertWithWhereUniqueWithoutCartItemInput = {

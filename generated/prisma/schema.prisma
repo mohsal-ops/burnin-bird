@@ -137,8 +137,11 @@ model Cart {
   // "doordash_drive" = DoorDash Drive. The uber* fields above hold the quote /
   // delivery for WHICHEVER courier was chosen (historic names, kept so the
   // existing checkout, orders and success pages work unchanged).
-  deliveryProvider       String?
-  deliveryQuoteExpiresAt DateTime?
+  deliveryProvider        String?
+  deliveryQuoteExpiresAt  DateTime?
+  // What the courier actually charges (uberFeeCents is what the CUSTOMER pays,
+  // which can be lower when the restaurant absorbs part of the fee).
+  deliveryCourierFeeCents Int?
 }
 
 model CartItem {

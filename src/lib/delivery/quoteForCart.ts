@@ -3,7 +3,7 @@ import db from "@/db/db";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { toE164 } from "./phone";
 import { quoteAll } from "./router";
-import { deliverySwitchOn, enabledProviders, getDeliveryStrategy } from "./settings";
+import { deliverySwitchOn, enabledProviders, getRoutingPolicy } from "./settings";
 
 // Router path for /api/cart/addDelivery (flag "delivery_router"). Quotes every
 // enabled courier, stores the winner on the cart in the existing courier
@@ -25,6 +25,7 @@ export async function routedQuote(input: {
   const items = await db.cartItem.findMany({ where: { cartId: input.cartId }, select: { price: true, quantity: true } });
   const orderValueCents = items.reduce((s, i) => s + (i.price ?? 0) * (i.quantity ?? 1), 0);
 
+  const policy = await getRoutingPolicy();
   const round = await quoteAll(
     providers,
     {
@@ -45,22 +46,27 @@ export async function routedQuote(input: {
       },
       orderValueCents,
     },
-    await getDeliveryStrategy(),
+    policy.strategy,
+    4_000,
+    policy.preferred,
   );
   for (const e of round.errors) console.error(`Delivery quote failed (${e.provider}): ${e.message}`);
   if (!round.chosen) {
     return { ok: false, reason: round.errors.map((e) => `${e.provider}: ${e.message}`).join(" | ") || "No courier quote" };
   }
   const q = round.chosen;
+  // Customer pays the courier fee minus whatever the restaurant chose to absorb.
+  const customerFee = Math.max(0, q.feeCents - policy.subsidyCents);
   await db.cart.update({
     where: { id: input.cartId },
     data: {
       uberQuoteId: q.ref,
-      uberFeeCents: q.feeCents,
+      uberFeeCents: customerFee,
+      deliveryCourierFeeCents: q.feeCents,
       uberQuoteError: null,
       deliveryProvider: q.provider,
       deliveryQuoteExpiresAt: q.expiresAt ? new Date(q.expiresAt) : null,
     },
   });
-  return { ok: true, feeCents: q.feeCents, etaMin: q.etaMinutes };
+  return { ok: true, feeCents: customerFee, etaMin: q.etaMinutes };
 }

@@ -18,6 +18,8 @@ import { uberProvider } from "./uberProvider";
 
 const DD_KEY = "doordash_creds";
 const STRATEGY_KEY = "delivery_strategy";
+const PREFERRED_KEY = "delivery_preferred";
+const SUBSIDY_KEY = "delivery_fee_subsidy_cents";
 
 export interface DoorDashSettings extends DoorDashCreds {
   /** We generate it; the owner pastes it into the DoorDash webhook config. */
@@ -52,13 +54,39 @@ export async function clearDoorDashCreds() {
   await db.siteSetting.deleteMany({ where: { key: DD_KEY } });
 }
 
-export async function getDeliveryStrategy(): Promise<DeliveryStrategy> {
-  const row = await db.siteSetting.findUnique({ where: { key: STRATEGY_KEY } }).catch(() => null);
-  return row?.value === "fastest" ? "fastest" : "cheapest";
+async function setting(key: string): Promise<string | undefined> {
+  return (await db.siteSetting.findUnique({ where: { key } }).catch(() => null))?.value;
+}
+async function put(key: string, value: string) {
+  await db.siteSetting.upsert({ where: { key }, update: { value }, create: { key, value } });
 }
 
-export async function setDeliveryStrategy(s: DeliveryStrategy) {
-  await db.siteSetting.upsert({ where: { key: STRATEGY_KEY }, update: { value: s }, create: { key: STRATEGY_KEY, value: s } });
+export interface RoutingPolicy {
+  strategy: DeliveryStrategy;
+  preferred: DeliveryProviderId | null;
+  /** Part of each courier fee the restaurant pays so the customer pays less. */
+  subsidyCents: number;
+}
+
+export async function getRoutingPolicy(): Promise<RoutingPolicy> {
+  const [s, p, sub] = await Promise.all([setting(STRATEGY_KEY), setting(PREFERRED_KEY), setting(SUBSIDY_KEY)]);
+  return {
+    strategy: s === "fastest" || s === "preferred" ? s : "cheapest",
+    preferred: p === "uber_direct" || p === "doordash_drive" ? p : null,
+    subsidyCents: Math.max(0, Math.min(5000, Number(sub) || 0)),
+  };
+}
+
+export async function getDeliveryStrategy(): Promise<DeliveryStrategy> {
+  return (await getRoutingPolicy()).strategy;
+}
+
+export async function setRoutingPolicy(p: RoutingPolicy) {
+  await Promise.all([
+    put(STRATEGY_KEY, p.strategy),
+    put(PREFERRED_KEY, p.preferred ?? ""),
+    put(SUBSIDY_KEY, String(Math.max(0, Math.min(5000, Math.round(p.subsidyCents))))),
+  ]);
 }
 
 export const doordashProvider = createDoorDashProvider(async () => {

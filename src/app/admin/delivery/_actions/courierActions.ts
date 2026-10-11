@@ -2,7 +2,7 @@
 import { revalidatePath } from "next/cache";
 import { assertWritable } from "@/lib/previewGuard";
 import { setFlag } from "@/lib/flags";
-import { clearDoorDashCreds, doordashProvider, saveDoorDashCreds, setDeliveryStrategy } from "@/lib/delivery/settings";
+import { clearDoorDashCreds, doordashProvider, saveDoorDashCreds, setRoutingPolicy } from "@/lib/delivery/settings";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 
 // Admin → Delivery → "Couriers" (shown only when the delivery_router flag is
@@ -64,10 +64,32 @@ export async function setDoorDashActive(on: boolean): Promise<R> {
   }
 }
 
-export async function saveStrategy(s: "cheapest" | "fastest"): Promise<R> {
+export async function testDoorDash(): Promise<R> {
+  try {
+    const q = await doordashProvider.quote({
+      externalId: `sv-test-${Date.now()}`,
+      pickup: { formatted: SITE_CONFIG.address, businessName: SITE_CONFIG.name, phone: SITE_CONFIG.phone },
+      dropoff: { formatted: SITE_CONFIG.address, name: "Test", phone: SITE_CONFIG.phone },
+      orderValueCents: 2000,
+    });
+    return { ok: true, message: `DoorDash OK — test quote $${(q.feeCents / 100).toFixed(2)} (nothing dispatched).` };
+  } catch (e) {
+    return { ok: false, error: `DoorDash: ${(e as Error).message}` };
+  }
+}
+
+export async function savePolicy(p: {
+  strategy: "cheapest" | "fastest" | "preferred";
+  preferred: "uber_direct" | "doordash_drive" | null;
+  subsidyCents: number;
+}): Promise<R> {
   try {
     await assertWritable();
-    await setDeliveryStrategy(s === "fastest" ? "fastest" : "cheapest");
+    await setRoutingPolicy({
+      strategy: p.strategy === "fastest" || p.strategy === "preferred" ? p.strategy : "cheapest",
+      preferred: p.preferred === "uber_direct" || p.preferred === "doordash_drive" ? p.preferred : null,
+      subsidyCents: Number.isFinite(p.subsidyCents) ? p.subsidyCents : 0,
+    });
     revalidatePath("/admin/delivery");
     return { ok: true, message: "Saved" };
   } catch (e) {

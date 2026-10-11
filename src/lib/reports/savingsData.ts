@@ -44,13 +44,14 @@ export async function statsForMonth(year: number, month0: number): Promise<Month
     where: { status: { in: [...PAID_STATUSES] }, createdAt: { gte: start, lt: end } },
     select: {
       uberFeeCents: true,
+      deliveryCourierFeeCents: true,
       items: { select: { name: true, price: true, quantity: true, orderType: true, deliveryAddress: true } },
     },
   });
   const base = aggregateMonth(
     carts.map((c) => {
       const isDelivery = !!c.items[0] && deriveOrderType(c.items[0]) === "delivery";
-      return { items: c.items, isDelivery, courierFeeCents: isDelivery ? c.uberFeeCents ?? 0 : 0 };
+      return { items: c.items, isDelivery, courierFeeCents: isDelivery ? c.deliveryCourierFeeCents ?? c.uberFeeCents ?? 0 : 0 };
     }),
     label,
   );

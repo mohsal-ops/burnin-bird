@@ -4,11 +4,14 @@ import { sendMail } from "@/lib/email";
 import { sendTelegramMessage } from "@/lib/telegram";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { toE164 } from "./phone";
-import { providerById } from "./settings";
+import { dispatchWithFailover } from "./router";
+import { enabledProviders, providerById } from "./settings";
 
-// Dispatch for carts whose courier was chosen by the router and is NOT Uber
-// (Uber carts keep going through the original code in finalizeCart). Same
-// contract: best-effort, the order is already saved, owner told on failure.
+// Dispatch for carts whose courier was chosen by the delivery router (any cart
+// with deliveryProvider set). Carts from before the router / with the flag off
+// keep going through the original Uber block in finalizeCart. Same contract:
+// best-effort, the order is already saved, owner told if no courier could go.
+// One failover: if the chosen courier refuses, the other enabled one is tried.
 
 type Cart = {
   id: string;
@@ -28,41 +31,56 @@ type First = {
 };
 
 export async function dispatchRoutedDelivery(cart: Cart, first: First, email: string) {
-  const provider = providerById(cart.deliveryProvider);
+  const primary = providerById(cart.deliveryProvider);
   try {
     if (!cart.uberQuoteId || !first.deliveryAddress) throw new Error("no courier quote on this order");
     const notes = [first.apt ? `Apt/Suite: ${first.apt}` : "", first.instructions || ""].filter(Boolean).join(" - ");
-    const d = await provider.dispatch({
-      quote: {
-        provider: provider.id,
-        ref: cart.uberQuoteId,
-        feeCents: 0,
-        expiresAt: cart.deliveryQuoteExpiresAt?.toISOString(),
+    const pickup = {
+      formatted: SITE_CONFIG.address,
+      lat: SITE_CONFIG.lat,
+      lng: SITE_CONFIG.lng,
+      businessName: SITE_CONFIG.name,
+      phone: toE164(SITE_CONFIG.phone),
+    };
+    const dropoff = {
+      formatted: first.deliveryAddress,
+      lat: first.deliveryLat,
+      lng: first.deliveryLng,
+      name: first.customerName || "Customer",
+      phone: toE164(first.customerPhone) || toE164(SITE_CONFIG.phone),
+      notes: notes || undefined,
+    };
+    const orderValueCents = cart.items.reduce((s, i) => s + (i.price ?? 0) * (i.quantity ?? 1), 0);
+
+    const { provider, result: d, quote, failedOver } = await dispatchWithFailover(
+      primary,
+      await enabledProviders(),
+      {
+        quote: { provider: primary.id, ref: cart.uberQuoteId, feeCents: 0, expiresAt: cart.deliveryQuoteExpiresAt?.toISOString() },
+        externalId: cart.id,
+        pickup,
+        dropoff,
+        items: cart.items.filter((i) => i.name).map((i) => ({ name: i.name as string, quantity: i.quantity ?? 1 })),
+        orderValueCents,
+        siteUrl: SITE_CONFIG.siteUrl,
       },
-      externalId: cart.id,
-      pickup: {
-        formatted: SITE_CONFIG.address,
-        lat: SITE_CONFIG.lat,
-        lng: SITE_CONFIG.lng,
-        businessName: SITE_CONFIG.name,
-        phone: toE164(SITE_CONFIG.phone),
-      },
-      dropoff: {
-        formatted: first.deliveryAddress,
-        lat: first.deliveryLat,
-        lng: first.deliveryLng,
-        name: first.customerName || "Customer",
-        phone: toE164(first.customerPhone) || toE164(SITE_CONFIG.phone),
-        notes: notes || undefined,
-      },
-      items: cart.items.filter((i) => i.name).map((i) => ({ name: i.name as string, quantity: i.quantity ?? 1 })),
-      orderValueCents: cart.items.reduce((s, i) => s + (i.price ?? 0) * (i.quantity ?? 1), 0),
-      siteUrl: SITE_CONFIG.siteUrl,
-    });
+      { externalId: `${cart.id}.r${Date.now().toString(36)}`, pickup, dropoff, orderValueCents },
+    );
     await db.cart.update({
       where: { id: cart.id },
-      data: { uberDeliveryId: d.deliveryId, uberStatus: d.status, uberTrackingUrl: d.trackingUrl ?? null },
+      data: {
+        uberDeliveryId: d.deliveryId,
+        uberStatus: d.status,
+        uberTrackingUrl: d.trackingUrl ?? null,
+        ...(failedOver ? { deliveryProvider: provider.id, deliveryCourierFeeCents: quote.feeCents } : {}),
+        ...(d.feeCents ? { deliveryCourierFeeCents: d.feeCents } : {}),
+      },
     });
+    if (failedOver) {
+      await sendTelegramMessage(
+        `ℹ️ Order ${cart.id}: ${primary.label} couldn't take the delivery, so ${provider.label} is bringing it instead.`,
+      ).catch(() => {});
+    }
     if (d.trackingUrl && email && email !== "N/A") {
       await sendMail({
         to: email,
@@ -74,9 +92,9 @@ export async function dispatchRoutedDelivery(cart: Cart, first: First, email: st
       }).catch((e) => console.error("Customer tracking email failed:", (e as Error).message));
     }
   } catch (e) {
-    console.error(`${provider.label} dispatch failed (order still saved):`, (e as Error).message);
+    console.error("Courier dispatch failed (order still saved):", (e as Error).message);
     await sendTelegramMessage(
-      `⚠️ ${provider.label} delivery dispatch FAILED for order ${cart.id}: ${(e as Error).message}. Please arrange delivery manually.`,
+      `⚠️ Delivery dispatch FAILED for order ${cart.id}: ${(e as Error).message}. Please arrange delivery manually or call the customer to offer pickup.`,
     ).catch(() => {});
   }
 }

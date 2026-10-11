@@ -93,10 +93,10 @@ export async function finalizeCart(
       .catch((e) => console.error("finalizeCart: redemption increment failed:", (e as Error).message));
   }
 
-  // Courier chosen by the delivery router (DoorDash Drive). Uber carts —
-  // deliveryProvider null or "uber_direct" — use the original block below.
-  const routedCourier =
-    cart.deliveryProvider && cart.deliveryProvider !== "uber_direct" && deriveOrderType(first) === "delivery";
+  // Courier chosen by the delivery router (deliveryProvider set only when the
+  // "delivery_router" flag was on at checkout) → router dispatch with one
+  // failover. Carts without it use the original Uber block below, unchanged.
+  const routedCourier = !!cart.deliveryProvider && deriveOrderType(first) === "delivery";
   if (routedCourier) await dispatchRoutedDelivery(cart, first, email);
 
   // Uber Direct dispatch (delivery only, when enabled). Best-effort.
