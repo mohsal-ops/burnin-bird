@@ -12,7 +12,9 @@
     "new-project": "node scaffold/new-project.mjs",
     "postinstall": "prisma generate",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "sandbox:square": "vite-node scripts/square-sandbox-check.ts",
+    "sandbox:clover": "vite-node scripts/clover-sandbox-check.ts"
   },
   "dependencies": {
     "@google-analytics/data": "^6.0.0",
