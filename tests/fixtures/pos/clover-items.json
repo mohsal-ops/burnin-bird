@@ -1,0 +1,13 @@
+{
+  "items": [
+    { "id": "CI1", "name": "Wings (6)", "price": 899, "available": true,
+      "categories": { "elements": [ { "name": "Wings" } ] },
+      "modifierGroups": { "elements": [ { "id": "MG1" } ] } },
+    { "id": "CI2", "name": "Hidden thing", "price": 100, "hidden": true },
+    { "id": "CI3", "name": "Fries", "price": 399, "available": false }
+  ],
+  "groups": [
+    { "id": "MG1", "name": "Sauce", "minRequired": 1, "maxAllowed": 1,
+      "modifiers": { "elements": [ { "id": "M1", "name": "Buffalo", "price": 0 }, { "id": "M2", "name": "Honey BBQ", "price": 50 } ] } }
+  ]
+}

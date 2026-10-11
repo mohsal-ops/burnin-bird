@@ -1,0 +1,17 @@
+{
+  "objects": [
+    { "id": "CAT1", "type": "CATEGORY", "category_data": { "name": "Burgers" } },
+    { "id": "ML1", "type": "MODIFIER_LIST", "modifier_list_data": { "name": "Extras", "selection_type": "MULTIPLE",
+      "modifiers": [ { "id": "MOD1", "modifier_data": { "name": "Bacon", "price_money": { "amount": 150, "currency": "USD" } } } ] } },
+    { "id": "IT1", "type": "ITEM", "present_at_all_locations": true, "item_data": { "name": "Smash Burger", "description": "Two patties",
+      "categories": [ { "id": "CAT1" } ],
+      "modifier_list_info": [ { "modifier_list_id": "ML1", "enabled": true } ],
+      "variations": [
+        { "id": "VAR1", "item_variation_data": { "name": "Single", "price_money": { "amount": 999, "currency": "USD" } } },
+        { "id": "VAR2", "item_variation_data": { "name": "Double", "price_money": { "amount": 1299, "currency": "USD" },
+          "location_overrides": [ { "location_id": "LOC1", "sold_out": true } ] } }
+      ] } },
+    { "id": "IT2", "type": "ITEM", "item_data": { "name": "Old Item", "is_archived": true, "variations": [] } },
+    { "id": "IT3", "type": "ITEM", "is_deleted": true, "item_data": { "name": "Deleted" } }
+  ]
+}

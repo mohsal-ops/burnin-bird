@@ -8,6 +8,7 @@ import { getUberDirect } from "@/lib/siteSettings";
 import { createDelivery } from "@/lib/uber";
 import { deriveOrderType } from "@/lib/orderType";
 import { NEW_ORDER, PAID_STATUSES, isPaid } from "@/lib/orderStatus";
+import { pushOrderToPos } from "@/lib/pos/pipeline";
 
 // One place that finalizes a paid cart: mark it "new" (a real, paid order
 // waiting on the kitchen - it counts as revenue AND triggers the kitchen
@@ -241,6 +242,13 @@ export async function finalizeCart(
   } catch (e) {
     console.error("Order email failed (order still saved):", e);
   }
+
+  // POS push (Square/Clover). Runs LAST so the owner alerts above always go out
+  // first. No-op unless the "pos_push" flag is on and a POS is connected; on
+  // failure it schedules retries / tells the owner to enter it by hand.
+  await pushOrderToPos(cart.id, email).catch((e) =>
+    console.error("POS push error (order still saved):", (e as Error).message),
+  );
 
   // NOTE: no revalidatePath here - finalizeCart runs from the success PAGE (a
   // Server Component render, where revalidatePath throws) as well as the webhook.

@@ -351,6 +351,43 @@ exports.Prisma.LoyaltyCampaignScalarFieldEnum = {
   sentAt: 'sentAt'
 };
 
+exports.Prisma.PosConnectionScalarFieldEnum = {
+  id: 'id',
+  provider: 'provider',
+  environment: 'environment',
+  merchantId: 'merchantId',
+  locationId: 'locationId',
+  credsEnc: 'credsEnc',
+  status: 'status',
+  lastError: 'lastError',
+  lastMenuSyncAt: 'lastMenuSyncAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PosMenuMapScalarFieldEnum = {
+  id: 'id',
+  provider: 'provider',
+  localType: 'localType',
+  localId: 'localId',
+  posId: 'posId',
+  posVersion: 'posVersion',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PosOrderSyncScalarFieldEnum = {
+  id: 'id',
+  cartId: 'cartId',
+  provider: 'provider',
+  status: 'status',
+  posOrderId: 'posOrderId',
+  attempts: 'attempts',
+  lastError: 'lastError',
+  nextRetryAt: 'nextRetryAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -401,7 +438,10 @@ exports.Prisma.ModelName = {
   SiteImage: 'SiteImage',
   SiteSetting: 'SiteSetting',
   LoyaltyContact: 'LoyaltyContact',
-  LoyaltyCampaign: 'LoyaltyCampaign'
+  LoyaltyCampaign: 'LoyaltyCampaign',
+  PosConnection: 'PosConnection',
+  PosMenuMap: 'PosMenuMap',
+  PosOrderSync: 'PosOrderSync'
 };
 
 /**

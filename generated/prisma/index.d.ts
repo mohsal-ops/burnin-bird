@@ -118,6 +118,21 @@ export type LoyaltyContact = $Result.DefaultSelection<Prisma.$LoyaltyContactPayl
  * 
  */
 export type LoyaltyCampaign = $Result.DefaultSelection<Prisma.$LoyaltyCampaignPayload>
+/**
+ * Model PosConnection
+ * 
+ */
+export type PosConnection = $Result.DefaultSelection<Prisma.$PosConnectionPayload>
+/**
+ * Model PosMenuMap
+ * 
+ */
+export type PosMenuMap = $Result.DefaultSelection<Prisma.$PosMenuMapPayload>
+/**
+ * Model PosOrderSync
+ * 
+ */
+export type PosOrderSync = $Result.DefaultSelection<Prisma.$PosOrderSyncPayload>
 
 /**
  * Enums
@@ -479,6 +494,36 @@ export class PrismaClient<
     * ```
     */
   get loyaltyCampaign(): Prisma.LoyaltyCampaignDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.posConnection`: Exposes CRUD operations for the **PosConnection** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PosConnections
+    * const posConnections = await prisma.posConnection.findMany()
+    * ```
+    */
+  get posConnection(): Prisma.PosConnectionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.posMenuMap`: Exposes CRUD operations for the **PosMenuMap** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PosMenuMaps
+    * const posMenuMaps = await prisma.posMenuMap.findMany()
+    * ```
+    */
+  get posMenuMap(): Prisma.PosMenuMapDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.posOrderSync`: Exposes CRUD operations for the **PosOrderSync** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PosOrderSyncs
+    * const posOrderSyncs = await prisma.posOrderSync.findMany()
+    * ```
+    */
+  get posOrderSync(): Prisma.PosOrderSyncDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -933,7 +978,10 @@ export namespace Prisma {
     SiteImage: 'SiteImage',
     SiteSetting: 'SiteSetting',
     LoyaltyContact: 'LoyaltyContact',
-    LoyaltyCampaign: 'LoyaltyCampaign'
+    LoyaltyCampaign: 'LoyaltyCampaign',
+    PosConnection: 'PosConnection',
+    PosMenuMap: 'PosMenuMap',
+    PosOrderSync: 'PosOrderSync'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -949,7 +997,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "admin" | "item" | "user" | "types" | "location" | "post" | "partner" | "order" | "cart" | "cartItem" | "sideGroup" | "sideOption" | "cartItemSide" | "galleryImage" | "review" | "businessHours" | "cateringRequest" | "siteImage" | "siteSetting" | "loyaltyContact" | "loyaltyCampaign"
+      modelProps: "admin" | "item" | "user" | "types" | "location" | "post" | "partner" | "order" | "cart" | "cartItem" | "sideGroup" | "sideOption" | "cartItemSide" | "galleryImage" | "review" | "businessHours" | "cateringRequest" | "siteImage" | "siteSetting" | "loyaltyContact" | "loyaltyCampaign" | "posConnection" | "posMenuMap" | "posOrderSync"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2507,6 +2555,228 @@ export namespace Prisma {
           }
         }
       }
+      PosConnection: {
+        payload: Prisma.$PosConnectionPayload<ExtArgs>
+        fields: Prisma.PosConnectionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PosConnectionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PosConnectionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PosConnectionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PosConnectionPayload>
+          }
+          findFirst: {
+            args: Prisma.PosConnectionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PosConnectionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PosConnectionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PosConnectionPayload>
+          }
+          findMany: {
+            args: Prisma.PosConnectionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PosConnectionPayload>[]
+          }
+          create: {
+            args: Prisma.PosConnectionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PosConnectionPayload>
+          }
+          createMany: {
+            args: Prisma.PosConnectionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PosConnectionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PosConnectionPayload>[]
+          }
+          delete: {
+            args: Prisma.PosConnectionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PosConnectionPayload>
+          }
+          update: {
+            args: Prisma.PosConnectionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PosConnectionPayload>
+          }
+          deleteMany: {
+            args: Prisma.PosConnectionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PosConnectionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PosConnectionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PosConnectionPayload>[]
+          }
+          upsert: {
+            args: Prisma.PosConnectionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PosConnectionPayload>
+          }
+          aggregate: {
+            args: Prisma.PosConnectionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePosConnection>
+          }
+          groupBy: {
+            args: Prisma.PosConnectionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PosConnectionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PosConnectionCountArgs<ExtArgs>
+            result: $Utils.Optional<PosConnectionCountAggregateOutputType> | number
+          }
+        }
+      }
+      PosMenuMap: {
+        payload: Prisma.$PosMenuMapPayload<ExtArgs>
+        fields: Prisma.PosMenuMapFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PosMenuMapFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PosMenuMapPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PosMenuMapFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PosMenuMapPayload>
+          }
+          findFirst: {
+            args: Prisma.PosMenuMapFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PosMenuMapPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PosMenuMapFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PosMenuMapPayload>
+          }
+          findMany: {
+            args: Prisma.PosMenuMapFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PosMenuMapPayload>[]
+          }
+          create: {
+            args: Prisma.PosMenuMapCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PosMenuMapPayload>
+          }
+          createMany: {
+            args: Prisma.PosMenuMapCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PosMenuMapCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PosMenuMapPayload>[]
+          }
+          delete: {
+            args: Prisma.PosMenuMapDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PosMenuMapPayload>
+          }
+          update: {
+            args: Prisma.PosMenuMapUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PosMenuMapPayload>
+          }
+          deleteMany: {
+            args: Prisma.PosMenuMapDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PosMenuMapUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PosMenuMapUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PosMenuMapPayload>[]
+          }
+          upsert: {
+            args: Prisma.PosMenuMapUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PosMenuMapPayload>
+          }
+          aggregate: {
+            args: Prisma.PosMenuMapAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePosMenuMap>
+          }
+          groupBy: {
+            args: Prisma.PosMenuMapGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PosMenuMapGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PosMenuMapCountArgs<ExtArgs>
+            result: $Utils.Optional<PosMenuMapCountAggregateOutputType> | number
+          }
+        }
+      }
+      PosOrderSync: {
+        payload: Prisma.$PosOrderSyncPayload<ExtArgs>
+        fields: Prisma.PosOrderSyncFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PosOrderSyncFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PosOrderSyncPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PosOrderSyncFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PosOrderSyncPayload>
+          }
+          findFirst: {
+            args: Prisma.PosOrderSyncFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PosOrderSyncPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PosOrderSyncFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PosOrderSyncPayload>
+          }
+          findMany: {
+            args: Prisma.PosOrderSyncFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PosOrderSyncPayload>[]
+          }
+          create: {
+            args: Prisma.PosOrderSyncCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PosOrderSyncPayload>
+          }
+          createMany: {
+            args: Prisma.PosOrderSyncCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PosOrderSyncCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PosOrderSyncPayload>[]
+          }
+          delete: {
+            args: Prisma.PosOrderSyncDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PosOrderSyncPayload>
+          }
+          update: {
+            args: Prisma.PosOrderSyncUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PosOrderSyncPayload>
+          }
+          deleteMany: {
+            args: Prisma.PosOrderSyncDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PosOrderSyncUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PosOrderSyncUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PosOrderSyncPayload>[]
+          }
+          upsert: {
+            args: Prisma.PosOrderSyncUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PosOrderSyncPayload>
+          }
+          aggregate: {
+            args: Prisma.PosOrderSyncAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePosOrderSync>
+          }
+          groupBy: {
+            args: Prisma.PosOrderSyncGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PosOrderSyncGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PosOrderSyncCountArgs<ExtArgs>
+            result: $Utils.Optional<PosOrderSyncCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2636,6 +2906,9 @@ export namespace Prisma {
     siteSetting?: SiteSettingOmit
     loyaltyContact?: LoyaltyContactOmit
     loyaltyCampaign?: LoyaltyCampaignOmit
+    posConnection?: PosConnectionOmit
+    posMenuMap?: PosMenuMapOmit
+    posOrderSync?: PosOrderSyncOmit
   }
 
   /* Types for Logging */
@@ -25840,6 +26113,3194 @@ export namespace Prisma {
 
 
   /**
+   * Model PosConnection
+   */
+
+  export type AggregatePosConnection = {
+    _count: PosConnectionCountAggregateOutputType | null
+    _min: PosConnectionMinAggregateOutputType | null
+    _max: PosConnectionMaxAggregateOutputType | null
+  }
+
+  export type PosConnectionMinAggregateOutputType = {
+    id: string | null
+    provider: string | null
+    environment: string | null
+    merchantId: string | null
+    locationId: string | null
+    credsEnc: string | null
+    status: string | null
+    lastError: string | null
+    lastMenuSyncAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PosConnectionMaxAggregateOutputType = {
+    id: string | null
+    provider: string | null
+    environment: string | null
+    merchantId: string | null
+    locationId: string | null
+    credsEnc: string | null
+    status: string | null
+    lastError: string | null
+    lastMenuSyncAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PosConnectionCountAggregateOutputType = {
+    id: number
+    provider: number
+    environment: number
+    merchantId: number
+    locationId: number
+    credsEnc: number
+    status: number
+    lastError: number
+    lastMenuSyncAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type PosConnectionMinAggregateInputType = {
+    id?: true
+    provider?: true
+    environment?: true
+    merchantId?: true
+    locationId?: true
+    credsEnc?: true
+    status?: true
+    lastError?: true
+    lastMenuSyncAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PosConnectionMaxAggregateInputType = {
+    id?: true
+    provider?: true
+    environment?: true
+    merchantId?: true
+    locationId?: true
+    credsEnc?: true
+    status?: true
+    lastError?: true
+    lastMenuSyncAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PosConnectionCountAggregateInputType = {
+    id?: true
+    provider?: true
+    environment?: true
+    merchantId?: true
+    locationId?: true
+    credsEnc?: true
+    status?: true
+    lastError?: true
+    lastMenuSyncAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type PosConnectionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PosConnection to aggregate.
+     */
+    where?: PosConnectionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PosConnections to fetch.
+     */
+    orderBy?: PosConnectionOrderByWithRelationInput | PosConnectionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PosConnectionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PosConnections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PosConnections.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PosConnections
+    **/
+    _count?: true | PosConnectionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PosConnectionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PosConnectionMaxAggregateInputType
+  }
+
+  export type GetPosConnectionAggregateType<T extends PosConnectionAggregateArgs> = {
+        [P in keyof T & keyof AggregatePosConnection]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePosConnection[P]>
+      : GetScalarType<T[P], AggregatePosConnection[P]>
+  }
+
+
+
+
+  export type PosConnectionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PosConnectionWhereInput
+    orderBy?: PosConnectionOrderByWithAggregationInput | PosConnectionOrderByWithAggregationInput[]
+    by: PosConnectionScalarFieldEnum[] | PosConnectionScalarFieldEnum
+    having?: PosConnectionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PosConnectionCountAggregateInputType | true
+    _min?: PosConnectionMinAggregateInputType
+    _max?: PosConnectionMaxAggregateInputType
+  }
+
+  export type PosConnectionGroupByOutputType = {
+    id: string
+    provider: string
+    environment: string
+    merchantId: string | null
+    locationId: string | null
+    credsEnc: string | null
+    status: string
+    lastError: string | null
+    lastMenuSyncAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: PosConnectionCountAggregateOutputType | null
+    _min: PosConnectionMinAggregateOutputType | null
+    _max: PosConnectionMaxAggregateOutputType | null
+  }
+
+  type GetPosConnectionGroupByPayload<T extends PosConnectionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PosConnectionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PosConnectionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PosConnectionGroupByOutputType[P]>
+            : GetScalarType<T[P], PosConnectionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PosConnectionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    provider?: boolean
+    environment?: boolean
+    merchantId?: boolean
+    locationId?: boolean
+    credsEnc?: boolean
+    status?: boolean
+    lastError?: boolean
+    lastMenuSyncAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["posConnection"]>
+
+  export type PosConnectionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    provider?: boolean
+    environment?: boolean
+    merchantId?: boolean
+    locationId?: boolean
+    credsEnc?: boolean
+    status?: boolean
+    lastError?: boolean
+    lastMenuSyncAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["posConnection"]>
+
+  export type PosConnectionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    provider?: boolean
+    environment?: boolean
+    merchantId?: boolean
+    locationId?: boolean
+    credsEnc?: boolean
+    status?: boolean
+    lastError?: boolean
+    lastMenuSyncAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["posConnection"]>
+
+  export type PosConnectionSelectScalar = {
+    id?: boolean
+    provider?: boolean
+    environment?: boolean
+    merchantId?: boolean
+    locationId?: boolean
+    credsEnc?: boolean
+    status?: boolean
+    lastError?: boolean
+    lastMenuSyncAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type PosConnectionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "provider" | "environment" | "merchantId" | "locationId" | "credsEnc" | "status" | "lastError" | "lastMenuSyncAt" | "createdAt" | "updatedAt", ExtArgs["result"]["posConnection"]>
+
+  export type $PosConnectionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PosConnection"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      provider: string
+      environment: string
+      merchantId: string | null
+      locationId: string | null
+      credsEnc: string | null
+      status: string
+      lastError: string | null
+      lastMenuSyncAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["posConnection"]>
+    composites: {}
+  }
+
+  type PosConnectionGetPayload<S extends boolean | null | undefined | PosConnectionDefaultArgs> = $Result.GetResult<Prisma.$PosConnectionPayload, S>
+
+  type PosConnectionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PosConnectionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PosConnectionCountAggregateInputType | true
+    }
+
+  export interface PosConnectionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PosConnection'], meta: { name: 'PosConnection' } }
+    /**
+     * Find zero or one PosConnection that matches the filter.
+     * @param {PosConnectionFindUniqueArgs} args - Arguments to find a PosConnection
+     * @example
+     * // Get one PosConnection
+     * const posConnection = await prisma.posConnection.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PosConnectionFindUniqueArgs>(args: SelectSubset<T, PosConnectionFindUniqueArgs<ExtArgs>>): Prisma__PosConnectionClient<$Result.GetResult<Prisma.$PosConnectionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PosConnection that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PosConnectionFindUniqueOrThrowArgs} args - Arguments to find a PosConnection
+     * @example
+     * // Get one PosConnection
+     * const posConnection = await prisma.posConnection.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PosConnectionFindUniqueOrThrowArgs>(args: SelectSubset<T, PosConnectionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PosConnectionClient<$Result.GetResult<Prisma.$PosConnectionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PosConnection that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PosConnectionFindFirstArgs} args - Arguments to find a PosConnection
+     * @example
+     * // Get one PosConnection
+     * const posConnection = await prisma.posConnection.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PosConnectionFindFirstArgs>(args?: SelectSubset<T, PosConnectionFindFirstArgs<ExtArgs>>): Prisma__PosConnectionClient<$Result.GetResult<Prisma.$PosConnectionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PosConnection that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PosConnectionFindFirstOrThrowArgs} args - Arguments to find a PosConnection
+     * @example
+     * // Get one PosConnection
+     * const posConnection = await prisma.posConnection.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PosConnectionFindFirstOrThrowArgs>(args?: SelectSubset<T, PosConnectionFindFirstOrThrowArgs<ExtArgs>>): Prisma__PosConnectionClient<$Result.GetResult<Prisma.$PosConnectionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PosConnections that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PosConnectionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PosConnections
+     * const posConnections = await prisma.posConnection.findMany()
+     * 
+     * // Get first 10 PosConnections
+     * const posConnections = await prisma.posConnection.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const posConnectionWithIdOnly = await prisma.posConnection.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PosConnectionFindManyArgs>(args?: SelectSubset<T, PosConnectionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PosConnectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PosConnection.
+     * @param {PosConnectionCreateArgs} args - Arguments to create a PosConnection.
+     * @example
+     * // Create one PosConnection
+     * const PosConnection = await prisma.posConnection.create({
+     *   data: {
+     *     // ... data to create a PosConnection
+     *   }
+     * })
+     * 
+     */
+    create<T extends PosConnectionCreateArgs>(args: SelectSubset<T, PosConnectionCreateArgs<ExtArgs>>): Prisma__PosConnectionClient<$Result.GetResult<Prisma.$PosConnectionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PosConnections.
+     * @param {PosConnectionCreateManyArgs} args - Arguments to create many PosConnections.
+     * @example
+     * // Create many PosConnections
+     * const posConnection = await prisma.posConnection.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PosConnectionCreateManyArgs>(args?: SelectSubset<T, PosConnectionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PosConnections and returns the data saved in the database.
+     * @param {PosConnectionCreateManyAndReturnArgs} args - Arguments to create many PosConnections.
+     * @example
+     * // Create many PosConnections
+     * const posConnection = await prisma.posConnection.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PosConnections and only return the `id`
+     * const posConnectionWithIdOnly = await prisma.posConnection.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PosConnectionCreateManyAndReturnArgs>(args?: SelectSubset<T, PosConnectionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PosConnectionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PosConnection.
+     * @param {PosConnectionDeleteArgs} args - Arguments to delete one PosConnection.
+     * @example
+     * // Delete one PosConnection
+     * const PosConnection = await prisma.posConnection.delete({
+     *   where: {
+     *     // ... filter to delete one PosConnection
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PosConnectionDeleteArgs>(args: SelectSubset<T, PosConnectionDeleteArgs<ExtArgs>>): Prisma__PosConnectionClient<$Result.GetResult<Prisma.$PosConnectionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PosConnection.
+     * @param {PosConnectionUpdateArgs} args - Arguments to update one PosConnection.
+     * @example
+     * // Update one PosConnection
+     * const posConnection = await prisma.posConnection.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PosConnectionUpdateArgs>(args: SelectSubset<T, PosConnectionUpdateArgs<ExtArgs>>): Prisma__PosConnectionClient<$Result.GetResult<Prisma.$PosConnectionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PosConnections.
+     * @param {PosConnectionDeleteManyArgs} args - Arguments to filter PosConnections to delete.
+     * @example
+     * // Delete a few PosConnections
+     * const { count } = await prisma.posConnection.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PosConnectionDeleteManyArgs>(args?: SelectSubset<T, PosConnectionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PosConnections.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PosConnectionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PosConnections
+     * const posConnection = await prisma.posConnection.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PosConnectionUpdateManyArgs>(args: SelectSubset<T, PosConnectionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PosConnections and returns the data updated in the database.
+     * @param {PosConnectionUpdateManyAndReturnArgs} args - Arguments to update many PosConnections.
+     * @example
+     * // Update many PosConnections
+     * const posConnection = await prisma.posConnection.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PosConnections and only return the `id`
+     * const posConnectionWithIdOnly = await prisma.posConnection.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PosConnectionUpdateManyAndReturnArgs>(args: SelectSubset<T, PosConnectionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PosConnectionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PosConnection.
+     * @param {PosConnectionUpsertArgs} args - Arguments to update or create a PosConnection.
+     * @example
+     * // Update or create a PosConnection
+     * const posConnection = await prisma.posConnection.upsert({
+     *   create: {
+     *     // ... data to create a PosConnection
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PosConnection we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PosConnectionUpsertArgs>(args: SelectSubset<T, PosConnectionUpsertArgs<ExtArgs>>): Prisma__PosConnectionClient<$Result.GetResult<Prisma.$PosConnectionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PosConnections.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PosConnectionCountArgs} args - Arguments to filter PosConnections to count.
+     * @example
+     * // Count the number of PosConnections
+     * const count = await prisma.posConnection.count({
+     *   where: {
+     *     // ... the filter for the PosConnections we want to count
+     *   }
+     * })
+    **/
+    count<T extends PosConnectionCountArgs>(
+      args?: Subset<T, PosConnectionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PosConnectionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PosConnection.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PosConnectionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PosConnectionAggregateArgs>(args: Subset<T, PosConnectionAggregateArgs>): Prisma.PrismaPromise<GetPosConnectionAggregateType<T>>
+
+    /**
+     * Group by PosConnection.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PosConnectionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PosConnectionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PosConnectionGroupByArgs['orderBy'] }
+        : { orderBy?: PosConnectionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PosConnectionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPosConnectionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PosConnection model
+   */
+  readonly fields: PosConnectionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PosConnection.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PosConnectionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PosConnection model
+   */
+  interface PosConnectionFieldRefs {
+    readonly id: FieldRef<"PosConnection", 'String'>
+    readonly provider: FieldRef<"PosConnection", 'String'>
+    readonly environment: FieldRef<"PosConnection", 'String'>
+    readonly merchantId: FieldRef<"PosConnection", 'String'>
+    readonly locationId: FieldRef<"PosConnection", 'String'>
+    readonly credsEnc: FieldRef<"PosConnection", 'String'>
+    readonly status: FieldRef<"PosConnection", 'String'>
+    readonly lastError: FieldRef<"PosConnection", 'String'>
+    readonly lastMenuSyncAt: FieldRef<"PosConnection", 'DateTime'>
+    readonly createdAt: FieldRef<"PosConnection", 'DateTime'>
+    readonly updatedAt: FieldRef<"PosConnection", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PosConnection findUnique
+   */
+  export type PosConnectionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosConnection
+     */
+    select?: PosConnectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosConnection
+     */
+    omit?: PosConnectionOmit<ExtArgs> | null
+    /**
+     * Filter, which PosConnection to fetch.
+     */
+    where: PosConnectionWhereUniqueInput
+  }
+
+  /**
+   * PosConnection findUniqueOrThrow
+   */
+  export type PosConnectionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosConnection
+     */
+    select?: PosConnectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosConnection
+     */
+    omit?: PosConnectionOmit<ExtArgs> | null
+    /**
+     * Filter, which PosConnection to fetch.
+     */
+    where: PosConnectionWhereUniqueInput
+  }
+
+  /**
+   * PosConnection findFirst
+   */
+  export type PosConnectionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosConnection
+     */
+    select?: PosConnectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosConnection
+     */
+    omit?: PosConnectionOmit<ExtArgs> | null
+    /**
+     * Filter, which PosConnection to fetch.
+     */
+    where?: PosConnectionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PosConnections to fetch.
+     */
+    orderBy?: PosConnectionOrderByWithRelationInput | PosConnectionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PosConnections.
+     */
+    cursor?: PosConnectionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PosConnections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PosConnections.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PosConnections.
+     */
+    distinct?: PosConnectionScalarFieldEnum | PosConnectionScalarFieldEnum[]
+  }
+
+  /**
+   * PosConnection findFirstOrThrow
+   */
+  export type PosConnectionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosConnection
+     */
+    select?: PosConnectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosConnection
+     */
+    omit?: PosConnectionOmit<ExtArgs> | null
+    /**
+     * Filter, which PosConnection to fetch.
+     */
+    where?: PosConnectionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PosConnections to fetch.
+     */
+    orderBy?: PosConnectionOrderByWithRelationInput | PosConnectionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PosConnections.
+     */
+    cursor?: PosConnectionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PosConnections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PosConnections.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PosConnections.
+     */
+    distinct?: PosConnectionScalarFieldEnum | PosConnectionScalarFieldEnum[]
+  }
+
+  /**
+   * PosConnection findMany
+   */
+  export type PosConnectionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosConnection
+     */
+    select?: PosConnectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosConnection
+     */
+    omit?: PosConnectionOmit<ExtArgs> | null
+    /**
+     * Filter, which PosConnections to fetch.
+     */
+    where?: PosConnectionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PosConnections to fetch.
+     */
+    orderBy?: PosConnectionOrderByWithRelationInput | PosConnectionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PosConnections.
+     */
+    cursor?: PosConnectionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PosConnections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PosConnections.
+     */
+    skip?: number
+    distinct?: PosConnectionScalarFieldEnum | PosConnectionScalarFieldEnum[]
+  }
+
+  /**
+   * PosConnection create
+   */
+  export type PosConnectionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosConnection
+     */
+    select?: PosConnectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosConnection
+     */
+    omit?: PosConnectionOmit<ExtArgs> | null
+    /**
+     * The data needed to create a PosConnection.
+     */
+    data: XOR<PosConnectionCreateInput, PosConnectionUncheckedCreateInput>
+  }
+
+  /**
+   * PosConnection createMany
+   */
+  export type PosConnectionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PosConnections.
+     */
+    data: PosConnectionCreateManyInput | PosConnectionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PosConnection createManyAndReturn
+   */
+  export type PosConnectionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosConnection
+     */
+    select?: PosConnectionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosConnection
+     */
+    omit?: PosConnectionOmit<ExtArgs> | null
+    /**
+     * The data used to create many PosConnections.
+     */
+    data: PosConnectionCreateManyInput | PosConnectionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PosConnection update
+   */
+  export type PosConnectionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosConnection
+     */
+    select?: PosConnectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosConnection
+     */
+    omit?: PosConnectionOmit<ExtArgs> | null
+    /**
+     * The data needed to update a PosConnection.
+     */
+    data: XOR<PosConnectionUpdateInput, PosConnectionUncheckedUpdateInput>
+    /**
+     * Choose, which PosConnection to update.
+     */
+    where: PosConnectionWhereUniqueInput
+  }
+
+  /**
+   * PosConnection updateMany
+   */
+  export type PosConnectionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PosConnections.
+     */
+    data: XOR<PosConnectionUpdateManyMutationInput, PosConnectionUncheckedUpdateManyInput>
+    /**
+     * Filter which PosConnections to update
+     */
+    where?: PosConnectionWhereInput
+    /**
+     * Limit how many PosConnections to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PosConnection updateManyAndReturn
+   */
+  export type PosConnectionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosConnection
+     */
+    select?: PosConnectionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosConnection
+     */
+    omit?: PosConnectionOmit<ExtArgs> | null
+    /**
+     * The data used to update PosConnections.
+     */
+    data: XOR<PosConnectionUpdateManyMutationInput, PosConnectionUncheckedUpdateManyInput>
+    /**
+     * Filter which PosConnections to update
+     */
+    where?: PosConnectionWhereInput
+    /**
+     * Limit how many PosConnections to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PosConnection upsert
+   */
+  export type PosConnectionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosConnection
+     */
+    select?: PosConnectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosConnection
+     */
+    omit?: PosConnectionOmit<ExtArgs> | null
+    /**
+     * The filter to search for the PosConnection to update in case it exists.
+     */
+    where: PosConnectionWhereUniqueInput
+    /**
+     * In case the PosConnection found by the `where` argument doesn't exist, create a new PosConnection with this data.
+     */
+    create: XOR<PosConnectionCreateInput, PosConnectionUncheckedCreateInput>
+    /**
+     * In case the PosConnection was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PosConnectionUpdateInput, PosConnectionUncheckedUpdateInput>
+  }
+
+  /**
+   * PosConnection delete
+   */
+  export type PosConnectionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosConnection
+     */
+    select?: PosConnectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosConnection
+     */
+    omit?: PosConnectionOmit<ExtArgs> | null
+    /**
+     * Filter which PosConnection to delete.
+     */
+    where: PosConnectionWhereUniqueInput
+  }
+
+  /**
+   * PosConnection deleteMany
+   */
+  export type PosConnectionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PosConnections to delete
+     */
+    where?: PosConnectionWhereInput
+    /**
+     * Limit how many PosConnections to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PosConnection without action
+   */
+  export type PosConnectionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosConnection
+     */
+    select?: PosConnectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosConnection
+     */
+    omit?: PosConnectionOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PosMenuMap
+   */
+
+  export type AggregatePosMenuMap = {
+    _count: PosMenuMapCountAggregateOutputType | null
+    _min: PosMenuMapMinAggregateOutputType | null
+    _max: PosMenuMapMaxAggregateOutputType | null
+  }
+
+  export type PosMenuMapMinAggregateOutputType = {
+    id: string | null
+    provider: string | null
+    localType: string | null
+    localId: string | null
+    posId: string | null
+    posVersion: string | null
+    updatedAt: Date | null
+  }
+
+  export type PosMenuMapMaxAggregateOutputType = {
+    id: string | null
+    provider: string | null
+    localType: string | null
+    localId: string | null
+    posId: string | null
+    posVersion: string | null
+    updatedAt: Date | null
+  }
+
+  export type PosMenuMapCountAggregateOutputType = {
+    id: number
+    provider: number
+    localType: number
+    localId: number
+    posId: number
+    posVersion: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type PosMenuMapMinAggregateInputType = {
+    id?: true
+    provider?: true
+    localType?: true
+    localId?: true
+    posId?: true
+    posVersion?: true
+    updatedAt?: true
+  }
+
+  export type PosMenuMapMaxAggregateInputType = {
+    id?: true
+    provider?: true
+    localType?: true
+    localId?: true
+    posId?: true
+    posVersion?: true
+    updatedAt?: true
+  }
+
+  export type PosMenuMapCountAggregateInputType = {
+    id?: true
+    provider?: true
+    localType?: true
+    localId?: true
+    posId?: true
+    posVersion?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type PosMenuMapAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PosMenuMap to aggregate.
+     */
+    where?: PosMenuMapWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PosMenuMaps to fetch.
+     */
+    orderBy?: PosMenuMapOrderByWithRelationInput | PosMenuMapOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PosMenuMapWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PosMenuMaps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PosMenuMaps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PosMenuMaps
+    **/
+    _count?: true | PosMenuMapCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PosMenuMapMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PosMenuMapMaxAggregateInputType
+  }
+
+  export type GetPosMenuMapAggregateType<T extends PosMenuMapAggregateArgs> = {
+        [P in keyof T & keyof AggregatePosMenuMap]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePosMenuMap[P]>
+      : GetScalarType<T[P], AggregatePosMenuMap[P]>
+  }
+
+
+
+
+  export type PosMenuMapGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PosMenuMapWhereInput
+    orderBy?: PosMenuMapOrderByWithAggregationInput | PosMenuMapOrderByWithAggregationInput[]
+    by: PosMenuMapScalarFieldEnum[] | PosMenuMapScalarFieldEnum
+    having?: PosMenuMapScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PosMenuMapCountAggregateInputType | true
+    _min?: PosMenuMapMinAggregateInputType
+    _max?: PosMenuMapMaxAggregateInputType
+  }
+
+  export type PosMenuMapGroupByOutputType = {
+    id: string
+    provider: string
+    localType: string
+    localId: string
+    posId: string
+    posVersion: string | null
+    updatedAt: Date
+    _count: PosMenuMapCountAggregateOutputType | null
+    _min: PosMenuMapMinAggregateOutputType | null
+    _max: PosMenuMapMaxAggregateOutputType | null
+  }
+
+  type GetPosMenuMapGroupByPayload<T extends PosMenuMapGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PosMenuMapGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PosMenuMapGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PosMenuMapGroupByOutputType[P]>
+            : GetScalarType<T[P], PosMenuMapGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PosMenuMapSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    provider?: boolean
+    localType?: boolean
+    localId?: boolean
+    posId?: boolean
+    posVersion?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["posMenuMap"]>
+
+  export type PosMenuMapSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    provider?: boolean
+    localType?: boolean
+    localId?: boolean
+    posId?: boolean
+    posVersion?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["posMenuMap"]>
+
+  export type PosMenuMapSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    provider?: boolean
+    localType?: boolean
+    localId?: boolean
+    posId?: boolean
+    posVersion?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["posMenuMap"]>
+
+  export type PosMenuMapSelectScalar = {
+    id?: boolean
+    provider?: boolean
+    localType?: boolean
+    localId?: boolean
+    posId?: boolean
+    posVersion?: boolean
+    updatedAt?: boolean
+  }
+
+  export type PosMenuMapOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "provider" | "localType" | "localId" | "posId" | "posVersion" | "updatedAt", ExtArgs["result"]["posMenuMap"]>
+
+  export type $PosMenuMapPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PosMenuMap"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      provider: string
+      localType: string
+      localId: string
+      posId: string
+      posVersion: string | null
+      updatedAt: Date
+    }, ExtArgs["result"]["posMenuMap"]>
+    composites: {}
+  }
+
+  type PosMenuMapGetPayload<S extends boolean | null | undefined | PosMenuMapDefaultArgs> = $Result.GetResult<Prisma.$PosMenuMapPayload, S>
+
+  type PosMenuMapCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PosMenuMapFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PosMenuMapCountAggregateInputType | true
+    }
+
+  export interface PosMenuMapDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PosMenuMap'], meta: { name: 'PosMenuMap' } }
+    /**
+     * Find zero or one PosMenuMap that matches the filter.
+     * @param {PosMenuMapFindUniqueArgs} args - Arguments to find a PosMenuMap
+     * @example
+     * // Get one PosMenuMap
+     * const posMenuMap = await prisma.posMenuMap.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PosMenuMapFindUniqueArgs>(args: SelectSubset<T, PosMenuMapFindUniqueArgs<ExtArgs>>): Prisma__PosMenuMapClient<$Result.GetResult<Prisma.$PosMenuMapPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PosMenuMap that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PosMenuMapFindUniqueOrThrowArgs} args - Arguments to find a PosMenuMap
+     * @example
+     * // Get one PosMenuMap
+     * const posMenuMap = await prisma.posMenuMap.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PosMenuMapFindUniqueOrThrowArgs>(args: SelectSubset<T, PosMenuMapFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PosMenuMapClient<$Result.GetResult<Prisma.$PosMenuMapPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PosMenuMap that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PosMenuMapFindFirstArgs} args - Arguments to find a PosMenuMap
+     * @example
+     * // Get one PosMenuMap
+     * const posMenuMap = await prisma.posMenuMap.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PosMenuMapFindFirstArgs>(args?: SelectSubset<T, PosMenuMapFindFirstArgs<ExtArgs>>): Prisma__PosMenuMapClient<$Result.GetResult<Prisma.$PosMenuMapPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PosMenuMap that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PosMenuMapFindFirstOrThrowArgs} args - Arguments to find a PosMenuMap
+     * @example
+     * // Get one PosMenuMap
+     * const posMenuMap = await prisma.posMenuMap.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PosMenuMapFindFirstOrThrowArgs>(args?: SelectSubset<T, PosMenuMapFindFirstOrThrowArgs<ExtArgs>>): Prisma__PosMenuMapClient<$Result.GetResult<Prisma.$PosMenuMapPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PosMenuMaps that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PosMenuMapFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PosMenuMaps
+     * const posMenuMaps = await prisma.posMenuMap.findMany()
+     * 
+     * // Get first 10 PosMenuMaps
+     * const posMenuMaps = await prisma.posMenuMap.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const posMenuMapWithIdOnly = await prisma.posMenuMap.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PosMenuMapFindManyArgs>(args?: SelectSubset<T, PosMenuMapFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PosMenuMapPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PosMenuMap.
+     * @param {PosMenuMapCreateArgs} args - Arguments to create a PosMenuMap.
+     * @example
+     * // Create one PosMenuMap
+     * const PosMenuMap = await prisma.posMenuMap.create({
+     *   data: {
+     *     // ... data to create a PosMenuMap
+     *   }
+     * })
+     * 
+     */
+    create<T extends PosMenuMapCreateArgs>(args: SelectSubset<T, PosMenuMapCreateArgs<ExtArgs>>): Prisma__PosMenuMapClient<$Result.GetResult<Prisma.$PosMenuMapPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PosMenuMaps.
+     * @param {PosMenuMapCreateManyArgs} args - Arguments to create many PosMenuMaps.
+     * @example
+     * // Create many PosMenuMaps
+     * const posMenuMap = await prisma.posMenuMap.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PosMenuMapCreateManyArgs>(args?: SelectSubset<T, PosMenuMapCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PosMenuMaps and returns the data saved in the database.
+     * @param {PosMenuMapCreateManyAndReturnArgs} args - Arguments to create many PosMenuMaps.
+     * @example
+     * // Create many PosMenuMaps
+     * const posMenuMap = await prisma.posMenuMap.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PosMenuMaps and only return the `id`
+     * const posMenuMapWithIdOnly = await prisma.posMenuMap.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PosMenuMapCreateManyAndReturnArgs>(args?: SelectSubset<T, PosMenuMapCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PosMenuMapPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PosMenuMap.
+     * @param {PosMenuMapDeleteArgs} args - Arguments to delete one PosMenuMap.
+     * @example
+     * // Delete one PosMenuMap
+     * const PosMenuMap = await prisma.posMenuMap.delete({
+     *   where: {
+     *     // ... filter to delete one PosMenuMap
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PosMenuMapDeleteArgs>(args: SelectSubset<T, PosMenuMapDeleteArgs<ExtArgs>>): Prisma__PosMenuMapClient<$Result.GetResult<Prisma.$PosMenuMapPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PosMenuMap.
+     * @param {PosMenuMapUpdateArgs} args - Arguments to update one PosMenuMap.
+     * @example
+     * // Update one PosMenuMap
+     * const posMenuMap = await prisma.posMenuMap.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PosMenuMapUpdateArgs>(args: SelectSubset<T, PosMenuMapUpdateArgs<ExtArgs>>): Prisma__PosMenuMapClient<$Result.GetResult<Prisma.$PosMenuMapPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PosMenuMaps.
+     * @param {PosMenuMapDeleteManyArgs} args - Arguments to filter PosMenuMaps to delete.
+     * @example
+     * // Delete a few PosMenuMaps
+     * const { count } = await prisma.posMenuMap.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PosMenuMapDeleteManyArgs>(args?: SelectSubset<T, PosMenuMapDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PosMenuMaps.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PosMenuMapUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PosMenuMaps
+     * const posMenuMap = await prisma.posMenuMap.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PosMenuMapUpdateManyArgs>(args: SelectSubset<T, PosMenuMapUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PosMenuMaps and returns the data updated in the database.
+     * @param {PosMenuMapUpdateManyAndReturnArgs} args - Arguments to update many PosMenuMaps.
+     * @example
+     * // Update many PosMenuMaps
+     * const posMenuMap = await prisma.posMenuMap.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PosMenuMaps and only return the `id`
+     * const posMenuMapWithIdOnly = await prisma.posMenuMap.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PosMenuMapUpdateManyAndReturnArgs>(args: SelectSubset<T, PosMenuMapUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PosMenuMapPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PosMenuMap.
+     * @param {PosMenuMapUpsertArgs} args - Arguments to update or create a PosMenuMap.
+     * @example
+     * // Update or create a PosMenuMap
+     * const posMenuMap = await prisma.posMenuMap.upsert({
+     *   create: {
+     *     // ... data to create a PosMenuMap
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PosMenuMap we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PosMenuMapUpsertArgs>(args: SelectSubset<T, PosMenuMapUpsertArgs<ExtArgs>>): Prisma__PosMenuMapClient<$Result.GetResult<Prisma.$PosMenuMapPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PosMenuMaps.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PosMenuMapCountArgs} args - Arguments to filter PosMenuMaps to count.
+     * @example
+     * // Count the number of PosMenuMaps
+     * const count = await prisma.posMenuMap.count({
+     *   where: {
+     *     // ... the filter for the PosMenuMaps we want to count
+     *   }
+     * })
+    **/
+    count<T extends PosMenuMapCountArgs>(
+      args?: Subset<T, PosMenuMapCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PosMenuMapCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PosMenuMap.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PosMenuMapAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PosMenuMapAggregateArgs>(args: Subset<T, PosMenuMapAggregateArgs>): Prisma.PrismaPromise<GetPosMenuMapAggregateType<T>>
+
+    /**
+     * Group by PosMenuMap.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PosMenuMapGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PosMenuMapGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PosMenuMapGroupByArgs['orderBy'] }
+        : { orderBy?: PosMenuMapGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PosMenuMapGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPosMenuMapGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PosMenuMap model
+   */
+  readonly fields: PosMenuMapFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PosMenuMap.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PosMenuMapClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PosMenuMap model
+   */
+  interface PosMenuMapFieldRefs {
+    readonly id: FieldRef<"PosMenuMap", 'String'>
+    readonly provider: FieldRef<"PosMenuMap", 'String'>
+    readonly localType: FieldRef<"PosMenuMap", 'String'>
+    readonly localId: FieldRef<"PosMenuMap", 'String'>
+    readonly posId: FieldRef<"PosMenuMap", 'String'>
+    readonly posVersion: FieldRef<"PosMenuMap", 'String'>
+    readonly updatedAt: FieldRef<"PosMenuMap", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PosMenuMap findUnique
+   */
+  export type PosMenuMapFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosMenuMap
+     */
+    select?: PosMenuMapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosMenuMap
+     */
+    omit?: PosMenuMapOmit<ExtArgs> | null
+    /**
+     * Filter, which PosMenuMap to fetch.
+     */
+    where: PosMenuMapWhereUniqueInput
+  }
+
+  /**
+   * PosMenuMap findUniqueOrThrow
+   */
+  export type PosMenuMapFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosMenuMap
+     */
+    select?: PosMenuMapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosMenuMap
+     */
+    omit?: PosMenuMapOmit<ExtArgs> | null
+    /**
+     * Filter, which PosMenuMap to fetch.
+     */
+    where: PosMenuMapWhereUniqueInput
+  }
+
+  /**
+   * PosMenuMap findFirst
+   */
+  export type PosMenuMapFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosMenuMap
+     */
+    select?: PosMenuMapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosMenuMap
+     */
+    omit?: PosMenuMapOmit<ExtArgs> | null
+    /**
+     * Filter, which PosMenuMap to fetch.
+     */
+    where?: PosMenuMapWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PosMenuMaps to fetch.
+     */
+    orderBy?: PosMenuMapOrderByWithRelationInput | PosMenuMapOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PosMenuMaps.
+     */
+    cursor?: PosMenuMapWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PosMenuMaps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PosMenuMaps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PosMenuMaps.
+     */
+    distinct?: PosMenuMapScalarFieldEnum | PosMenuMapScalarFieldEnum[]
+  }
+
+  /**
+   * PosMenuMap findFirstOrThrow
+   */
+  export type PosMenuMapFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosMenuMap
+     */
+    select?: PosMenuMapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosMenuMap
+     */
+    omit?: PosMenuMapOmit<ExtArgs> | null
+    /**
+     * Filter, which PosMenuMap to fetch.
+     */
+    where?: PosMenuMapWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PosMenuMaps to fetch.
+     */
+    orderBy?: PosMenuMapOrderByWithRelationInput | PosMenuMapOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PosMenuMaps.
+     */
+    cursor?: PosMenuMapWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PosMenuMaps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PosMenuMaps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PosMenuMaps.
+     */
+    distinct?: PosMenuMapScalarFieldEnum | PosMenuMapScalarFieldEnum[]
+  }
+
+  /**
+   * PosMenuMap findMany
+   */
+  export type PosMenuMapFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosMenuMap
+     */
+    select?: PosMenuMapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosMenuMap
+     */
+    omit?: PosMenuMapOmit<ExtArgs> | null
+    /**
+     * Filter, which PosMenuMaps to fetch.
+     */
+    where?: PosMenuMapWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PosMenuMaps to fetch.
+     */
+    orderBy?: PosMenuMapOrderByWithRelationInput | PosMenuMapOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PosMenuMaps.
+     */
+    cursor?: PosMenuMapWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PosMenuMaps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PosMenuMaps.
+     */
+    skip?: number
+    distinct?: PosMenuMapScalarFieldEnum | PosMenuMapScalarFieldEnum[]
+  }
+
+  /**
+   * PosMenuMap create
+   */
+  export type PosMenuMapCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosMenuMap
+     */
+    select?: PosMenuMapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosMenuMap
+     */
+    omit?: PosMenuMapOmit<ExtArgs> | null
+    /**
+     * The data needed to create a PosMenuMap.
+     */
+    data: XOR<PosMenuMapCreateInput, PosMenuMapUncheckedCreateInput>
+  }
+
+  /**
+   * PosMenuMap createMany
+   */
+  export type PosMenuMapCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PosMenuMaps.
+     */
+    data: PosMenuMapCreateManyInput | PosMenuMapCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PosMenuMap createManyAndReturn
+   */
+  export type PosMenuMapCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosMenuMap
+     */
+    select?: PosMenuMapSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosMenuMap
+     */
+    omit?: PosMenuMapOmit<ExtArgs> | null
+    /**
+     * The data used to create many PosMenuMaps.
+     */
+    data: PosMenuMapCreateManyInput | PosMenuMapCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PosMenuMap update
+   */
+  export type PosMenuMapUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosMenuMap
+     */
+    select?: PosMenuMapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosMenuMap
+     */
+    omit?: PosMenuMapOmit<ExtArgs> | null
+    /**
+     * The data needed to update a PosMenuMap.
+     */
+    data: XOR<PosMenuMapUpdateInput, PosMenuMapUncheckedUpdateInput>
+    /**
+     * Choose, which PosMenuMap to update.
+     */
+    where: PosMenuMapWhereUniqueInput
+  }
+
+  /**
+   * PosMenuMap updateMany
+   */
+  export type PosMenuMapUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PosMenuMaps.
+     */
+    data: XOR<PosMenuMapUpdateManyMutationInput, PosMenuMapUncheckedUpdateManyInput>
+    /**
+     * Filter which PosMenuMaps to update
+     */
+    where?: PosMenuMapWhereInput
+    /**
+     * Limit how many PosMenuMaps to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PosMenuMap updateManyAndReturn
+   */
+  export type PosMenuMapUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosMenuMap
+     */
+    select?: PosMenuMapSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosMenuMap
+     */
+    omit?: PosMenuMapOmit<ExtArgs> | null
+    /**
+     * The data used to update PosMenuMaps.
+     */
+    data: XOR<PosMenuMapUpdateManyMutationInput, PosMenuMapUncheckedUpdateManyInput>
+    /**
+     * Filter which PosMenuMaps to update
+     */
+    where?: PosMenuMapWhereInput
+    /**
+     * Limit how many PosMenuMaps to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PosMenuMap upsert
+   */
+  export type PosMenuMapUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosMenuMap
+     */
+    select?: PosMenuMapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosMenuMap
+     */
+    omit?: PosMenuMapOmit<ExtArgs> | null
+    /**
+     * The filter to search for the PosMenuMap to update in case it exists.
+     */
+    where: PosMenuMapWhereUniqueInput
+    /**
+     * In case the PosMenuMap found by the `where` argument doesn't exist, create a new PosMenuMap with this data.
+     */
+    create: XOR<PosMenuMapCreateInput, PosMenuMapUncheckedCreateInput>
+    /**
+     * In case the PosMenuMap was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PosMenuMapUpdateInput, PosMenuMapUncheckedUpdateInput>
+  }
+
+  /**
+   * PosMenuMap delete
+   */
+  export type PosMenuMapDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosMenuMap
+     */
+    select?: PosMenuMapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosMenuMap
+     */
+    omit?: PosMenuMapOmit<ExtArgs> | null
+    /**
+     * Filter which PosMenuMap to delete.
+     */
+    where: PosMenuMapWhereUniqueInput
+  }
+
+  /**
+   * PosMenuMap deleteMany
+   */
+  export type PosMenuMapDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PosMenuMaps to delete
+     */
+    where?: PosMenuMapWhereInput
+    /**
+     * Limit how many PosMenuMaps to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PosMenuMap without action
+   */
+  export type PosMenuMapDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosMenuMap
+     */
+    select?: PosMenuMapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosMenuMap
+     */
+    omit?: PosMenuMapOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PosOrderSync
+   */
+
+  export type AggregatePosOrderSync = {
+    _count: PosOrderSyncCountAggregateOutputType | null
+    _avg: PosOrderSyncAvgAggregateOutputType | null
+    _sum: PosOrderSyncSumAggregateOutputType | null
+    _min: PosOrderSyncMinAggregateOutputType | null
+    _max: PosOrderSyncMaxAggregateOutputType | null
+  }
+
+  export type PosOrderSyncAvgAggregateOutputType = {
+    attempts: number | null
+  }
+
+  export type PosOrderSyncSumAggregateOutputType = {
+    attempts: number | null
+  }
+
+  export type PosOrderSyncMinAggregateOutputType = {
+    id: string | null
+    cartId: string | null
+    provider: string | null
+    status: string | null
+    posOrderId: string | null
+    attempts: number | null
+    lastError: string | null
+    nextRetryAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PosOrderSyncMaxAggregateOutputType = {
+    id: string | null
+    cartId: string | null
+    provider: string | null
+    status: string | null
+    posOrderId: string | null
+    attempts: number | null
+    lastError: string | null
+    nextRetryAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PosOrderSyncCountAggregateOutputType = {
+    id: number
+    cartId: number
+    provider: number
+    status: number
+    posOrderId: number
+    attempts: number
+    lastError: number
+    nextRetryAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type PosOrderSyncAvgAggregateInputType = {
+    attempts?: true
+  }
+
+  export type PosOrderSyncSumAggregateInputType = {
+    attempts?: true
+  }
+
+  export type PosOrderSyncMinAggregateInputType = {
+    id?: true
+    cartId?: true
+    provider?: true
+    status?: true
+    posOrderId?: true
+    attempts?: true
+    lastError?: true
+    nextRetryAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PosOrderSyncMaxAggregateInputType = {
+    id?: true
+    cartId?: true
+    provider?: true
+    status?: true
+    posOrderId?: true
+    attempts?: true
+    lastError?: true
+    nextRetryAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PosOrderSyncCountAggregateInputType = {
+    id?: true
+    cartId?: true
+    provider?: true
+    status?: true
+    posOrderId?: true
+    attempts?: true
+    lastError?: true
+    nextRetryAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type PosOrderSyncAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PosOrderSync to aggregate.
+     */
+    where?: PosOrderSyncWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PosOrderSyncs to fetch.
+     */
+    orderBy?: PosOrderSyncOrderByWithRelationInput | PosOrderSyncOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PosOrderSyncWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PosOrderSyncs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PosOrderSyncs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PosOrderSyncs
+    **/
+    _count?: true | PosOrderSyncCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PosOrderSyncAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PosOrderSyncSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PosOrderSyncMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PosOrderSyncMaxAggregateInputType
+  }
+
+  export type GetPosOrderSyncAggregateType<T extends PosOrderSyncAggregateArgs> = {
+        [P in keyof T & keyof AggregatePosOrderSync]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePosOrderSync[P]>
+      : GetScalarType<T[P], AggregatePosOrderSync[P]>
+  }
+
+
+
+
+  export type PosOrderSyncGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PosOrderSyncWhereInput
+    orderBy?: PosOrderSyncOrderByWithAggregationInput | PosOrderSyncOrderByWithAggregationInput[]
+    by: PosOrderSyncScalarFieldEnum[] | PosOrderSyncScalarFieldEnum
+    having?: PosOrderSyncScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PosOrderSyncCountAggregateInputType | true
+    _avg?: PosOrderSyncAvgAggregateInputType
+    _sum?: PosOrderSyncSumAggregateInputType
+    _min?: PosOrderSyncMinAggregateInputType
+    _max?: PosOrderSyncMaxAggregateInputType
+  }
+
+  export type PosOrderSyncGroupByOutputType = {
+    id: string
+    cartId: string
+    provider: string
+    status: string
+    posOrderId: string | null
+    attempts: number
+    lastError: string | null
+    nextRetryAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: PosOrderSyncCountAggregateOutputType | null
+    _avg: PosOrderSyncAvgAggregateOutputType | null
+    _sum: PosOrderSyncSumAggregateOutputType | null
+    _min: PosOrderSyncMinAggregateOutputType | null
+    _max: PosOrderSyncMaxAggregateOutputType | null
+  }
+
+  type GetPosOrderSyncGroupByPayload<T extends PosOrderSyncGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PosOrderSyncGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PosOrderSyncGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PosOrderSyncGroupByOutputType[P]>
+            : GetScalarType<T[P], PosOrderSyncGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PosOrderSyncSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    cartId?: boolean
+    provider?: boolean
+    status?: boolean
+    posOrderId?: boolean
+    attempts?: boolean
+    lastError?: boolean
+    nextRetryAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["posOrderSync"]>
+
+  export type PosOrderSyncSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    cartId?: boolean
+    provider?: boolean
+    status?: boolean
+    posOrderId?: boolean
+    attempts?: boolean
+    lastError?: boolean
+    nextRetryAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["posOrderSync"]>
+
+  export type PosOrderSyncSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    cartId?: boolean
+    provider?: boolean
+    status?: boolean
+    posOrderId?: boolean
+    attempts?: boolean
+    lastError?: boolean
+    nextRetryAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["posOrderSync"]>
+
+  export type PosOrderSyncSelectScalar = {
+    id?: boolean
+    cartId?: boolean
+    provider?: boolean
+    status?: boolean
+    posOrderId?: boolean
+    attempts?: boolean
+    lastError?: boolean
+    nextRetryAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type PosOrderSyncOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "cartId" | "provider" | "status" | "posOrderId" | "attempts" | "lastError" | "nextRetryAt" | "createdAt" | "updatedAt", ExtArgs["result"]["posOrderSync"]>
+
+  export type $PosOrderSyncPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PosOrderSync"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      cartId: string
+      provider: string
+      status: string
+      posOrderId: string | null
+      attempts: number
+      lastError: string | null
+      nextRetryAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["posOrderSync"]>
+    composites: {}
+  }
+
+  type PosOrderSyncGetPayload<S extends boolean | null | undefined | PosOrderSyncDefaultArgs> = $Result.GetResult<Prisma.$PosOrderSyncPayload, S>
+
+  type PosOrderSyncCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PosOrderSyncFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PosOrderSyncCountAggregateInputType | true
+    }
+
+  export interface PosOrderSyncDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PosOrderSync'], meta: { name: 'PosOrderSync' } }
+    /**
+     * Find zero or one PosOrderSync that matches the filter.
+     * @param {PosOrderSyncFindUniqueArgs} args - Arguments to find a PosOrderSync
+     * @example
+     * // Get one PosOrderSync
+     * const posOrderSync = await prisma.posOrderSync.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PosOrderSyncFindUniqueArgs>(args: SelectSubset<T, PosOrderSyncFindUniqueArgs<ExtArgs>>): Prisma__PosOrderSyncClient<$Result.GetResult<Prisma.$PosOrderSyncPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PosOrderSync that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PosOrderSyncFindUniqueOrThrowArgs} args - Arguments to find a PosOrderSync
+     * @example
+     * // Get one PosOrderSync
+     * const posOrderSync = await prisma.posOrderSync.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PosOrderSyncFindUniqueOrThrowArgs>(args: SelectSubset<T, PosOrderSyncFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PosOrderSyncClient<$Result.GetResult<Prisma.$PosOrderSyncPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PosOrderSync that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PosOrderSyncFindFirstArgs} args - Arguments to find a PosOrderSync
+     * @example
+     * // Get one PosOrderSync
+     * const posOrderSync = await prisma.posOrderSync.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PosOrderSyncFindFirstArgs>(args?: SelectSubset<T, PosOrderSyncFindFirstArgs<ExtArgs>>): Prisma__PosOrderSyncClient<$Result.GetResult<Prisma.$PosOrderSyncPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PosOrderSync that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PosOrderSyncFindFirstOrThrowArgs} args - Arguments to find a PosOrderSync
+     * @example
+     * // Get one PosOrderSync
+     * const posOrderSync = await prisma.posOrderSync.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PosOrderSyncFindFirstOrThrowArgs>(args?: SelectSubset<T, PosOrderSyncFindFirstOrThrowArgs<ExtArgs>>): Prisma__PosOrderSyncClient<$Result.GetResult<Prisma.$PosOrderSyncPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PosOrderSyncs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PosOrderSyncFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PosOrderSyncs
+     * const posOrderSyncs = await prisma.posOrderSync.findMany()
+     * 
+     * // Get first 10 PosOrderSyncs
+     * const posOrderSyncs = await prisma.posOrderSync.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const posOrderSyncWithIdOnly = await prisma.posOrderSync.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PosOrderSyncFindManyArgs>(args?: SelectSubset<T, PosOrderSyncFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PosOrderSyncPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PosOrderSync.
+     * @param {PosOrderSyncCreateArgs} args - Arguments to create a PosOrderSync.
+     * @example
+     * // Create one PosOrderSync
+     * const PosOrderSync = await prisma.posOrderSync.create({
+     *   data: {
+     *     // ... data to create a PosOrderSync
+     *   }
+     * })
+     * 
+     */
+    create<T extends PosOrderSyncCreateArgs>(args: SelectSubset<T, PosOrderSyncCreateArgs<ExtArgs>>): Prisma__PosOrderSyncClient<$Result.GetResult<Prisma.$PosOrderSyncPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PosOrderSyncs.
+     * @param {PosOrderSyncCreateManyArgs} args - Arguments to create many PosOrderSyncs.
+     * @example
+     * // Create many PosOrderSyncs
+     * const posOrderSync = await prisma.posOrderSync.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PosOrderSyncCreateManyArgs>(args?: SelectSubset<T, PosOrderSyncCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PosOrderSyncs and returns the data saved in the database.
+     * @param {PosOrderSyncCreateManyAndReturnArgs} args - Arguments to create many PosOrderSyncs.
+     * @example
+     * // Create many PosOrderSyncs
+     * const posOrderSync = await prisma.posOrderSync.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PosOrderSyncs and only return the `id`
+     * const posOrderSyncWithIdOnly = await prisma.posOrderSync.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PosOrderSyncCreateManyAndReturnArgs>(args?: SelectSubset<T, PosOrderSyncCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PosOrderSyncPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PosOrderSync.
+     * @param {PosOrderSyncDeleteArgs} args - Arguments to delete one PosOrderSync.
+     * @example
+     * // Delete one PosOrderSync
+     * const PosOrderSync = await prisma.posOrderSync.delete({
+     *   where: {
+     *     // ... filter to delete one PosOrderSync
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PosOrderSyncDeleteArgs>(args: SelectSubset<T, PosOrderSyncDeleteArgs<ExtArgs>>): Prisma__PosOrderSyncClient<$Result.GetResult<Prisma.$PosOrderSyncPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PosOrderSync.
+     * @param {PosOrderSyncUpdateArgs} args - Arguments to update one PosOrderSync.
+     * @example
+     * // Update one PosOrderSync
+     * const posOrderSync = await prisma.posOrderSync.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PosOrderSyncUpdateArgs>(args: SelectSubset<T, PosOrderSyncUpdateArgs<ExtArgs>>): Prisma__PosOrderSyncClient<$Result.GetResult<Prisma.$PosOrderSyncPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PosOrderSyncs.
+     * @param {PosOrderSyncDeleteManyArgs} args - Arguments to filter PosOrderSyncs to delete.
+     * @example
+     * // Delete a few PosOrderSyncs
+     * const { count } = await prisma.posOrderSync.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PosOrderSyncDeleteManyArgs>(args?: SelectSubset<T, PosOrderSyncDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PosOrderSyncs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PosOrderSyncUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PosOrderSyncs
+     * const posOrderSync = await prisma.posOrderSync.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PosOrderSyncUpdateManyArgs>(args: SelectSubset<T, PosOrderSyncUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PosOrderSyncs and returns the data updated in the database.
+     * @param {PosOrderSyncUpdateManyAndReturnArgs} args - Arguments to update many PosOrderSyncs.
+     * @example
+     * // Update many PosOrderSyncs
+     * const posOrderSync = await prisma.posOrderSync.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PosOrderSyncs and only return the `id`
+     * const posOrderSyncWithIdOnly = await prisma.posOrderSync.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PosOrderSyncUpdateManyAndReturnArgs>(args: SelectSubset<T, PosOrderSyncUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PosOrderSyncPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PosOrderSync.
+     * @param {PosOrderSyncUpsertArgs} args - Arguments to update or create a PosOrderSync.
+     * @example
+     * // Update or create a PosOrderSync
+     * const posOrderSync = await prisma.posOrderSync.upsert({
+     *   create: {
+     *     // ... data to create a PosOrderSync
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PosOrderSync we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PosOrderSyncUpsertArgs>(args: SelectSubset<T, PosOrderSyncUpsertArgs<ExtArgs>>): Prisma__PosOrderSyncClient<$Result.GetResult<Prisma.$PosOrderSyncPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PosOrderSyncs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PosOrderSyncCountArgs} args - Arguments to filter PosOrderSyncs to count.
+     * @example
+     * // Count the number of PosOrderSyncs
+     * const count = await prisma.posOrderSync.count({
+     *   where: {
+     *     // ... the filter for the PosOrderSyncs we want to count
+     *   }
+     * })
+    **/
+    count<T extends PosOrderSyncCountArgs>(
+      args?: Subset<T, PosOrderSyncCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PosOrderSyncCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PosOrderSync.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PosOrderSyncAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PosOrderSyncAggregateArgs>(args: Subset<T, PosOrderSyncAggregateArgs>): Prisma.PrismaPromise<GetPosOrderSyncAggregateType<T>>
+
+    /**
+     * Group by PosOrderSync.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PosOrderSyncGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PosOrderSyncGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PosOrderSyncGroupByArgs['orderBy'] }
+        : { orderBy?: PosOrderSyncGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PosOrderSyncGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPosOrderSyncGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PosOrderSync model
+   */
+  readonly fields: PosOrderSyncFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PosOrderSync.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PosOrderSyncClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PosOrderSync model
+   */
+  interface PosOrderSyncFieldRefs {
+    readonly id: FieldRef<"PosOrderSync", 'String'>
+    readonly cartId: FieldRef<"PosOrderSync", 'String'>
+    readonly provider: FieldRef<"PosOrderSync", 'String'>
+    readonly status: FieldRef<"PosOrderSync", 'String'>
+    readonly posOrderId: FieldRef<"PosOrderSync", 'String'>
+    readonly attempts: FieldRef<"PosOrderSync", 'Int'>
+    readonly lastError: FieldRef<"PosOrderSync", 'String'>
+    readonly nextRetryAt: FieldRef<"PosOrderSync", 'DateTime'>
+    readonly createdAt: FieldRef<"PosOrderSync", 'DateTime'>
+    readonly updatedAt: FieldRef<"PosOrderSync", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PosOrderSync findUnique
+   */
+  export type PosOrderSyncFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosOrderSync
+     */
+    select?: PosOrderSyncSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosOrderSync
+     */
+    omit?: PosOrderSyncOmit<ExtArgs> | null
+    /**
+     * Filter, which PosOrderSync to fetch.
+     */
+    where: PosOrderSyncWhereUniqueInput
+  }
+
+  /**
+   * PosOrderSync findUniqueOrThrow
+   */
+  export type PosOrderSyncFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosOrderSync
+     */
+    select?: PosOrderSyncSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosOrderSync
+     */
+    omit?: PosOrderSyncOmit<ExtArgs> | null
+    /**
+     * Filter, which PosOrderSync to fetch.
+     */
+    where: PosOrderSyncWhereUniqueInput
+  }
+
+  /**
+   * PosOrderSync findFirst
+   */
+  export type PosOrderSyncFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosOrderSync
+     */
+    select?: PosOrderSyncSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosOrderSync
+     */
+    omit?: PosOrderSyncOmit<ExtArgs> | null
+    /**
+     * Filter, which PosOrderSync to fetch.
+     */
+    where?: PosOrderSyncWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PosOrderSyncs to fetch.
+     */
+    orderBy?: PosOrderSyncOrderByWithRelationInput | PosOrderSyncOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PosOrderSyncs.
+     */
+    cursor?: PosOrderSyncWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PosOrderSyncs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PosOrderSyncs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PosOrderSyncs.
+     */
+    distinct?: PosOrderSyncScalarFieldEnum | PosOrderSyncScalarFieldEnum[]
+  }
+
+  /**
+   * PosOrderSync findFirstOrThrow
+   */
+  export type PosOrderSyncFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosOrderSync
+     */
+    select?: PosOrderSyncSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosOrderSync
+     */
+    omit?: PosOrderSyncOmit<ExtArgs> | null
+    /**
+     * Filter, which PosOrderSync to fetch.
+     */
+    where?: PosOrderSyncWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PosOrderSyncs to fetch.
+     */
+    orderBy?: PosOrderSyncOrderByWithRelationInput | PosOrderSyncOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PosOrderSyncs.
+     */
+    cursor?: PosOrderSyncWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PosOrderSyncs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PosOrderSyncs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PosOrderSyncs.
+     */
+    distinct?: PosOrderSyncScalarFieldEnum | PosOrderSyncScalarFieldEnum[]
+  }
+
+  /**
+   * PosOrderSync findMany
+   */
+  export type PosOrderSyncFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosOrderSync
+     */
+    select?: PosOrderSyncSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosOrderSync
+     */
+    omit?: PosOrderSyncOmit<ExtArgs> | null
+    /**
+     * Filter, which PosOrderSyncs to fetch.
+     */
+    where?: PosOrderSyncWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PosOrderSyncs to fetch.
+     */
+    orderBy?: PosOrderSyncOrderByWithRelationInput | PosOrderSyncOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PosOrderSyncs.
+     */
+    cursor?: PosOrderSyncWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PosOrderSyncs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PosOrderSyncs.
+     */
+    skip?: number
+    distinct?: PosOrderSyncScalarFieldEnum | PosOrderSyncScalarFieldEnum[]
+  }
+
+  /**
+   * PosOrderSync create
+   */
+  export type PosOrderSyncCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosOrderSync
+     */
+    select?: PosOrderSyncSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosOrderSync
+     */
+    omit?: PosOrderSyncOmit<ExtArgs> | null
+    /**
+     * The data needed to create a PosOrderSync.
+     */
+    data: XOR<PosOrderSyncCreateInput, PosOrderSyncUncheckedCreateInput>
+  }
+
+  /**
+   * PosOrderSync createMany
+   */
+  export type PosOrderSyncCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PosOrderSyncs.
+     */
+    data: PosOrderSyncCreateManyInput | PosOrderSyncCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PosOrderSync createManyAndReturn
+   */
+  export type PosOrderSyncCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosOrderSync
+     */
+    select?: PosOrderSyncSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosOrderSync
+     */
+    omit?: PosOrderSyncOmit<ExtArgs> | null
+    /**
+     * The data used to create many PosOrderSyncs.
+     */
+    data: PosOrderSyncCreateManyInput | PosOrderSyncCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PosOrderSync update
+   */
+  export type PosOrderSyncUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosOrderSync
+     */
+    select?: PosOrderSyncSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosOrderSync
+     */
+    omit?: PosOrderSyncOmit<ExtArgs> | null
+    /**
+     * The data needed to update a PosOrderSync.
+     */
+    data: XOR<PosOrderSyncUpdateInput, PosOrderSyncUncheckedUpdateInput>
+    /**
+     * Choose, which PosOrderSync to update.
+     */
+    where: PosOrderSyncWhereUniqueInput
+  }
+
+  /**
+   * PosOrderSync updateMany
+   */
+  export type PosOrderSyncUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PosOrderSyncs.
+     */
+    data: XOR<PosOrderSyncUpdateManyMutationInput, PosOrderSyncUncheckedUpdateManyInput>
+    /**
+     * Filter which PosOrderSyncs to update
+     */
+    where?: PosOrderSyncWhereInput
+    /**
+     * Limit how many PosOrderSyncs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PosOrderSync updateManyAndReturn
+   */
+  export type PosOrderSyncUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosOrderSync
+     */
+    select?: PosOrderSyncSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosOrderSync
+     */
+    omit?: PosOrderSyncOmit<ExtArgs> | null
+    /**
+     * The data used to update PosOrderSyncs.
+     */
+    data: XOR<PosOrderSyncUpdateManyMutationInput, PosOrderSyncUncheckedUpdateManyInput>
+    /**
+     * Filter which PosOrderSyncs to update
+     */
+    where?: PosOrderSyncWhereInput
+    /**
+     * Limit how many PosOrderSyncs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PosOrderSync upsert
+   */
+  export type PosOrderSyncUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosOrderSync
+     */
+    select?: PosOrderSyncSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosOrderSync
+     */
+    omit?: PosOrderSyncOmit<ExtArgs> | null
+    /**
+     * The filter to search for the PosOrderSync to update in case it exists.
+     */
+    where: PosOrderSyncWhereUniqueInput
+    /**
+     * In case the PosOrderSync found by the `where` argument doesn't exist, create a new PosOrderSync with this data.
+     */
+    create: XOR<PosOrderSyncCreateInput, PosOrderSyncUncheckedCreateInput>
+    /**
+     * In case the PosOrderSync was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PosOrderSyncUpdateInput, PosOrderSyncUncheckedUpdateInput>
+  }
+
+  /**
+   * PosOrderSync delete
+   */
+  export type PosOrderSyncDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosOrderSync
+     */
+    select?: PosOrderSyncSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosOrderSync
+     */
+    omit?: PosOrderSyncOmit<ExtArgs> | null
+    /**
+     * Filter which PosOrderSync to delete.
+     */
+    where: PosOrderSyncWhereUniqueInput
+  }
+
+  /**
+   * PosOrderSync deleteMany
+   */
+  export type PosOrderSyncDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PosOrderSyncs to delete
+     */
+    where?: PosOrderSyncWhereInput
+    /**
+     * Limit how many PosOrderSyncs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PosOrderSync without action
+   */
+  export type PosOrderSyncDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PosOrderSync
+     */
+    select?: PosOrderSyncSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PosOrderSync
+     */
+    omit?: PosOrderSyncOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -26145,6 +29606,52 @@ export namespace Prisma {
   };
 
   export type LoyaltyCampaignScalarFieldEnum = (typeof LoyaltyCampaignScalarFieldEnum)[keyof typeof LoyaltyCampaignScalarFieldEnum]
+
+
+  export const PosConnectionScalarFieldEnum: {
+    id: 'id',
+    provider: 'provider',
+    environment: 'environment',
+    merchantId: 'merchantId',
+    locationId: 'locationId',
+    credsEnc: 'credsEnc',
+    status: 'status',
+    lastError: 'lastError',
+    lastMenuSyncAt: 'lastMenuSyncAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type PosConnectionScalarFieldEnum = (typeof PosConnectionScalarFieldEnum)[keyof typeof PosConnectionScalarFieldEnum]
+
+
+  export const PosMenuMapScalarFieldEnum: {
+    id: 'id',
+    provider: 'provider',
+    localType: 'localType',
+    localId: 'localId',
+    posId: 'posId',
+    posVersion: 'posVersion',
+    updatedAt: 'updatedAt'
+  };
+
+  export type PosMenuMapScalarFieldEnum = (typeof PosMenuMapScalarFieldEnum)[keyof typeof PosMenuMapScalarFieldEnum]
+
+
+  export const PosOrderSyncScalarFieldEnum: {
+    id: 'id',
+    cartId: 'cartId',
+    provider: 'provider',
+    status: 'status',
+    posOrderId: 'posOrderId',
+    attempts: 'attempts',
+    lastError: 'lastError',
+    nextRetryAt: 'nextRetryAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type PosOrderSyncScalarFieldEnum = (typeof PosOrderSyncScalarFieldEnum)[keyof typeof PosOrderSyncScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -27745,6 +31252,231 @@ export namespace Prisma {
     costCents?: IntNullableWithAggregatesFilter<"LoyaltyCampaign"> | number | null
     redemptionCount?: IntWithAggregatesFilter<"LoyaltyCampaign"> | number
     sentAt?: DateTimeWithAggregatesFilter<"LoyaltyCampaign"> | Date | string
+  }
+
+  export type PosConnectionWhereInput = {
+    AND?: PosConnectionWhereInput | PosConnectionWhereInput[]
+    OR?: PosConnectionWhereInput[]
+    NOT?: PosConnectionWhereInput | PosConnectionWhereInput[]
+    id?: StringFilter<"PosConnection"> | string
+    provider?: StringFilter<"PosConnection"> | string
+    environment?: StringFilter<"PosConnection"> | string
+    merchantId?: StringNullableFilter<"PosConnection"> | string | null
+    locationId?: StringNullableFilter<"PosConnection"> | string | null
+    credsEnc?: StringNullableFilter<"PosConnection"> | string | null
+    status?: StringFilter<"PosConnection"> | string
+    lastError?: StringNullableFilter<"PosConnection"> | string | null
+    lastMenuSyncAt?: DateTimeNullableFilter<"PosConnection"> | Date | string | null
+    createdAt?: DateTimeFilter<"PosConnection"> | Date | string
+    updatedAt?: DateTimeFilter<"PosConnection"> | Date | string
+  }
+
+  export type PosConnectionOrderByWithRelationInput = {
+    id?: SortOrder
+    provider?: SortOrder
+    environment?: SortOrder
+    merchantId?: SortOrderInput | SortOrder
+    locationId?: SortOrderInput | SortOrder
+    credsEnc?: SortOrderInput | SortOrder
+    status?: SortOrder
+    lastError?: SortOrderInput | SortOrder
+    lastMenuSyncAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PosConnectionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    provider?: string
+    AND?: PosConnectionWhereInput | PosConnectionWhereInput[]
+    OR?: PosConnectionWhereInput[]
+    NOT?: PosConnectionWhereInput | PosConnectionWhereInput[]
+    environment?: StringFilter<"PosConnection"> | string
+    merchantId?: StringNullableFilter<"PosConnection"> | string | null
+    locationId?: StringNullableFilter<"PosConnection"> | string | null
+    credsEnc?: StringNullableFilter<"PosConnection"> | string | null
+    status?: StringFilter<"PosConnection"> | string
+    lastError?: StringNullableFilter<"PosConnection"> | string | null
+    lastMenuSyncAt?: DateTimeNullableFilter<"PosConnection"> | Date | string | null
+    createdAt?: DateTimeFilter<"PosConnection"> | Date | string
+    updatedAt?: DateTimeFilter<"PosConnection"> | Date | string
+  }, "id" | "provider">
+
+  export type PosConnectionOrderByWithAggregationInput = {
+    id?: SortOrder
+    provider?: SortOrder
+    environment?: SortOrder
+    merchantId?: SortOrderInput | SortOrder
+    locationId?: SortOrderInput | SortOrder
+    credsEnc?: SortOrderInput | SortOrder
+    status?: SortOrder
+    lastError?: SortOrderInput | SortOrder
+    lastMenuSyncAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: PosConnectionCountOrderByAggregateInput
+    _max?: PosConnectionMaxOrderByAggregateInput
+    _min?: PosConnectionMinOrderByAggregateInput
+  }
+
+  export type PosConnectionScalarWhereWithAggregatesInput = {
+    AND?: PosConnectionScalarWhereWithAggregatesInput | PosConnectionScalarWhereWithAggregatesInput[]
+    OR?: PosConnectionScalarWhereWithAggregatesInput[]
+    NOT?: PosConnectionScalarWhereWithAggregatesInput | PosConnectionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PosConnection"> | string
+    provider?: StringWithAggregatesFilter<"PosConnection"> | string
+    environment?: StringWithAggregatesFilter<"PosConnection"> | string
+    merchantId?: StringNullableWithAggregatesFilter<"PosConnection"> | string | null
+    locationId?: StringNullableWithAggregatesFilter<"PosConnection"> | string | null
+    credsEnc?: StringNullableWithAggregatesFilter<"PosConnection"> | string | null
+    status?: StringWithAggregatesFilter<"PosConnection"> | string
+    lastError?: StringNullableWithAggregatesFilter<"PosConnection"> | string | null
+    lastMenuSyncAt?: DateTimeNullableWithAggregatesFilter<"PosConnection"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"PosConnection"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"PosConnection"> | Date | string
+  }
+
+  export type PosMenuMapWhereInput = {
+    AND?: PosMenuMapWhereInput | PosMenuMapWhereInput[]
+    OR?: PosMenuMapWhereInput[]
+    NOT?: PosMenuMapWhereInput | PosMenuMapWhereInput[]
+    id?: StringFilter<"PosMenuMap"> | string
+    provider?: StringFilter<"PosMenuMap"> | string
+    localType?: StringFilter<"PosMenuMap"> | string
+    localId?: StringFilter<"PosMenuMap"> | string
+    posId?: StringFilter<"PosMenuMap"> | string
+    posVersion?: StringNullableFilter<"PosMenuMap"> | string | null
+    updatedAt?: DateTimeFilter<"PosMenuMap"> | Date | string
+  }
+
+  export type PosMenuMapOrderByWithRelationInput = {
+    id?: SortOrder
+    provider?: SortOrder
+    localType?: SortOrder
+    localId?: SortOrder
+    posId?: SortOrder
+    posVersion?: SortOrderInput | SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PosMenuMapWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    provider_localType_localId?: PosMenuMapProviderLocalTypeLocalIdCompoundUniqueInput
+    AND?: PosMenuMapWhereInput | PosMenuMapWhereInput[]
+    OR?: PosMenuMapWhereInput[]
+    NOT?: PosMenuMapWhereInput | PosMenuMapWhereInput[]
+    provider?: StringFilter<"PosMenuMap"> | string
+    localType?: StringFilter<"PosMenuMap"> | string
+    localId?: StringFilter<"PosMenuMap"> | string
+    posId?: StringFilter<"PosMenuMap"> | string
+    posVersion?: StringNullableFilter<"PosMenuMap"> | string | null
+    updatedAt?: DateTimeFilter<"PosMenuMap"> | Date | string
+  }, "id" | "provider_localType_localId">
+
+  export type PosMenuMapOrderByWithAggregationInput = {
+    id?: SortOrder
+    provider?: SortOrder
+    localType?: SortOrder
+    localId?: SortOrder
+    posId?: SortOrder
+    posVersion?: SortOrderInput | SortOrder
+    updatedAt?: SortOrder
+    _count?: PosMenuMapCountOrderByAggregateInput
+    _max?: PosMenuMapMaxOrderByAggregateInput
+    _min?: PosMenuMapMinOrderByAggregateInput
+  }
+
+  export type PosMenuMapScalarWhereWithAggregatesInput = {
+    AND?: PosMenuMapScalarWhereWithAggregatesInput | PosMenuMapScalarWhereWithAggregatesInput[]
+    OR?: PosMenuMapScalarWhereWithAggregatesInput[]
+    NOT?: PosMenuMapScalarWhereWithAggregatesInput | PosMenuMapScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PosMenuMap"> | string
+    provider?: StringWithAggregatesFilter<"PosMenuMap"> | string
+    localType?: StringWithAggregatesFilter<"PosMenuMap"> | string
+    localId?: StringWithAggregatesFilter<"PosMenuMap"> | string
+    posId?: StringWithAggregatesFilter<"PosMenuMap"> | string
+    posVersion?: StringNullableWithAggregatesFilter<"PosMenuMap"> | string | null
+    updatedAt?: DateTimeWithAggregatesFilter<"PosMenuMap"> | Date | string
+  }
+
+  export type PosOrderSyncWhereInput = {
+    AND?: PosOrderSyncWhereInput | PosOrderSyncWhereInput[]
+    OR?: PosOrderSyncWhereInput[]
+    NOT?: PosOrderSyncWhereInput | PosOrderSyncWhereInput[]
+    id?: StringFilter<"PosOrderSync"> | string
+    cartId?: StringFilter<"PosOrderSync"> | string
+    provider?: StringFilter<"PosOrderSync"> | string
+    status?: StringFilter<"PosOrderSync"> | string
+    posOrderId?: StringNullableFilter<"PosOrderSync"> | string | null
+    attempts?: IntFilter<"PosOrderSync"> | number
+    lastError?: StringNullableFilter<"PosOrderSync"> | string | null
+    nextRetryAt?: DateTimeNullableFilter<"PosOrderSync"> | Date | string | null
+    createdAt?: DateTimeFilter<"PosOrderSync"> | Date | string
+    updatedAt?: DateTimeFilter<"PosOrderSync"> | Date | string
+  }
+
+  export type PosOrderSyncOrderByWithRelationInput = {
+    id?: SortOrder
+    cartId?: SortOrder
+    provider?: SortOrder
+    status?: SortOrder
+    posOrderId?: SortOrderInput | SortOrder
+    attempts?: SortOrder
+    lastError?: SortOrderInput | SortOrder
+    nextRetryAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PosOrderSyncWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    cartId_provider?: PosOrderSyncCartIdProviderCompoundUniqueInput
+    AND?: PosOrderSyncWhereInput | PosOrderSyncWhereInput[]
+    OR?: PosOrderSyncWhereInput[]
+    NOT?: PosOrderSyncWhereInput | PosOrderSyncWhereInput[]
+    cartId?: StringFilter<"PosOrderSync"> | string
+    provider?: StringFilter<"PosOrderSync"> | string
+    status?: StringFilter<"PosOrderSync"> | string
+    posOrderId?: StringNullableFilter<"PosOrderSync"> | string | null
+    attempts?: IntFilter<"PosOrderSync"> | number
+    lastError?: StringNullableFilter<"PosOrderSync"> | string | null
+    nextRetryAt?: DateTimeNullableFilter<"PosOrderSync"> | Date | string | null
+    createdAt?: DateTimeFilter<"PosOrderSync"> | Date | string
+    updatedAt?: DateTimeFilter<"PosOrderSync"> | Date | string
+  }, "id" | "cartId_provider">
+
+  export type PosOrderSyncOrderByWithAggregationInput = {
+    id?: SortOrder
+    cartId?: SortOrder
+    provider?: SortOrder
+    status?: SortOrder
+    posOrderId?: SortOrderInput | SortOrder
+    attempts?: SortOrder
+    lastError?: SortOrderInput | SortOrder
+    nextRetryAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: PosOrderSyncCountOrderByAggregateInput
+    _avg?: PosOrderSyncAvgOrderByAggregateInput
+    _max?: PosOrderSyncMaxOrderByAggregateInput
+    _min?: PosOrderSyncMinOrderByAggregateInput
+    _sum?: PosOrderSyncSumOrderByAggregateInput
+  }
+
+  export type PosOrderSyncScalarWhereWithAggregatesInput = {
+    AND?: PosOrderSyncScalarWhereWithAggregatesInput | PosOrderSyncScalarWhereWithAggregatesInput[]
+    OR?: PosOrderSyncScalarWhereWithAggregatesInput[]
+    NOT?: PosOrderSyncScalarWhereWithAggregatesInput | PosOrderSyncScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PosOrderSync"> | string
+    cartId?: StringWithAggregatesFilter<"PosOrderSync"> | string
+    provider?: StringWithAggregatesFilter<"PosOrderSync"> | string
+    status?: StringWithAggregatesFilter<"PosOrderSync"> | string
+    posOrderId?: StringNullableWithAggregatesFilter<"PosOrderSync"> | string | null
+    attempts?: IntWithAggregatesFilter<"PosOrderSync"> | number
+    lastError?: StringNullableWithAggregatesFilter<"PosOrderSync"> | string | null
+    nextRetryAt?: DateTimeNullableWithAggregatesFilter<"PosOrderSync"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"PosOrderSync"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"PosOrderSync"> | Date | string
   }
 
   export type AdminCreateInput = {
@@ -29385,6 +33117,265 @@ export namespace Prisma {
     sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type PosConnectionCreateInput = {
+    id?: string
+    provider: string
+    environment?: string
+    merchantId?: string | null
+    locationId?: string | null
+    credsEnc?: string | null
+    status?: string
+    lastError?: string | null
+    lastMenuSyncAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PosConnectionUncheckedCreateInput = {
+    id?: string
+    provider: string
+    environment?: string
+    merchantId?: string | null
+    locationId?: string | null
+    credsEnc?: string | null
+    status?: string
+    lastError?: string | null
+    lastMenuSyncAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PosConnectionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    environment?: StringFieldUpdateOperationsInput | string
+    merchantId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    credsEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMenuSyncAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PosConnectionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    environment?: StringFieldUpdateOperationsInput | string
+    merchantId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    credsEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMenuSyncAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PosConnectionCreateManyInput = {
+    id?: string
+    provider: string
+    environment?: string
+    merchantId?: string | null
+    locationId?: string | null
+    credsEnc?: string | null
+    status?: string
+    lastError?: string | null
+    lastMenuSyncAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PosConnectionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    environment?: StringFieldUpdateOperationsInput | string
+    merchantId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    credsEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMenuSyncAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PosConnectionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    environment?: StringFieldUpdateOperationsInput | string
+    merchantId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    credsEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMenuSyncAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PosMenuMapCreateInput = {
+    id?: string
+    provider: string
+    localType: string
+    localId: string
+    posId: string
+    posVersion?: string | null
+    updatedAt?: Date | string
+  }
+
+  export type PosMenuMapUncheckedCreateInput = {
+    id?: string
+    provider: string
+    localType: string
+    localId: string
+    posId: string
+    posVersion?: string | null
+    updatedAt?: Date | string
+  }
+
+  export type PosMenuMapUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    localType?: StringFieldUpdateOperationsInput | string
+    localId?: StringFieldUpdateOperationsInput | string
+    posId?: StringFieldUpdateOperationsInput | string
+    posVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PosMenuMapUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    localType?: StringFieldUpdateOperationsInput | string
+    localId?: StringFieldUpdateOperationsInput | string
+    posId?: StringFieldUpdateOperationsInput | string
+    posVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PosMenuMapCreateManyInput = {
+    id?: string
+    provider: string
+    localType: string
+    localId: string
+    posId: string
+    posVersion?: string | null
+    updatedAt?: Date | string
+  }
+
+  export type PosMenuMapUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    localType?: StringFieldUpdateOperationsInput | string
+    localId?: StringFieldUpdateOperationsInput | string
+    posId?: StringFieldUpdateOperationsInput | string
+    posVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PosMenuMapUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    localType?: StringFieldUpdateOperationsInput | string
+    localId?: StringFieldUpdateOperationsInput | string
+    posId?: StringFieldUpdateOperationsInput | string
+    posVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PosOrderSyncCreateInput = {
+    id?: string
+    cartId: string
+    provider: string
+    status?: string
+    posOrderId?: string | null
+    attempts?: number
+    lastError?: string | null
+    nextRetryAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PosOrderSyncUncheckedCreateInput = {
+    id?: string
+    cartId: string
+    provider: string
+    status?: string
+    posOrderId?: string | null
+    attempts?: number
+    lastError?: string | null
+    nextRetryAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PosOrderSyncUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cartId?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    posOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    attempts?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    nextRetryAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PosOrderSyncUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cartId?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    posOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    attempts?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    nextRetryAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PosOrderSyncCreateManyInput = {
+    id?: string
+    cartId: string
+    provider: string
+    status?: string
+    posOrderId?: string | null
+    attempts?: number
+    lastError?: string | null
+    nextRetryAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PosOrderSyncUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cartId?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    posOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    attempts?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    nextRetryAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PosOrderSyncUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cartId?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    posOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    attempts?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    nextRetryAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -30586,6 +34577,136 @@ export namespace Prisma {
     discountPercent?: SortOrder
     costCents?: SortOrder
     redemptionCount?: SortOrder
+  }
+
+  export type PosConnectionCountOrderByAggregateInput = {
+    id?: SortOrder
+    provider?: SortOrder
+    environment?: SortOrder
+    merchantId?: SortOrder
+    locationId?: SortOrder
+    credsEnc?: SortOrder
+    status?: SortOrder
+    lastError?: SortOrder
+    lastMenuSyncAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PosConnectionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    provider?: SortOrder
+    environment?: SortOrder
+    merchantId?: SortOrder
+    locationId?: SortOrder
+    credsEnc?: SortOrder
+    status?: SortOrder
+    lastError?: SortOrder
+    lastMenuSyncAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PosConnectionMinOrderByAggregateInput = {
+    id?: SortOrder
+    provider?: SortOrder
+    environment?: SortOrder
+    merchantId?: SortOrder
+    locationId?: SortOrder
+    credsEnc?: SortOrder
+    status?: SortOrder
+    lastError?: SortOrder
+    lastMenuSyncAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PosMenuMapProviderLocalTypeLocalIdCompoundUniqueInput = {
+    provider: string
+    localType: string
+    localId: string
+  }
+
+  export type PosMenuMapCountOrderByAggregateInput = {
+    id?: SortOrder
+    provider?: SortOrder
+    localType?: SortOrder
+    localId?: SortOrder
+    posId?: SortOrder
+    posVersion?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PosMenuMapMaxOrderByAggregateInput = {
+    id?: SortOrder
+    provider?: SortOrder
+    localType?: SortOrder
+    localId?: SortOrder
+    posId?: SortOrder
+    posVersion?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PosMenuMapMinOrderByAggregateInput = {
+    id?: SortOrder
+    provider?: SortOrder
+    localType?: SortOrder
+    localId?: SortOrder
+    posId?: SortOrder
+    posVersion?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PosOrderSyncCartIdProviderCompoundUniqueInput = {
+    cartId: string
+    provider: string
+  }
+
+  export type PosOrderSyncCountOrderByAggregateInput = {
+    id?: SortOrder
+    cartId?: SortOrder
+    provider?: SortOrder
+    status?: SortOrder
+    posOrderId?: SortOrder
+    attempts?: SortOrder
+    lastError?: SortOrder
+    nextRetryAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PosOrderSyncAvgOrderByAggregateInput = {
+    attempts?: SortOrder
+  }
+
+  export type PosOrderSyncMaxOrderByAggregateInput = {
+    id?: SortOrder
+    cartId?: SortOrder
+    provider?: SortOrder
+    status?: SortOrder
+    posOrderId?: SortOrder
+    attempts?: SortOrder
+    lastError?: SortOrder
+    nextRetryAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PosOrderSyncMinOrderByAggregateInput = {
+    id?: SortOrder
+    cartId?: SortOrder
+    provider?: SortOrder
+    status?: SortOrder
+    posOrderId?: SortOrder
+    attempts?: SortOrder
+    lastError?: SortOrder
+    nextRetryAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PosOrderSyncSumOrderByAggregateInput = {
+    attempts?: SortOrder
   }
 
   export type StringFieldUpdateOperationsInput = {

@@ -305,3 +305,53 @@ model LoyaltyCampaign {
 
   @@index([projectId])
 }
+
+// ── POS integration (platform build, Phase 1) ─────────────────────────────────
+// All additive. Nothing reads these unless the "pos_push" / "pos_menu_sync"
+// flags are on (src/lib/flags.ts). Tokens are AES-256-GCM encrypted
+// (src/lib/secretBox.ts, domain "pos-creds") — never stored or logged in plain.
+
+model PosConnection {
+  id             String    @id @default(cuid())
+  provider       String    @unique // "square" | "clover" | "toast" | "lightspeed_k" | "shift4"
+  environment    String    @default("sandbox") // "sandbox" | "production"
+  merchantId     String?
+  locationId     String? // Square location / Clover has one per merchant
+  credsEnc       String? // encrypted { accessToken, refreshToken, expiresAt }
+  status         String    @default("disconnected") // connected | disconnected | error
+  lastError      String?
+  lastMenuSyncAt DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+// Maps our menu rows to POS catalog ids (items + modifier options).
+model PosMenuMap {
+  id         String   @id @default(cuid())
+  provider   String
+  localType  String // "item" | "option"
+  localId    String // Item.id or SideOption.id
+  posId      String // Square ITEM_VARIATION / MODIFIER id, Clover item / modifier id
+  posVersion String?
+  updatedAt  DateTime @updatedAt
+
+  @@unique([provider, localType, localId])
+  @@index([provider, posId])
+}
+
+// One row per paid order we try to push to the POS. cartId = our order id.
+model PosOrderSync {
+  id          String    @id @default(cuid())
+  cartId      String
+  provider    String
+  status      String    @default("pending") // pending | sent | failed | manual
+  posOrderId  String?
+  attempts    Int       @default(0)
+  lastError   String?
+  nextRetryAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([cartId, provider])
+  @@index([status, nextRetryAt])
+}
