@@ -51,3 +51,6 @@ public/general/notused/
 
 
 
+
+# the documented example file is safe to commit (no values)
+!.env.example
