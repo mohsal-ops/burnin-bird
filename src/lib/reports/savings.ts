@@ -1,47 +1,71 @@
-// Pure maths for the monthly "you kept" report. Every number comes from the
-// restaurant's own paid orders; the only assumptions are shown to the owner
-// next to the result:
-//   • the marketplace commission % they'd otherwise pay (owner-editable)
-//   • Stripe's standard US card price, 2.9% + 30¢ per charge
-// We never claim more than this: no "extra orders", no invented totals.
+// Pure maths + rendering for the monthly report. Every number comes from the
+// restaurant's own paid website orders. The ONE assumption — the marketplace
+// commission rate (per-site setting, default 25%) — is stated in plain words
+// next to the estimate, which is never presented as exact.
 
-export const CARD_PCT = 2.9;
-export const CARD_FIXED_CENTS = 30;
+export const DEFAULT_COMMISSION_PCT = 25;
+/** Below this many orders the estimate is shown with an honest "small sample" note. */
+export const MIN_ORDERS_FOR_ESTIMATE = 5;
 
-export interface ReportOrder {
-  /** Food subtotal (what marketplaces take commission on). */
-  itemsCents: number;
-  /** What the customer was charged (card fee is on this). */
-  chargedCents: number;
+export interface ReportCart {
+  items: { name: string | null; price: number | null; quantity: number | null }[];
+  isDelivery: boolean;
+  /** Courier fee on the order (what the courier charged; customer paid it at checkout). */
+  courierFeeCents: number;
 }
 
-export interface SavingsReport {
+export interface MonthStats {
+  label: string;
   orders: number;
-  grossCents: number;
-  commissionPct: number;
-  commissionAvoidedCents: number;
-  cardFeesCents: number;
-  keptCents: number;
+  revenueCents: number;
   avgOrderCents: number;
+  topItems: { name: string; qty: number; revenueCents: number }[];
+  /** Customers this month who had ordered before. null = can't tell (no data). */
+  repeatCustomers: number | null;
+  /** New loyalty sign-ups this month. null = loyalty is off. */
+  newLoyaltySubscribers: number | null;
+  deliveryOrders: number;
+  courierCostCents: number;
 }
 
-export function computeSavings(orders: ReportOrder[], commissionPct: number): SavingsReport {
-  const pct = Math.min(Math.max(commissionPct, 0), 60);
-  const grossCents = orders.reduce((s, o) => s + o.itemsCents, 0);
-  const commissionAvoidedCents = Math.round((grossCents * pct) / 100);
-  const cardFeesCents = orders.reduce(
-    (s, o) => s + (o.chargedCents > 0 ? Math.round((o.chargedCents * CARD_PCT) / 100) + CARD_FIXED_CENTS : 0),
-    0,
-  );
+export function aggregateMonth(carts: ReportCart[], label: string): Omit<MonthStats, "repeatCustomers" | "newLoyaltySubscribers"> {
+  const items = new Map<string, { qty: number; revenueCents: number }>();
+  let revenueCents = 0;
+  let deliveryOrders = 0;
+  let courierCostCents = 0;
+  const real = carts.filter((c) => c.items.length);
+  for (const c of real) {
+    for (const i of c.items) {
+      const q = i.quantity ?? 1;
+      const r = (i.price ?? 0) * q;
+      revenueCents += r;
+      if (!i.name) continue;
+      const cur = items.get(i.name) ?? { qty: 0, revenueCents: 0 };
+      items.set(i.name, { qty: cur.qty + q, revenueCents: cur.revenueCents + r });
+    }
+    if (c.isDelivery) {
+      deliveryOrders++;
+      courierCostCents += c.courierFeeCents;
+    }
+  }
   return {
-    orders: orders.length,
-    grossCents,
-    commissionPct: pct,
-    commissionAvoidedCents,
-    cardFeesCents,
-    keptCents: Math.max(0, commissionAvoidedCents - cardFeesCents),
-    avgOrderCents: orders.length ? Math.round(grossCents / orders.length) : 0,
+    label,
+    orders: real.length,
+    revenueCents,
+    avgOrderCents: real.length ? Math.round(revenueCents / real.length) : 0,
+    topItems: [...items.entries()]
+      .map(([name, v]) => ({ name, ...v }))
+      .sort((a, b) => b.qty - a.qty || b.revenueCents - a.revenueCents)
+      .slice(0, 5),
+    deliveryOrders,
+    courierCostCents,
   };
+}
+
+/** Estimated commission a marketplace would have taken. */
+export function estimateSavings(revenueCents: number, commissionPct: number): number {
+  const pct = Math.min(Math.max(commissionPct, 0), 60);
+  return Math.round((revenueCents * pct) / 100);
 }
 
 /** [start, end) of a calendar month in the restaurant's timezone, as UTC instants. */
@@ -76,32 +100,79 @@ export function previousMonth(now: Date, tz: string): { year: number; month0: nu
   return m === 1 ? { year: y - 1, month0: 11 } : { year: y, month0: m - 2 };
 }
 
-const usd = (c: number) => `$${(c / 100).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+export const usd = (c: number) =>
+  `$${(c / 100).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
-export function renderSavingsEmail(r: SavingsReport, restaurant: string, monthLabel: string, dashboardUrl: string): { subject: string; html: string } {
-  const row = (k: string, v: string, strong = false) =>
-    `<tr><td style="padding:6px 16px 6px 0;color:#78716c">${k}</td><td style="padding:6px 0;text-align:right;${strong ? "font-weight:700;color:#1c1917" : ""}">${v}</td></tr>`;
-  if (r.orders === 0) {
+const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+export function renderReportEmail(
+  s: MonthStats,
+  commissionPct: number,
+  restaurant: string,
+  links: { dashboard: string; unsubscribe: string },
+): { subject: string; html: string; text: string } {
+  const est = estimateSavings(s.revenueCents, commissionPct);
+  const assumption = `Estimated at ${commissionPct}%. Your actual rate may differ.`;
+
+  if (s.orders === 0) {
+    const body = `No orders came in through your website in ${s.label}. Want help getting your ordering link in front of more customers? Just reply to this email.`;
     return {
-      subject: `${restaurant}: your ${monthLabel} online orders`,
-      html: `<div style="font-family:system-ui,Segoe UI,sans-serif;font-size:15px;color:#1c1917;max-width:520px">
-        <h2 style="margin:0 0 12px">${monthLabel}</h2>
-        <p>No online orders came through your website in ${monthLabel}. Want help getting the link in front of more customers? Just reply to this email.</p></div>`,
+      subject: `${restaurant}: your ${s.label} website orders`,
+      html: wrap(`<h2 style="margin:0 0 12px;font-size:20px">${s.label}</h2><p>${body}</p>`, links),
+      text: `${s.label}\n\n${body}\n\nUnsubscribe: ${links.unsubscribe}`,
     };
   }
-  return {
-    subject: `${restaurant}: you kept ${usd(r.keptCents)} in ${monthLabel}`,
-    html: `<div style="font-family:system-ui,Segoe UI,sans-serif;font-size:15px;color:#1c1917;max-width:520px">
-      <h2 style="margin:0 0 4px">You kept ${usd(r.keptCents)} in ${monthLabel}</h2>
-      <p style="margin:0 0 16px;color:#78716c">from ${r.orders} order${r.orders === 1 ? "" : "s"} placed on your own website instead of a delivery app.</p>
-      <table style="border-collapse:collapse;width:100%">
-        ${row("Online food sales", usd(r.grossCents))}
-        ${row(`Commission an app would take (${r.commissionPct}%)`, usd(r.commissionAvoidedCents))}
-        ${row("Card fees you paid instead (est. 2.9% + 30¢)", `− ${usd(r.cardFeesCents)}`)}
-        ${row("Money you kept", usd(r.keptCents), true)}
-        ${row("Average order", usd(r.avgOrderCents))}
-      </table>
-      <p style="margin:18px 0 0;font-size:13px;color:#78716c">The commission rate is the one set in your dashboard. Change it there if your app charges a different rate.
-      <a href="${dashboardUrl}" style="color:#1c1917">Open dashboard</a></p></div>`,
-  };
+
+  const lines: [string, string][] = [
+    ["Website orders", String(s.orders)],
+    ["Sales from those orders", usd(s.revenueCents)],
+    ["Average order", usd(s.avgOrderCents)],
+  ];
+  if (s.repeatCustomers !== null) lines.push(["Repeat customers", String(s.repeatCustomers)]);
+  if (s.newLoyaltySubscribers !== null) lines.push(["New loyalty sign-ups", String(s.newLoyaltySubscribers)]);
+  if (s.deliveryOrders > 0) lines.push([`Delivery orders (${s.deliveryOrders})`, `courier cost ${usd(s.courierCostCents)}`]);
+
+  const small = s.orders < MIN_ORDERS_FOR_ESTIMATE
+    ? `Only ${s.orders} order${s.orders === 1 ? "" : "s"} so far, so this is a small sample.`
+    : "";
+
+  const row = (k: string, v: string) =>
+    `<tr><td style="padding:6px 12px 6px 0;color:#57534e">${esc(k)}</td><td style="padding:6px 0;text-align:right;font-weight:600">${esc(v)}</td></tr>`;
+  const html = wrap(
+    `<p style="margin:0 0 4px;color:#57534e">${s.label} on your website</p>
+     <h2 style="margin:0 0 4px;font-size:22px">About ${usd(est)} you didn't pay in app fees</h2>
+     <p style="margin:0 0 16px;font-size:13px;color:#78716c">${assumption}${small ? ` ${small}` : ""}</p>
+     <table style="border-collapse:collapse;width:100%;font-size:15px">${lines.map(([k, v]) => row(k, v)).join("")}</table>
+     ${
+       s.topItems.length
+         ? `<p style="margin:18px 0 6px;font-weight:600">Top items</p><ol style="margin:0;padding-left:20px">${s.topItems
+             .map((t) => `<li>${esc(t.name)}: ${t.qty} sold</li>`)
+             .join("")}</ol>`
+         : ""
+     }`,
+    links,
+  );
+  const text = [
+    `${s.label} on your website`,
+    `About ${usd(est)} you didn't pay in app fees.`,
+    assumption,
+    small,
+    "",
+    ...lines.map(([k, v]) => `${k}: ${v}`),
+    ...(s.topItems.length ? ["", "Top items:", ...s.topItems.map((t, i) => `${i + 1}. ${t.name}: ${t.qty} sold`)] : []),
+    "",
+    `Dashboard: ${links.dashboard}`,
+    `Unsubscribe from this monthly email: ${links.unsubscribe}`,
+  ]
+    .filter((l, i, a) => !(l === "" && a[i - 1] === ""))
+    .join("\n");
+  return { subject: `${restaurant}: about ${usd(est)} saved in ${s.label}`, html, text };
+}
+
+function wrap(inner: string, links: { dashboard: string; unsubscribe: string }) {
+  return `<div style="font-family:system-ui,-apple-system,Segoe UI,sans-serif;font-size:15px;line-height:1.5;color:#1c1917;max-width:520px;margin:0 auto;padding:16px">
+    ${inner}
+    <p style="margin:20px 0 0"><a href="${links.dashboard}" style="background:#1c1917;color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none;font-weight:600">Open dashboard</a></p>
+    <p style="margin:24px 0 0;font-size:12px;color:#a8a29e">You get this because you own this website. <a href="${links.unsubscribe}" style="color:#a8a29e">Stop these monthly emails</a>.</p>
+  </div>`;
 }

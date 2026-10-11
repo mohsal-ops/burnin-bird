@@ -18,11 +18,12 @@ function getTransporter() {
   return transporter;
 }
 
-export async function sendMail(opts: { to: string; subject: string; html: string }) {
+export async function sendMail(opts: { to: string; subject: string; html: string; text?: string }) {
   await getTransporter().sendMail({
     from: `"${SITE_CONFIG.name} Admin" <${process.env.SMTP_USER}>`,
     to: opts.to,
     subject: opts.subject,
     html: opts.html,
+    ...(opts.text ? { text: opts.text } : {}),
   });
 }
