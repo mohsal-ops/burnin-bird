@@ -32,7 +32,7 @@ Everything is behind flags `pos_push` and `pos_menu_sync`, both OFF. No client s
 - **Toast, Lightspeed, Shift4: not available.** Scaffold only.
 
 ## Side finding (not changed)
-`finalizeCart`'s owner Telegram/email total adds modifier prices on top of `CartItem.price`, but that price already includes modifiers (see `schedualePickupModal`: `finalPrice = price + sides`). It also ignores the promo discount and delivery fee. So the owner alert shows a wrong total whenever an order has paid add-ons, a promo or delivery. The POS path uses the correct checkout math. Worth fixing on its own small branch.
+`finalizeCart`'s owner Telegram/email total adds modifier prices on top of `CartItem.price`, but that price already includes modifiers (see `schedualePickupModal`: `finalPrice = price + sides`). It also ignores the promo discount and delivery fee. So the owner alert shows a wrong total whenever an order has paid add-ons, a promo or delivery. The POS path uses the correct checkout math. **Fixed** on `feat/native-app` (commit "fix: owner order alert total = checkout math").
 
 ## NEEDS MOHSAL
 1. **Square**: create the developer app → send me (or put in the panel's env) the Sandbox Application ID/secret plus a Sandbox access token. I'll run `npm run sandbox:square`. Set the app's OAuth Redirect URL to `https://<builder-domain>/api/pos/oauth/callback`.
