@@ -30,6 +30,8 @@ import { getAccess } from "@/lib/getAccess";
 import { getLogoUrl } from "@/lib/siteSettings";
 import { previewDemo } from "@/lib/previewDemo";
 import PreviewSavingsBanner from "./_components/PreviewSavingsBanner";
+import SavingsCard from "./_components/savings/SavingsCard";
+import { isEnabled } from "@/lib/flags";
 
 const isUnlocked = true; // 🔒 flip to true when ready
 
@@ -205,6 +207,7 @@ export default async function Page() {
         </header>
 
         {access.mode === "preview" && <PreviewSavingsBanner />}
+        {access.mode !== "preview" && (await isEnabled("savings_report")) && <SavingsCard />}
 
         {/* ── TODAY - the money glance ── */}
         <div>
