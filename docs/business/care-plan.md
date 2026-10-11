@@ -1,35 +1,48 @@
-# Care plan — what we watch, what we fix (draft for Mohsal)
+# Care plan (draft for Mohsal to confirm)
 
-Starvega sites are sold one-time (package tiers). A care plan is the optional monthly add-on covering the work that keeps a live ordering site healthy. **Prices below are placeholders; Mohsal sets them.**
+Starvega sites are a one-time purchase. The care plan is the optional monthly add-on that keeps a live ordering site healthy. **Prices are suggestions, marked TO CONFIRM BY MOHSAL. Nothing here is published.**
 
-## What the tooling already does (built)
-| Signal | Where | Who sees it |
+## Honest support hours
+Mohsal works alone from Algeria (UTC+1). That's 6 hours ahead of US Eastern and 7 ahead of Central.
+- **Support window:** Monday to Saturday, 2:00pm to 11:00pm Algeria time = **8:00am to 5:00pm US Eastern / 7:00am to 4:00pm Central**.
+- Outside that window, messages are read the next support day.
+- Channels: email and WhatsApp. No phone line.
+
+## Response times I can actually keep
+| Problem | Example | First reply | Fix target |
+|---|---|---|---|
+| **Orders are stopped** | can't pay online, site down, every order failing | within 2 hours inside the support window; by the next morning (US) if it happens at night | same day where possible |
+| **Something is broken but orders still work** | POS link failed (orders still arrive by email/Telegram), photo upload error | same support day | within 2 support days |
+| **Changes** | menu edits, prices, hours, photos, text | within 1 support day | within 3 support days |
+
+Order alerts don't depend on me being awake: every order still reaches the owner by email, Telegram, and the kitchen alarm (and push, if on). The website keeps taking orders even if a POS or courier link has a problem.
+
+## What's included
+- Daily automatic health check of the site (`/admin/health` + daily self-check). I get an email only when something is amber or red.
+- Error alerts to me for failed payment webhooks, POS orders needing manual entry, and courier dispatch failures.
+- Fixes for anything the health check or alerts flag.
+- Platform updates and security fixes, rolled out in batches.
+- Up to **30 minutes a month** of small changes (menu, prices, hours, photos, text). Owners can also do these themselves in the dashboard.
+- Monthly results email to the owner (orders, sales, top items, estimated app fees saved).
+- Keeping integrations connected (Stripe, POS, couriers): reconnects, expired tokens, provider API changes.
+
+## Not included (quoted separately)
+- New features, new pages, redesigns, new integrations.
+- Fees charged by Stripe, Uber, DoorDash, Square/Clover, Brevo/SMS, domain registrars. The restaurant pays those companies directly.
+- Marketing, ads, social media management.
+- Problems caused by the restaurant's own accounts (for example a Stripe account Stripe has restricted). I help, but the fix is on the provider's side.
+- Native app store updates (separate add-on).
+
+## Suggested pricing (TO CONFIRM BY MOHSAL)
+| Tier | What | Price |
 |---|---|---|
-| Can the site take payment? (Stripe), alerts configured, uploads, courier set up, POS connected, orders stuck in "new" > 6h, last order date, DB migrated | `/admin/health` | owner + agency |
-| Same checks, daily | `GET /api/ops/health?key=…&notify=1` via n8n | agency email only when something is wrong |
-| POS order that couldn't be sent | owner Telegram + email immediately | owner |
-| Courier dispatch failure | owner Telegram immediately | owner |
-| Monthly "you kept" report | owner email (flag) | owner |
+| Care | everything above | $49/month |
+| Care Plus | + up to 2 hours of changes a month + a quarterly review call | $99/month |
 
-## What a care plan includes (proposal)
-- Daily health digest reviewed by us; fails fixed same business day, warnings within 3 business days.
-- Template updates rolled out (batched, under the 100 deploys/day Vercel limit), DB migrations run first.
-- Menu/photo/hours edits on request (owner can also self-serve in admin).
-- Integration upkeep: Stripe / POS / courier reconnects, token issues, API version bumps.
-- Monthly report email + one-paragraph note from us when something stands out.
+Month to month. Paid in advance. Cancel any time. If a plan lapses, the site keeps running but monitoring and fixes stop.
 
-## Not included
-- Fees from Stripe, Uber, DoorDash, Square/Clover, SMS (paid by the restaurant to those companies).
-- New features or custom design work (quoted separately).
-
-## Proposed tiers (placeholders — not live, not on the landing page)
-| Tier | For | Price |
-|---|---|---|
-| Basic | health monitoring + fixes | $__ /mo |
-| Plus | + monthly edits + report review | $__ /mo |
-
-## Agency runbook (daily, ~5 min)
-1. Read the digest email (only arrives if a site has a problem).
-2. Open `<site>/admin/health` for each listed site.
-3. Fail → fix now (reconnect Stripe/POS, set env, run migration). Warn → ticket.
-4. POS "manual" entries → check the owner actually keyed them in; investigate the cause.
+## Agency runbook (daily, about 5 minutes)
+1. Read the digest email. It only arrives if a site has a problem.
+2. Open `<site>/admin/health` for each site listed.
+3. Red: fix now (reconnect Stripe or the POS, set the missing env, run migrate-client-dbs). Amber: note it and fix within the target above.
+4. POS "enter by hand" orders: check the owner keyed them in (they also see a red banner), then find out why the push failed.
