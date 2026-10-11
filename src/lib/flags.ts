@@ -27,6 +27,8 @@ export const FLAGS = {
   savings_report: "Monthly savings report",
   /** /admin/health page + daily self-check digest. */
   ops_health: "Ops health checks",
+  /** /api/app/* endpoints used by the restaurant's native iOS/Android app. */
+  native_app: "Native app API",
 } as const;
 
 export type FlagName = keyof typeof FLAGS;

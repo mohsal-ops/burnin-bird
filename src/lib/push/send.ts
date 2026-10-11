@@ -28,8 +28,47 @@ export async function getVapidKeys(): Promise<Vapid> {
   return again ?? fresh;
 }
 
-async function sendTo(subs: { id: string; endpoint: string; p256dh: string; auth: string }[], payload: PushPayload) {
+type Sub = { id: string; endpoint: string; p256dh: string; auth: string };
+
+/** Native-app tokens ("expo:<token>") go through Expo's push service. */
+async function sendExpo(subs: Sub[], payload: PushPayload): Promise<number> {
   if (!subs.length) return 0;
+  try {
+    const res = await fetch("https://exp.host/--/api/v2/push/send", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify(
+        subs.map((s) => ({
+          to: s.endpoint.slice(5),
+          title: payload.title,
+          body: payload.body,
+          data: { url: payload.url },
+          channelId: "orders",
+          sound: "default",
+        })),
+      ),
+    });
+    const json = (await res.json().catch(() => ({}))) as { data?: { status: string; details?: { error?: string } }[] };
+    let ok = 0;
+    await Promise.all(
+      (json.data ?? []).map(async (t, i) => {
+        if (t.status === "ok") ok++;
+        else if (t.details?.error === "DeviceNotRegistered") await db.pushSubscription.delete({ where: { id: subs[i].id } }).catch(() => {});
+      }),
+    );
+    return ok;
+  } catch {
+    console.error("Expo push failed");
+    return 0;
+  }
+}
+
+async function sendTo(allSubs: Sub[], payload: PushPayload) {
+  if (!allSubs.length) return 0;
+  const expo = allSubs.filter((s) => s.endpoint.startsWith("expo:"));
+  const subs = allSubs.filter((s) => !s.endpoint.startsWith("expo:"));
+  const expoOk = await sendExpo(expo, payload);
+  if (!subs.length) return expoOk;
   const keys = await getVapidKeys();
   const subject = process.env.VAPID_SUBJECT?.trim() || `mailto:${process.env.AGENCY_ALERT_EMAIL || "hello@starvega.app"}`;
   let ok = 0;
@@ -54,7 +93,7 @@ async function sendTo(subs: { id: string; endpoint: string; p256dh: string; auth
       }
     }),
   );
-  return ok;
+  return ok + expoOk;
 }
 
 /** New paid order → every owner device that opted in. */

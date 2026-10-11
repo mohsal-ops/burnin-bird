@@ -3,10 +3,10 @@ import { revalidatePath } from "next/cache";
 import { assertWritable } from "@/lib/previewGuard";
 import { setFlag } from "@/lib/flags";
 
-export async function setAppFeature(flag: "pwa" | "web_push", on: boolean): Promise<{ ok: true } | { ok: false; error: string }> {
+export async function setAppFeature(flag: "pwa" | "web_push" | "native_app", on: boolean): Promise<{ ok: true } | { ok: false; error: string }> {
   try {
     await assertWritable();
-    if (flag !== "pwa" && flag !== "web_push") return { ok: false, error: "Unknown setting" };
+    if (flag !== "pwa" && flag !== "web_push" && flag !== "native_app") return { ok: false, error: "Unknown setting" };
     await setFlag(flag, on);
     revalidatePath("/admin/app");
     revalidatePath("/", "layout"); // public layout reads the pwa flag (ISR)
