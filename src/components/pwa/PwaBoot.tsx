@@ -6,11 +6,12 @@ import { isIOS, isStandalone, registerSW } from "@/lib/pwa/client";
 
 // Mounted in the public layout ONLY when the "pwa" flag is on. Adds the
 // manifest + iOS tags, registers the service worker, and shows a small
-// "add to home screen" card on the visitor's 2nd+ visit (not the first —
-// nobody installs an app they just discovered). Dismissal remembered 30 days.
+// "add to home screen" card on the visitor's 2nd+ visit or right after their
+// first order (not on a first look). Dismissal remembered 30 days.
 
 const DISMISS_KEY = "sv_install_dismissed";
 const VISITS_KEY = "sv_visits";
+export const ORDERED_KEY = "sv_ordered";
 
 type BIPEvent = Event & { prompt: () => Promise<void>; userChoice: Promise<{ outcome: string }> };
 
@@ -36,6 +37,7 @@ export default function PwaBoot({ name }: { name: string }) {
     if (isStandalone()) return;
     let visits = 0;
     let dismissedAt = 0;
+    let ordered = false;
     try {
       if (!sessionStorage.getItem("sv_counted")) {
         visits = Number(localStorage.getItem(VISITS_KEY) || 0) + 1;
@@ -43,10 +45,11 @@ export default function PwaBoot({ name }: { name: string }) {
         sessionStorage.setItem("sv_counted", "1");
       } else visits = Number(localStorage.getItem(VISITS_KEY) || 0);
       dismissedAt = Number(localStorage.getItem(DISMISS_KEY) || 0);
+      ordered = localStorage.getItem(ORDERED_KEY) === "1";
     } catch {
       return; // storage blocked: just never nag
     }
-    if (visits < 2 || Date.now() - dismissedAt < 30 * 86400_000) return;
+    if ((visits < 2 && !ordered) || Date.now() - dismissedAt < 30 * 86400_000) return;
 
     if (isIOS()) {
       const t = setTimeout(() => setShow("ios"), 4000);

@@ -6,6 +6,7 @@ import { requireStripe } from "@/lib/stripeConfig";
 import { finalizeCart } from "@/lib/finalizeOrder";
 import { isEnabled } from "@/lib/flags";
 import PushOptIn from "@/components/pwa/PushOptIn";
+import MarkOrdered from "@/components/pwa/MarkOrdered";
 
 
 export default async function Success(props: any) {
@@ -48,6 +49,7 @@ export default async function Success(props: any) {
         </div>
         <div className="text-lg tracking-wide font-medium text-center space-y-2">
           <h1>Thanks for your order</h1>
+          {isSuccess && <MarkOrdered />}
           {pushOn && (
             <PushOptIn
               audience="customer"

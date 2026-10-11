@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Bell, BellRing } from "lucide-react";
-import { subscribePush, type SubscribeResult } from "@/lib/pwa/client";
+import { subscribePush, unsubscribePush, type SubscribeResult } from "@/lib/pwa/client";
 
 // One button, two uses:
 //   customer (success page) → "Notify me when my order is ready / on the way"
@@ -30,6 +30,10 @@ export default function PushOptIn({
 }) {
   const [state, setState] = useState<"idle" | "busy" | "on" | SubscribeResult>("idle");
   const msg = state !== "idle" && state !== "busy" && state !== "on" && state !== "ok" ? MESSAGES[state] : "";
+  const consent =
+    audience === "customer"
+      ? "We'll only send updates about this order. No ads. You can turn it off any time."
+      : "Alerts for new orders on this device only. You can turn it off any time.";
 
   return (
     <div className={className}>
@@ -46,6 +50,19 @@ export default function PushOptIn({
         {state === "on" ? <BellRing className="h-4 w-4" /> : <Bell className="h-4 w-4" />}
         {state === "on" ? "Notifications on" : state === "busy" ? "Turning on…" : label}
       </button>
+      {state === "idle" && <p className="mt-1.5 max-w-xs text-xs opacity-70">{consent}</p>}
+      {state === "on" && (
+        <button
+          type="button"
+          className="mt-1.5 text-xs underline opacity-70"
+          onClick={async () => {
+            await unsubscribePush();
+            setState("idle");
+          }}
+        >
+          Turn off
+        </button>
+      )}
       {msg && <p className="mt-2 max-w-xs text-xs opacity-80">{msg}</p>}
     </div>
   );

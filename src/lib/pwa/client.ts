@@ -28,6 +28,23 @@ function b64ToBytes(b64: string): Uint8Array {
   return Uint8Array.from(raw, (c) => c.charCodeAt(0));
 }
 
+/** Remove this browser's subscription (server row + browser). */
+export async function unsubscribePush(): Promise<void> {
+  try {
+    const reg = await navigator.serviceWorker.getRegistration("/");
+    const sub = await reg?.pushManager.getSubscription();
+    if (!sub) return;
+    await fetch("/api/push/subscribe", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ endpoint: sub.endpoint }),
+    });
+    await sub.unsubscribe();
+  } catch {
+    /* ignore */
+  }
+}
+
 export type SubscribeResult = "ok" | "denied" | "unsupported" | "ios_needs_install" | "error";
 
 /** Must be called from a click (iOS + modern Chrome require a user gesture). */

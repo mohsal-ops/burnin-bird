@@ -22,3 +22,10 @@ Branch: `feat/pwa` (stacked on `feat/delivery-routing`). Flags `pwa` and `web_pu
 ## NEEDS MOHSAL
 1. When we pick a pilot site, turn on `pwa` and `web_push` on its preview. Then check, on your phone: the install card appears on your 2nd visit; "New-order alerts on this device" in admin → Orders buzzes on a test order.
 2. Nothing to buy and no keys to create. VAPID keys generate themselves.
+
+## Update (feat/spec-gaps): aligned to the spec
+- **Offline menu view + fast repeat loads**: the service worker uses network-first for pages and cache-first for hashed static files. Offline shows the last menu with a clear banner. Admin, API and checkout are never cached.
+- Install card now also appears **right after the first order** (not only on the 2nd visit).
+- **Admin → App** page: toggles for `pwa` and `web_push`, sign-up counts, icon and opening-screen preview.
+- Explicit consent text on both opt-in buttons, a **Turn off** link (unsubscribe), and an "Order received" push on customer opt-in. Customer updates now cover: received, ready (pickup), on the way, delivered, problem. "Preparing" has no matching order status in the app today, so it isn't sent.
+- Lighthouse/PWA audit: **not run** (needs a deployed preview with the flag on). The flags-off path adds nothing to the page (`PwaBoot` isn't rendered and the manifest route 404s), so Core Web Vitals on existing sites can't change.

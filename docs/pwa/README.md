@@ -23,5 +23,13 @@ VAPID keys are generated per site on first use and stored encrypted (`SiteSettin
 ## Icons
 `/api/pwa/icon/{180|192|512}[?maskable=1]` draws the restaurant's own logo on its brand colour (next/og), so there are no per-client assets.
 
-## No offline caching (on purpose)
-The service worker has no fetch handler. A cached menu or price that's out of date would be worse than "you're offline".
+## Offline + speed (network-first, never stale)
+- Page visits to `/`, `/Menu…`, `/catering`, `/story` are **network first**: the live page always wins. The last good copy is only shown when the phone is offline, with a banner: "You're offline. This is the menu from your last visit. Prices may have changed."
+- `/_next/static/*` (content-hashed, never changes) is cache-first → fast repeat loads.
+- Never cached: `/admin`, `/api`, checkout/Stripe/purchase pages.
+
+## Admin
+Admin → **App** (`/admin/app`): on/off for the install card and for notifications, sign-up counts, and a preview of the home-screen icon and opening screen (both come from Branding).
+
+## Consent
+Both opt-in buttons say exactly what will be sent ("only updates about this order, no ads") and offer **Turn off**. The customer's first push is "Order received", which confirms it works.

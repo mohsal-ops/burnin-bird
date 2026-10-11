@@ -3,6 +3,8 @@ import db from "@/db/db";
 import { isEnabled } from "@/lib/flags";
 import { getAdminIdFromRequest } from "@/lib/adminAuth";
 import { isPaid } from "@/lib/orderStatus";
+import { pushToCustomer } from "@/lib/push/send";
+import { SITE_CONFIG } from "@/lib/siteConfig";
 
 export const dynamic = "force-dynamic";
 
@@ -52,6 +54,15 @@ export async function POST(req: NextRequest) {
     update: data,
     create: { endpoint: sub.endpoint.slice(0, 1000), ...data },
   });
+  // Confirms it works and is the "received" step of the order updates.
+  if (audience === "customer" && cartId) {
+    await pushToCustomer(cartId, {
+      title: "Order received ✅",
+      body: `${SITE_CONFIG.name} has your order. We'll tell you when it's ready.`,
+      url: "/",
+      tag: `order-${cartId}`,
+    }).catch(() => 0);
+  }
   return NextResponse.json({ ok: true });
 }
 
