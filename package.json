@@ -14,7 +14,8 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "sandbox:square": "vite-node scripts/square-sandbox-check.ts",
-    "sandbox:clover": "vite-node scripts/clover-sandbox-check.ts"
+    "sandbox:clover": "vite-node scripts/clover-sandbox-check.ts",
+    "sandbox:doordash": "vite-node scripts/doordash-sandbox-check.ts"
   },
   "dependencies": {
     "@google-analytics/data": "^6.0.0",
