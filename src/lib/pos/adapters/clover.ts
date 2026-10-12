@@ -79,7 +79,9 @@ export function buildCloverOrder(order: PosOrderInput) {
       : `PICKUP ${f.pickupAt ? new Date(f.pickupAt).toLocaleString("en-US", { timeZone: f.timezone }) : "ASAP"}`;
   return {
     orderCart: {
-      title: `Online ${who}`.trim().slice(0, 127),
+      // Clover keeps paymentState "OPEN" for payments recorded via REST (verified
+      // in sandbox 2026-10-12), so the ticket itself must say it's paid.
+      title: `PAID ONLINE - DO NOT CHARGE ${who}`.trim().slice(0, 127),
       note: [when, f.note, `Paid online · ref ${order.externalId}`].filter(Boolean).join(" — ").slice(0, 255),
       lineItems,
       discounts: order.discountCents > 0 ? [{ name: "Online promo", amount: -order.discountCents }] : undefined,
@@ -154,15 +156,22 @@ async function websiteTenderId(ctx: PosContext): Promise<string> {
     `${mBase(ctx)}/tenders`,
     ctx,
   );
-  const found =
-    tenders.find((t) => t.label === TENDER_LABEL) ??
-    tenders.find((t) => t.labelKey === "com.clover.tender.external_payment");
-  if (found) return found.id;
-  const created = await posFetch<{ id: string }>(`${mBase(ctx)}/tenders`, {
-    headers: auth(ctx),
-    body: { label: TENDER_LABEL, enabled: true, visible: true, opensCashDrawer: false, editable: false },
-  });
-  return created.id;
+  const ours = tenders.find((t) => t.label === TENDER_LABEL);
+  if (ours) return ours.id;
+  // Our own "Website (paid online)" tender (needs the Merchant WRITE permission).
+  // Clover's built-in External Payment tender is often DISABLED on merchants,
+  // so it's only a last resort.
+  try {
+    const created = await posFetch<{ id: string }>(`${mBase(ctx)}/tenders`, {
+      headers: auth(ctx),
+      body: { label: TENDER_LABEL, enabled: true, visible: true, opensCashDrawer: false, editable: false },
+    });
+    return created.id;
+  } catch (e) {
+    const ext = tenders.find((t) => t.labelKey === "com.clover.tender.external_payment");
+    if (ext) return ext.id;
+    throw e;
+  }
 }
 
 export const cloverAdapter: PosAdapter = {
@@ -236,6 +245,12 @@ export const cloverAdapter: PosAdapter = {
         externalPaymentId,
       },
     });
+    // Lock the order so staff can't add to / re-ring a ticket that's already
+    // paid. Best-effort.
+    await posFetch(`${mBase(ctx)}/orders/${encodeURIComponent(orderId)}`, {
+      headers: auth(ctx),
+      body: { state: "locked" },
+    }).catch(() => {});
     // Print the ticket in the kitchen. Best-effort: the order is already in Clover.
     await posFetch(`${mBase(ctx)}/print_event`, { headers: auth(ctx), body: { orderRef: { id: orderId } } }).catch(
       () => {},

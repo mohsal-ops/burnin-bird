@@ -18,3 +18,13 @@
 
 ## Field names to double-check in sandbox
 Built from the REST reference; first sandbox run should confirm `atomic_order` field names (`orderCart.lineItems[].modifications`, `discounts[].amount`) and the payments body (`tender.id`, `amount`, `result`). The contract tests pin today's shapes so any correction is a one-line change.
+
+## Sandbox results (2026-10-12): real Clover sandbox
+`npm run sandbox:clover` passed against apisandbox.dev.clover.com: order created with its line item, $1.00 payment recorded (`result: SUCCESS`), print event sent, and a retry reused the order with no second payment.
+
+**Known Clover behaviour:** payments recorded through the REST API do **not** flip the order's `paymentState` to PAID (it stays OPEN). We tried the documented options in sandbox (setting `paymentState`, locking, an enabled tender), and none change it. So the adapter:
+- titles the ticket **"PAID ONLINE - DO NOT CHARGE <name>"**
+- **locks** the order after attaching the payment
+- uses our own enabled "Website (paid online)" tender. Clover's built-in External Payment tender is **disabled** on most merchants. Creating our tender needs the **Merchant: Write** permission, so add it to the app's Requested Permissions. Otherwise it falls back to the built-in tender.
+
+Re-check `paymentState` with the first real merchant; production may behave differently.

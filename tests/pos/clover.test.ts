@@ -40,6 +40,7 @@ describe("Clover pushOrder (mocked HTTP)", () => {
       [/GET .*\/tenders/, () => ({ json: { elements: [{ id: "T_EXT", labelKey: "com.clover.tender.external_payment" }] } })],
       [/GET .*\/orders\/CL_ORDER\/payments/, () => ({ json: { elements: paidAlready ? [{ externalPaymentId: "sv-cart_test_123" }] : [] } })],
       [/POST .*\/orders\/CL_ORDER\/payments$/, () => ({ json: { id: "CL_PAY" } })],
+      [/POST .*\/orders\/CL_ORDER$/, () => ({ json: { id: "CL_ORDER", state: "locked" } })],
       [/POST .*\/print_event$/, () => ({ json: {} })],
     ]);
 
@@ -53,6 +54,8 @@ describe("Clover pushOrder (mocked HTTP)", () => {
     expect(pay?.body).toMatchObject({ tender: { id: "T_EXT" }, amount: 2697, result: "SUCCESS" });
     expect(calls[0].url).toBe("https://apisandbox.dev.clover.com/v3/merchants/MERCH1/atomic_order/orders");
     expect(calls[0].headers.Authorization).toBe("Bearer clover-test-token");
+    expect((calls[0].body as { orderCart: { title: string } }).orderCart.title).toMatch(/^PAID ONLINE - DO NOT CHARGE/);
+    expect(calls.some((c) => c.method === "POST" && c.url.endsWith("/orders/CL_ORDER") && (c.body as { state?: string }).state === "locked")).toBe(true);
   });
 
   it("on retry with an existing order id, never creates a second order or a second payment", async () => {
