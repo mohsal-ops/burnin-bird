@@ -89,12 +89,18 @@ export function Footer({ logoUrl }: { logoUrl?: string }) {
           </div>
         </div>
       </div>
-      <div className="flex items-center  justify-center md:justify-start   w-full pt-4  border-t md:w-2/3  border-border">
-        <Button variant="link">
-          <Link className="text-muted-foreground" href="/terms">
-            Terms & Policies
-          </Link>
-        </Button>
+      <div className="flex flex-wrap items-center justify-center md:justify-start w-full pt-4 border-t md:w-2/3 border-border">
+        {[
+          ["/terms", "Terms of Service"],
+          ["/privacy", "Privacy Policy"],
+          ["/accessibility", "Accessibility"],
+        ].map(([href, label]) => (
+          <Button key={href} variant="link">
+            <Link className="text-muted-foreground" href={href}>
+              {label}
+            </Link>
+          </Button>
+        ))}
       </div>
     </div>
   );

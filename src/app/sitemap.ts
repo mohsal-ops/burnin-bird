@@ -14,6 +14,8 @@ const STATIC_ROUTES: { path: string; priority: number; changeFrequency: Metadata
   { path: "/KidsZone", priority: 0.5, changeFrequency: "monthly" },
   { path: "/rewards", priority: 0.5, changeFrequency: "monthly" },
   { path: "/terms", priority: 0.2, changeFrequency: "yearly" },
+  { path: "/privacy", priority: 0.2, changeFrequency: "yearly" },
+  { path: "/accessibility", priority: 0.2, changeFrequency: "yearly" },
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

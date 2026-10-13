@@ -129,6 +129,13 @@ function Form({ priceInCents, deliveryFeeInCents = 0, loyaltyEnabled = false, lo
                 <Button className="w-full" variant='mainButton' disabled={isLoading || !stripe || !elements}>
                     {isLoading ? "Purchasing..." : `Purchase - ${formatCurrency(priceInCents / 100)}`}
                 </Button>
+                {/* Clickwrap notice: placing the order = agreeing to the terms. */}
+                <p className="w-full text-center text-xs text-muted-foreground">
+                    By placing your order you agree to our{" "}
+                    <a href="/terms" target="_blank" rel="noreferrer" className="underline">Terms</a> and{" "}
+                    <a href="/privacy" target="_blank" rel="noreferrer" className="underline">Privacy Policy</a>.
+                    Food allergy? Please contact us before ordering.
+                </p>
             </CardFooter>
         </Card>
 

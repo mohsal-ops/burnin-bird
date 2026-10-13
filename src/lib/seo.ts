@@ -15,6 +15,8 @@ export type PageKey =
   | "rewards"
   | "catering"
   | "terms"
+  | "privacy"
+  | "accessibility"
   | "blog";
 
 const { name, city, state } = SITE_CONFIG;
@@ -70,8 +72,18 @@ const PAGE_DEFS: Record<PageKey, { label: string; path: string; blurb: string }>
     path: "/catering",
     blurb: `${name} caters events of every size in ${city}, ${state}. Request a custom quote today.`,
   },
+  privacy: {
+    label: "Privacy Policy",
+    path: "/privacy",
+    blurb: `How ${name} collects, uses and protects your information when you order online.`,
+  },
+  accessibility: {
+    label: "Accessibility",
+    path: "/accessibility",
+    blurb: `${name} is committed to a website everyone can use. How to get help or report a problem.`,
+  },
   terms: {
-    label: "Terms & Policies",
+    label: "Terms of Service",
     path: "/terms",
     blurb: `Terms of service, privacy policy, and ordering policies for ${name} in ${city}, ${state}.`,
   },
