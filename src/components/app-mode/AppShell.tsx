@@ -10,6 +10,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { useNavCart } from "@/app/(customerFacing)/_components/themes/useNavCart";
+import AppHome from "./AppHome";
 
 // App-mode chrome (see AppModeBoot). Renders nothing unless <html> has
 // `sv-app`, i.e. the site was opened from the home-screen icon.
@@ -70,6 +71,12 @@ function Chrome({ logoUrl }: { logoUrl?: string | null }) {
           ? "rewards"
           : "more";
   const isTopLevel = ["/", "/menu", "/rewards"].includes(lower);
+  // Home gets its own app screen (AppHome) instead of the website homepage.
+  const isHome = lower === "/";
+  useEffect(() => {
+    document.documentElement.classList.toggle("sv-app-home", isHome);
+    if (isHome) window.scrollTo(0, 0);
+  }, [isHome]);
   const extra = links.filter((l) => !["/", "/Menu", "/rewards"].includes(l.href));
   const title = isTopLevel ? SITE_CONFIG.name : (links.find((l) => lower.startsWith(l.href.toLowerCase()) && l.href !== "/")?.label ?? SITE_CONFIG.name);
 
@@ -82,6 +89,7 @@ function Chrome({ logoUrl }: { logoUrl?: string | null }) {
 
   return (
     <>
+      {isHome && <AppHome />}
       <header className="sv-app-top">
         <div className="sv-app-top-inner">
           {isTopLevel ? (
