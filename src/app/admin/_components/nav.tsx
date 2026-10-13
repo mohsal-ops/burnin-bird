@@ -30,6 +30,9 @@ import {
   Truck,
   Gift,
   CreditCard,
+  Smartphone,
+  Plug,
+  Activity,
   type LucideIcon,
 } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/siteConfig";
@@ -107,6 +110,9 @@ const NAV_GROUPS: NavGroup[] = [
       { href: "/admin/branding", label: "Branding", icon: Palette, minTier: "STANDARD" },
       { href: "/admin/delivery", label: "Delivery", icon: Truck, minTier: "STANDARD" },
       { href: "/admin/loyalty", label: "Loyalty", icon: Gift },
+      { href: "/admin/app", label: "App & alerts", icon: Smartphone },
+      { href: "/admin/pos", label: "POS", icon: Plug },
+      { href: "/admin/health", label: "Site health", icon: Activity },
       { href: "/admin/places", label: "Places", icon: MapPin, minTier: "PRO" },
       { href: "/admin/team", label: "Team", icon: ShieldCheck, minTier: "PRO" },
     ],
