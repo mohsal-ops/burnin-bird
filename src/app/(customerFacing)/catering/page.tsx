@@ -5,7 +5,9 @@ import { getSiteImage } from "@/lib/getSiteImages";
 
 export const metadata = buildMetadata("catering");
 
-export const dynamic = "force-dynamic";
+// Cached (ISR): owner changes refresh it via revalidatePath; a fresh render on
+// every visit was slow and burned the CPU limit.
+export const revalidate = 300;
 
 export default async function Page() {
   const logoUrl = await getLogoUrl();

@@ -23,8 +23,12 @@ const nextConfig: NextConfig = {
   },
   images: {
     // Vercel Image Optimization is OFF (account-wide quota → 402s on new sizes;
-    // phones lost photos). Remote images go through wsrv.nl instead — see image-loader.ts.
+    // phones lost photos). Uploaded photos go through this site's own /api/img
+    // (resized once, then served from Vercel's CDN) - see image-loader.ts.
     loader: "custom",
+    // Few srcset widths, matching src/lib/imageWidths, so cached copies get re-used.
+    deviceSizes: [640, 960, 1280, 1920],
+    imageSizes: [160, 320],
     loaderFile: "./image-loader.ts",
     remotePatterns: [
       {
