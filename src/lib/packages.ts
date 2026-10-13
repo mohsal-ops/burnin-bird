@@ -14,17 +14,17 @@ export type PackageTier = "STARTER" | "STANDARD" | "PRO";
 export const PACKAGES = {
   STARTER: {
     label: "Starter",
-    price: 399,
+    price: 999,
     blurb: "Food trucks, counter-service, first website ever.",
   },
   STANDARD: {
     label: "Standard",
-    price: 999, // starting point - adjustable
+    price: 1999,
     blurb: "Most sit-down independents who want the real toolkit.",
   },
   PRO: {
     label: "Pro",
-    price: 1999, // starting point - adjustable
+    price: 3499,
     blurb: "Multi-location owners, or anyone who wants everything.",
   },
 } as const;
