@@ -243,7 +243,7 @@ export default function MainPageMenu({
       </div>
       <div className="md:w-9/12 w-full md:py-5 px-2 space-y-5 md:space-y-7 ">
         <div
-          className="flex flex-col gap-2 md:items-start  items-center  font-bold  "
+          className="sv-menu-head flex flex-col gap-2 md:items-start  items-center  font-bold  "
           id="name&address"
         >
           <p className="tracking-tight font-serif  text-xl text-center">
@@ -343,8 +343,8 @@ export default function MainPageMenu({
           id="SearchBar&gategories"
           className={
             isPinned
-              ? "fixed top-20  right-0 left-0  z-50 md:hidden transform p-2 -translate-y-20 duration-500  bg-background flex gap-2 flex-col "
-              : "md:hidden py-2 translate-y-0 duration-500 z-50 flex gap-2 flex-col"
+              ? "sv-menu-catbar fixed top-20  right-0 left-0  z-50 md:hidden transform p-2 -translate-y-20 duration-500  bg-background flex gap-2 flex-col "
+              : "sv-menu-catbar md:hidden py-2 translate-y-0 duration-500 z-50 flex gap-2 flex-col"
           }
         >
           <div className="flex pl-1 w-full justify-start items-center  bg-background border rounded-xl outline-none focus-within:border-2 focus-within:border-ring">
@@ -369,7 +369,8 @@ export default function MainPageMenu({
                       .getElementById(`cat-${cat.id}`)
                       ?.scrollIntoView({ behavior: "smooth" })
                   }
-                  className={`font-medium text-sm ${
+                  data-active={activeCategory === cat.id ? "1" : undefined}
+                  className={`sv-cat-chip font-medium text-sm ${
                     activeCategory === cat.id
                       ? "bg-foreground text-background"
                       : "bg-transparent text-muted-foreground"
@@ -397,7 +398,7 @@ export default function MainPageMenu({
             grouped?.map((Category) => (
               <section
                 key={Category.category.id}
-                className="space-y-1 mb-8"
+                className="sv-menu-section space-y-1 mb-8"
                 id={`cat-${Category?.category?.id}`}
               >
                 <h2 className="text-xl font-semibold font-serif ">

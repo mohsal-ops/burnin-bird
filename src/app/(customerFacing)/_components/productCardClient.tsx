@@ -136,7 +136,7 @@ export function AllDishesCardClient({
   };
 
   return (
-    <div className="group flex w-full md:space-x-0 space-x-2 md:rounded-2xl md:border border-y border-border md:p-0 p-2 transition-colors duration-200 hover:border-foreground/40">
+    <div className="sv-dish group flex w-full md:space-x-0 space-x-2 md:rounded-2xl md:border border-y border-border md:p-0 p-2 transition-colors duration-200 hover:border-foreground/40">
       <div
         className={`flex py-3 flex-col justify-center gap-1 md:px-4 px-2 text-lg tracking-tight font-semibold ${image ? " w-3/5" : "w-full "}`}
       >
@@ -150,7 +150,7 @@ export function AllDishesCardClient({
         </p>
       </div>
       <Card
-        className={`flex md:rounded-l-none rounded-2xl overflow-hidden gap-5 md:h-50 h-36 flex-col  ${image ? " md:w-1/2 w-2/5" : "w-16 border-0 bg-transparent shadow-none"} `}
+        className={`sv-dish-img flex md:rounded-l-none rounded-2xl overflow-hidden gap-5 md:h-50 h-36 flex-col  ${image ? " md:w-1/2 w-2/5" : "w-16 border-0 bg-transparent shadow-none"} `}
         key={id}
       >
       
@@ -171,7 +171,8 @@ export function AllDishesCardClient({
               <Button
                 onClick={() => setOpen(true)}
                 variant="outline"
-                className="w-10 h-10 "
+                aria-label={`Add ${name}`}
+                className="sv-dish-add w-10 h-10 "
               >
                 <Plus className="stroke-1" size={28} />
               </Button>
