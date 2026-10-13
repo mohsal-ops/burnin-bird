@@ -49,7 +49,7 @@ export default function AppHome() {
       {data?.status && (
         <div className="mx-5 mt-4 flex items-center gap-2.5 rounded-2xl bg-muted px-4 py-3 text-[13px] font-bold">
           <span className={`h-2 w-2 shrink-0 rounded-full ${data.status.open ? "bg-green-500" : "bg-stone-400"}`} />
-          <span className="flex-1">{data.status.open ? `Open · ${data.status.label.replace("Open ", "")}` : data.status.label}</span>
+          <span className="flex-1 whitespace-nowrap">{data.status.open ? `Open · ${data.status.label.replace("Open ", "")}` : data.status.label}</span>
           {data.address && <span className="truncate font-semibold opacity-60">{data.address}</span>}
         </div>
       )}
@@ -69,11 +69,11 @@ export default function AppHome() {
           >
             <Image src={hero.image!} alt={hero.name} fill sizes="300px" className="object-cover" priority />
           </motion.div>
-          <div className="relative z-10 flex w-[58%] flex-col gap-1.5">
+          <div className="relative z-10 flex w-[52%] flex-col gap-1.5">
             <span className="self-start rounded-full bg-black/85 px-2.5 py-1 text-[10.5px] font-extrabold tracking-[0.08em] text-white">
               BEST SELLER
             </span>
-            <span className="sv-app-display text-[32px] leading-[0.95]">{hero.name}</span>
+            <span className="sv-app-display text-[28px] leading-[0.95] [text-shadow:0_2px_12px_rgba(0,0,0,.18)]">{hero.name.trim()}</span>
             {hero.description && <span className="line-clamp-2 text-[12.5px] font-bold opacity-80">{hero.description}</span>}
           </div>
           <Link href="/Menu" className="sv-app-hero-btn">
