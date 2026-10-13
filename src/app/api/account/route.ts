@@ -4,6 +4,7 @@ import { isEnabled } from "@/lib/flags";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { sendMail } from "@/lib/email";
 import { getClientIp, isRateLimited } from "@/lib/rateLimit";
+import { requireStripe } from "@/lib/stripeConfig";
 import {
   CUSTOMER_COOKIE,
   SESSION_MAX_AGE,
@@ -113,6 +114,36 @@ export async function POST(req: NextRequest) {
       maxAge: SESSION_MAX_AGE,
     });
     return res;
+  }
+
+  if (body.action === "claim") {
+    // "Save your info for next time?" on the order success page. The Stripe
+    // client secret (only ever in the paying browser's redirect URL) proves it
+    // is the same person, so no code is needed. Fresh, paid orders only.
+    if (isRateLimited(`acct-claim:${ip}`, 10, 10 * 60_000))
+      return NextResponse.json({ error: "Too many tries." }, { status: 429 });
+    const id = typeof body.paymentIntent === "string" ? body.paymentIntent : "";
+    const secret = typeof body.clientSecret === "string" ? body.clientSecret : "";
+    if (!id.startsWith("pi_") || !secret) return NextResponse.json({ error: "Missing order" }, { status: 400 });
+    try {
+      const stripe = await requireStripe();
+      const pi = await stripe.paymentIntents.retrieve(id);
+      const email = normalizeEmail(pi.receipt_email);
+      const fresh = Date.now() / 1000 - pi.created < 6 * 3600;
+      if (pi.status !== "succeeded" || pi.client_secret !== secret || !fresh || !email)
+        return NextResponse.json({ error: "We couldn't save it this time." }, { status: 400 });
+      const res = NextResponse.json({ ok: true });
+      res.cookies.set(CUSTOMER_COOKIE, sessionToken(email), {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+        maxAge: SESSION_MAX_AGE,
+      });
+      return res;
+    } catch {
+      return NextResponse.json({ error: "We couldn't save it this time." }, { status: 400 });
+    }
   }
 
   if (body.action === "logout") {

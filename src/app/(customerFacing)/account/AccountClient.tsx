@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { ArrowRight, Gift, LogOut, Mail, Receipt } from "lucide-react";
 import { loadCustomer } from "@/lib/customerMemory";
 
@@ -194,9 +195,7 @@ function Account({ me, onLogout }: { me: Extract<Me, { signedIn: true }>; onLogo
                 )}
                 <span className="ml-1 line-clamp-2 flex-1 text-sm">{o.items.map((i) => i.name.trim()).join(", ")}</span>
               </div>
-              <Link href="/Menu" className="mt-3 inline-flex h-10 items-center gap-1.5 rounded-full bg-[var(--brand)] px-4 text-sm font-bold text-[var(--brand-foreground)]">
-                Order again <ArrowRight size={14} />
-              </Link>
+              <ReorderButton items={o.items} />
             </div>
           ))}
         </div>
@@ -212,6 +211,52 @@ function Account({ me, onLogout }: { me: Extract<Me, { signedIn: true }>; onLogo
       >
         <LogOut size={16} /> Sign out
       </button>
+    </div>
+  );
+}
+
+// One tap: puts every dish from that order back in the cart (prices come from
+// today's menu, checked by the server). Past orders don't keep options, so a
+// dish that needs a choice (e.g. heat level) is named instead of guessed.
+function ReorderButton({ items }: { items: { id: string; name: string }[] }) {
+  const router = useRouter();
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState("");
+  const run = async () => {
+    setBusy(true);
+    setMsg("");
+    const unique = [...new Map(items.map((i) => [i.id, i])).values()];
+    const needChoice: string[] = [];
+    let added = 0;
+    for (const it of unique) {
+      const r = await fetch("/api/cart/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId: it.id, quantity: 1 }),
+      }).catch(() => null);
+      if (r?.ok) added++;
+      else needChoice.push(it.name.trim());
+    }
+    setBusy(false);
+    if (added && !needChoice.length) return router.push("/Menu?cart=open");
+    setMsg(
+      added
+        ? `Added ${added}. Pick your options for ${needChoice.join(", ")} on the menu.`
+        : `Pick your options for ${needChoice.join(", ")} on the menu.`,
+    );
+    if (added) setTimeout(() => router.push("/Menu?cart=open"), 1800);
+  };
+  return (
+    <div className="mt-3">
+      <button
+        type="button"
+        onClick={run}
+        disabled={busy}
+        className="inline-flex h-10 items-center gap-1.5 rounded-full bg-[var(--brand)] px-4 text-sm font-bold text-[var(--brand-foreground)] disabled:opacity-60"
+      >
+        {busy ? "Adding…" : "Order again"} <ArrowRight size={14} />
+      </button>
+      {msg && <p className="mt-2 text-sm text-muted-foreground">{msg}</p>}
     </div>
   );
 }

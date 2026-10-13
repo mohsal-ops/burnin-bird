@@ -41,6 +41,18 @@ export default function CartSideBar({ cartItems: initialItems, cartId }: { cartI
         return () => window.removeEventListener("sv:open-cart", onOpen);
     }, [hasItems]);
 
+    // "Order again" lands on /Menu?cart=open: open the (first) cart sheet once.
+    useEffect(() => {
+        if (!hasItems || typeof window === "undefined") return;
+        const w = window as unknown as { __svCartOpened?: boolean };
+        if (w.__svCartOpened || new URLSearchParams(window.location.search).get("cart") !== "open") return;
+        w.__svCartOpened = true;
+        setIsOpen(true);
+        const url = new URL(window.location.href);
+        url.searchParams.delete("cart");
+        window.history.replaceState(null, "", url.toString());
+    }, [hasItems]);
+
 
     useEffect(() => {
         // Always track the latest cart from SWR (including going back to empty),
