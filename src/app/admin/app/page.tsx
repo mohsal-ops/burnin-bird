@@ -29,7 +29,7 @@ export default async function AppPage() {
             their order is ready.
           </p>
         </div>
-        <AppToggles pwa={flags.pwa} push={flags.web_push} native={flags.native_app} owners={owners} customers={customers} />
+        <AppToggles pwa={flags.pwa} push={flags.web_push} native={flags.native_app} accounts={flags.customer_accounts} owners={owners} customers={customers} />
 
         <div className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
           <p className="mb-4 font-semibold text-stone-800">Preview</p>

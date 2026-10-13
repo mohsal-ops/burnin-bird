@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Home, UtensilsCrossed, ShoppingBag, Gift, LayoutGrid, ChevronLeft, ChevronRight, Phone, MapPin } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import AccountButton from "@/components/AccountButton";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { useNavCart } from "@/app/(customerFacing)/_components/themes/useNavCart";
 import AppHome from "./AppHome";
@@ -113,7 +114,10 @@ function Chrome({ logoUrl }: { logoUrl?: string | null }) {
               <span className="truncate font-semibold text-[17px]">{title}</span>
             </button>
           )}
-          <ThemeToggle />
+          <div className="flex items-center gap-1">
+            <AccountButton />
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 

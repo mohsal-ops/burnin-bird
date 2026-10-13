@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { Instagram } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import AccountButton from "@/components/AccountButton";
 import AppSideBar from "../sideBar";
 import CartSideBar from "../Cart-SideBar";
 import { shouldShowCart, useNavCart } from "./useNavCart";
@@ -103,6 +104,7 @@ export function DinerNav({ initialCartId }: { initialCartId: string | null; logo
             </a>
           )}
           <span className="hidden md:inline-flex [&_button]:text-[var(--tp-on-ink)]">
+            <AccountButton />
             <ThemeToggle />
           </span>
           {shouldShowCart(pathname, cartItems.length) && (

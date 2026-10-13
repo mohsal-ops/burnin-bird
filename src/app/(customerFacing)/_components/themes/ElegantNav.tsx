@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import AppSideBar from "../sideBar";
+import AccountButton from "@/components/AccountButton";
 import CartSideBar from "../Cart-SideBar";
 import { shouldShowCart, useNavCart } from "./useNavCart";
 
@@ -53,8 +54,10 @@ export function ElegantNav({ initialCartId }: { initialCartId: string | null }) 
               <CartSideBar cartId={cartId} cartItems={cartItems} />
             </span>
           )}
+          <AccountButton className="text-white hover:bg-white/10" />
         </nav>
-        <div className="lg:hidden [&_button]:text-white">
+        <div className="flex items-center gap-1 lg:hidden [&_button]:text-white">
+          <AccountButton className="text-white hover:bg-white/10" />
           <AppSideBar />
         </div>
       </div>

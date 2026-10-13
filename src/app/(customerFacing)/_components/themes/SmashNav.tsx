@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import AccountButton from "@/components/AccountButton";
 import AppSideBar from "../sideBar";
 import CartSideBar from "../Cart-SideBar";
 import { shouldShowCart, useNavCart } from "./useNavCart";
@@ -26,6 +27,7 @@ export function SmashNav({ initialCartId }: { initialCartId: string | null; logo
       <div className="flex h-20 items-center justify-between px-5 md:hidden">
         <Link href="/" className="whitespace-nowrap text-[2.1rem] leading-none text-[var(--tp-nav-text-o,var(--color-foreground))]" style={{ fontFamily: "var(--font-condensed), sans-serif", letterSpacing: "-0.01em" }}>{wordmark}</Link>
         <div className="flex items-center gap-3 text-[var(--tp-nav-text-o,var(--color-foreground))]">
+          <AccountButton />
           <ThemeToggle />
           <AppSideBar />
         </div>
@@ -58,6 +60,7 @@ export function SmashNav({ initialCartId }: { initialCartId: string | null; logo
           })}
         </nav>
         <div className="flex items-center justify-end gap-3">
+          <AccountButton />
           <ThemeToggle />
           {showCart && <CartSideBar cartId={cartId} cartItems={cartItems} />}
           <Link

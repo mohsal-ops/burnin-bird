@@ -7,9 +7,9 @@ import PushOptIn from "@/components/pwa/PushOptIn";
 
 type Flag = { on: boolean; killed: boolean };
 
-export function AppToggles({ pwa, push, native, owners, customers }: { pwa: Flag; push: Flag; native: Flag; owners: number; customers: number }) {
+export function AppToggles({ pwa, push, native, accounts, owners, customers }: { pwa: Flag; push: Flag; native: Flag; accounts: Flag; owners: number; customers: number }) {
   const [pending, start] = useTransition();
-  const row = (flag: "pwa" | "web_push" | "native_app", f: Flag, title: string, desc: string) => (
+  const row = (flag: "pwa" | "web_push" | "native_app" | "customer_accounts", f: Flag, title: string, desc: string) => (
     <label className="flex items-start justify-between gap-4 py-3">
       <span>
         <span className="block text-sm font-medium text-stone-800">{title}</span>
@@ -65,6 +65,7 @@ export function AppToggles({ pwa, push, native, owners, customers }: { pwa: Flag
           </div>
         </div>
       )}
+      {row("customer_accounts", accounts, "Customer sign-in", "Optional. Customers sign in with a code we email them (no password) to see past orders and order again. Guests can still order without it.")}
       {row("native_app", native, "Your App Store app", "Only if you bought the native app add-on: lets your iPhone/Android app load the menu and send orders.")}
     </div>
   );

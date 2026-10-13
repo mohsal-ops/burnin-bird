@@ -29,6 +29,8 @@ export const FLAGS = {
   ops_health: "Ops health checks",
   /** /api/app/* endpoints used by the restaurant's native iOS/Android app. */
   native_app: "Native app API",
+  /** Optional customer sign-in (emailed code) + "My account" page. Guest checkout stays. */
+  customer_accounts: "Customer accounts",
 } as const;
 
 export type FlagName = keyof typeof FLAGS;

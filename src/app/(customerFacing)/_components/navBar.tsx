@@ -13,6 +13,7 @@ import { CartItem } from "generated/prisma";
 import { Gamepad2 } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import AccountButton from "@/components/AccountButton";
 
 export function SideBar({
   pathname,
@@ -47,6 +48,7 @@ export function SideBar({
             <Link href="/Menu">Menu</Link>
           </Button>
         )}
+        <AccountButton />
         <ThemeToggle />
         <div className="flex w-7 justify-center items-center">
           <AppSideBar />
@@ -148,6 +150,7 @@ export function TopNavBar({
             {SITE_CONFIG.menuCtaLabel}
           </Button>
         </Link>
+          <AccountButton />
           <ThemeToggle />
           {shouldShowCart(pathname, cartItems.length) && (
             <div>
