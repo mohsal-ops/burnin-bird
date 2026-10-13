@@ -17,6 +17,8 @@ export const runtime = "nodejs";
 const ALLOWED = /^https:\/\/([a-z0-9-]+\.public\.blob\.vercel-storage\.com|pub-[a-z0-9]+\.r2\.dev)\//i;
 const MAX_SOURCE = 25 * 1024 * 1024;
 const YEAR = "public, max-age=31536000, s-maxage=31536000, immutable";
+// Vercel's edge keeps its own copy only with an explicit CDN header.
+const CACHED = { "Content-Type": "image/webp", "Cache-Control": YEAR, "CDN-Cache-Control": "max-age=31536000", "Vercel-CDN-Cache-Control": "max-age=31536000" };
 
 function bad(status: number) {
   return new Response(null, { status, headers: { "Cache-Control": "public, max-age=60" } });
@@ -34,7 +36,7 @@ export async function GET(req: NextRequest) {
     try {
       const hit = await fetch(r2PublicUrl(key), { signal: AbortSignal.timeout(8000) });
       if (hit.ok) {
-        return new Response(hit.body, { headers: { "Content-Type": "image/webp", "Cache-Control": YEAR } });
+        return new Response(hit.body, { headers: CACHED });
       }
     } catch {
       /* make it below */
@@ -69,5 +71,5 @@ export async function GET(req: NextRequest) {
   if (r2Enabled()) {
     await r2Put(key, out, "image/webp").catch(() => {}); // best-effort; the CDN still caches the response
   }
-  return new Response(new Uint8Array(out), { headers: { "Content-Type": "image/webp", "Cache-Control": YEAR } });
+  return new Response(new Uint8Array(out), { headers: CACHED });
 }
