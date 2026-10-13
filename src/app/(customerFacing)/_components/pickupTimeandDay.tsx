@@ -325,19 +325,6 @@ export function PickupDetailsContent({
                 value={customerPhone}
                 onChange={(e) => setCustomerPhone(e.target.value)}
               />
-              <div className="border rounded-xl p-3 bg-muted text-sm space-y-1">
-                <p className="font-semibold">
-                  ⭐ Earn Rewards With Every Order
-                </p>
-                <p>• 1 point for every $1 spent</p>
-                <p>• 100 points = Free Regular Side</p>
-                <p>• 500 points = Free 5 Piece Combo</p>
-                <p>• 800 points = Free 8 Piece Combo</p>
-                <p className="text-xs text-muted-foreground pt-1">
-                  Use your phone number at checkout to collect and redeem
-                  points.
-                </p>
-              </div>
               <textarea
                 placeholder="Delivery instructions"
                 value={instructions}
@@ -452,20 +439,6 @@ export function PickupDetailsContent({
                   value={customerPhone}
                   onChange={(e) => setCustomerPhone(e.target.value)}
                 />
-
-                <div className="border rounded-xl p-3 bg-muted text-sm space-y-1">
-                  <p className="font-semibold">
-                    ⭐ Earn Rewards With Every Order
-                  </p>
-                  <p>• 1 point for every $1 spent</p>
-                  <p>• 100 points = Free Regular Side</p>
-                  <p>• 500 points = Free 5 Piece Combo</p>
-                  <p>• 800 points = Free 8 Piece Combo</p>
-
-                  <p className="text-xs text-muted-foreground pt-1">
-                    Use your phone number to collect and redeem points.
-                  </p>
-                </div>
               </div>
             </div>
           </>

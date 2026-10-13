@@ -6,17 +6,23 @@ import { UserRound } from "lucide-react";
 
 // Small "Sign in / account" icon for every navbar. Renders nothing unless the
 // restaurant turned accounts on (flag "customer_accounts"). One request per
-// browser session.
-let cache: Promise<{ enabled: boolean; signedIn?: boolean }> | null = null;
+// browser session, shared with the side menus (useAccountState).
+type AccountState = { enabled: boolean; signedIn?: boolean; firstName?: string | null };
+let cache: Promise<AccountState> | null = null;
 
-export default function AccountButton({ className = "" }: { className?: string }) {
-  const [state, setState] = useState<{ enabled: boolean; signedIn?: boolean } | null>(null);
+export function useAccountState(): AccountState | null {
+  const [state, setState] = useState<AccountState | null>(null);
   useEffect(() => {
     cache ??= fetch("/api/account", { cache: "no-store" })
       .then((r) => r.json())
       .catch(() => ({ enabled: false }));
     cache.then(setState);
   }, []);
+  return state;
+}
+
+export default function AccountButton({ className = "" }: { className?: string }) {
+  const state = useAccountState();
   if (!state?.enabled) return null;
   return (
     <Link

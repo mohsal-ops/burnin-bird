@@ -697,3 +697,12 @@ html.sv-app .sv-float-bottom { bottom: calc(92px + env(safe-area-inset-bottom)) 
 @media (prefers-reduced-motion: reduce) {
   html.sv-app .sv-page, .sv-app-tabs, #sv-splash img, #sv-splash .sv-splash-name { animation: none; }
 }
+
+/* Permanent phone bar ("Get the app" + "Order online", PwaBoot). Pages get
+   room for it and the floating cart buttons sit above it. */
+@media (max-width: 767px) {
+  html.sv-orderbar #main-content { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
+  html.sv-orderbar .fixed.bottom-1,
+  html.sv-orderbar .fixed.bottom-16 { bottom: calc(80px + env(safe-area-inset-bottom)) !important; }
+  html.sv-orderbar .sv-dash-bubble { bottom: calc(148px + env(safe-area-inset-bottom)) !important; }
+}

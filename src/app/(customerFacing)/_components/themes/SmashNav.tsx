@@ -29,7 +29,7 @@ export function SmashNav({ initialCartId }: { initialCartId: string | null; logo
         <div className="flex items-center gap-3 text-[var(--tp-nav-text-o,var(--color-foreground))]">
           <AccountButton />
           <ThemeToggle />
-          <AppSideBar />
+          <AppSideBar variant="smash-bold" />
         </div>
         {cartItems.length > 0 && (
           <div className="fixed bottom-1 left-2 right-2 z-50 flex justify-center">

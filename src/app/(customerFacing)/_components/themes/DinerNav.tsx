@@ -118,7 +118,7 @@ export function DinerNav({ initialCartId }: { initialCartId: string | null; logo
             </DinerButton>
           </span>
           <span className="md:hidden [&_button]:text-[var(--tp-on-ink)]">
-            <AppSideBar />
+            <AppSideBar variant="diner-classic" />
           </span>
         </div>
       </div>

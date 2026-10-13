@@ -1,22 +1,25 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
-import { X, Share, PlusSquare, Download, MoreVertical, Compass, Check } from "lucide-react";
+import { X, Share, PlusSquare, Download, MoreVertical, Compass, Check, ChevronRight } from "lucide-react";
 import { isIOS, isStandalone, registerSW } from "@/lib/pwa/client";
 
 // Mounted in the public layout ONLY when the "pwa" flag is on (the owner has
 // the app). Adds the manifest + iOS tags, registers the service worker, and
-// shows a small "Get the app" button on phones:
+// shows a permanent bottom bar on phones - "Get the app" + "Order online"
+// (inspired by the best restaurant sites: always there, never a nagging popup):
 //   - Android/Chrome: one tap opens the real install prompt.
 //   - iPhone: Apple allows no one-tap install, so it opens a short visual
 //     guide pointing at Share → "Add to Home Screen".
 //   - Instagram/Facebook in-app browsers can't install: it tells them to open
 //     the page in Safari/Chrome first.
-// Closing the button hides it for 7 days. Any other button can open it with
+// Hidden on the menu/checkout/account pages and inside the installed app.
+// Any other button can open the install flow with
 // window.dispatchEvent(new Event("sv:install")).
 
-const DISMISS_KEY = "sv_install_dismissed";
 export const ORDERED_KEY = "sv_ordered";
 
 type BIPEvent = Event & { prompt: () => Promise<void>; userChoice: Promise<{ outcome: string }> };
@@ -35,7 +38,8 @@ const isMobile = () => /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || 
 
 export default function PwaBoot({ name }: { name: string }) {
   const deferred = useRef<BIPEvent | null>(null);
-  const [pill, setPill] = useState(false);
+  const [bar, setBar] = useState(false);
+  const pathname = usePathname() || "/";
   const [guide, setGuide] = useState<Mode | null>(null);
   const [installed, setInstalled] = useState(false);
 
@@ -47,10 +51,7 @@ export default function PwaBoot({ name }: { name: string }) {
       deferred.current = null; // a prompt can only be used once
       await d.prompt();
       const choice = await d.userChoice.catch(() => null);
-      if (choice?.outcome === "accepted") {
-        setInstalled(true);
-        setPill(false);
-      }
+      if (choice?.outcome === "accepted") setInstalled(true);
       return;
     }
     setGuide("android-menu");
@@ -70,7 +71,6 @@ export default function PwaBoot({ name }: { name: string }) {
     };
     const onInstalled = () => {
       setInstalled(true);
-      setPill(false);
       setGuide(null);
     };
     const onOpen = () => void open();
@@ -78,48 +78,48 @@ export default function PwaBoot({ name }: { name: string }) {
     window.addEventListener("appinstalled", onInstalled);
     window.addEventListener("sv:install", onOpen);
 
-    let dismissedAt = 0;
-    try {
-      dismissedAt = Number(localStorage.getItem(DISMISS_KEY) || 0);
-    } catch {
-      /* storage blocked: still show */
-    }
-    const t = isMobile() && Date.now() - dismissedAt > 7 * 86400_000 ? setTimeout(() => setPill(true), 2500) : undefined;
+    setBar(isMobile());
     return () => {
-      clearTimeout(t);
       window.removeEventListener("beforeinstallprompt", onPrompt);
       window.removeEventListener("appinstalled", onInstalled);
       window.removeEventListener("sv:install", onOpen);
     };
   }, [name, open]);
 
-  const dismiss = () => {
-    setPill(false);
-    try {
-      localStorage.setItem(DISMISS_KEY, String(Date.now()));
-    } catch {
-      /* ignore */
-    }
-  };
+  // Pages that already have their own bottom actions.
+  const hideHere = /^\/(menu|stripe|account|checkout|catering)/i.test(pathname);
+  const showBar = bar && !installed && !hideHere;
+  useEffect(() => {
+    document.documentElement.classList.toggle("sv-orderbar", showBar);
+    return () => document.documentElement.classList.remove("sv-orderbar");
+  }, [showBar]);
 
   return (
     <>
       <AnimatePresence>
-        {pill && !installed && !guide && (
+        {showBar && (
           <motion.div
-            initial={{ y: 80, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 80, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 380, damping: 30 }}
-            className="sv-float-bottom fixed bottom-20 left-3 z-[60] flex items-center gap-1 rounded-full bg-stone-900 py-1.5 pl-1.5 pr-1 text-white shadow-xl md:hidden"
+            initial={{ y: 90 }}
+            animate={{ y: 0 }}
+            exit={{ y: 90 }}
+            transition={{ type: "spring", stiffness: 380, damping: 34, delay: 0.4 }}
+            className="sv-orderbar fixed inset-x-0 bottom-0 z-[60] grid grid-cols-2 gap-2 border-t border-border bg-background/90 px-3 pb-[calc(10px+env(safe-area-inset-bottom))] pt-2.5 backdrop-blur md:hidden"
           >
-            <button type="button" onClick={() => void open()} className="flex items-center gap-2 rounded-full pr-2 text-sm font-semibold">
-              <img src="/api/pwa/icon/192" alt="" className="h-8 w-8 rounded-[10px]" />
+            <button
+              type="button"
+              onClick={() => void open()}
+              className="flex h-12 items-center justify-center gap-1.5 rounded-2xl border border-border bg-background text-[15px] font-semibold text-foreground active:scale-[0.98]"
+            >
+              <img src="/api/pwa/icon/192" alt="" className="h-6 w-6 rounded-md" />
               Get the app
+              <ChevronRight className="h-4 w-4 opacity-50" />
             </button>
-            <button type="button" onClick={dismiss} aria-label="Hide" className="grid h-8 w-8 place-items-center rounded-full text-white/60 hover:text-white">
-              <X className="h-4 w-4" />
-            </button>
+            <Link
+              href="/Menu"
+              className="flex h-12 items-center justify-center rounded-2xl bg-[var(--brand,#111)] text-[15px] font-bold text-[var(--brand-foreground,#fff)] active:scale-[0.98]"
+            >
+              Order online
+            </Link>
           </motion.div>
         )}
       </AnimatePresence>
