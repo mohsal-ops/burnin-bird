@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { MdKeyboardArrowRight } from "react-icons/md";
@@ -29,6 +29,25 @@ export function OurLocation({
   hours: BusinessHourRow[];
 }) {
   const [showHours, setShowHours] = useState(false);
+  // The HERE map SDK is ~360 KB of script: only load it when the map is about to
+  // scroll into view, so it never slows the first screen.
+  const mapBox = useRef<HTMLDivElement>(null);
+  const [mapNear, setMapNear] = useState(false);
+  useEffect(() => {
+    const el = mapBox.current;
+    if (!el || mapNear) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setMapNear(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: "600px 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [mapNear]);
   // Fall back to the hours defined in siteConfig when the BusinessHours table
   // is empty (fresh DB / not yet filled in the dashboard), so the section still
   // renders instead of crashing on an undefined day.
@@ -56,10 +75,10 @@ export function OurLocation({
 
   return (
     <div className="flex flex-col sm:flex-row gap-4 p-4 bg-muted text-foreground rounded-4xl w-[92%] mx-auto sm:w-[75%] font-bold ">
-      <HereMapsScripts />
+      {mapNear && <HereMapsScripts />}
       {/* Map */}
-      <div className="sm:w-[45%] w-full h-56 sm:h-auto min-h-50 rounded-3xl overflow-hidden shrink-0">
-        <MapClient lat={lat} lng={lng} className="h-full w-full" />
+      <div ref={mapBox} className="sm:w-[45%] w-full h-56 sm:h-auto min-h-50 rounded-3xl overflow-hidden shrink-0 bg-background/40">
+        {mapNear && <MapClient lat={lat} lng={lng} className="h-full w-full" />}
       </div>
 
       {/* Info panel */}

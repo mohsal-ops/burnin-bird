@@ -22,18 +22,21 @@ const poppins = Poppins({
   weight: ["400", "500", "600", "700"],
   variable: "--font-poppins",
   display: "swap",
+  preload: false,
 });
 const caveat = Caveat({
   subsets: ["latin"],
   weight: ["400", "700"],
   variable: "--font-caveat",
   display: "swap",
+  preload: false,
 });
 const chewy = Chewy({
   subsets: ["latin"],
   weight: ["400"],
   variable: "--font-balloon",
   display: "swap",
+  preload: false,
 });
 
 // diner-classic (Fame): friendly grotesk + a monospace "receipt" accent.
@@ -42,12 +45,14 @@ const montserrat = Montserrat({
   weight: ["400", "500", "600", "700", "800", "900"],
   variable: "--font-montserrat",
   display: "swap",
+  preload: false,
 });
 const courierPrime = Courier_Prime({
   subsets: ["latin"],
   weight: ["400", "700"],
   variable: "--font-courier-prime",
   display: "swap",
+  preload: false,
 });
 
 // Ender's tall condensed wordmark ("ENDER" in the navbar) → Antonio.
@@ -56,6 +61,7 @@ const condensed = Antonio({
   weight: ["400", "500"],
   variable: "--font-condensed",
   display: "swap",
+  preload: false,
 });
 
 // Ender's upright hand-lettered block titles ("ENDER CAFÉ") → Permanent Marker.
@@ -64,6 +70,7 @@ const marker = Permanent_Marker({
   weight: ["400"],
   variable: "--font-marker",
   display: "swap",
+  preload: false,
 });
 
 // Fame's retro sign-painter script ("Cheeeese!", "Appetizer") → Lobster.
@@ -72,6 +79,7 @@ const lobster = Lobster({
   weight: ["400"],
   variable: "--font-script",
   display: "swap",
+  preload: false,
 });
 
 // Fiorella's bespoke geometric stencil display ("NEIGHBORHOOD ITALIAN") →
@@ -81,6 +89,7 @@ const sairaStencil = Saira_Stencil_One({
   weight: ["400"],
   variable: "--font-stencil",
   display: "swap",
+  preload: false,
 });
 
 // refined-elegant (Fiorella): wide elegant display + a clean geometric body.
@@ -89,14 +98,19 @@ const marcellus = Marcellus({
   weight: ["400"],
   variable: "--font-marcellus",
   display: "swap",
+  preload: false,
 });
 const jost = Jost({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600"],
   variable: "--font-jost",
   display: "swap",
+  preload: false,
 });
 
+// preload: false on every font above: only the active design's fonts are
+// downloaded (when its CSS uses them), not all four themes' on every site.
+//
 // Space-joined className with every theme font's CSS variable, attached to
 // <html> in the root layout so all four themes' fonts resolve no matter which
 // data-theme is active. classic-starvega uses the system sans stack and needs
