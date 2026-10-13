@@ -15,3 +15,20 @@ export async function setAppFeature(flag: "pwa" | "web_push" | "native_app", on:
     return { ok: false, error: (e as Error).message };
   }
 }
+
+/** "Send test alert": pushes a test notification to every owner device. */
+export async function sendTestOwnerAlert(): Promise<{ ok: true; sent: number } | { ok: false; error: string }> {
+  try {
+    await assertWritable();
+    const { pushToOwners } = await import("@/lib/push/send");
+    const sent = await pushToOwners({
+      title: "Test alert 🔔",
+      body: "Phone alerts work. New orders will show up like this.",
+      url: "/admin/orders",
+      tag: "sv-test",
+    });
+    return { ok: true, sent };
+  } catch (e) {
+    return { ok: false, error: (e as Error).message };
+  }
+}

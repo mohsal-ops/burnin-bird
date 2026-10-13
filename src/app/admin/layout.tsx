@@ -10,6 +10,7 @@ import { getLogoUrl } from "@/lib/siteSettings";
 import { getTodaySummary } from "./orders/_actions/cartOrders";
 import LiveBar from "./_components/LiveBar";
 import PosAlertBanner from "./_components/PosAlertBanner";
+import GlobalOrderAlert from "./_components/GlobalOrderAlert";
 import db from "@/db/db";
 
 export const dynamic = "force-dynamic";
@@ -65,6 +66,8 @@ export default async function Adminlayout({
           <PosAlertBanner />
           <ConfirmProvider>{children}</ConfirmProvider>
         </main>
+        {/* New-order alarm on EVERY admin page (stays armed while navigating). */}
+        {access.mode !== "none" && <GlobalOrderAlert />}
         <Toaster expand richColors closeButton duration={6000} />
       </div>
       {access.mode === "preview" && <PreviewCallCta />}

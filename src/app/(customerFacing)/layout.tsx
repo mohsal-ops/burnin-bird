@@ -17,6 +17,8 @@ import DashboardBubble from "./_components/DashboardBubble";
 import LoyaltyPopup from "@/components/LoyaltyPopup";
 import PwaBoot from "@/components/pwa/PwaBoot";
 import { isEnabled } from "@/lib/flags";
+import AppModeBoot from "@/components/app-mode/AppModeBoot";
+import AppShell from "@/components/app-mode/AppShell";
 
 // Public pages are cached and rebuilt at most every 5 min (owner edits also
 // revalidate instantly) — rendering on every visit blew the free CPU limit.
@@ -45,7 +47,9 @@ export default async function Customerlayout({
           would just be customer noise). Dashboard/preview visits are tracked
           separately in admin/layout.tsx. */}
       {(SITE_CONFIG as { trackWebsiteVisits?: boolean }).trackWebsiteVisits !== false && <VisitAlert source="site" />}
+      {pwaOn && <AppModeBoot name={SITE_CONFIG.name} logoUrl={logoUrl} />}
       {pwaOn && <PwaBoot name={SITE_CONFIG.name} />}
+      {pwaOn && <AppShell logoUrl={logoUrl} />}
       <TrialPopup />
       <DashboardBubble />
       <LoyaltyPopup
@@ -59,7 +63,7 @@ export default async function Customerlayout({
           (theme-components.css) to the PUBLIC site only — the admin dashboard
           has its own layout without this class, so it never picks them up. */}
       <main className="theme-surface flex relative flex-col w-full  pb- ">
-        <div className="fixed top-0 left-0 right-0 z-50">
+        <div className="sv-web-nav fixed top-0 left-0 right-0 z-50">
           {theme === "smash-bold" ? (
             <SmashNav initialCartId={cartId} logoUrl={logoUrl} />
           ) : theme === "diner-classic" ? (
@@ -71,7 +75,7 @@ export default async function Customerlayout({
           )}
         </div>
         <div id="main-content" className="flex flex-col md:items-center   ">{children}</div>
-        <div className="flex flex-col w-full items-center ">
+        <div className="sv-web-footer flex flex-col w-full items-center ">
           <Footer logoUrl={logoUrl} />
           <div className="relative text-xs  mt-2 text-muted-foreground text-center p-4 md:py-3 bg-muted w-full border-t border-border">
             {SITE_CONFIG.footer.copyright}

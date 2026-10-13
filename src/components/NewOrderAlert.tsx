@@ -38,6 +38,7 @@ type Queued = {
 // seen orders don't re-alert, but resets when the tablet is actually restarted
 // for a new day.
 const SEEN_KEY = "kitchen:seenOrders";
+const ALERTS_ON_KEY = "kitchen:alertsOn";
 
 function loadSeen(): Set<string> {
   if (typeof window === "undefined") return new Set();
@@ -74,6 +75,20 @@ export default function NewOrderAlert({ orders }: { orders: AlertOrder[] }) {
   // Audio is enabled by an explicit tap (per-session; a page reload is a fresh
   // audio session so the banner correctly reappears).
   const [alertsOn, setAlertsOn] = useState(false);
+  // Remember the tap for the rest of the session. After a full reload the
+  // browser needs a new gesture for sound, so re-arm on the first touch
+  // anywhere instead of showing the banner again.
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem(ALERTS_ON_KEY) !== "1") return;
+    } catch {
+      return;
+    }
+    setAlertsOn(true);
+    const arm = () => unlockAudio();
+    window.addEventListener("pointerdown", arm, { once: true });
+    return () => window.removeEventListener("pointerdown", arm);
+  }, []);
   const [queue, setQueue] = useState<Queued[]>([]);
   const [nowTs, setNowTs] = useState(() => Date.now());
 
@@ -137,6 +152,11 @@ export default function NewOrderAlert({ orders }: { orders: AlertOrder[] }) {
   const enable = () => {
     unlockAudio();
     setAlertsOn(true);
+    try {
+      sessionStorage.setItem(ALERTS_ON_KEY, "1");
+    } catch {
+      /* private mode */
+    }
   };
   const dismiss = () => setQueue((q) => q.slice(1));
 

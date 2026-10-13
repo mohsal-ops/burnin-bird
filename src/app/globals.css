@@ -545,3 +545,116 @@ html body[data-scroll-locked] {
   from { transform: scaleX(0); }
   to { transform: scaleX(1); }
 }
+
+/* ── App mode (site opened from the home-screen icon) ─────────────────────
+   Everything below is scoped to html.sv-app (set by AppModeBoot), so the
+   website in a normal browser is untouched. */
+html.sv-app {
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+html.sv-app body { overscroll-behavior-y: none; }
+html.sv-app .sv-web-nav,
+html.sv-app .sv-web-footer { display: none !important; }
+html.sv-app #main-content {
+  /* pages already leave 80px (pt-20) for the website navbar; the app top bar
+     is 56px + notch, so pull content up by the difference. */
+  margin-top: calc(56px + env(safe-area-inset-top) - 80px);
+  padding-bottom: calc(84px + env(safe-area-inset-bottom));
+  min-height: 100dvh;
+}
+html.sv-app .sv-dash-bubble { bottom: calc(92px + env(safe-area-inset-bottom)) !important; }
+html.sv-app #main-content a,
+html.sv-app #main-content button { touch-action: manipulation; transition: transform .12s ease; }
+html.sv-app #main-content a:active,
+html.sv-app #main-content button:active { transform: scale(.97); }
+
+.sv-app-top {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 60;
+  padding-top: env(safe-area-inset-top);
+  background: color-mix(in oklab, hsl(var(--background)) 82%, transparent);
+  -webkit-backdrop-filter: saturate(180%) blur(18px);
+  backdrop-filter: saturate(180%) blur(18px);
+  border-bottom: 1px solid color-mix(in oklab, hsl(var(--foreground)) 8%, transparent);
+  color: hsl(var(--foreground));
+}
+.sv-app-top-inner {
+  height: 56px; display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 0 14px 0 16px;
+}
+
+.sv-app-tabs {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+  display: flex; justify-content: space-around; align-items: stretch;
+  padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+  background: color-mix(in oklab, hsl(var(--background)) 86%, transparent);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-top: 1px solid color-mix(in oklab, hsl(var(--foreground)) 8%, transparent);
+  animation: sv-tabs-in .5s cubic-bezier(.2,.9,.2,1) both;
+}
+.sv-tab {
+  position: relative; flex: 1; max-width: 96px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  height: 56px; border-radius: 16px;
+  color: color-mix(in oklab, hsl(var(--foreground)) 55%, transparent);
+  -webkit-user-select: none; user-select: none; touch-action: manipulation;
+  transition: color .2s ease, transform .12s ease;
+}
+.sv-tab:active { transform: scale(.92); }
+.sv-tab-active { color: var(--brand, #111); }
+.sv-tab-pill {
+  position: absolute; inset: 4px 10px; border-radius: 14px;
+  background: color-mix(in oklab, var(--brand, #111) 14%, transparent);
+}
+.sv-tab-badge {
+  position: absolute; top: -6px; right: -10px; min-width: 18px; height: 18px;
+  padding: 0 5px; border-radius: 999px; display: grid; place-items: center;
+  font-size: 10.5px; font-weight: 700; line-height: 1;
+  background: var(--brand, #111); color: var(--brand-foreground, #fff);
+  box-shadow: 0 0 0 2px hsl(var(--background));
+}
+.sv-app-action {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  height: 48px; border-radius: 14px; font-weight: 600;
+  background: var(--brand, #111); color: var(--brand-foreground, #fff);
+}
+.sv-app-action:active { transform: scale(.97); }
+
+/* Screen change: slide + fade (no fill-mode, so no transform is left behind
+   to break fixed-position children). */
+html.sv-app .sv-page { animation: sv-page-in .34s cubic-bezier(.2,.8,.2,1); }
+@keyframes sv-page-in { from { opacity: 0; transform: translateX(18px); } to { opacity: 1; transform: none; } }
+@keyframes sv-tabs-in { from { transform: translateY(100%); } to { transform: none; } }
+
+/* Launch screen */
+#sv-splash {
+  position: fixed; inset: 0; z-index: 9999;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+  background: var(--brand, #111); color: var(--brand-foreground, #fff);
+  transition: opacity .4s ease, transform .4s ease;
+}
+#sv-splash img {
+  width: 108px; height: 108px; border-radius: 28px; object-fit: cover;
+  box-shadow: 0 18px 50px rgba(0,0,0,.28);
+  animation: sv-splash-logo .7s cubic-bezier(.2,1.4,.4,1) both;
+}
+#sv-splash .sv-splash-name {
+  font-size: 22px; font-weight: 700; letter-spacing: -.01em;
+  animation: sv-splash-up .6s .12s cubic-bezier(.2,.8,.2,1) both;
+}
+#sv-splash .sv-splash-bar {
+  width: 64px; height: 3px; border-radius: 3px; overflow: hidden;
+  background: color-mix(in oklab, currentColor 25%, transparent);
+}
+#sv-splash .sv-splash-bar i {
+  display: block; height: 100%; width: 40%; border-radius: 3px; background: currentColor;
+  animation: sv-splash-load 1s ease-in-out infinite;
+}
+#sv-splash.sv-splash-out { opacity: 0; transform: scale(1.06); pointer-events: none; }
+@keyframes sv-splash-logo { from { opacity: 0; transform: scale(.6); } to { opacity: 1; transform: none; } }
+@keyframes sv-splash-up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes sv-splash-load { 0% { transform: translateX(-100%); } 100% { transform: translateX(250%); } }
+@media (prefers-reduced-motion: reduce) {
+  html.sv-app .sv-page, .sv-app-tabs, #sv-splash img, #sv-splash .sv-splash-name { animation: none; }
+}

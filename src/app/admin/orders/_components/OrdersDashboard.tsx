@@ -18,7 +18,6 @@ import {
 } from "lucide-react";
 import { updateCartStatus, deleteCart } from "../_actions/cartOrders";
 import { deriveOrderType } from "@/lib/orderType";
-import NewOrderAlert from "@/components/NewOrderAlert";
 
 type OrderItemSide = { id: string; label: string; priceInCents: number | null };
 
@@ -117,7 +116,7 @@ export default function OrdersDashboard({ orders, stats }: { orders: Order[]; st
 
   return (
     <div className="space-y-6 px-4 md:px-0">
-      <NewOrderAlert orders={orders} />
+      {/* New-order alarm lives in the admin layout (GlobalOrderAlert). */}
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>

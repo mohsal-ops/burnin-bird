@@ -27,6 +27,20 @@ export default function CartSideBar({ cartItems: initialItems, cartId }: { cartI
         setIsOpen(false);
     }, [pathname]);
 
+    // App mode's Cart tab asks for the cart (see components/app-mode/AppShell).
+    // Several cart sheets can be mounted (mobile + desktop nav); the first one
+    // with items claims the event so only one opens.
+    const hasItems = cartItems.some((i) => i.name != null && i.price);
+    useEffect(() => {
+        const onOpen = (e: Event) => {
+            if (e.defaultPrevented || !hasItems) return;
+            e.preventDefault();
+            setIsOpen(true);
+        };
+        window.addEventListener("sv:open-cart", onOpen);
+        return () => window.removeEventListener("sv:open-cart", onOpen);
+    }, [hasItems]);
+
 
     useEffect(() => {
         // Always track the latest cart from SWR (including going back to empty),

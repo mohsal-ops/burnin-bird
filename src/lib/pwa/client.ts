@@ -28,6 +28,17 @@ function b64ToBytes(b64: string): Uint8Array {
   return Uint8Array.from(raw, (c) => c.charCodeAt(0));
 }
 
+/** True when this browser already has notification permission + a push subscription. */
+export async function isPushSubscribed(): Promise<boolean> {
+  try {
+    if (!pushSupported() || Notification.permission !== "granted") return false;
+    const reg = await navigator.serviceWorker.getRegistration("/");
+    return !!(await reg?.pushManager.getSubscription());
+  } catch {
+    return false;
+  }
+}
+
 /** Remove this browser's subscription (server row + browser). */
 export async function unsubscribePush(): Promise<void> {
   try {

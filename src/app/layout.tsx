@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { CartProvider } from "./providers/CartProvider";
 import { ThemeProvider } from "./providers/ThemeProvider";
 import { GoogleAnalytics } from "@next/third-parties/google";
@@ -11,6 +11,10 @@ import { readableTextColor } from "@/lib/color";
 import { themeFontVariables } from "@/lib/themes/fonts";
 import { getActiveTheme } from "@/lib/themes/active";
 import "./globals.css";
+
+// viewport-fit=cover lets the installed app reach under the notch / home bar
+// (app mode pads with env(safe-area-inset-*)).
+export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover" };
 
 export async function generateMetadata(): Promise<Metadata> {
   // Link-preview (Open Graph / Twitter) image = the restaurant's OWN first

@@ -2,7 +2,8 @@
 
 import { useTransition } from "react";
 import { toast } from "sonner";
-import { setAppFeature } from "../appActions";
+import { sendTestOwnerAlert, setAppFeature } from "../appActions";
+import PushOptIn from "@/components/pwa/PushOptIn";
 
 type Flag = { on: boolean; killed: boolean };
 
@@ -36,7 +37,33 @@ export function AppToggles({ pwa, push, native, owners, customers }: { pwa: Flag
         "web_push",
         push,
         "Order notifications",
-        `Customers who tap “Notify me” get order updates; you get new-order alerts (Orders page). ${owners} of your devices and ${customers} customer devices signed up.`,
+        `Customers who tap “Notify me” get order updates; you get new-order alerts on your phone. ${owners} of your devices and ${customers} customer devices signed up.`,
+      )}
+      {push.on && (
+        <div className="py-4">
+          <span className="block text-sm font-medium text-stone-800">Alerts on this phone</span>
+          <span className="mb-3 block text-xs text-stone-500">
+            Turn on once per phone. Works even when the app is closed (paid online orders). On iPhone, open the app from the Home Screen first.
+          </span>
+          <div className="flex flex-wrap items-start gap-3">
+            <PushOptIn audience="owner" label="Turn on alerts on this phone" className="text-stone-700" />
+            <button
+              type="button"
+              disabled={pending}
+              className="rounded-full bg-stone-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
+              onClick={() =>
+                start(async () => {
+                  const r = await sendTestOwnerAlert();
+                  if (!r.ok) toast.error(r.error);
+                  else if (r.sent === 0) toast.error("No phone is signed up yet. Tap “Turn on alerts on this phone” first.");
+                  else toast.success(`Test alert sent to ${r.sent} device${r.sent > 1 ? "s" : ""}. Check your phone.`);
+                })
+              }
+            >
+              Send test alert
+            </button>
+          </div>
+        </div>
       )}
       {row("native_app", native, "Your App Store app", "Only if you bought the native app add-on: lets your iPhone/Android app load the menu and send orders.")}
     </div>

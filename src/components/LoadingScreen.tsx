@@ -265,6 +265,11 @@ export default function LoadingScreen({
     if (decidedOnce.current) return;
     decidedOnce.current = true;
     reduce.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // App mode has its own quick launch screen; skip the website intro there.
+    if (document.documentElement.classList.contains("sv-app")) {
+      setMounted(false);
+      return;
+    }
 
     const isProd = process.env.NODE_ENV === "production";
     if (!keepLooping && isProd) {

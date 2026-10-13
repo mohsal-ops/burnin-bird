@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Bell, BellRing } from "lucide-react";
-import { subscribePush, unsubscribePush, type SubscribeResult } from "@/lib/pwa/client";
+import { isPushSubscribed, subscribePush, unsubscribePush, type SubscribeResult } from "@/lib/pwa/client";
 
 // One button, two uses:
 //   customer (success page) → "Notify me when my order is ready / on the way"
@@ -29,6 +29,12 @@ export default function PushOptIn({
   className?: string;
 }) {
   const [state, setState] = useState<"idle" | "busy" | "on" | SubscribeResult>("idle");
+  // Already on for this device? (Otherwise the button asked again every visit.)
+  useEffect(() => {
+    void isPushSubscribed().then((on) => {
+      if (on) setState((s) => (s === "idle" ? "on" : s));
+    });
+  }, []);
   const msg = state !== "idle" && state !== "busy" && state !== "on" && state !== "ok" ? MESSAGES[state] : "";
   const consent =
     audience === "customer"

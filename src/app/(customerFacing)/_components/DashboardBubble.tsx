@@ -63,7 +63,7 @@ export default function DashboardBubble() {
   }
 
   return (
-    <div className="fixed bottom-20 right-4 z-60 md:bottom-6 md:right-6">
+    <div className="sv-dash-bubble fixed bottom-20 right-4 z-60 md:bottom-6 md:right-6">
       <a
         href={href}
         aria-label="Open your dashboard preview"
