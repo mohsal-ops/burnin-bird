@@ -1,3 +1,4 @@
+import { randomInt } from "crypto";
 // Loyalty promo / redemption helpers (pure - safe to import anywhere).
 //
 // Send cost is computed from a configurable Brevo per-message rate AT SEND TIME
@@ -27,7 +28,8 @@ const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
 export function generateRedemptionCode(prefix = "SAVE"): string {
   let s = "";
-  for (let i = 0; i < 5; i++) s += ALPHABET[Math.floor(Math.random() * ALPHABET.length)];
+  // crypto-random (Math.random is predictable)
+  for (let i = 0; i < 6; i++) s += ALPHABET[randomInt(ALPHABET.length)];
   return `${prefix}${s}`;
 }
 

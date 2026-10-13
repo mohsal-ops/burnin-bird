@@ -10,6 +10,7 @@ import { deriveOrderType } from "@/lib/orderType";
 import { NEW_ORDER, PAID_STATUSES, isPaid } from "@/lib/orderStatus";
 import { pushOrderToPos } from "@/lib/pos/pipeline";
 import { REDEMPTION_WINDOW_DAYS } from "@/lib/loyaltyPromo";
+import { cartTotalCents } from "@/lib/cartTotal";
 import { dispatchRoutedDelivery } from "@/lib/delivery/dispatch";
 import { pushToOwners } from "@/lib/push/send";
 import { ownerNewOrderMessage } from "@/lib/push/messages";
@@ -44,10 +45,20 @@ function sheetsClient() {
   return google.sheets({ version: "v4", auth });
 }
 
+// Customer-typed text goes into the owner's email HTML - escape it so nobody
+// can inject links/markup into the restaurant's inbox.
+function esc(v: unknown): string {
+  return String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
+}
+
 export async function finalizeCart(
   cartId: string | undefined,
   email: string,
-): Promise<{ finalized: boolean; alreadyDone?: boolean }> {
+  // What Stripe actually collected (pi.amount_received). When given, the cart's
+  // CURRENT total must be covered - items added after checkout opened (paid at
+  // the old total) never become a "paid" order.
+  amountPaidCents?: number,
+): Promise<{ finalized: boolean; alreadyDone?: boolean; mismatch?: boolean }> {
   if (!cartId) return { finalized: false };
 
   const cart = await db.cart.findUnique({
@@ -56,6 +67,22 @@ export async function finalizeCart(
   });
   if (!cart || cart.items.length === 0) return { finalized: false };
   if (isPaid(cart.status)) return { finalized: false, alreadyDone: true };
+
+  if (typeof amountPaidCents === "number") {
+    const { total } = await cartTotalCents(cart);
+    if (amountPaidCents < total) {
+      console.error(`finalizeCart: cart ${cartId} paid ${amountPaidCents} < total ${total} - not finalized`);
+      const to = process.env.OWNER_ALERT_EMAIL || process.env.SMTP_USER;
+      if (to) {
+        await sendMail({
+          to,
+          subject: "Payment didn't match an order - check it",
+          html: `<p>A customer paid <b>$${(amountPaidCents / 100).toFixed(2)}</b> but their cart totals <b>$${(total / 100).toFixed(2)}</b> (items changed after checkout opened). The order was <b>not</b> sent to the kitchen. Check Stripe (cart ${cartId}) and contact the customer or refund.</p>`,
+        }).catch(() => {});
+      }
+      return { finalized: false, mismatch: true };
+    }
+  }
 
   // Atomically claim the cart. If another caller (webhook vs success page) already
   // claimed it, count is 0 and we stop - no duplicate orders/dispatch/emails.
@@ -248,13 +275,13 @@ export async function finalizeCart(
         html: `<div style="font-family:system-ui,Segoe UI,sans-serif;font-size:15px;color:#1c1917">
           <h2 style="margin:0 0 12px">New ${orderType} order - $${total.toFixed(2)}</h2>
           <table style="border-collapse:collapse">
-            ${first.customerName ? `<tr><td style="padding:4px 14px 4px 0;color:#78716c">Name</td><td>${first.customerName}</td></tr>` : ""}
-            ${first.customerPhone ? `<tr><td style="padding:4px 14px 4px 0;color:#78716c">Phone</td><td>${first.customerPhone}</td></tr>` : ""}
-            <tr><td style="padding:4px 14px 4px 0;color:#78716c">Email</td><td>${email}</td></tr>
+            ${first.customerName ? `<tr><td style="padding:4px 14px 4px 0;color:#78716c">Name</td><td>${esc(first.customerName)}</td></tr>` : ""}
+            ${first.customerPhone ? `<tr><td style="padding:4px 14px 4px 0;color:#78716c">Phone</td><td>${esc(first.customerPhone)}</td></tr>` : ""}
+            <tr><td style="padding:4px 14px 4px 0;color:#78716c">Email</td><td>${esc(email)}</td></tr>
             ${orderType === "delivery"
-              ? `<tr><td style="padding:4px 14px 4px 0;color:#78716c">Deliver to</td><td>${first.deliveryAddress ?? ""}${first.apt ? ` (${first.apt})` : ""}</td></tr>`
-              : `<tr><td style="padding:4px 14px 4px 0;color:#78716c">Pickup</td><td>${first.pickupDay ? new Date(first.pickupDay).toDateString() : ""} ${first.pickupTime ?? ""}</td></tr>`}
-            <tr><td style="padding:4px 14px 4px 0;color:#78716c;vertical-align:top">Items</td><td>${itemsList}</td></tr>
+              ? `<tr><td style="padding:4px 14px 4px 0;color:#78716c">Deliver to</td><td>${esc(first.deliveryAddress ?? "")}${first.apt ? ` (${esc(first.apt)})` : ""}</td></tr>`
+              : `<tr><td style="padding:4px 14px 4px 0;color:#78716c">Pickup</td><td>${first.pickupDay ? new Date(first.pickupDay).toDateString() : ""} ${esc(first.pickupTime ?? "")}</td></tr>`}
+            <tr><td style="padding:4px 14px 4px 0;color:#78716c;vertical-align:top">Items</td><td>${esc(itemsList).replace(/\n/g, "<br>")}</td></tr>
             <tr><td style="padding:4px 14px 4px 0;color:#78716c">Total</td><td><strong>$${total.toFixed(2)}</strong></td></tr>
           </table></div>`,
       });

@@ -3,7 +3,7 @@ import db from "@/db/db";
 import { verifyPassword } from "@/lib/password";
 import { createAdminSessionToken } from "@/lib/adminSession";
 import { ADMIN_COOKIE_NAME } from "@/lib/adminAuth";
-import { getClientIp, isRateLimited } from "@/lib/rateLimit";
+import { allowDb, getClientIp, isRateLimited } from "@/lib/rateLimit";
 import { sendMail } from "@/lib/email";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 
@@ -44,7 +44,8 @@ async function sendLoginAlert(admin: { name: string; email: string }, ip: string
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
-  if (isRateLimited(`admin-login:${ip}`, 5, 60_000)) {
+  // in-memory burst guard + a shared 15-minute lock (10 tries per IP)
+  if (isRateLimited(`admin-login:${ip}`, 5, 60_000) || !(await allowDb(`admin-login:${ip}`, 10, 15 * 60))) {
     return NextResponse.json(
       { error: "Too many attempts. Try again in a minute." },
       { status: 429 },

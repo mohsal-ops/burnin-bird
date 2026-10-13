@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import db from "@/db/db";
 import { sendSms, sendEmail } from "@/lib/brevo";
+import { allowDb, getClientIp } from "@/lib/rateLimit";
 import {
   getLoyaltySettings,
   loyaltyConsentText,
@@ -36,11 +37,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: "not enabled" }, { status: 403 });
   }
 
+  // Abuse guard: each sign-up can text a number (paid SMS) - cap per IP.
+  if (!(await allowDb(`loyalty-join:${getClientIp(req)}`, 5, 3600))) {
+    return NextResponse.json({ ok: false, error: "Too many tries. Please wait a bit." }, { status: 429 });
+  }
   const b = (await req.json().catch(() => ({}))) as Record<string, unknown>;
 
   const phoneRaw = typeof b.phone === "string" ? b.phone.trim() : "";
   const phone = phoneRaw ? phoneRaw.replace(/[^\d+]/g, "") : "";
-  const phoneValid = !!phone && phone.replace(/\D/g, "").length >= 10;
+  // US numbers only (10 digits, or 11 starting with 1) - blocks SMS-pumping to
+  // premium international numbers on the owner's SMS account.
+  const digits = phone.replace(/\D/g, "");
+  const phoneValid = !!phone && (digits.length === 10 || (digits.length === 11 && digits.startsWith("1")));
 
   const emailRaw = typeof b.email === "string" ? b.email.trim().toLowerCase() : "";
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailRaw);
@@ -67,6 +75,8 @@ export async function POST(req: NextRequest) {
   const consentIp = (req.headers.get("x-forwarded-for") || "").split(",")[0].trim() || null;
 
   let contactId: string;
+  let wasSmsSubscribed = false;
+  let wasEmailSubscribed = false;
   try {
     // Find any existing contact matching either identifier, then merge. Two
     // separate unique constraints (phone, email) rule out a single upsert.
@@ -78,11 +88,14 @@ export async function POST(req: NextRequest) {
     });
 
     if (existing) {
+      wasSmsSubscribed = existing.smsSubscribed;
+      wasEmailSubscribed = existing.emailSubscribed;
       const updated = await db.loyaltyContact.update({
         where: { id: existing.id },
         data: {
-          phone: phoneValid ? phone : undefined,
-          email: emailValid ? email : undefined,
+          // never overwrite a contact's existing phone/email (no hijacking by a matching email)
+          phone: phoneValid && !existing.phone ? phone : undefined,
+          email: emailValid && !existing.email ? email : undefined,
           firstName: firstName ?? undefined,
           birthday: birthday ?? undefined,
           // Consent only ever upgrades here - a channel not opted into this time
@@ -119,14 +132,15 @@ export async function POST(req: NextRequest) {
 
   // Instant welcome for whichever channel(s) just opted in. Best-effort: a send
   // failure must never break the join response.
-  if (smsOptIn && phone) {
+  // Welcome only on a NEW opt-in (no repeat texts on re-submits).
+  if (smsOptIn && phone && !wasSmsSubscribed) {
     try {
       await sendSms({ to: toE164(phone), content: loyaltyWelcomeSms(), type: "marketing" });
     } catch (e) {
       console.error("welcome sms failed:", (e as Error).message);
     }
   }
-  if (emailOptIn && email) {
+  if (emailOptIn && email && !wasEmailSubscribed) {
     try {
       await sendEmail({
         to: email,

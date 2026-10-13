@@ -27,7 +27,7 @@ export async function PATCH(req: Request, context: { params: Promise<{ cartId: s
   const { cartId, productId } = await context.params;
   const { quantity } = await req.json();
 
-  if (!Number.isInteger(quantity) || quantity < 1) {
+  if (!Number.isInteger(quantity) || quantity < 1 || quantity > 50) {
     return NextResponse.json({ ok: false, message: "Invalid quantity" }, { status: 400 });
   }
 

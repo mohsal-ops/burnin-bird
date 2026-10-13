@@ -65,6 +65,7 @@ export async function setDoorDashActive(on: boolean): Promise<R> {
 }
 
 export async function testDoorDash(): Promise<R> {
+  await assertWritable();
   try {
     const q = await doordashProvider.quote({
       externalId: `sv-test-${Date.now()}`,

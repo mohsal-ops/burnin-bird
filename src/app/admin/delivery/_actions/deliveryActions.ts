@@ -36,6 +36,7 @@ export async function saveUberDirect(input: { enabled: boolean; mode: UberDirect
 // and requests a real quote (nothing is dispatched), returning Uber's exact
 // answer - e.g. an account Uber has disabled, which env vars alone can't show.
 export async function testUberDirect(): Promise<{ ok: boolean; message: string }> {
+  await assertWritable();
   const { testUberConnection } = await import("@/lib/uber");
   const { SITE_CONFIG } = await import("@/lib/siteConfig");
   return testUberConnection({ formatted: SITE_CONFIG.address, lat: SITE_CONFIG.lat, lng: SITE_CONFIG.lng });

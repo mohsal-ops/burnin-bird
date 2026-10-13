@@ -3,14 +3,14 @@ import { randomBytes } from "crypto";
 import db from "@/db/db";
 import { hashPassword } from "@/lib/password";
 import { sendMail } from "@/lib/email";
-import { getClientIp, isRateLimited } from "@/lib/rateLimit";
+import { allowDb, getClientIp, isRateLimited } from "@/lib/rateLimit";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 
 const VERIFICATION_TOKEN_TTL_MS = 1000 * 60 * 60 * 24; // 24h
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
-  if (isRateLimited(`admin-signup:${ip}`, 5, 60_000)) {
+  if (isRateLimited(`admin-signup:${ip}`, 5, 60_000) || !(await allowDb(`admin-signup:${ip}`, 5, 3600))) {
     return NextResponse.json(
       { error: "Too many attempts. Try again in a minute." },
       { status: 429 },

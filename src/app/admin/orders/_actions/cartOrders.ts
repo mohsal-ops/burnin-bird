@@ -1,5 +1,5 @@
 "use server";
-import { assertWritable } from "@/lib/previewGuard";
+import { assertWritable, assertAdminRead } from "@/lib/previewGuard";
 
 import db from "@/db/db";
 import { revalidatePath } from "next/cache";
@@ -11,6 +11,7 @@ import { notifyOrderReady } from "@/lib/push/notify";
 export type CartOrderStatus = "open" | "new" | "completed" | "abandoned";
 
 export async function getOrdersWithItems(status?: CartOrderStatus) {
+  await assertAdminRead();
   const carts = await db.cart.findMany({
     where: status ? { status } : undefined,
     include: { items: { include: { sides: true } } },
@@ -60,6 +61,7 @@ function itemTotalCents(item: { price: number | null; quantity: number | null })
 // definitions as getOrderStats (Cart + isPaid), just without the heavy
 // most-ordered aggregation - so it's cheap to run on every admin page.
 export async function getTodaySummary() {
+  await assertAdminRead();
   const { start, end } = getTodayBoundsUTC();
   const carts = await db.cart.findMany({
     where: { createdAt: { gte: start, lt: end } },
@@ -79,6 +81,7 @@ export async function getTodaySummary() {
 }
 
 export async function getOrderStats() {
+  await assertAdminRead();
   const { start, end } = getTodayBoundsUTC();
 
   const [todaysCarts, paidCarts] = await Promise.all([

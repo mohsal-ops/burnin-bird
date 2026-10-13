@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import db from "@/db/db";
 import { LOYALTY_PROJECT_ID } from "@/lib/loyalty";
 import { normalizeCode, REDEMPTION_WINDOW_DAYS } from "@/lib/loyaltyPromo";
+import { allowDb, getClientIp } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -24,6 +25,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ valid: false, cleared: true });
   }
 
+  // Guessing guard: 15 code attempts per IP per hour.
+  if (!(await allowDb(`promo:${getClientIp(req)}`, 15, 3600))) {
+    return NextResponse.json({ valid: false, error: "Too many tries. Please wait a bit." }, { status: 429 });
+  }
   const code = normalizeCode(raw);
   const since = new Date(Date.now() - REDEMPTION_WINDOW_DAYS * 86400_000);
   const campaign = await db.loyaltyCampaign.findFirst({

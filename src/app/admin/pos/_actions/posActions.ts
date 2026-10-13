@@ -26,6 +26,7 @@ export async function setPosFeature(flag: "pos_push" | "pos_menu_sync", on: bool
 }
 
 export async function listPosLocations(): Promise<R<{ locations: { id: string; name: string }[] }>> {
+  await assertWritable();
   try {
     const conn = await getActiveConnection();
     if (!conn) return { ok: false, error: "No POS connected" };
@@ -89,6 +90,7 @@ export type PreviewRow = { kind: string; name: string; changes: string[] };
 export async function previewPosMenu(): Promise<
   R<{ counts: { update: number; same: number; create: number; notInPos: number }; rows: PreviewRow[]; notInPos: string[] }>
 > {
+  await assertWritable();
   try {
     const { plan } = await previewMenuImport();
     return {

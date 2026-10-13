@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
   const pi = event.data.object as Stripe.PaymentIntent;
   try {
     if (pi.metadata?.cartId) {
-      await finalizeCart(pi.metadata.cartId, pi.receipt_email || "N/A");
+      await finalizeCart(pi.metadata.cartId, pi.receipt_email || "N/A", pi.amount_received);
       return NextResponse.json({ received: true, order: pi.metadata.cartId });
     }
     if (isGiftCardIntent(pi)) {

@@ -1,4 +1,5 @@
 "use server";
+import { assertWritable } from "@/lib/previewGuard";
 
 import db from "@/db/db";
 import { revalidatePath } from "next/cache";
@@ -13,6 +14,7 @@ const KEYS = [
 ] as const;
 
 export async function updateSiteText(values: Record<string, string>) {
+  await assertWritable();
   try {
     await Promise.all(
       KEYS.filter((k) => k in values).map((k) =>

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import db from "@/db/db";
 import { getLoyaltySettings, LOYALTY_PROJECT_ID } from "@/lib/loyalty";
-import { sendToSubscribed } from "@/app/admin/loyalty/_actions/loyaltyActions";
+import { sendToSubscribed } from "@/lib/loyaltySend";
 
 // Daily birthday send, driven by the n8n workflow (one call per client site).
 // Sends the owner's saved birthday message to contacts whose birthday is exactly

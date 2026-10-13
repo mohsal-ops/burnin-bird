@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
     }
 
     const pi = event.data.object as Stripe.PaymentIntent;
-    await finalizeCart(pi.metadata.cartId, pi.receipt_email || "N/A");
+    await finalizeCart(pi.metadata.cartId, pi.receipt_email || "N/A", pi.amount_received);
     return new NextResponse("Order saved", { status: 200 });
   } catch (err) {
     console.error("stripe webhook error:", err);
