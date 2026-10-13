@@ -591,7 +591,7 @@ html.sv-app #main-content button:active { transform: scale(.97); }
   -webkit-backdrop-filter: saturate(180%) blur(20px);
   backdrop-filter: saturate(180%) blur(20px);
   border-top: 1px solid color-mix(in oklab, hsl(var(--foreground)) 8%, transparent);
-  animation: sv-tabs-in .5s cubic-bezier(.2,.9,.2,1) both;
+  animation: sv-tabs-in .5s cubic-bezier(.2,.9,.2,1) backwards;
 }
 .sv-tab {
   position: relative; flex: 1; max-width: 96px;
@@ -625,6 +625,16 @@ html.sv-app #main-content button:active { transform: scale(.97); }
    to break fixed-position children). */
 html.sv-app .sv-page { animation: sv-page-in .34s cubic-bezier(.2,.8,.2,1); }
 @keyframes sv-page-in { from { opacity: 0; transform: translateX(18px); } to { opacity: 1; transform: none; } }
+/* Any open sheet / dialog / drawer (cart, checkout, item options, More…)
+   gets the whole screen: the tab bar steps aside so its buttons (e.g.
+   Checkout) are never hidden under it. Radix + vaul all use role="dialog". */
+html.sv-app body:has([role="dialog"]) .sv-app-tabs,
+html.sv-app body:has([role="alertdialog"]) .sv-app-tabs {
+  transform: translateY(110%) !important; pointer-events: none;
+}
+.sv-app-tabs { transition: transform .25s cubic-bezier(.2,.8,.2,1); }
+/* Floating elements pinned to the bottom of a page sit above the tab bar. */
+html.sv-app .sv-float-bottom { bottom: calc(92px + env(safe-area-inset-bottom)) !important; }
 @keyframes sv-tabs-in { from { transform: translateY(100%); } to { transform: none; } }
 
 /* Launch screen */

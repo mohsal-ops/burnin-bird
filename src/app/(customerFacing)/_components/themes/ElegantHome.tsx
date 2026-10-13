@@ -265,7 +265,7 @@ export function ElegantHome({ content, heroImages, gallery, galleryItems = [], f
 
       {/* sticky soft-gold order pill (Fiorella's ORDER ONLINE) */}
       <motion.div
-        className="fixed bottom-5 left-1/2 z-40 -translate-x-1/2"
+        className="sv-float-bottom fixed bottom-5 left-1/2 z-40 -translate-x-1/2"
         initial={{ y: 80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 1.6, duration: 0.8, ease: EASE }}
