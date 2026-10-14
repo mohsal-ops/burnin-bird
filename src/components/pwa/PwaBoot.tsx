@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
-import { X, Share, PlusSquare, Download, MoreVertical, Compass, Check, ChevronRight } from "lucide-react";
+import { X, Share, PlusSquare, Download, MoreVertical, MoreHorizontal, Compass, Check, ChevronRight } from "lucide-react";
 import { isIOS, isStandalone, registerSW } from "@/lib/pwa/client";
 
 // Mounted in the public layout ONLY when the "pwa" flag is on (the owner has
@@ -34,6 +34,16 @@ function addHead(tag: string, attrs: Record<string, string>) {
 }
 
 const inAppBrowser = () => /Instagram|FBAN|FBAV|Line\/|TikTok|Snapchat/i.test(navigator.userAgent);
+// Which iPhone browser + layout, so the guide names the exact buttons.
+// Safari 26 (iOS 26) moved Share into the ••• menu at the bottom right.
+type IosKind = "safari26" | "safari" | "chrome" | "other";
+const iosKind = (): IosKind => {
+  const ua = navigator.userAgent;
+  if (/CriOS/i.test(ua)) return "chrome";
+  if (/FxiOS|EdgiOS|OPiOS/i.test(ua)) return "other";
+  const v = Number((ua.match(/Version\/(\d+)/) || [])[1] || (ua.match(/OS (\d+)_/) || [])[1] || 0);
+  return v >= 26 ? "safari26" : "safari";
+};
 const isMobile = () => /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || isIOS();
 
 export default function PwaBoot({ name }: { name: string }) {
@@ -42,10 +52,14 @@ export default function PwaBoot({ name }: { name: string }) {
   const pathname = usePathname() || "/";
   const [guide, setGuide] = useState<Mode | null>(null);
   const [installed, setInstalled] = useState(false);
+  const [kind, setKind] = useState<IosKind>("safari");
 
   const open = useCallback(async () => {
     if (inAppBrowser()) return setGuide("inapp");
-    if (isIOS()) return setGuide("ios");
+    if (isIOS()) {
+      setKind(iosKind());
+      return setGuide("ios");
+    }
     const d = deferred.current;
     if (d) {
       deferred.current = null; // a prompt can only be used once
@@ -152,17 +166,38 @@ export default function PwaBoot({ name }: { name: string }) {
                 <Steps
                   steps={[
                     { icon: <MoreVertical className="h-5 w-5" />, text: "Tap the ••• menu at the top of this screen" },
-                    { icon: <Compass className="h-5 w-5" />, text: isIOS() ? "Pick “Open in Safari”" : "Pick “Open in browser”" },
+                    { icon: <Compass className="h-5 w-5" />, text: "Pick “Open in external browser” (or “Open in Safari”)" },
                     { icon: <Download className="h-5 w-5" />, text: "Then tap “Get the app” again" },
                   ]}
                 />
               ) : guide === "ios" ? (
                 <Steps
-                  steps={[
-                    { icon: <Share className="h-5 w-5" />, text: "Tap the Share button at the bottom (on newer iPhones, tap ••• first)" },
-                    { icon: <PlusSquare className="h-5 w-5" />, text: "Scroll down and tap “Add to Home Screen”" },
-                    { icon: <Check className="h-5 w-5" />, text: "Tap “Add”. Done!" },
-                  ]}
+                  steps={
+                    kind === "chrome"
+                      ? [
+                          { icon: <Share className="h-5 w-5" />, text: "Tap the Share icon at the top right, next to the web address" },
+                          { icon: <PlusSquare className="h-5 w-5" />, text: "Tap “Add to Home Screen” (tap “More” if you don't see it)" },
+                          { icon: <Check className="h-5 w-5" />, text: "Tap “Add”. Done!" },
+                        ]
+                      : kind === "safari26"
+                        ? [
+                            { icon: <MoreHorizontal className="h-5 w-5" />, text: "Tap the ••• button at the bottom right of Safari" },
+                            { icon: <Share className="h-5 w-5" />, text: "Tap “Share”" },
+                            { icon: <PlusSquare className="h-5 w-5" />, text: "Scroll down, tap “Add to Home Screen” (it may be under “View More”)" },
+                            { icon: <Check className="h-5 w-5" />, text: "Tap “Add”. Done!" },
+                          ]
+                        : kind === "other"
+                          ? [
+                              { icon: <MoreHorizontal className="h-5 w-5" />, text: "Open your browser's menu (••• or ☰)" },
+                              { icon: <Share className="h-5 w-5" />, text: "Tap “Share”" },
+                              { icon: <PlusSquare className="h-5 w-5" />, text: "Tap “Add to Home Screen”, then “Add”" },
+                            ]
+                          : [
+                              { icon: <Share className="h-5 w-5" />, text: "Tap the Share button at the bottom of Safari" },
+                              { icon: <PlusSquare className="h-5 w-5" />, text: "Scroll down and tap “Add to Home Screen”" },
+                              { icon: <Check className="h-5 w-5" />, text: "Tap “Add”. Done!" },
+                            ]
+                  }
                 />
               ) : (
                 <Steps
@@ -174,20 +209,27 @@ export default function PwaBoot({ name }: { name: string }) {
                 />
               )}
 
-              {guide === "ios" && (
-                <motion.div
-                  aria-hidden
-                  className="pointer-events-none absolute bottom-[calc(8px+env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 text-[var(--brand,#111)]"
-                  animate={{ y: [0, 10, 0] }}
-                  transition={{ duration: 1.1, repeat: Infinity, ease: "easeInOut" }}
-                >
-                  <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 4v15" />
-                    <path d="m6 13 6 6 6-6" />
-                  </svg>
-                </motion.div>
-              )}
+
             </motion.div>
+            {guide === "ios" && kind !== "other" && (
+              <motion.div
+                aria-hidden
+                className={`pointer-events-none fixed z-[121] text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)] ${
+                  kind === "chrome"
+                    ? "right-4 top-2"
+                    : kind === "safari26"
+                      ? "bottom-[calc(4px+env(safe-area-inset-bottom))] right-5"
+                      : "bottom-[calc(4px+env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2"
+                }`}
+                animate={{ y: kind === "chrome" ? [0, -10, 0] : [0, 10, 0] }}
+                transition={{ duration: 1.1, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" style={{ transform: kind === "chrome" ? "rotate(180deg)" : undefined }}>
+                  <path d="M12 4v15" />
+                  <path d="m6 13 6 6 6-6" />
+                </svg>
+              </motion.div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
