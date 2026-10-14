@@ -19,8 +19,10 @@ export async function GET(req: Request, { params }: { params: Promise<{ size: st
     getThemeColor().catch(() => "#111111"),
   ]);
   const abs = hasBuilderLogo ? builderLogo : dashLogo ? new URL(dashLogo, SITE_CONFIG.siteUrl).toString() : "";
-  // Maskable icons get cropped to a circle by Android: keep the logo inside the safe zone.
-  const inner = Math.round(size * (maskable ? 0.6 : 0.78));
+  // The logo fills the whole icon (no brand-colour frame around it). The brand
+  // colour only shows through transparent parts of a logo. Android's maskable
+  // version trims the corners itself.
+  const inner = size;
 
   return new ImageResponse(
     (
@@ -37,7 +39,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ size: st
       >
         {abs ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={abs} width={inner} height={inner} style={{ objectFit: "contain" }} alt="" />
+          <img src={abs} width={inner} height={inner} style={{ objectFit: "cover", borderRadius: maskable ? 0 : size * 0.18 }} alt="" />
         ) : (
           <div style={{ fontSize: size * 0.5, color: "#fff", fontWeight: 800 }}>{SITE_CONFIG.name.slice(0, 1)}</div>
         )}

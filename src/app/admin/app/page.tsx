@@ -1,6 +1,6 @@
 import db from "@/db/db";
 import { getAllFlags } from "@/lib/flags";
-import { getLogoUrl, getThemeColor } from "@/lib/siteSettings";
+import { getThemeColor } from "@/lib/siteSettings";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import PageHeader from "../_components/pageHeader";
 import { AppToggles } from "./_components/AppToggles";
@@ -10,10 +10,9 @@ export const dynamic = "force-dynamic";
 // Admin → App: turn the installable app and notifications on/off and preview
 // the home-screen icon + splash screen customers will see.
 export default async function AppPage() {
-  const [flags, color, logo, owners, customers] = await Promise.all([
+  const [flags, color, owners, customers] = await Promise.all([
     getAllFlags(),
     getThemeColor().catch(() => "#111111"),
-    getLogoUrl().catch(() => ""),
     db.pushSubscription.count({ where: { audience: "owner" } }).catch(() => 0),
     db.pushSubscription.count({ where: { audience: "customer" } }).catch(() => 0),
   ]);
@@ -55,8 +54,8 @@ export default async function AppPage() {
               <p>
                 Colour: <span className="inline-block h-3 w-3 rounded-full align-middle" style={{ background: color }} /> {color}
               </p>
-              <p>Logo: {logo ? "your logo" : "first letter of your name (add a logo in Branding)"}</p>
-              <p className="mt-1 text-xs">Both come from Branding, so changing them there updates the app too.</p>
+              <p>Logo: your restaurant logo (from your website build)</p>
+              <p className="mt-1 text-xs">The colour comes from Branding. To change the app logo, ask Starvega to update your site logo.</p>
             </div>
           </div>
         </div>
