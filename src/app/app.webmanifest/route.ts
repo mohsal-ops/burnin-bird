@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { iconUrl } from "@/lib/pwa/iconUrl";
 import { isEnabled } from "@/lib/flags";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { getThemeColor } from "@/lib/siteSettings";
@@ -22,9 +23,9 @@ export async function GET() {
       background_color: "#ffffff",
       theme_color: color,
       icons: [
-        { src: "/api/pwa/icon/192", sizes: "192x192", type: "image/png", purpose: "any" },
-        { src: "/api/pwa/icon/512", sizes: "512x512", type: "image/png", purpose: "any" },
-        { src: "/api/pwa/icon/512?maskable=1", sizes: "512x512", type: "image/png", purpose: "maskable" },
+        { src: iconUrl(192), sizes: "192x192", type: "image/png", purpose: "any" },
+        { src: iconUrl(512), sizes: "512x512", type: "image/png", purpose: "any" },
+        { src: iconUrl(512, { maskable: true }), sizes: "512x512", type: "image/png", purpose: "maskable" },
       ],
       shortcuts: [{ name: "Order now", url: "/Menu?source=app" }],
     },

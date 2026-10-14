@@ -45,6 +45,12 @@ export async function GET(req: Request, { params }: { params: Promise<{ size: st
         )}
       </div>
     ),
-    { width: size, height: size },
+    {
+      width: size,
+      height: size,
+      // Not "immutable for a year" (ImageResponse's default): a logo change
+      // must reach phones. URLs are versioned per deploy too (lib/pwa/iconUrl).
+      headers: { "Cache-Control": "public, max-age=3600, s-maxage=3600" },
+    },
   );
 }

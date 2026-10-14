@@ -1,6 +1,7 @@
 import db from "@/db/db";
 import { getAllFlags } from "@/lib/flags";
 import { getThemeColor } from "@/lib/siteSettings";
+import { iconUrl } from "@/lib/pwa/iconUrl";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import PageHeader from "../_components/pageHeader";
 import { AppToggles } from "./_components/AppToggles";
@@ -35,7 +36,7 @@ export default async function AppPage() {
           <div className="flex flex-wrap items-end gap-10">
             <div className="text-center">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/api/pwa/icon/192" alt="App icon" width={72} height={72} className="mx-auto rounded-[18px] shadow-md" />
+              <img src={iconUrl(192)} alt="App icon" width={72} height={72} className="mx-auto rounded-[18px] shadow-md" />
               <p className="mt-1.5 text-xs text-stone-600">{shortName}</p>
               <p className="text-[11px] text-stone-400">Home screen icon</p>
             </div>
@@ -45,7 +46,7 @@ export default async function AppPage() {
                 aria-label="Splash screen preview"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/api/pwa/icon/192" alt="" width={48} height={48} className="rounded-xl" />
+                <img src={iconUrl(192)} alt="" width={48} height={48} className="rounded-xl" />
                 <span className="px-2 text-[11px] font-medium text-stone-700">{SITE_CONFIG.name}</span>
               </div>
               <p className="mt-1.5 text-[11px] text-stone-400">Opening screen</p>

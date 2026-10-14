@@ -46,7 +46,8 @@ const iosKind = (): IosKind => {
 };
 const isMobile = () => /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || isIOS();
 
-export default function PwaBoot({ name }: { name: string }) {
+export default function PwaBoot({ name, iconV = "" }: { name: string; iconV?: string }) {
+  const icon = (size: number) => `/api/pwa/icon/${size}?v=${iconV}`;
   const deferred = useRef<BIPEvent | null>(null);
   const [bar, setBar] = useState(false);
   const pathname = usePathname() || "/";
@@ -73,7 +74,7 @@ export default function PwaBoot({ name }: { name: string }) {
 
   useEffect(() => {
     addHead("link", { rel: "manifest", href: "/app.webmanifest" });
-    addHead("link", { rel: "apple-touch-icon", href: "/api/pwa/icon/180" });
+    addHead("link", { rel: "apple-touch-icon", href: icon(180) });
     addHead("meta", { name: "apple-mobile-web-app-capable", content: "yes" });
     addHead("meta", { name: "apple-mobile-web-app-title", content: name });
     void registerSW();
@@ -124,7 +125,7 @@ export default function PwaBoot({ name }: { name: string }) {
               onClick={() => void open()}
               className="flex h-12 items-center justify-center gap-1.5 rounded-2xl border border-border bg-background text-[15px] font-semibold text-foreground active:scale-[0.98]"
             >
-              <img src="/api/pwa/icon/192" alt="" className="h-6 w-6 rounded-md" />
+              <img src={icon(192)} alt="" className="h-6 w-6 rounded-md" />
               Get the app
               <ChevronRight className="h-4 w-4 opacity-50" />
             </button>
@@ -155,7 +156,7 @@ export default function PwaBoot({ name }: { name: string }) {
                 <X className="h-4 w-4" />
               </button>
               <div className="flex items-center gap-3 pr-10">
-                <img src="/api/pwa/icon/192" alt="" className="h-14 w-14 rounded-2xl shadow" />
+                <img src={icon(192)} alt="" className="h-14 w-14 rounded-2xl shadow" />
                 <div>
                   <p className="text-lg font-extrabold leading-tight">Get the {name} app</p>
                   <p className="text-sm text-stone-500">Free. No app store. Takes 5 seconds.</p>
