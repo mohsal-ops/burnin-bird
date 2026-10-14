@@ -198,34 +198,30 @@ function Banner({ children }: { children: React.ReactNode }) {
   );
 }
 
-// "Diner window" frame — ONE clean arched photo (no stacked discs), framed in
-// white with the theme's signature hard golden offset shadow (same language as
-// the buttons). It wipes up into view; on hover it lifts and the shadow tucks in.
-// Arch radius: half-width round top (40% of a 4:5 frame's height = 50% of its
-// width) + soft bottom corners. "rounded-t-full" made browsers scale ALL radii
-// down, flattening the bottom.
-const ARCH = (px: number) => `50% 50% ${px}px ${px}px / 40% 40% ${px}px ${px}px`;
+// A round plate: dishes are usually shot on round plates, so a circle frames
+// them without cropping (the old arch cut plates into an "egg"). White rim +
+// the theme's signature hard golden offset shadow; the photo opens up from the
+// centre; on hover it lifts and the shadow tucks in.
 
 function Plate({ src, alt, size = "md", priority }: { src: string | null; alt: string; size?: "md" | "lg"; priority?: boolean }) {
   const reduce = useReducedMotion();
   const dim = size === "lg" ? "w-64 md:w-80" : "w-52 md:w-60";
   return (
     <motion.div
-      className={`relative aspect-[4/5] ${dim}`}
+      className={`relative aspect-square ${dim}`}
       initial={reduce ? false : { y: 36, opacity: 0 }}
       whileInView={{ y: 0, opacity: 1 }}
       viewport={{ once: true, margin: "-10%" }}
       transition={{ type: "spring", stiffness: 130, damping: 18 }}
     >
       <div
-        className="absolute inset-0 overflow-hidden border-[5px] border-white bg-white transition-all duration-300 ease-out group-hover:-translate-x-1 group-hover:-translate-y-1.5"
-        style={{ boxShadow: `10px 10px 0 ${GOLD}`, borderRadius: ARCH(26) }}
+        className="absolute inset-0 overflow-hidden rounded-full border-[8px] border-white bg-white transition-all duration-300 ease-out group-hover:-translate-x-1 group-hover:-translate-y-1.5"
+        style={{ boxShadow: `10px 10px 0 ${GOLD}, inset 0 0 0 1px rgba(0,0,0,0.06)` }}
       >
         <motion.div
-          className="absolute inset-0 overflow-hidden"
-          style={{ borderRadius: ARCH(20) }}
-          initial={reduce ? false : { clipPath: "inset(100% 0% 0% 0%)" }}
-          whileInView={{ clipPath: "inset(0% 0% 0% 0%)" }}
+          className="absolute inset-0 overflow-hidden rounded-full"
+          initial={reduce ? false : { clipPath: "circle(0% at 50% 50%)" }}
+          whileInView={{ clipPath: "circle(75% at 50% 50%)" }}
           viewport={{ once: true, margin: "-10%" }}
           transition={{ duration: 0.9, ease: EASE, delay: 0.1 }}
         >

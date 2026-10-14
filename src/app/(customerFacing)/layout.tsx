@@ -47,9 +47,10 @@ export default async function Customerlayout({
           would just be customer noise). Dashboard/preview visits are tracked
           separately in admin/layout.tsx. */}
       {(SITE_CONFIG as { trackWebsiteVisits?: boolean }).trackWebsiteVisits !== false && <VisitAlert source="site" />}
-      {pwaOn && <AppModeBoot name={SITE_CONFIG.name} logoUrl={logoUrl} />}
+      {/* The app uses the builder logo every site has (public/logo.png), not the dashboard one. */}
+      {pwaOn && <AppModeBoot name={SITE_CONFIG.name} logoUrl="/logo.png" />}
       {pwaOn && <PwaBoot name={SITE_CONFIG.name} />}
-      {pwaOn && <AppShell logoUrl={logoUrl} />}
+      {pwaOn && <AppShell logoUrl="/logo.png" />}
       <TrialPopup />
       <DashboardBubble />
       <LoyaltyPopup

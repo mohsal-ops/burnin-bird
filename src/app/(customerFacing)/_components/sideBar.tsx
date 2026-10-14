@@ -15,7 +15,7 @@ import { useAccountState } from "@/components/AccountButton";
 //   classic-starvega → clean panel slides in from the right, links glide in
 //   smash-bold       → brand-colour flood from the button, huge tilted caps
 //   diner-classic    → a cream menu card drops from the top with a bounce
-//   refined-elegant  → dark full screen, numbered serif links, gold rules
+//   refined-elegant  → full screen in the navbar ink colour, numbered serif links, thin white rules
 // "Sign in" comes first when accounts are on; "Get the app" when the app is on.
 
 export type MenuVariant = "classic-starvega" | "smash-bold" | "diner-classic" | "refined-elegant";
@@ -301,7 +301,7 @@ function DinerMenu(p: PanelProps) {
   );
 }
 
-// ── Refined: dark full screen, numbered serif links, gold rules ──────────────
+// ── Refined: navbar ink full screen, numbered serif links, thin rules ──────────────
 function ElegantMenu(p: PanelProps) {
   const item: Variants = {
     hidden: { opacity: 0, letterSpacing: "0.35em", y: 10 },
@@ -311,22 +311,22 @@ function ElegantMenu(p: PanelProps) {
   return (
     <motion.nav
       aria-label="Menu"
-      className="fixed inset-0 z-[70] flex flex-col overflow-y-auto bg-[#0f0d0b] px-7 pb-[calc(24px+env(safe-area-inset-bottom))] pt-6 text-[#f3ece2]"
+      className="fixed inset-0 z-[70] flex flex-col overflow-y-auto bg-[var(--tp-ink,#0f0d0b)] px-7 pb-[calc(24px+env(safe-area-inset-bottom))] pt-6 text-white"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.45 }}
     >
       <div className="flex items-center justify-between">
-        <span className="font-display text-lg uppercase tracking-[0.2em]">{SITE_CONFIG.name}</span>
-        <button type="button" onClick={p.close} aria-label="Close menu" className="grid h-10 w-10 place-items-center rounded-full border border-[#c8a96a]/50 text-[#c8a96a]">
+        <span className="text-lg font-semibold uppercase tracking-[0.22em]" style={{ fontFamily: "var(--font-jost), sans-serif" }}>{SITE_CONFIG.trademark || SITE_CONFIG.name}</span>
+        <button type="button" onClick={p.close} aria-label="Close menu" className="grid h-10 w-10 place-items-center rounded-full border border-white/30 text-white">
           <X className="h-5 w-5" />
         </button>
       </div>
       <motion.ul className="mt-10 flex flex-col gap-5" variants={{ show: { transition: { staggerChildren: 0.09, delayChildren: 0.15 } } }} initial="hidden" animate="show">
         {p.signIn && (
           <motion.li variants={item}>
-            <Link href={p.signIn.href} className="inline-flex items-center gap-2 border-b border-[#c8a96a]/60 pb-1 text-sm uppercase tracking-[0.2em] text-[#c8a96a]">
+            <Link href={p.signIn.href} className="inline-flex items-center gap-2 border-b border-white/40 pb-1 text-sm uppercase tracking-[0.2em] text-white/80">
               <UserRound className="h-4 w-4" /> {p.signIn.label}
             </Link>
           </motion.li>
@@ -335,24 +335,24 @@ function ElegantMenu(p: PanelProps) {
           <motion.li key={l.href} variants={{ hidden: {}, show: {} }}>
             <Link href={l.href} className="group block">
               <span className="flex items-baseline gap-4">
-                <span className="w-6 font-display text-xs text-[#c8a96a]">{String(i + 1).padStart(2, "0")}</span>
-                <motion.span variants={item} className={`font-display text-[34px] font-light leading-none ${isActive(l.href, p.pathname) ? "italic text-[#c8a96a]" : ""}`}>
+                <span className="w-6 text-xs text-white/40">{String(i + 1).padStart(2, "0")}</span>
+                <motion.span variants={item} className={`font-display text-[34px] font-light leading-none ${isActive(l.href, p.pathname) ? "italic text-white" : ""}`}>
                   {l.label}
                 </motion.span>
               </span>
-              <motion.span variants={rule} className="mt-4 block h-px origin-left bg-gradient-to-r from-[#c8a96a]/70 to-transparent" />
+              <motion.span variants={rule} className="mt-4 block h-px origin-left bg-gradient-to-r from-white/35 to-transparent" />
             </Link>
           </motion.li>
         ))}
         {p.dash && (
           <motion.li variants={item}>
-            <a href={p.dash} className="inline-flex items-center gap-2 text-sm uppercase tracking-[0.2em] text-[#c8a96a]">
+            <a href={p.dash} className="inline-flex items-center gap-2 text-sm uppercase tracking-[0.2em] text-white/70">
               <LayoutDashboard className="h-4 w-4" /> Your dashboard
             </a>
           </motion.li>
         )}
       </motion.ul>
-      <BottomButtons p={p} order="border border-[#c8a96a] text-[#c8a96a] uppercase tracking-[0.2em] text-sm" app="text-[#f3ece2]/70 uppercase tracking-[0.2em] text-sm" />
+      <BottomButtons p={p} order="bg-white text-[var(--tp-ink,#0f0d0b)] uppercase tracking-[0.2em] text-sm" app="border border-white/30 text-white uppercase tracking-[0.2em] text-sm" />
     </motion.nav>
   );
 }

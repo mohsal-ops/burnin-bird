@@ -3,15 +3,22 @@ import { getLogoUrl, getThemeColor } from "@/lib/siteSettings";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 
 // App icon for the PWA manifest / iOS home screen: the restaurant's own logo
-// centred on its brand colour, generated on the fly (no per-client assets).
+// centred on its brand colour, generated on the fly. The logo is the one the
+// builder puts in every site at build time (public/logo.png, always there);
+// the dashboard Branding logo is only a fallback.
 export const revalidate = 86400;
 
 export async function GET(req: Request, { params }: { params: Promise<{ size: string }> }) {
   const { size: raw } = await params;
   const size = raw === "512" ? 512 : raw === "180" ? 180 : 192;
   const maskable = new URL(req.url).searchParams.get("maskable") === "1";
-  const [logo, color] = await Promise.all([getLogoUrl().catch(() => ""), getThemeColor().catch(() => "#111111")]);
-  const abs = logo ? new URL(logo, SITE_CONFIG.siteUrl).toString() : "";
+  const builderLogo = new URL("/logo.png", req.url).toString();
+  const [hasBuilderLogo, dashLogo, color] = await Promise.all([
+    fetch(builderLogo, { method: "HEAD" }).then((r) => r.ok).catch(() => false),
+    getLogoUrl().catch(() => ""),
+    getThemeColor().catch(() => "#111111"),
+  ]);
+  const abs = hasBuilderLogo ? builderLogo : dashLogo ? new URL(dashLogo, SITE_CONFIG.siteUrl).toString() : "";
   // Maskable icons get cropped to a circle by Android: keep the logo inside the safe zone.
   const inner = Math.round(size * (maskable ? 0.6 : 0.78));
 
