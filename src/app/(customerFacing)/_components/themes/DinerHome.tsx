@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { cfg } from "@/lib/configOpt";
 import Link from "next/link";
 import { motion, useReducedMotion } from "motion/react";
 import { SITE_CONFIG } from "@/lib/siteConfig";
@@ -268,7 +269,7 @@ function Halftone({ side }: { side: "left" | "right" }) {
 
 export function DinerHome({ content, menu, featured, reviews, heroImage, gallery = [] }: { content: ThemeHomeContent; menu: Cat[]; featured: P[]; reviews: R[]; heroImage: string | null; gallery?: { url: string; alt?: string | null }[] }) {
   const c = SITE_CONFIG;
-  const heroWord = content.words.theme_heroword || stretchWord(c.primaryDish || c.cuisines?.[0] || "Delicious");
+  const heroWord = content.words.theme_heroword || stretchWord(cfg("primaryDish") || c.cuisines?.[0] || "Delicious");
   const heroFood = featured.filter((p) => p.image).slice(0, 3);
   const cats = menu.filter((m) => m.items.length > 0).map((m) => ({ id: m.id, name: m.name, count: m.count ?? m.items.length }));
   const favPool = featured.length > 0 ? featured : (menu.find((m) => m.items.length > 0)?.items ?? []);

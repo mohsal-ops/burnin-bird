@@ -1,4 +1,5 @@
 import PageHeader from "../_components/pageHeader";
+import { cfg } from "@/lib/configOpt";
 import { getAllSiteImages } from "@/lib/getSiteImages";
 import { getSetting, getThemeColor } from "@/lib/siteSettings";
 import { getActiveTheme } from "@/lib/themes/active";
@@ -43,8 +44,8 @@ export default async function MediaPage() {
           autoMascot={`/mascots/${mascotFor(c.loaderStyle, c.cuisines)}.webp`}
           defaults={{
             sub: trademark.split(/\s+/)[0],
-            heroWord: stretchWord(c.primaryDish || c.cuisines?.[0] || "Delicious"),
-            headline: `Neighborhood ${c.primaryDish || c.cuisines?.[0] || "kitchen"}`,
+            heroWord: stretchWord(cfg("primaryDish") || c.cuisines?.[0] || "Delicious"),
+            headline: `Neighborhood ${cfg("primaryDish") || c.cuisines?.[0] || "kitchen"}`,
           }}
         />
       </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { cfg } from "@/lib/configOpt";
 import { usePathname } from "next/navigation";
 import { Instagram } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/siteConfig";
@@ -28,7 +29,7 @@ export const tint = (c: string, pct: number) => `color-mix(in srgb, ${c} ${pct}%
 // is the first cuisine word(s), capped and clipped, with real breathing room.
 function shortSub(): string {
   const c = SITE_CONFIG;
-  const raw = (c.cuisines?.[0] || c.primaryDish || "").trim();
+  const raw = (c.cuisines?.[0] || cfg("primaryDish") || "").trim();
   const cut = raw.split(/s*[&,|·•-]s*|s+ands+/i)[0] ?? "";
   return cut.length > 22 ? cut.split(" ").slice(0, 2).join(" ") : cut;
 }
