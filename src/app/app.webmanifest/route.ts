@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { iconUrl } from "@/lib/pwa/iconUrl";
+import { getIconVersion, iconUrl } from "@/lib/pwa/iconUrl";
 import { isEnabled } from "@/lib/flags";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { getThemeColor } from "@/lib/siteSettings";
@@ -11,6 +11,7 @@ export const revalidate = 300;
 export async function GET() {
   if (!(await isEnabled("pwa"))) return new NextResponse("Not found", { status: 404 });
   const color = await getThemeColor().catch(() => "#111111");
+  const v = await getIconVersion();
   const name = SITE_CONFIG.name;
   return NextResponse.json(
     {
@@ -23,9 +24,9 @@ export async function GET() {
       background_color: "#ffffff",
       theme_color: color,
       icons: [
-        { src: iconUrl(192), sizes: "192x192", type: "image/png", purpose: "any" },
-        { src: iconUrl(512), sizes: "512x512", type: "image/png", purpose: "any" },
-        { src: iconUrl(512, { maskable: true }), sizes: "512x512", type: "image/png", purpose: "maskable" },
+        { src: iconUrl(192, { v }), sizes: "192x192", type: "image/png", purpose: "any" },
+        { src: iconUrl(512, { v }), sizes: "512x512", type: "image/png", purpose: "any" },
+        { src: iconUrl(512, { maskable: true, v }), sizes: "512x512", type: "image/png", purpose: "maskable" },
       ],
       shortcuts: [{ name: "Order now", url: "/Menu?source=app" }],
     },

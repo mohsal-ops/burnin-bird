@@ -16,7 +16,7 @@ import TrialPopup from "./_components/TrialPopup";
 import DashboardBubble from "./_components/DashboardBubble";
 import LoyaltyPopup from "@/components/LoyaltyPopup";
 import PwaBoot from "@/components/pwa/PwaBoot";
-import { ICON_VERSION } from "@/lib/pwa/iconUrl";
+import { getIconVersion } from "@/lib/pwa/iconUrl";
 import { isEnabled } from "@/lib/flags";
 import AppModeBoot from "@/components/app-mode/AppModeBoot";
 import AppShell from "@/components/app-mode/AppShell";
@@ -50,7 +50,7 @@ export default async function Customerlayout({
       {(SITE_CONFIG as { trackWebsiteVisits?: boolean }).trackWebsiteVisits !== false && <VisitAlert source="site" />}
       {/* The app uses the builder logo every site has (public/logo.png), not the dashboard one. */}
       {pwaOn && <AppModeBoot name={SITE_CONFIG.name} logoUrl="/logo.png" />}
-      {pwaOn && <PwaBoot name={SITE_CONFIG.name} iconV={ICON_VERSION} />}
+      {pwaOn && <PwaBoot name={SITE_CONFIG.name} iconV={await getIconVersion()} />}
       {pwaOn && <AppShell logoUrl="/logo.png" />}
       <TrialPopup />
       <DashboardBubble />

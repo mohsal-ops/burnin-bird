@@ -1,24 +1,34 @@
 import { ImageResponse } from "next/og";
-import { getLogoUrl, getThemeColor } from "@/lib/siteSettings";
+import { getLogoUrl, getSetting, getThemeColor } from "@/lib/siteSettings";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 
 // App icon for the PWA manifest / iOS home screen: the restaurant's own logo
 // centred on its brand colour, generated on the fly. The logo is the one the
 // builder puts in every site at build time (public/logo.png, always there);
 // the dashboard Branding logo is only a fallback.
-export const revalidate = 86400;
+// Rendered per request; the CDN caches each versioned URL for an hour (see headers).
+export const dynamic = "force-dynamic";
 
 export async function GET(req: Request, { params }: { params: Promise<{ size: string }> }) {
   const { size: raw } = await params;
   const size = raw === "512" ? 512 : raw === "180" ? 180 : 192;
   const maskable = new URL(req.url).searchParams.get("maskable") === "1";
+  // Order: the app icon the owner uploaded (Admin → App & alerts), then the
+  // builder logo every site has, then the dashboard logo, then a letter.
   const builderLogo = new URL("/logo.png", req.url).toString();
-  const [hasBuilderLogo, dashLogo, color] = await Promise.all([
+  const [appIcon, hasBuilderLogo, dashLogo, color] = await Promise.all([
+    getSetting("app_icon_url", "").catch(() => ""),
     fetch(builderLogo, { method: "HEAD" }).then((r) => r.ok).catch(() => false),
     getLogoUrl().catch(() => ""),
     getThemeColor().catch(() => "#111111"),
   ]);
-  const abs = hasBuilderLogo ? builderLogo : dashLogo ? new URL(dashLogo, SITE_CONFIG.siteUrl).toString() : "";
+  const abs = appIcon
+    ? new URL(appIcon, req.url).toString()
+    : hasBuilderLogo
+      ? builderLogo
+      : dashLogo
+        ? new URL(dashLogo, SITE_CONFIG.siteUrl).toString()
+        : "";
   // The logo fills the whole icon (no brand-colour frame around it). The brand
   // colour only shows through transparent parts of a logo. Android's maskable
   // version trims the corners itself.
