@@ -57,7 +57,6 @@ export function ElegantNav({ initialCartId }: { initialCartId: string | null }) 
           <AccountButton className="text-white hover:bg-white/10" />
         </nav>
         <div className="flex items-center gap-1 lg:hidden [&_button]:text-white">
-          <AccountButton className="text-white hover:bg-white/10" />
           <AppSideBar variant="refined-elegant" />
         </div>
       </div>

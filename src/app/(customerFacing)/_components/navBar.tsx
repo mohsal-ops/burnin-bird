@@ -48,7 +48,6 @@ export function SideBar({
             <Link href="/Menu">Menu</Link>
           </Button>
         )}
-        <AccountButton />
         <ThemeToggle />
         <div className="flex w-7 justify-center items-center">
           <AppSideBar />
