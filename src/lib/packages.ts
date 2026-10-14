@@ -40,8 +40,11 @@ export const atLeast = (have: PackageTier, need: PackageTier): boolean =>
 // packageTier field - e.g. an existing client that receives new template code via
 // "Update from template" but keeps its blocklisted siteConfig) is treated as PRO,
 // so gating never strips sections from an already-live site.
-export function tierOf(cfg: { packageTier?: PackageTier }): PackageTier {
-  return cfg.packageTier ?? "PRO";
+// Accepts any config object: older client siteConfigs have no packageTier (or
+// none of the optional keys), which a `{ packageTier?: … }` parameter rejects at
+// build time ("no properties in common").
+export function tierOf(cfg: object): PackageTier {
+  return (cfg as { packageTier?: PackageTier }).packageTier ?? "PRO";
 }
 
 // Per-tier capability flags. Drives the panel's FEATURES derivation and the

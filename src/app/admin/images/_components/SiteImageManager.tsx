@@ -66,7 +66,7 @@ function HeroSlide({
     image.key,
     image.label,
   );
-  const slide = SITE_CONFIG.home.heroSlides?.[index];
+  const slide = (SITE_CONFIG.home as unknown as { heroSlides?: { ctaLabel?: string }[] }).heroSlides?.[index];
   const role = slide?.ctaLabel ?? image.label;
 
   return (

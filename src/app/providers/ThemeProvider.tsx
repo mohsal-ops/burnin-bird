@@ -27,7 +27,7 @@ export function ThemeProvider({
   return (
     <NextThemesProvider
       attribute="class"
-      defaultTheme={SITE_CONFIG.defaultTheme ?? "light"}
+      defaultTheme={(SITE_CONFIG as unknown as { defaultTheme?: "light" | "dark" }).defaultTheme ?? "light"}
       enableSystem={false}
       {...props}
     >

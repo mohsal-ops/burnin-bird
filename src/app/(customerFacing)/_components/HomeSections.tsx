@@ -43,7 +43,8 @@ export function TopSection({
   // headline/subheadline stay admin-text-editable (restoring what the /admin
   // content editor drove before heroSlides existed). If heroSlides is ever
   // emptied, fall back to a single slide from the hero props.
-  const configured = SITE_CONFIG.home.heroSlides;
+  // Older client configs have no heroSlides key at all.
+  const configured = (SITE_CONFIG.home as unknown as { heroSlides?: HeroSlide[] }).heroSlides;
   const slides: HeroSlide[] =
     configured && configured.length > 0
       ? configured.map((s, i) => ({
