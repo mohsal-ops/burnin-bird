@@ -34,6 +34,16 @@ const COPY: Record<ThemeSlug, { eyebrow: string; heading: string; body: Record<P
       local: `Built to show up when people search near ${city}.`,
     },
   },
+  "pop-bento": {
+    eyebrow: "Why order with us",
+    heading: "Fresh food, ordered your way",
+    body: {
+      catering: "Big group? Book catering in a couple of taps.",
+      direct: "Order right here. No delivery-app markup, ever.",
+      loyalty: "Earn rewards every time you order.",
+      local: `The spot people find when they search ${city}.`,
+    },
+  },
   "smash-bold": {
     eyebrow: "The whole package",
     heading: "Order direct. Skip the fees. Come back for more.",

@@ -16,6 +16,7 @@ export const THEME_SLUGS = [
   "smash-bold",
   "diner-classic",
   "refined-elegant",
+  "pop-bento",
 ] as const;
 
 export type ThemeSlug = (typeof THEME_SLUGS)[number];
@@ -72,6 +73,14 @@ export const THEMES: Record<ThemeSlug, ThemePack> = {
     personality: "Polished and premium — Italian, fine dining, wine bars, date-night spots.",
     motion: "lively",
     inspiredBy: "Fiorella SF",
+  },
+  "pop-bento": {
+    slug: "pop-bento",
+    label: "Pop Bento",
+    description: "Bright and playful. Rounded bento cards in your brand colour, dishes that pop out, stickers and a scrolling ticker.",
+    personality: "Fun, modern and colourful - burgers, bowls, tacos, cafés, anything with great food photos.",
+    motion: "lively",
+    inspiredBy: "modern bento-grid food brands (original Starvega design)",
   },
 };
 

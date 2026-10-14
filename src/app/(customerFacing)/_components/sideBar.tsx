@@ -16,9 +16,10 @@ import { useAccountState } from "@/components/AccountButton";
 //   smash-bold       → brand-colour flood from the button, huge tilted caps
 //   diner-classic    → a cream menu card drops from the top with a bounce
 //   refined-elegant  → full screen in the navbar ink colour, numbered serif links, thin white rules
+//   pop-bento        → colourful bento tiles that pop in with a little spin
 // "Sign in" comes first when accounts are on; "Get the app" when the app is on.
 
-export type MenuVariant = "classic-starvega" | "smash-bold" | "diner-classic" | "refined-elegant";
+export type MenuVariant = "classic-starvega" | "smash-bold" | "diner-classic" | "refined-elegant" | "pop-bento";
 
 type Item = { href: string; label: string };
 
@@ -87,7 +88,9 @@ export default function AppSideBar({ variant = "classic-starvega" }: { variant?:
         createPortal(
           <AnimatePresence>
             {open &&
-              (variant === "smash-bold" ? (
+              (variant === "pop-bento" ? (
+                <PopMenu key="m" {...props} />
+              ) : variant === "smash-bold" ? (
                 <SmashMenu key="m" {...props} />
               ) : variant === "diner-classic" ? (
                 <DinerMenu key="m" {...props} />
@@ -353,6 +356,67 @@ function ElegantMenu(p: PanelProps) {
         )}
       </motion.ul>
       <BottomButtons p={p} order="bg-white text-[var(--tp-ink,#0f0d0b)] uppercase tracking-[0.2em] text-sm" app="border border-white/30 text-white uppercase tracking-[0.2em] text-sm" />
+    </motion.nav>
+  );
+}
+
+// ── Pop Bento: colourful tiles that pop in ──────────────────────────────────
+function PopMenu(p: PanelProps) {
+  const tile: Variants = {
+    hidden: { opacity: 0, scale: 0.6, rotate: -8 },
+    show: { opacity: 1, scale: 1, rotate: 0, transition: { type: "spring", stiffness: 380, damping: 18 } },
+  };
+  const tones = [
+    "bg-[var(--brand)] text-[var(--brand-foreground)]",
+    "bg-[color-mix(in_srgb,var(--brand)_22%,#fff7ec)] text-[#15110e]",
+    "bg-white text-[#15110e] ring-2 ring-inset ring-[#15110e]",
+    "bg-[#15110e] text-[#fff7ec]",
+  ];
+  return (
+    <motion.nav
+      aria-label="Menu"
+      className="fixed inset-0 z-[70] flex flex-col overflow-y-auto bg-[#fff7ec] px-4 pb-[calc(20px+env(safe-area-inset-bottom))] pt-5 text-[#15110e]"
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 30 }}
+      transition={{ type: "spring", stiffness: 320, damping: 30 }}
+    >
+      <div className="flex items-center justify-between px-1">
+        <span className="font-display text-2xl font-extrabold tracking-tight">{SITE_CONFIG.name}</span>
+        <button type="button" onClick={p.close} aria-label="Close menu" className="grid h-11 w-11 place-items-center rounded-full bg-[#15110e] text-[#fff7ec]">
+          <X className="h-5 w-5" />
+        </button>
+      </div>
+      <motion.ul className="mt-5 grid grid-cols-2 gap-2.5" variants={{ show: { transition: { staggerChildren: 0.05, delayChildren: 0.08 } } }} initial="hidden" animate="show">
+        {p.signIn && (
+          <motion.li variants={tile} className="col-span-2">
+            <Link href={p.signIn.href} className="flex h-16 items-center gap-3 rounded-[24px] bg-[#15110e] px-5 text-lg font-bold text-[#fff7ec]">
+              <UserRound className="h-5 w-5" /> {p.signIn.label}
+            </Link>
+          </motion.li>
+        )}
+        {p.links.map((l, i) => (
+          <motion.li key={l.href} variants={tile} className={i === 0 && p.links.length % 2 === 1 ? "col-span-2" : ""}>
+            <Link
+              href={l.href}
+              className={`relative flex h-28 flex-col justify-end rounded-[28px] p-4 font-display text-2xl font-extrabold leading-none tracking-tight active:scale-95 ${tones[i % tones.length]}`}
+            >
+              {isActive(l.href, p.pathname) && <span className="absolute right-4 top-4 h-3 w-3 rounded-full bg-current" />}
+              <span className="flex items-center gap-2">
+                <Icon label={l.label} /> {l.label}
+              </span>
+            </Link>
+          </motion.li>
+        ))}
+        {p.dash && (
+          <motion.li variants={tile} className="col-span-2">
+            <a href={p.dash} className="flex h-14 items-center gap-2 rounded-[22px] bg-white px-5 font-bold ring-1 ring-inset ring-[#15110e]/15">
+              <LayoutDashboard className="h-4 w-4" /> Your dashboard
+            </a>
+          </motion.li>
+        )}
+      </motion.ul>
+      <BottomButtons p={p} order="rounded-full bg-[var(--brand)] text-[var(--brand-foreground)] font-bold" app="rounded-full bg-white font-bold ring-2 ring-inset ring-[#15110e]" />
     </motion.nav>
   );
 }

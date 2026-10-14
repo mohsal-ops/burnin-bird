@@ -54,6 +54,21 @@ export const THEME_MEDIA: Record<ThemeSlug, { slots: MediaSlot[]; words: ThemeWo
     ],
     dishesNote: "The launch slide's three product cards and the endless sliding card row use your featured menu items' photos. Your Gallery tab fills the two-row photo wall further down.",
   },
+  "pop-bento": {
+    slots: [
+      {
+        key: "pop_hero",
+        label: "Hero dish backup",
+        where: "Only used if no featured dish has a photo - otherwise the dark hero card shows your #1 featured dish popping out.",
+        fallback: "home_hero",
+      },
+      { key: "home_feature_1", label: "Story photo", where: "The big photo card next to 'Our story'." },
+    ],
+    words: [
+      { key: "pop_headline", label: "Big headline", hint: "The giant words on the brand-colour hero card. Short and punchy, like 'Smash. Sauce. Repeat.'", max: 40, font: "var(--font-bricolage), system-ui" },
+    ],
+    dishesNote: "Your featured dishes fill the hero and the 'Most loved' bento cards. Photos on a plain or transparent background pop out of the cards best.",
+  },
   "diner-classic": {
     slots: [
       {

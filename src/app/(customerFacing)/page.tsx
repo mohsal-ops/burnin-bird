@@ -28,6 +28,7 @@ import { SmashHome } from "./_components/themes/SmashHome";
 import { getThemeHomeContent } from "@/lib/themes/homeContent";
 import { DinerHome } from "./_components/themes/DinerHome";
 import { ElegantHome } from "./_components/themes/ElegantHome";
+import { PopHome } from "./_components/themes/PopHome";
 import {
   Item,
   SideGroup,
@@ -232,6 +233,34 @@ export default async function Home() {
           menu={types.map((t) => ({ id: t.id, name: t.name, count: t._count.items, items: t.items.map(slim) }))}
           featured={featured.map(slim)}
           reviews={reviews}
+        />
+      </>
+    );
+  }
+
+  if (themeSlug === "pop-bento") {
+    const [types, featured, reviews, content, gallery, hours] = await Promise.all([
+      db.types.findMany({
+        orderBy: { createdAt: "asc" },
+        include: { _count: { select: { items: { where: { isAvailableForPurchase: true } } } } },
+      }),
+      GetFeaturedProducts(),
+      db.review.findMany({ orderBy: { order: "asc" } }),
+      getThemeHomeContent(themeSlug),
+      db.galleryImage.findMany({ orderBy: { order: "asc" }, select: { url: true, alt: true }, take: 12 }),
+      getBusinessHours().catch(() => []),
+    ]);
+    return (
+      <>
+        <FaqSchema />
+        <PopHome
+          content={content}
+          heroImage={heroImage}
+          featured={featured.map(slim)}
+          menu={types.filter((t) => t._count.items > 0).map((t) => ({ id: t.id, name: t.name, count: t._count.items }))}
+          reviews={reviews}
+          gallery={gallery}
+          hours={(hours as { dayIndex: number; open: number; close: number }[]).map((h) => ({ dayIndex: h.dayIndex, open: h.open, close: h.close }))}
         />
       </>
     );

@@ -12,7 +12,7 @@
 //             Courier New -> Courier Prime (free), script -> Lobster
 //   Fiorella: FiorellaFace(bespoke) -> Saira Stencil One (bespoke homepage) / Marcellus, proxima-nova(paid) -> Jost,
 //             futura-pt(paid) -> Jost
-import { Poppins, Caveat, Montserrat, Courier_Prime, Marcellus, Jost, Chewy, Lobster, Saira_Stencil_One, Permanent_Marker, Antonio } from "next/font/google";
+import { Poppins, Caveat, Montserrat, Courier_Prime, Marcellus, Jost, Chewy, Lobster, Saira_Stencil_One, Permanent_Marker, Antonio, Bricolage_Grotesque, DM_Sans } from "next/font/google";
 
 // smash-bold (Ender): tight, bold, uppercase display + a hand-drawn accent +
 // a puffy balloon face for the big "waved" brand word (Ender's bespoke ENDY
@@ -108,6 +108,22 @@ const jost = Jost({
   preload: false,
 });
 
+// pop-bento: a chunky, characterful grotesk for the big words + a friendly sans.
+const bricolage = Bricolage_Grotesque({
+  subsets: ["latin"],
+  weight: ["500", "700", "800"],
+  variable: "--font-bricolage",
+  display: "swap",
+  preload: false,
+});
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  variable: "--font-dmsans",
+  display: "swap",
+  preload: false,
+});
+
 // preload: false on every font above: only the active design's fonts are
 // downloaded (when its CSS uses them), not all four themes' on every site.
 //
@@ -127,4 +143,6 @@ export const themeFontVariables = [
   sairaStencil.variable,
   marcellus.variable,
   jost.variable,
+  bricolage.variable,
+  dmSans.variable,
 ].join(" ");

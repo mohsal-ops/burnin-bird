@@ -3,6 +3,7 @@ import { TopNavBar } from "./_components/navBar";
 import { SmashNav } from "./_components/themes/SmashNav";
 import { DinerNav } from "./_components/themes/DinerNav";
 import { ElegantNav } from "./_components/themes/ElegantNav";
+import { PopNav } from "./_components/themes/PopNav";
 import { getActiveTheme } from "@/lib/themes/active";
 import { Footer } from "./_components/Footer";
 import { Toaster } from "sonner";
@@ -72,6 +73,8 @@ export default async function Customerlayout({
             <DinerNav initialCartId={cartId} logoUrl={logoUrl} />
           ) : theme === "refined-elegant" ? (
             <ElegantNav initialCartId={cartId} />
+          ) : theme === "pop-bento" ? (
+            <PopNav initialCartId={cartId} logoUrl={logoUrl} />
           ) : (
             <TopNavBar initialCartId={cartId} logoUrl={logoUrl} />
           )}

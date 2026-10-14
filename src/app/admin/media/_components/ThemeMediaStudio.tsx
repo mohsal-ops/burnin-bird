@@ -25,12 +25,14 @@ const THEME_LABEL: Record<ThemeSlug, string> = {
   "smash-bold": "Smash & Bold",
   "diner-classic": "Diner Classic",
   "refined-elegant": "Refined",
+  "pop-bento": "Pop Bento",
 };
 const THEME_SWATCH: Record<ThemeSlug, [string, string]> = {
   "classic-starvega": ["#ffffff", "#f97316"],
   "smash-bold": ["#eef1f0", "#111315"],
   "diner-classic": ["#fcb931", "#3b2517"],
   "refined-elegant": ["#0f0606", "#ffd469"],
+  "pop-bento": ["#fff7ec", "#15110e"],
 };
 
 function useUpload(key: string, label: string, onSaved: (url: string) => void) {
