@@ -100,7 +100,15 @@ export function PopHome({
 
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const dishRotate = useTransform(scrollYProgress, [0, 1], [0, reduce ? 0 : 18]);
+  // Depth on scroll (no spinning): each layer drifts at its own speed, so the
+  // plate seems to lift off the brand disc towards you. Transforms only = cheap.
+  const k = reduce ? 0 : 1;
+  const discY = useTransform(scrollYProgress, [0, 1], [0, 60 * k]);
+  const discScale = useTransform(scrollYProgress, [0, 1], [1, 1 + 0.15 * k]);
+  const plateY = useTransform(scrollYProgress, [0, 1], [0, -40 * k]);
+  const plateScale = useTransform(scrollYProgress, [0, 1], [1, 1 + 0.08 * k]);
+  const stickerY = useTransform(scrollYProgress, [0, 1], [0, -110 * k]);
+  const pillY = useTransform(scrollYProgress, [0, 1], [0, -70 * k]);
 
   const tickerItems = (featured.length ? featured.map((p) => p.name.trim()) : [dish, "Order online", "Pickup", "Delivery"]).slice(0, 10);
 
@@ -168,6 +176,7 @@ export function PopHome({
         </div>
 
         <div className="relative order-1 mx-auto aspect-square w-full max-w-[300px] md:order-2 md:max-w-[520px]">
+          <motion.div className="absolute inset-0" style={{ y: discY, scale: discScale }}>
           <motion.div
             className="absolute inset-[6%] rounded-full"
             style={{ background: BRAND }}
@@ -175,12 +184,13 @@ export function PopHome({
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: "spring", stiffness: 120, damping: 16 }}
           />
+          </motion.div>
+          <motion.div className="absolute inset-0" style={{ y: plateY, scale: plateScale }}>
           <motion.div
             className="absolute inset-[16%] overflow-hidden rounded-full bg-white shadow-[0_30px_60px_rgba(0,0,0,0.18)]"
             initial={reduce ? false : { y: -60, opacity: 0, rotate: -20 }}
             animate={{ y: 0, opacity: 1, rotate: 0 }}
             transition={{ type: "spring", stiffness: 140, damping: 15, delay: 0.25 }}
-            style={{ rotate: dishRotate }}
           >
             {heroSrc && (
               <motion.div
@@ -192,7 +202,9 @@ export function PopHome({
               </motion.div>
             )}
           </motion.div>
+          </motion.div>
           {hero && (
+            <motion.div className="pointer-events-none absolute inset-0 z-10" style={{ y: stickerY }}>
             <motion.span
               className="absolute right-[4%] top-[8%] z-10 grid h-20 w-20 place-items-center rounded-full text-lg font-semibold shadow-lg md:h-24 md:w-24 md:text-xl"
               style={{ background: INK, color: "#fff" }}
@@ -202,8 +214,10 @@ export function PopHome({
             >
               {usd(hero.priceInCents)}
             </motion.span>
+            </motion.div>
           )}
           {hero && (
+            <motion.div className="pointer-events-none absolute inset-0 z-10" style={{ y: pillY }}>
             <motion.p
               className="absolute bottom-[4%] left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full bg-white px-5 py-2.5 text-sm font-semibold shadow-[0_10px_30px_rgba(0,0,0,0.12)]"
               initial={reduce ? false : { opacity: 0, y: 14 }}
@@ -212,6 +226,7 @@ export function PopHome({
             >
               <span className="mr-1.5" style={{ color: BRAND }}>★</span> Best seller · {hero.name.trim()}
             </motion.p>
+            </motion.div>
           )}
         </div>
       </section>
