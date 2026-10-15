@@ -28,6 +28,11 @@ export default function AppSideBar({ variant = "classic-starvega" }: { variant?:
   const acct = useAccountState();
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    if (variant !== "pop-bento") return;
+    const t = setTimeout(loadNavPhotos, 1500); // after the page settles
+    return () => clearTimeout(t);
+  }, [variant]);
   const [origin, setOrigin] = useState({ x: 0, y: 0 });
   const [hasApp, setHasApp] = useState(false);
   const btn = useRef<HTMLButtonElement>(null);
@@ -361,7 +366,73 @@ function ElegantMenu(p: PanelProps) {
 }
 
 // ── Pop Bento: colourful tiles that pop in ──────────────────────────────────
+// Photos for the picture tiles - fetched once per page load, shared by every
+// open of the menu. Comes from the site's own dishes + gallery (no uploads).
+type NavPhotos = { menu: string[]; story: string[] };
+let navPhotosOnce: Promise<NavPhotos> | null = null;
+// Fetch the list + warm the browser cache so tiles are ready the moment the menu opens.
+function loadNavPhotos() {
+  navPhotosOnce ??= fetch("/api/nav-photos")
+    .then((r) => r.json() as Promise<NavPhotos>)
+    .then((p) => {
+      [...p.menu, ...p.story].forEach((src) => {
+        const img = new window.Image();
+        img.src = src;
+      });
+      return p;
+    })
+    .catch(() => ({ menu: [], story: [] }));
+  return navPhotosOnce;
+}
+function useNavPhotos() {
+  const [photos, setPhotos] = useState<NavPhotos | null>(null);
+  useEffect(() => {
+    loadNavPhotos();
+    let live = true;
+    navPhotosOnce!.then((p) => live && setPhotos(p));
+    return () => {
+      live = false;
+    };
+  }, []);
+  return photos;
+}
+function photosFor(href: string, photos: NavPhotos | null) {
+  if (!photos) return [];
+  const h = href.toLowerCase();
+  if (h.startsWith("/menu")) return photos.menu;
+  if (/story|about/.test(h)) return photos.story;
+  return [];
+}
+
+// A slow zoom on each photo, cross-fading to the next every 3s.
+function PhotoLoop({ srcs }: { srcs: string[] }) {
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    if (srcs.length < 2) return;
+    const t = setInterval(() => setI((n) => (n + 1) % srcs.length), 3000);
+    return () => clearInterval(t);
+  }, [srcs.length]);
+  return (
+    <span aria-hidden className="absolute inset-0 overflow-hidden rounded-[inherit]">
+      <AnimatePresence initial={false}>
+        <motion.img
+          key={i}
+          src={srcs[i]}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover"
+          initial={{ opacity: 0, scale: 1 }}
+          animate={{ opacity: 1, scale: 1.14 }}
+          exit={{ opacity: 0 }}
+          transition={{ opacity: { duration: 0.8 }, scale: { duration: 4, ease: "linear" } }}
+        />
+      </AnimatePresence>
+      <span className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+    </span>
+  );
+}
+
 function PopMenu(p: PanelProps) {
+  const photos = useNavPhotos();
   const tile: Variants = {
     hidden: { opacity: 0, scale: 0.6, rotate: -8 },
     show: { opacity: 1, scale: 1, rotate: 0, transition: { type: "spring", stiffness: 380, damping: 18 } },
@@ -395,19 +466,25 @@ function PopMenu(p: PanelProps) {
             </Link>
           </motion.li>
         )}
-        {p.links.map((l, i) => (
+        {p.links.map((l, i) => {
+          const pics = photosFor(l.href, photos);
+          return (
           <motion.li key={l.href} variants={tile} className={i === 0 && p.links.length % 2 === 1 ? "col-span-2" : ""}>
             <Link
               href={l.href}
-              className={`relative flex h-28 flex-col justify-end rounded-[28px] p-4 font-display text-2xl font-semibold leading-none tracking-tight active:scale-95 ${tones[i % tones.length]}`}
+              className={`relative flex h-28 flex-col justify-end overflow-hidden rounded-[28px] p-4 font-display text-2xl font-semibold leading-none tracking-tight active:scale-95 ${
+                pics.length ? "bg-[#15110e] text-white" : tones[i % tones.length]
+              }`}
             >
-              {isActive(l.href, p.pathname) && <span className="absolute right-4 top-4 h-3 w-3 rounded-full bg-current" />}
-              <span className="flex items-center gap-2">
+              {pics.length > 0 && <PhotoLoop srcs={pics} />}
+              {isActive(l.href, p.pathname) && <span className="absolute right-4 top-4 z-10 h-3 w-3 rounded-full bg-current" />}
+              <span className="relative z-10 flex items-center gap-2">
                 <Icon label={l.label} /> {l.label}
               </span>
             </Link>
           </motion.li>
-        ))}
+          );
+        })}
         {p.dash && (
           <motion.li variants={tile} className="col-span-2">
             <a href={p.dash} className="flex h-14 items-center gap-2 rounded-[22px] bg-white px-5 font-bold ring-1 ring-inset ring-[#15110e]/15">
