@@ -111,7 +111,7 @@ const jost = Jost({
 // pop-bento: a chunky, characterful grotesk for the big words + a friendly sans.
 const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
-  weight: ["500", "700", "800"],
+  weight: ["500", "600", "700"],
   variable: "--font-bricolage",
   display: "swap",
   preload: false,

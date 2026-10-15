@@ -43,7 +43,7 @@ export function PopNav({ initialCartId, logoUrl }: { initialCartId: string | nul
             height={44}
             className={`shrink-0 rounded-full object-cover ${scrolled ? "h-9 w-9" : "h-11 w-11"} transition-all`}
           />
-          <span className="hidden truncate font-display text-lg font-extrabold tracking-tight sm:block">{c.name}</span>
+          <span className="hidden truncate font-display text-lg font-semibold tracking-tight sm:block">{c.name}</span>
         </Link>
 
         <nav className="hidden items-center gap-1 lg:flex">

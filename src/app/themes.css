@@ -197,14 +197,14 @@ html[data-theme="refined-elegant"].dark {
 
 /* ── pop-bento — original Starvega design ──────────────────────────────────
    Fonts: Bricolage Grotesque (chunky display) + DM Sans (body).
-   Palette: warm paper #FFF7EC, near-black ink #15110E; the restaurant's own
+   Palette: clean white, near-black ink #15110E; the restaurant's own
    --brand colour does the loud work (bento cards, stickers, buttons). */
 html[data-theme="pop-bento"] {
   --ff-display: var(--font-bricolage), ui-sans-serif, sans-serif;
   --ff-body: var(--font-dmsans), ui-sans-serif, sans-serif;
   --ff-accent: var(--font-bricolage), ui-sans-serif, sans-serif;
 
-  --background: 36 100% 96%;     /* #FFF7EC paper */
+  --background: 0 0% 100%;       /* clean white */
   --foreground: 24 21% 7%;       /* #15110E ink */
   --card: 0 0% 100%;
   --card-foreground: 24 21% 7%;
@@ -212,17 +212,17 @@ html[data-theme="pop-bento"] {
   --popover-foreground: 24 21% 7%;
 
   --primary: 24 21% 7%;
-  --primary-foreground: 36 100% 96%;
-  --secondary: 36 60% 90%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 0 0% 96%;
   --secondary-foreground: 24 21% 7%;
 
-  --muted: 36 55% 91%;
-  --muted-foreground: 24 12% 35%;
-  --accent: 36 70% 88%;
+  --muted: 0 0% 96%;
+  --muted-foreground: 0 0% 40%;
+  --accent: 0 0% 94%;
   --accent-foreground: 24 21% 7%;
 
-  --border: 36 30% 84%;
-  --input: 36 30% 84%;
+  --border: 0 0% 88%;
+  --input: 0 0% 88%;
   --ring: 24 21% 7%;
 
   --dark: 24 21% 7%;

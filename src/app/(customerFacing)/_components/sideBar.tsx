@@ -368,21 +368,21 @@ function PopMenu(p: PanelProps) {
   };
   const tones = [
     "bg-[var(--brand)] text-[var(--brand-foreground)]",
-    "bg-[color-mix(in_srgb,var(--brand)_22%,#fff7ec)] text-[#15110e]",
+    "bg-[#f5f5f4] text-[#15110e]",
     "bg-white text-[#15110e] ring-2 ring-inset ring-[#15110e]",
     "bg-[#15110e] text-[#fff7ec]",
   ];
   return (
     <motion.nav
       aria-label="Menu"
-      className="fixed inset-0 z-[70] flex flex-col overflow-y-auto bg-[#fff7ec] px-4 pb-[calc(20px+env(safe-area-inset-bottom))] pt-5 text-[#15110e]"
+      className="fixed inset-0 z-[70] flex flex-col overflow-y-auto bg-white px-4 pb-[calc(20px+env(safe-area-inset-bottom))] pt-5 text-[#15110e]"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 30 }}
       transition={{ type: "spring", stiffness: 320, damping: 30 }}
     >
       <div className="flex items-center justify-between px-1">
-        <span className="font-display text-2xl font-extrabold tracking-tight">{SITE_CONFIG.name}</span>
+        <span className="font-display text-2xl font-semibold tracking-tight">{SITE_CONFIG.name}</span>
         <button type="button" onClick={p.close} aria-label="Close menu" className="grid h-11 w-11 place-items-center rounded-full bg-[#15110e] text-[#fff7ec]">
           <X className="h-5 w-5" />
         </button>
@@ -399,7 +399,7 @@ function PopMenu(p: PanelProps) {
           <motion.li key={l.href} variants={tile} className={i === 0 && p.links.length % 2 === 1 ? "col-span-2" : ""}>
             <Link
               href={l.href}
-              className={`relative flex h-28 flex-col justify-end rounded-[28px] p-4 font-display text-2xl font-extrabold leading-none tracking-tight active:scale-95 ${tones[i % tones.length]}`}
+              className={`relative flex h-28 flex-col justify-end rounded-[28px] p-4 font-display text-2xl font-semibold leading-none tracking-tight active:scale-95 ${tones[i % tones.length]}`}
             >
               {isActive(l.href, p.pathname) && <span className="absolute right-4 top-4 h-3 w-3 rounded-full bg-current" />}
               <span className="flex items-center gap-2">
