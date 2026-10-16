@@ -19,6 +19,9 @@ import { getAccess } from "@/lib/getAccess";
 import PreviewSectionNote from "../_components/PreviewSectionNote";
 import { StatusPill } from "../_components/pos";
 import { cn } from "@/lib/utils";
+import FeaturedOrder from "./_components/FeaturedOrder";
+import { getSetting } from "@/lib/siteSettings";
+import { applyCategoryOrder } from "@/lib/categoryOrder";
 
 export default async function Items() {
   const access = await getAccess();
@@ -39,6 +42,10 @@ export default async function Items() {
     );
   };
   const data = await itemAndTypeFunction(items);
+  const featured = applyCategoryOrder(
+    items.filter((it) => it.featured && it.isAvailableForPurchase).sort((a, b) => a.name.localeCompare(b.name)),
+    await getSetting("featured_order", "[]"),
+  ).map((it) => ({ id: it.id, name: it.name, image: it.image }));
 
   return (
     <div className="lg:flex justify-center">
@@ -64,6 +71,8 @@ export default async function Items() {
             DoorDash and Uber Eats take that margin and it stays with you.
           </PreviewSectionNote>
         )}
+
+        <FeaturedOrder items={featured} />
 
         {/* Menu items as a POS grid of image tiles: photo, name, price - tap to
             edit. The "..." menu (feature, availability, sides, delete) sits on

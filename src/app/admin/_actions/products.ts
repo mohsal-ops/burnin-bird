@@ -287,6 +287,22 @@ export async function reorderCategories(orderedIds: string[]) {
   revalidatePath("/admin/menuCategories");
 }
 
+// Owner-chosen order of FEATURED items (ids, in display order) - same
+// no-migration SiteSetting approach as categories. #1 is the homepage's big card.
+export async function reorderFeatured(orderedIds: string[]) {
+  await assertWritable();
+  const value = JSON.stringify(orderedIds.filter((x) => typeof x === "string").slice(0, 200));
+  await db.siteSetting.upsert({
+    where: { key: "featured_order" },
+    update: { value },
+    create: { key: "featured_order", value },
+  });
+  revalidateTag("featured-products");
+  revalidatePath("/");
+  revalidatePath("/Menu");
+  revalidatePath("/admin/menuItems");
+}
+
 // ── Sides ────────────────────────────────────────────────────────────────────
 type SideGroupInput = {
   title: string;

@@ -53,8 +53,11 @@ export const GetFeaturedProducts = cache(
         },
       },
       where: { isAvailableForPurchase: true, featured: true },
+      orderBy: { name: "asc" },
     });
-    return products;
+    // Owner-chosen order (admin → Menu Items → "Featured order"); #1 is the
+    // big card on the homepage. Items not in the saved order go last.
+    return applyCategoryOrder(products, await getSetting("featured_order", "[]"));
   },
   ["featured-products-fun"],
   { tags: ["featured-products"], revalidate: 60 * 15 },

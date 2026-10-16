@@ -187,18 +187,18 @@ export function PopHome({
           </motion.div>
           <motion.div className="absolute inset-0" style={{ y: plateY, scale: plateScale }}>
           <motion.div
-            className="absolute inset-[16%] overflow-hidden rounded-full bg-white shadow-[0_30px_60px_rgba(0,0,0,0.18)]"
+            className="absolute inset-[12%] overflow-hidden rounded-full bg-white shadow-[0_30px_60px_rgba(0,0,0,0.18)]"
             initial={reduce ? false : { y: -60, opacity: 0, rotate: -20 }}
             animate={{ y: 0, opacity: 1, rotate: 0 }}
             transition={{ type: "spring", stiffness: 140, damping: 15, delay: 0.25 }}
           >
             {heroSrc && (
               <motion.div
-                className="absolute inset-[9%]"
+                className="absolute inset-[3%] scale-[1.04]"
                 animate={reduce ? undefined : { y: [0, -8, 0] }}
                 transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1.4 }}
               >
-                <Image src={heroSrc} alt={hero?.name ?? c.name} fill priority sizes="(max-width:768px) 70vw, 380px" className="object-contain mix-blend-multiply" />
+                <Image src={heroSrc} alt={hero?.name ?? c.name} fill priority sizes="(max-width:768px) 80vw, 460px" className="object-contain mix-blend-multiply" />
               </motion.div>
             )}
           </motion.div>
@@ -256,7 +256,7 @@ export function PopHome({
               Full menu <ArrowUpRight className="h-4 w-4" />
             </Link>
           </div>
-          <div className="grid auto-rows-[220px] grid-cols-2 gap-3 md:auto-rows-[240px] md:grid-cols-4 md:gap-4">
+          <div className="grid auto-rows-[225px] grid-cols-2 gap-3 md:auto-rows-[290px] md:grid-cols-4 md:gap-4">
             {loved.map((p, i) => {
               const big = i === 0;
               const bg = i % 3 === 0 ? BRAND : i % 3 === 1 ? SOFT : INK;
@@ -269,19 +269,22 @@ export function PopHome({
                     style={{ background: bg, color: fg }}
                   >
                     <div className="relative z-10 flex items-start justify-between gap-2">
-                      <p className={`font-display font-semibold leading-[0.95] tracking-tight ${big ? "max-w-[60%] text-3xl md:text-5xl" : "text-base md:text-lg"}`}>{p.name.trim()}</p>
+                      <p className={`font-display font-semibold leading-[0.95] tracking-tight ${big ? "max-w-[60%] text-3xl md:text-5xl" : "text-[15px] md:text-lg"}`}>{p.name.trim()}</p>
                       <span className="shrink-0 rounded-full px-3 py-1 text-sm font-semibold" style={{ background: fg, color: bg }}>
                         {usd(p.priceInCents)}
                       </span>
                     </div>
-                    {/* the dish on a round white plate: white-background photos melt into it */}
+                    {/* the dish fills a big round white plate (fully on the card, so
+                        the food is never cut off); white-background photos melt into it */}
                     <div
-                      className={`absolute rounded-full bg-white shadow-[0_18px_40px_rgba(0,0,0,0.22)] transition-transform duration-500 group-hover:-rotate-6 group-hover:scale-105 ${
-                        big ? "-bottom-[8%] -right-[6%] aspect-square w-[62%]" : "-bottom-[14%] -right-[12%] aspect-square w-[78%]"
+                      className={`absolute aspect-square ${
+                        big ? "-bottom-[5%] -right-[3%] w-[64%]" : "bottom-[-24%] left-1/2 w-[96%] -translate-x-1/2 md:w-[88%]"
                       }`}
                     >
-                      <div className="absolute inset-[10%]">
-                        <Image src={p.image!} alt={p.name} fill sizes={big ? "(max-width:768px) 60vw, 360px" : "(max-width:768px) 36vw, 200px"} className="object-contain mix-blend-multiply" />
+                      <div className="absolute inset-0 overflow-hidden rounded-full bg-white shadow-[0_22px_50px_rgba(0,0,0,0.25)] transition-transform duration-500 group-hover:scale-[1.04]">
+                        <div className={`absolute inset-[3%] transition-[scale] duration-700 ${big ? "scale-[1.08] group-hover:scale-[1.16]" : "-translate-y-[8%] scale-[1.3] group-hover:scale-[1.4]"}`}>
+                          <Image src={p.image!} alt={p.name} fill sizes={big ? "(max-width:768px) 70vw, 420px" : "(max-width:768px) 45vw, 260px"} className="object-contain mix-blend-multiply" />
+                        </div>
                       </div>
                     </div>
                     {big && p.description && <p className="relative z-10 max-w-[38%] text-sm font-medium opacity-85 md:text-base">{p.description}</p>}
