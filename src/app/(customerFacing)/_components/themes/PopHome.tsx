@@ -259,14 +259,26 @@ export function PopHome({
           <div className="grid auto-rows-[225px] grid-cols-2 gap-3 md:auto-rows-[290px] md:grid-cols-4 md:gap-4">
             {loved.map((p, i) => {
               const big = i === 0;
+              // Fill the grid with no holes whatever the count: the big card is
+              // 2x2; the rest share the 2x2 block beside it (desktop), and on
+              // phones an odd last card goes full width.
+              const rest = loved.length - 1;
+              const span = big
+                ? rest === 0
+                  ? "col-span-2 row-span-2 md:col-span-4"
+                  : "col-span-2 row-span-2"
+                : [
+                    rest === 1 ? "md:col-span-2 md:row-span-2" : rest === 2 || (rest === 3 && i === 1) ? "md:col-span-2" : "",
+                    rest % 2 === 1 && i === loved.length - 1 ? "col-span-2" : "",
+                  ].join(" ");
               const bg = i % 3 === 0 ? BRAND : i % 3 === 1 ? SOFT : INK;
               const fg = i % 3 === 0 ? ON_BRAND : i % 3 === 1 ? INK : PAPER;
               return (
-                <Pop key={p.id} delay={i * 0.06} className={big ? "col-span-2 row-span-2" : ""}>
+                <Pop key={p.id} delay={i * 0.06} className={span}>
                   <Link
                     href="/Menu"
-                    className={`group relative flex h-full overflow-hidden rounded-[30px] p-5 transition-transform duration-300 hover:-rotate-1 hover:scale-[1.015] ${big ? "flex-col justify-between md:p-7" : "flex-col"}`}
-                    style={{ background: bg, color: fg }}
+                    className={`group relative flex h-full flex-col overflow-hidden rounded-[30px] p-5 transition-transform duration-300 hover:scale-[1.015] ${big ? "md:p-7" : ""}`}
+                    style={{ background: bg, color: fg, containerType: "size" }}
                   >
                     <div className="relative z-10 flex items-start justify-between gap-2">
                       <p className={`font-display font-semibold leading-[0.95] tracking-tight ${big ? "max-w-[60%] text-3xl md:text-5xl" : "text-[15px] md:text-lg"}`}>{p.name.trim()}</p>
@@ -274,20 +286,23 @@ export function PopHome({
                         {usd(p.priceInCents)}
                       </span>
                     </div>
-                    {/* the dish fills a big round white plate (fully on the card, so
-                        the food is never cut off); white-background photos melt into it */}
+                    {/* the dish fills a big round white plate, sized from the card's
+                        own width AND height (container units - measured inside the padding) so it's always as big
+                        as the card allows; white-background photos melt into it */}
                     <div
                       className={`absolute aspect-square ${
-                        big ? "-bottom-[5%] -right-[3%] w-[64%]" : "bottom-[-24%] left-1/2 w-[96%] -translate-x-1/2 md:w-[88%]"
+                        big
+                          ? "-bottom-[8%] -right-[8%] w-[min(110cqw,96cqh)]"
+                          : "bottom-[-24%] left-1/2 w-[min(112cqw,104cqh)] -translate-x-1/2"
                       }`}
                     >
                       <div className="absolute inset-0 overflow-hidden rounded-full bg-white shadow-[0_22px_50px_rgba(0,0,0,0.25)] transition-transform duration-500 group-hover:scale-[1.04]">
-                        <div className={`absolute inset-[3%] transition-[scale] duration-700 ${big ? "scale-[1.08] group-hover:scale-[1.16]" : "-translate-y-[8%] scale-[1.3] group-hover:scale-[1.4]"}`}>
-                          <Image src={p.image!} alt={p.name} fill sizes={big ? "(max-width:768px) 70vw, 420px" : "(max-width:768px) 45vw, 260px"} className="object-contain mix-blend-multiply" />
+                        <div className={`absolute inset-[3%] transition-[scale] duration-700 ${big ? "scale-[1.12] group-hover:scale-[1.2]" : "-translate-y-[6%] scale-[1.25] group-hover:scale-[1.35]"}`}>
+                          <Image src={p.image!} alt={p.name} fill sizes={big ? "(max-width:768px) 80vw, 480px" : "(max-width:768px) 50vw, 300px"} className="object-contain mix-blend-multiply" />
                         </div>
                       </div>
                     </div>
-                    {big && p.description && <p className="relative z-10 max-w-[38%] text-sm font-medium opacity-85 md:text-base">{p.description}</p>}
+                    {big && p.description && <p className="relative z-10 mt-3 line-clamp-4 max-w-[46%] text-sm font-medium opacity-85 md:text-base">{p.description}</p>}
                   </Link>
                 </Pop>
               );

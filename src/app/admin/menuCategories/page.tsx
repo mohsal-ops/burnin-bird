@@ -29,7 +29,7 @@ export default async function Items() {
           <div>
             <PageHeader>Menu Categories</PageHeader>
             <p className="mt-1 text-sm text-stone-500">
-              {categories.length} categor{categories.length === 1 ? "y" : "ies"} · use the arrows to set the order shown on your site
+              {categories.length} categor{categories.length === 1 ? "y" : "ies"} · drag the handle to set the order shown on your site
             </p>
           </div>
           <Link href="/admin/menuCategories/new">
