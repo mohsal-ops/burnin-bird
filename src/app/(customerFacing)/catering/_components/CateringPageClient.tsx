@@ -108,15 +108,15 @@ export default function CateringPageClient({
           />
         </div>
 
-        <div className="md:w-1/2  p-2 sm:p-4 text-center md:text-left space-y-4 z-10">
-          <h1 className="text-4xl md:text-6xl font-extrabold text-brand drop-shadow-lg">
+        <div className="w-full md:w-1/2 px-3 pb-4 pt-1 sm:p-4 text-center md:text-left space-y-4 z-10">
+          <h1 className="text-4xl md:text-6xl font-extrabold text-white drop-shadow-lg text-balance">
             Bring {SITE_CONFIG.name} to Your Event
           </h1>
           <p className="text-lg md:text-xl text-white drop-shadow-lg">
             From corporate events to private parties, make your event
             unforgettable with our bold flavors.
           </p>
-          <div className="flex gap-4 justify-center md:justify-start  ">
+          <div className="flex flex-wrap gap-3 justify-center md:justify-start">
             <Button
               variant="mainButton"
               className="drop-shadow-lg hover:bg-brand-dark"
