@@ -7,10 +7,17 @@ import InstagramFeed from "./_components/InstagramFeed";
 
 export const metadata = buildMetadata("blog");
 
+// Rebuilt in the background every 5 min; a database hiccup during the build
+// shows an empty blog instead of failing the whole deploy.
+export const revalidate = 300;
+
 export default async function BlogPage() {
-  const posts = await db.post.findMany({
-    orderBy: { createdAt: "desc" },
-  });
+  const posts = await db.post
+    .findMany({ orderBy: { createdAt: "desc" } })
+    .catch((e) => {
+      console.error("blog: posts unavailable", e);
+      return [];
+    });
 
   return (
     <div className="min-h-screen w-full bg-[#0f0f0f] text-white">
