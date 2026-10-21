@@ -22,9 +22,16 @@ type Hours = { dayIndex: number; open: number; close: number };
 
 const BRAND = "var(--brand)";
 const ON_BRAND = "var(--brand-foreground)";
-const INK = "#15110E";
-const PAPER = "#FFFFFF";
-const SOFT = "#F5F5F4"; // light neutral surface for small tiles
+// Surfaces come from themes.css (--pop-*) so the page follows light/dark.
+const FG = "var(--pop-fg)";
+const PAPER = "var(--pop-paper)";
+const SOFT = "var(--pop-soft)"; // neutral surface for small tiles
+const CARD = "var(--pop-card)";
+const INK = "var(--pop-ink)"; // contrast tone - near-black in light, off-white in dark
+const ON_INK = "var(--pop-on-ink)";
+const RING = "inset 0 0 0 1px var(--pop-ring)"; // hairline, only visible in dark
+// Things that sit on the brand colour or a photo keep fixed colours in both modes.
+const FIXED_INK = "#15110E";
 const usd = (c: number) => `$${(c / 100).toFixed(2).replace(/\.00$/, "")}`;
 const SPRING = { type: "spring" as const, stiffness: 220, damping: 22 };
 
@@ -56,7 +63,7 @@ function Pop({ children, className = "", style, delay = 0 }: { children: React.R
   );
 }
 
-function Sticker({ children, className = "", rotate = -8, bg = "#fff", fg = INK }: { children: React.ReactNode; className?: string; rotate?: number; bg?: string; fg?: string }) {
+function Sticker({ children, className = "", rotate = -8, bg = "#fff", fg = FIXED_INK }: { children: React.ReactNode; className?: string; rotate?: number; bg?: string; fg?: string }) {
   return (
     <motion.span
       className={`pointer-events-none absolute z-20 grid place-items-center rounded-full text-center font-display font-semibold leading-[1.05] shadow-[0_8px_24px_rgba(0,0,0,0.18)] ${className}`}
@@ -113,7 +120,7 @@ export function PopHome({
   const tickerItems = (featured.length ? featured.map((p) => p.name.trim()) : [dish, "Order online", "Pickup", "Delivery"]).slice(0, 10);
 
   return (
-    <div className="tp-home theme-bespoke w-full overflow-x-clip pb-16 pt-24 md:pt-28" style={{ background: PAPER, color: INK }}>
+    <div className="tp-home theme-bespoke w-full overflow-x-clip pb-16 pt-24 md:pt-28" style={{ background: PAPER, color: FG }}>
       {/* 1 · Hero: one focal point - the best seller on a brand-colour disc.
           Entrance runs in order: disc grows, dish drops onto it, headline
           words rise, buttons, then the price sticker pops. */}
@@ -121,7 +128,7 @@ export function PopHome({
         <div className="order-2 md:order-1">
           <motion.p
             className="inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-sm font-medium"
-            style={{ background: SOFT }}
+            style={{ background: SOFT, boxShadow: RING }}
             initial={reduce ? false : { opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15, duration: 0.5 }}
@@ -146,7 +153,7 @@ export function PopHome({
             ))}
           </h1>
           <motion.p
-            className="mt-5 max-w-[42ch] text-lg leading-relaxed text-neutral-500"
+            className="mt-5 max-w-[42ch] text-lg leading-relaxed text-[var(--pop-muted)]"
             initial={reduce ? false : { opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7, duration: 0.6 }}
@@ -169,7 +176,7 @@ export function PopHome({
                 <ArrowRight className="h-4 w-4" />
               </span>
             </Link>
-            <Link href="/Menu" className="rounded-full px-6 py-3.5 text-base font-semibold text-neutral-700 ring-1 ring-inset ring-neutral-300 transition-colors hover:bg-neutral-50">
+            <Link href="/Menu" className="rounded-full px-6 py-3.5 text-base font-semibold text-[var(--pop-ghost)] ring-1 ring-inset ring-[color:var(--pop-line)] transition-colors hover:bg-[var(--pop-hover)]">
               See the menu
             </Link>
           </motion.div>
@@ -187,7 +194,7 @@ export function PopHome({
           </motion.div>
           <motion.div className="absolute inset-0" style={{ y: plateY, scale: plateScale }}>
           <motion.div
-            className="absolute inset-[12%] overflow-hidden rounded-full bg-white shadow-[0_30px_60px_rgba(0,0,0,0.18)]"
+            className="absolute inset-[12%] overflow-hidden rounded-full bg-white shadow-[var(--pop-hero-plate-shadow)]"
             initial={reduce ? false : { y: -60, opacity: 0, rotate: -20 }}
             animate={{ y: 0, opacity: 1, rotate: 0 }}
             transition={{ type: "spring", stiffness: 140, damping: 15, delay: 0.25 }}
@@ -207,7 +214,7 @@ export function PopHome({
             <motion.div className="pointer-events-none absolute inset-0 z-10" style={{ y: stickerY }}>
             <motion.span
               className="absolute right-[4%] top-[8%] z-10 grid h-20 w-20 place-items-center rounded-full text-lg font-semibold shadow-lg md:h-24 md:w-24 md:text-xl"
-              style={{ background: INK, color: "#fff" }}
+              style={{ background: INK, color: ON_INK }}
               initial={reduce ? false : { scale: 0, rotate: -40 }}
               animate={{ scale: 1, rotate: 10 }}
               transition={{ type: "spring", stiffness: 300, damping: 14, delay: 1.05 }}
@@ -219,7 +226,7 @@ export function PopHome({
           {hero && (
             <motion.div className="pointer-events-none absolute inset-0 z-10" style={{ y: pillY }}>
             <motion.p
-              className="absolute bottom-[4%] left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full bg-white px-5 py-2.5 text-sm font-semibold shadow-[0_10px_30px_rgba(0,0,0,0.12)]"
+              className="absolute bottom-[4%] left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full bg-[var(--pop-card)] px-5 py-2.5 text-sm font-semibold shadow-[var(--pop-pill-shadow)]"
               initial={reduce ? false : { opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.15, duration: 0.5 }}
@@ -232,7 +239,7 @@ export function PopHome({
       </section>
 
       {/* 2 · Ticker */}
-      <div className="relative my-14 overflow-hidden py-3.5 md:my-20" style={{ background: INK, color: PAPER }}>
+      <div className="relative my-14 overflow-hidden py-3.5 md:my-20" style={{ background: "var(--pop-band)", color: "var(--pop-on-band)", boxShadow: "inset 0 1px 0 var(--pop-ring), inset 0 -1px 0 var(--pop-ring)" }}>
         <motion.div
           className="flex w-max gap-10 whitespace-nowrap font-display text-xl font-medium uppercase tracking-[0.04em] md:text-2xl"
           animate={reduce ? undefined : { x: ["0%", "-50%"] }}
@@ -252,7 +259,7 @@ export function PopHome({
         <section className="mx-auto max-w-6xl px-4">
           <div className="mb-5 flex items-end justify-between gap-4">
             <h2 className="font-display text-4xl font-semibold tracking-[-0.03em] md:text-6xl">Most loved</h2>
-            <Link href="/Menu" className="inline-flex items-center gap-1.5 rounded-full border-2 px-4 py-2 text-sm font-bold" style={{ borderColor: INK }}>
+            <Link href="/Menu" className="inline-flex items-center gap-1.5 rounded-full border-2 px-4 py-2 text-sm font-bold" style={{ borderColor: FG }}>
               Full menu <ArrowUpRight className="h-4 w-4" />
             </Link>
           </div>
@@ -272,13 +279,13 @@ export function PopHome({
                     rest % 2 === 1 && i === loved.length - 1 ? "col-span-2" : "",
                   ].join(" ");
               const bg = i % 3 === 0 ? BRAND : i % 3 === 1 ? SOFT : INK;
-              const fg = i % 3 === 0 ? ON_BRAND : i % 3 === 1 ? INK : PAPER;
+              const fg = i % 3 === 0 ? ON_BRAND : i % 3 === 1 ? FG : ON_INK;
               return (
                 <Pop key={p.id} delay={i * 0.06} className={span}>
                   <Link
                     href="/Menu"
                     className={`group relative flex h-full flex-col overflow-hidden rounded-[30px] p-5 transition-transform duration-300 hover:scale-[1.015] ${big ? "md:p-7" : ""}`}
-                    style={{ background: bg, color: fg, containerType: "size" }}
+                    style={{ background: bg, color: fg, containerType: "size", boxShadow: i % 3 === 1 ? RING : undefined }}
                   >
                     <div className="relative z-10 flex items-start justify-between gap-2">
                       <p className={`font-display font-semibold leading-[0.95] tracking-tight ${big ? "max-w-[60%] text-3xl md:text-5xl" : "text-[15px] md:text-lg"}`}>{p.name.trim()}</p>
@@ -296,7 +303,7 @@ export function PopHome({
                           : "bottom-[-24%] left-1/2 w-[min(112cqw,104cqh)] -translate-x-1/2"
                       }`}
                     >
-                      <div className="absolute inset-0 overflow-hidden rounded-full bg-white shadow-[0_22px_50px_rgba(0,0,0,0.25)] transition-transform duration-500 group-hover:scale-[1.04]">
+                      <div className="absolute inset-0 overflow-hidden rounded-full bg-white shadow-[var(--pop-plate-shadow)] transition-transform duration-500 group-hover:scale-[1.04]">
                         <div className={`absolute inset-[3%] transition-[scale] duration-700 ${big ? "scale-[1.12] group-hover:scale-[1.2]" : "-translate-y-[6%] scale-[1.25] group-hover:scale-[1.35]"}`}>
                           <Image src={p.image!} alt={p.name} fill sizes={big ? "(max-width:768px) 80vw, 480px" : "(max-width:768px) 50vw, 300px"} className="object-contain mix-blend-multiply" />
                         </div>
@@ -321,10 +328,10 @@ export function PopHome({
                 <Link
                   href="/Menu"
                   className="inline-flex items-center gap-2 rounded-full px-5 py-3 text-base font-bold transition-transform hover:-translate-y-0.5 active:scale-95"
-                  style={i % 2 ? { background: "#fff", color: INK, boxShadow: "inset 0 0 0 1px #d4d4d4" } : { background: SOFT, color: INK }}
+                  style={i % 2 ? { background: CARD, color: FG, boxShadow: "inset 0 0 0 1px var(--pop-line)" } : { background: SOFT, color: FG, boxShadow: RING }}
                 >
                   {m.name}
-                  {typeof m.count === "number" && <span className="rounded-full px-2 text-xs" style={{ background: INK, color: PAPER }}>{m.count}</span>}
+                  {typeof m.count === "number" && <span className="rounded-full px-2 text-xs" style={{ background: INK, color: ON_INK }}>{m.count}</span>}
                 </Link>
               </Pop>
             ))}
@@ -334,7 +341,7 @@ export function PopHome({
 
       {/* 5 · Story */}
       <section className="mx-auto mt-14 grid max-w-6xl gap-3 px-4 md:grid-cols-2 md:gap-4">
-        <Pop className="relative min-h-[320px] overflow-hidden rounded-[36px]" style={{ background: SOFT }}>
+        <Pop className="relative min-h-[320px] overflow-hidden rounded-[36px]" style={{ background: SOFT, boxShadow: RING }}>
           {(content.images.home_feature_1 || gallery[0]?.url) && (
             <Image src={(content.images.home_feature_1 || gallery[0]?.url)!} alt={c.name} fill sizes="(max-width:768px) 92vw, 560px" className="object-cover" />
           )}
@@ -346,7 +353,7 @@ export function PopHome({
             daily
           </Sticker>
         </Pop>
-        <Pop delay={0.08} className="flex flex-col justify-center rounded-[36px] p-8 md:p-10" style={{ background: INK, color: PAPER }}>
+        <Pop delay={0.08} className="flex flex-col justify-center rounded-[36px] p-8 md:p-10" style={{ background: "var(--pop-band)", color: "var(--pop-on-band)", boxShadow: RING }}>
           <p className="text-xs font-bold uppercase tracking-[0.16em]" style={{ color: BRAND }}>
             Our story
           </p>
@@ -371,7 +378,7 @@ export function PopHome({
               <Pop key={r.id} delay={i * 0.05} className="w-[82vw] max-w-[360px] shrink-0 snap-start">
                 <figure
                   className="flex h-full flex-col justify-between rounded-[30px] p-6"
-                  style={i % 2 ? { background: "#fff", color: INK } : { background: BRAND, color: ON_BRAND }}
+                  style={i % 2 ? { background: CARD, color: FG, boxShadow: RING } : { background: BRAND, color: ON_BRAND }}
                 >
                   <div>
                     <div className="flex gap-0.5">
@@ -403,14 +410,14 @@ export function PopHome({
       {/* 8 · Order CTA */}
       <section className="mx-auto mt-14 max-w-6xl px-4">
         <Pop className="relative overflow-hidden rounded-[40px] p-8 text-center md:p-14" style={{ background: BRAND, color: ON_BRAND }}>
-          <div aria-hidden className="absolute -left-16 -top-16 h-64 w-64 rounded-full opacity-20" style={{ background: INK }} />
+          <div aria-hidden className="absolute -left-16 -top-16 h-64 w-64 rounded-full opacity-20" style={{ background: FIXED_INK }} />
           <div aria-hidden className="absolute -bottom-20 -right-10 h-72 w-72 rounded-full opacity-15" style={{ background: "#fff" }} />
           <h2 className="relative font-display text-5xl font-semibold leading-[0.9] tracking-[-0.03em] md:text-8xl">Hungry?</h2>
           <p className="relative mx-auto mt-4 max-w-[36ch] text-lg font-medium opacity-90">
             Order on our own site. Pickup or delivery, ready when you are. {todayHours(hours)}.
           </p>
           <div className="relative mt-7 flex flex-wrap justify-center gap-3">
-            <Link href="/Menu" className="inline-flex items-center gap-2 rounded-full px-7 py-4 text-lg font-bold" style={{ background: INK, color: PAPER }}>
+            <Link href="/Menu" className="inline-flex items-center gap-2 rounded-full px-7 py-4 text-lg font-bold" style={{ background: FIXED_INK, color: "#fff" }}>
               {c.menuCtaLabel || "Order now"} <ArrowRight className="h-5 w-5" />
             </Link>
             {c.googleMapsUrl && (

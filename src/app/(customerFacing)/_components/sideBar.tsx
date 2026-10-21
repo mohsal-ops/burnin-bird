@@ -439,14 +439,14 @@ function PopMenu(p: PanelProps) {
   };
   const tones = [
     "bg-[var(--brand)] text-[var(--brand-foreground)]",
-    "bg-[#f5f5f4] text-[#15110e]",
-    "bg-white text-[#15110e] ring-2 ring-inset ring-[#15110e]",
-    "bg-[#15110e] text-[#fff7ec]",
+    "bg-[var(--pop-soft)] text-[var(--pop-fg)] ring-1 ring-inset ring-[color:var(--pop-ring)]",
+    "bg-[var(--pop-card)] text-[var(--pop-fg)] ring-2 ring-inset ring-[color:var(--pop-outline)]",
+    "bg-[var(--pop-ink)] text-[var(--pop-on-ink)]",
   ];
   return (
     <motion.nav
       aria-label="Menu"
-      className="fixed inset-0 z-[70] flex flex-col overflow-y-auto bg-white px-4 pb-[calc(20px+env(safe-area-inset-bottom))] pt-5 text-[#15110e]"
+      className="fixed inset-0 z-[70] flex flex-col overflow-y-auto bg-[var(--pop-paper)] px-4 pb-[calc(20px+env(safe-area-inset-bottom))] pt-5 text-[var(--pop-fg)]"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 30 }}
@@ -454,14 +454,14 @@ function PopMenu(p: PanelProps) {
     >
       <div className="flex items-center justify-between px-1">
         <span className="font-display text-2xl font-semibold tracking-tight">{SITE_CONFIG.name}</span>
-        <button type="button" onClick={p.close} aria-label="Close menu" className="grid h-11 w-11 place-items-center rounded-full bg-[#15110e] text-[#fff7ec]">
+        <button type="button" onClick={p.close} aria-label="Close menu" className="grid h-11 w-11 place-items-center rounded-full bg-[var(--pop-ink)] text-[var(--pop-on-ink)]">
           <X className="h-5 w-5" />
         </button>
       </div>
       <motion.ul className="mt-5 grid grid-cols-2 gap-2.5" variants={{ show: { transition: { staggerChildren: 0.05, delayChildren: 0.08 } } }} initial="hidden" animate="show">
         {p.signIn && (
           <motion.li variants={tile} className="col-span-2">
-            <Link href={p.signIn.href} className="flex h-16 items-center gap-3 rounded-[24px] bg-[#15110e] px-5 text-lg font-bold text-[#fff7ec]">
+            <Link href={p.signIn.href} className="flex h-16 items-center gap-3 rounded-[24px] bg-[var(--pop-ink)] px-5 text-lg font-bold text-[var(--pop-on-ink)]">
               <UserRound className="h-5 w-5" /> {p.signIn.label}
             </Link>
           </motion.li>
@@ -473,7 +473,7 @@ function PopMenu(p: PanelProps) {
             <Link
               href={l.href}
               className={`relative flex h-28 flex-col justify-end overflow-hidden rounded-[28px] p-4 font-display text-2xl font-semibold leading-none tracking-tight active:scale-95 ${
-                pics.length ? "bg-[#15110e] text-white" : tones[i % tones.length]
+                pics.length ? "bg-[#15110e] text-white ring-1 ring-inset ring-[color:var(--pop-ring)]" : tones[i % tones.length]
               }`}
             >
               {pics.length > 0 && <PhotoLoop srcs={pics} />}
@@ -487,13 +487,13 @@ function PopMenu(p: PanelProps) {
         })}
         {p.dash && (
           <motion.li variants={tile} className="col-span-2">
-            <a href={p.dash} className="flex h-14 items-center gap-2 rounded-[22px] bg-white px-5 font-bold ring-1 ring-inset ring-[#15110e]/15">
+            <a href={p.dash} className="flex h-14 items-center gap-2 rounded-[22px] bg-[var(--pop-card)] px-5 font-bold ring-1 ring-inset ring-[color:var(--pop-fg)]/15">
               <LayoutDashboard className="h-4 w-4" /> Your dashboard
             </a>
           </motion.li>
         )}
       </motion.ul>
-      <BottomButtons p={p} order="rounded-full bg-[var(--brand)] text-[var(--brand-foreground)] font-bold" app="rounded-full bg-white font-bold ring-2 ring-inset ring-[#15110e]" />
+      <BottomButtons p={p} order="rounded-full bg-[var(--brand)] text-[var(--brand-foreground)] font-bold" app="rounded-full bg-[var(--pop-card)] text-[var(--pop-fg)] font-bold ring-2 ring-inset ring-[color:var(--pop-outline)]" />
     </motion.nav>
   );
 }

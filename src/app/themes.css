@@ -177,8 +177,74 @@ html[data-theme="refined-elegant"] {
   --motion-duration: 900ms;
   --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --motion-distance: 24px;
+
+  /* Pop surfaces used by PopHome / PopNav / PopMenu (hex so they can be used
+     straight in inline styles). Light = the original white design. */
+  --pop-paper: #ffffff;          /* page */
+  --pop-soft: #f5f5f4;           /* soft tiles / pills */
+  --pop-card: #ffffff;           /* "white" cards + chips */
+  --pop-fg: #15110e;             /* text */
+  --pop-muted: #737373;          /* secondary text */
+  --pop-ghost: #404040;          /* ghost-button text */
+  --pop-line: #d4d4d4;           /* outline chips / ghost ring */
+  --pop-outline: #15110e;        /* bold 2px outline tiles / buttons */
+  --pop-ring: transparent;       /* hairline on soft/white cards (dark only) */
+  --pop-hover: #fafafa;
+  --pop-ink: #15110e;            /* contrast tone: ink bento card, badges, price sticker */
+  --pop-on-ink: #ffffff;
+  --pop-band: #15110e;           /* ticker + story block */
+  --pop-on-band: #ffffff;
+  --pop-plate-shadow: 0 22px 50px rgba(0, 0, 0, 0.25);
+  --pop-hero-plate-shadow: 0 30px 60px rgba(0, 0, 0, 0.18);
+  --pop-pill-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  --pop-nav-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  --pop-nav-shadow-scrolled: 0 10px 30px rgba(0, 0, 0, 0.12);
 }
 
+/* Dark: warm near-black page, lifted warm surfaces, white/8% hairlines,
+   off-white text. The brand colour stays the loud accent; the ink tone
+   flips to a light card so the bento keeps its light/dark rhythm; white
+   food plates stay white (photos multiply into them) with a soft glow. */
+html[data-theme="pop-bento"].dark {
+  --background: 20 11% 5%;       /* #0f0d0c */
+  --foreground: 30 28% 93%;      /* #f2ede8 */
+  --card: 24 11% 9%;             /* #1a1715 */
+  --card-foreground: 30 28% 93%;
+  --popover: 24 11% 9%;
+  --popover-foreground: 30 28% 93%;
+  --primary: 30 28% 93%;
+  --primary-foreground: 24 21% 7%;
+  --secondary: 26 11% 12%;
+  --secondary-foreground: 30 28% 93%;
+  --muted: 24 11% 9%;
+  --muted-foreground: 28 8% 61%;  /* #a39b94 */
+  --accent: 26 11% 12%;           /* #221e1b */
+  --accent-foreground: 30 28% 93%;
+  --border: 24 6% 15%;
+  --input: 24 6% 18%;
+  --ring: 30 28% 93%;
+  --dark: 20 12% 3%;
+
+  --pop-paper: #0f0d0c;
+  --pop-soft: #1a1715;
+  --pop-card: #221e1b;
+  --pop-fg: #f2ede8;
+  --pop-muted: #a39b94;
+  --pop-ghost: #e7e1db;
+  --pop-line: rgba(255, 255, 255, 0.14);
+  --pop-outline: rgba(242, 237, 232, 0.28);
+  --pop-ring: rgba(255, 255, 255, 0.08);
+  --pop-hover: rgba(255, 255, 255, 0.05);
+  --pop-ink: #f2ede8;
+  --pop-on-ink: #15110e;
+  --pop-band: #1a1715;
+  --pop-on-band: #f2ede8;
+  --pop-plate-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 22px 50px rgba(0, 0, 0, 0.55), 0 0 44px rgba(255, 255, 255, 0.07);
+  --pop-hero-plate-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 30px 70px rgba(0, 0, 0, 0.6), 0 0 80px rgba(255, 255, 255, 0.08);
+  --pop-pill-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 10px 30px rgba(0, 0, 0, 0.5);
+  --pop-nav-shadow: 0 0 0 1px rgba(255, 255, 255, 0.07), 0 6px 20px rgba(0, 0, 0, 0.4);
+  --pop-nav-shadow-scrolled: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 10px 30px rgba(0, 0, 0, 0.55);
+}
 html[data-theme="refined-elegant"].dark {
   --background: 0 43% 4%;
   --foreground: 0 0% 96%;
@@ -233,22 +299,71 @@ html[data-theme="pop-bento"] {
   --motion-duration: 450ms;
   --motion-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
   --motion-distance: 24px;
+
+  /* Pop surfaces used by PopHome / PopNav / PopMenu (hex so they can be used
+     straight in inline styles). Light = the original white design. */
+  --pop-paper: #ffffff;          /* page */
+  --pop-soft: #f5f5f4;           /* soft tiles / pills */
+  --pop-card: #ffffff;           /* "white" cards + chips */
+  --pop-fg: #15110e;             /* text */
+  --pop-muted: #737373;          /* secondary text */
+  --pop-ghost: #404040;          /* ghost-button text */
+  --pop-line: #d4d4d4;           /* outline chips / ghost ring */
+  --pop-outline: #15110e;        /* bold 2px outline tiles / buttons */
+  --pop-ring: transparent;       /* hairline on soft/white cards (dark only) */
+  --pop-hover: #fafafa;
+  --pop-ink: #15110e;            /* contrast tone: ink bento card, badges, price sticker */
+  --pop-on-ink: #ffffff;
+  --pop-band: #15110e;           /* ticker + story block */
+  --pop-on-band: #ffffff;
+  --pop-plate-shadow: 0 22px 50px rgba(0, 0, 0, 0.25);
+  --pop-hero-plate-shadow: 0 30px 60px rgba(0, 0, 0, 0.18);
+  --pop-pill-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  --pop-nav-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  --pop-nav-shadow-scrolled: 0 10px 30px rgba(0, 0, 0, 0.12);
 }
 
+/* Dark: warm near-black page, lifted warm surfaces, white/8% hairlines,
+   off-white text. The brand colour stays the loud accent; the ink tone
+   flips to a light card so the bento keeps its light/dark rhythm; white
+   food plates stay white (photos multiply into them) with a soft glow. */
 html[data-theme="pop-bento"].dark {
-  --background: 24 18% 7%;
-  --foreground: 36 100% 96%;
-  --card: 24 15% 11%;
-  --card-foreground: 36 100% 96%;
-  --popover: 24 15% 11%;
-  --popover-foreground: 36 100% 96%;
-  --primary: 36 100% 96%;
+  --background: 20 11% 5%;       /* #0f0d0c */
+  --foreground: 30 28% 93%;      /* #f2ede8 */
+  --card: 24 11% 9%;             /* #1a1715 */
+  --card-foreground: 30 28% 93%;
+  --popover: 24 11% 9%;
+  --popover-foreground: 30 28% 93%;
+  --primary: 30 28% 93%;
   --primary-foreground: 24 21% 7%;
-  --muted: 24 12% 15%;
-  --muted-foreground: 36 25% 70%;
-  --accent: 24 12% 18%;
-  --accent-foreground: 36 100% 96%;
-  --border: 24 12% 20%;
-  --input: 24 12% 22%;
-  --dark: 24 20% 4%;
+  --secondary: 26 11% 12%;
+  --secondary-foreground: 30 28% 93%;
+  --muted: 24 11% 9%;
+  --muted-foreground: 28 8% 61%;  /* #a39b94 */
+  --accent: 26 11% 12%;           /* #221e1b */
+  --accent-foreground: 30 28% 93%;
+  --border: 24 6% 15%;
+  --input: 24 6% 18%;
+  --ring: 30 28% 93%;
+  --dark: 20 12% 3%;
+
+  --pop-paper: #0f0d0c;
+  --pop-soft: #1a1715;
+  --pop-card: #221e1b;
+  --pop-fg: #f2ede8;
+  --pop-muted: #a39b94;
+  --pop-ghost: #e7e1db;
+  --pop-line: rgba(255, 255, 255, 0.14);
+  --pop-outline: rgba(242, 237, 232, 0.28);
+  --pop-ring: rgba(255, 255, 255, 0.08);
+  --pop-hover: rgba(255, 255, 255, 0.05);
+  --pop-ink: #f2ede8;
+  --pop-on-ink: #15110e;
+  --pop-band: #1a1715;
+  --pop-on-band: #f2ede8;
+  --pop-plate-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 22px 50px rgba(0, 0, 0, 0.55), 0 0 44px rgba(255, 255, 255, 0.07);
+  --pop-hero-plate-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 30px 70px rgba(0, 0, 0, 0.6), 0 0 80px rgba(255, 255, 255, 0.08);
+  --pop-pill-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 10px 30px rgba(0, 0, 0, 0.5);
+  --pop-nav-shadow: 0 0 0 1px rgba(255, 255, 255, 0.07), 0 6px 20px rgba(0, 0, 0, 0.4);
+  --pop-nav-shadow-scrolled: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 10px 30px rgba(0, 0, 0, 0.55);
 }

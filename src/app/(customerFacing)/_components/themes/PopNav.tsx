@@ -32,7 +32,7 @@ export function PopNav({ initialCartId, logoUrl }: { initialCartId: string | nul
     <div className={`px-3 transition-[padding] duration-300 ${scrolled ? "pt-2" : "pt-3 md:pt-4"}`}>
       <div
         className={`mx-auto flex max-w-6xl items-center justify-between gap-3 rounded-full bg-background/90 pl-2 pr-2 text-foreground backdrop-blur transition-[height,box-shadow] duration-300 ${
-          scrolled ? "h-14 shadow-[0_10px_30px_rgba(0,0,0,0.12)]" : "h-16 shadow-[0_6px_20px_rgba(0,0,0,0.08)]"
+          scrolled ? "h-14 shadow-[var(--pop-nav-shadow-scrolled)]" : "h-16 shadow-[var(--pop-nav-shadow)]"
         }`}
       >
         <Link href="/" className="flex min-w-0 items-center gap-2.5 pl-1">
