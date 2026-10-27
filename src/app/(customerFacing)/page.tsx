@@ -247,7 +247,7 @@ export default async function Home() {
       GetFeaturedProducts(),
       db.review.findMany({ orderBy: { order: "asc" } }),
       getThemeHomeContent(themeSlug),
-      db.galleryImage.findMany({ orderBy: { order: "asc" }, select: { url: true, alt: true }, take: 12 }),
+      db.galleryImage.findMany({ orderBy: { order: "asc" }, select: { url: true, alt: true }, take: 80 }),
       getBusinessHours().catch(() => []),
     ]);
     return (

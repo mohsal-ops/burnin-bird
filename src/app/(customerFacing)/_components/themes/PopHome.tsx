@@ -8,6 +8,7 @@ import { ArrowRight, ArrowUpRight, Clock, MapPin, Star } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { cfg } from "@/lib/configOpt";
 import type { ThemeHomeContent } from "@/lib/themes/homeContent";
+import { PopGallery } from "./PopGallery";
 
 // "Pop Bento" — the bright, playful 5th design. Everything sits in rounded
 // bento cards; the restaurant's own brand colour (--brand) fills the big ones,
@@ -482,16 +483,8 @@ export function PopHome({
         </section>
       )}
 
-      {/* 7 · Gallery mosaic */}
-      {gallery.length >= 5 && (
-        <section className="mx-auto mt-14 grid max-w-6xl auto-rows-[150px] grid-cols-2 gap-3 px-4 md:auto-rows-[200px] md:grid-cols-4 md:gap-4">
-          {gallery.slice(0, 5).map((g, i) => (
-            <Pop key={g.url} delay={i * 0.05} className={`relative overflow-hidden rounded-[26px] ${i === 0 ? "col-span-2 row-span-2" : ""}`}>
-              <Image src={g.url} alt={g.alt || c.name} fill sizes="(max-width:768px) 50vw, 300px" className="object-cover transition-transform duration-700 hover:scale-110" />
-            </Pop>
-          ))}
-        </section>
-      )}
+      {/* 7 · Gallery: bento mosaic + full gallery sheet / lightbox */}
+      {gallery.length >= 5 && <PopGallery images={gallery} name={c.name} />}
 
       {/* 8 · Order CTA */}
       <section className="mx-auto mt-14 max-w-6xl px-4">
