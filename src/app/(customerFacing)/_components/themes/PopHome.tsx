@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRef } from "react";
-import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion, useAnimate, useInView, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { ArrowRight, ArrowUpRight, Clock, MapPin, Star } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { cfg } from "@/lib/configOpt";
@@ -98,7 +98,12 @@ export function PopHome({
   const c = SITE_CONFIG;
   const reduce = useReducedMotion();
   const withPhoto = featured.filter((p) => p.image);
-  const hero = withPhoto[0];
+  // The hero plate rotates through the top 3 dishes (lazy-susan swap).
+  const spin = withPhoto.slice(0, 3);
+  const [slot, setSlot] = useState(0);
+  const [swaps, setSwaps] = useState(0); // 0 = still the first dish (entrance timings)
+  const [hold, setHold] = useState(false); // paused while hovered
+  const hero = spin[slot] ?? withPhoto[0];
   const heroSrc = hero?.image ?? content.images.pop_hero ?? heroImage;
   const loved = withPhoto.slice(0, 5);
   const dish = cfg("primaryDish") || c.cuisines?.[0] || "Good food";
@@ -106,6 +111,28 @@ export function PopHome({
   const sub = content.subheadline || c.tagline;
 
   const heroRef = useRef<HTMLDivElement>(null);
+  const heroInView = useInView(heroRef, { amount: 0.3 });
+  const [discScope, animateDisc] = useAnimate();
+  const [plateScope, animatePlate] = useAnimate();
+  useEffect(() => {
+    if (spin.length < 2 || hold || !heroInView) return;
+    const t = setTimeout(() => {
+      setSlot((i) => (i + 1) % spin.length);
+      setSwaps((n) => n + 1);
+    }, swaps === 0 ? 5200 : 4200);
+    return () => clearTimeout(t);
+  }, [spin.length, hold, heroInView, swaps]);
+  // The plate lands with a little squash and the disc answers with a thump.
+  useEffect(() => {
+    if (!swaps || reduce) return;
+    animatePlate(plateScope.current, { scale: [1, 0.95, 1.02, 1] }, { duration: 0.7, delay: 0.3, ease: "easeOut" });
+    animateDisc(discScope.current, { scale: [1, 1.06, 1] }, { duration: 0.6, delay: 0.38, ease: "easeOut" });
+  }, [swaps, reduce, animatePlate, animateDisc, plateScope, discScope]);
+  const pick = (i: number) => {
+    if (i === slot) return;
+    setSlot(i);
+    setSwaps((n) => n + 1);
+  };
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   // Depth on scroll (no spinning): each layer drifts at its own speed, so the
   // plate seems to lift off the brand disc towards you. Transforms only = cheap.
@@ -182,8 +209,13 @@ export function PopHome({
           </motion.div>
         </div>
 
-        <div className="relative order-1 mx-auto aspect-square w-full max-w-[300px] md:order-2 md:max-w-[520px]">
+        <div
+          className="relative order-1 mx-auto aspect-square w-full max-w-[300px] md:order-2 md:max-w-[520px]"
+          onMouseEnter={() => setHold(true)}
+          onMouseLeave={() => setHold(false)}
+        >
           <motion.div className="absolute inset-0" style={{ y: discY, scale: discScale }}>
+          <div ref={discScope} className="absolute inset-0">
           <motion.div
             className="absolute inset-[6%] rounded-full"
             style={{ background: BRAND }}
@@ -191,8 +223,10 @@ export function PopHome({
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: "spring", stiffness: 120, damping: 16 }}
           />
+          </div>
           </motion.div>
           <motion.div className="absolute inset-0" style={{ y: plateY, scale: plateScale }}>
+          <div ref={plateScope} className="absolute inset-0">
           <motion.div
             className="absolute inset-[12%] overflow-hidden rounded-full bg-white shadow-[var(--pop-hero-plate-shadow)]"
             initial={reduce ? false : { y: -60, opacity: 0, rotate: -20 }}
@@ -205,34 +239,86 @@ export function PopHome({
                 animate={reduce ? undefined : { y: [0, -8, 0] }}
                 transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1.4 }}
               >
-                <Image src={heroSrc} alt={hero?.name ?? c.name} fill priority sizes="(max-width:768px) 80vw, 460px" className="object-contain mix-blend-multiply" />
+                {/* Lazy-susan swap: dishes ride an arc pivoting far below the
+                    plate - the old one slides off the right rim as the next
+                    swings in from the left and settles with a little overshoot. */}
+                <AnimatePresence initial={false}>
+                  <motion.div
+                    key={hero?.id ?? "hero"}
+                    className="absolute inset-0"
+                    style={{ originX: 0.5, originY: 1.9 }}
+                    initial={reduce ? { opacity: 0 } : { rotate: -50, scale: 0.85, opacity: 0 }}
+                    animate={{ rotate: 0, scale: 1, opacity: 1, transition: { type: "spring", stiffness: 85, damping: 13, opacity: { duration: 0.35 } } }}
+                    exit={reduce ? { opacity: 0 } : { rotate: 50, scale: 0.85, opacity: 0, transition: { duration: 0.55, ease: [0.55, 0, 0.75, 0.2], opacity: { duration: 0.45, delay: 0.15 } } }}
+                  >
+                    <Image src={heroSrc} alt={hero?.name ?? c.name} fill priority={slot === 0} sizes="(max-width:768px) 80vw, 460px" className="object-contain mix-blend-multiply" />
+                  </motion.div>
+                </AnimatePresence>
               </motion.div>
             )}
           </motion.div>
+          </div>
           </motion.div>
+          {/* warm the other dishes' images so each swap lands instantly */}
+          {spin.length > 1 && (
+            <div aria-hidden className="pointer-events-none absolute h-px w-px overflow-hidden opacity-0">
+              {spin.map((d) => (
+                <Image key={d.id} src={d.image!} alt="" width={1} height={1} sizes="(max-width:768px) 80vw, 460px" />
+              ))}
+            </div>
+          )}
           {hero && (
             <motion.div className="pointer-events-none absolute inset-0 z-10" style={{ y: stickerY }}>
+            <AnimatePresence mode="popLayout">
             <motion.span
+              key={hero.id}
               className="absolute right-[4%] top-[8%] z-10 grid h-20 w-20 place-items-center rounded-full text-lg font-semibold shadow-lg md:h-24 md:w-24 md:text-xl"
               style={{ background: INK, color: ON_INK }}
               initial={reduce ? false : { scale: 0, rotate: -40 }}
               animate={{ scale: 1, rotate: 10 }}
-              transition={{ type: "spring", stiffness: 300, damping: 14, delay: 1.05 }}
+              exit={reduce ? { opacity: 0 } : { scale: 0, rotate: 50, transition: { duration: 0.25, ease: "easeIn" } }}
+              transition={{ type: "spring", stiffness: 300, damping: 14, delay: swaps ? 0.45 : 1.05 }}
             >
               {usd(hero.priceInCents)}
             </motion.span>
+            </AnimatePresence>
             </motion.div>
           )}
           {hero && (
             <motion.div className="pointer-events-none absolute inset-0 z-10" style={{ y: pillY }}>
+            <div className="absolute bottom-[4%] left-1/2 z-10 -translate-x-1/2">
+            <AnimatePresence mode="wait">
             <motion.p
-              className="absolute bottom-[4%] left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full bg-[var(--pop-card)] px-5 py-2.5 text-sm font-semibold shadow-[var(--pop-pill-shadow)]"
-              initial={reduce ? false : { opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.15, duration: 0.5 }}
+              key={hero.id}
+              className="whitespace-nowrap rounded-full bg-[var(--pop-card)] px-5 py-2.5 text-sm font-semibold shadow-[var(--pop-pill-shadow)]"
+              initial={reduce ? false : { opacity: 0, y: 14, scale: 0.92 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={reduce ? { opacity: 0 } : { opacity: 0, y: -10, scale: 0.92, transition: { duration: 0.2 } }}
+              transition={swaps ? { type: "spring", stiffness: 320, damping: 22 } : { delay: 1.15, duration: 0.5 }}
             >
-              <span className="mr-1.5" style={{ color: BRAND }}>★</span> Best seller · {hero.name.trim()}
+              <span className="mr-1.5" style={{ color: BRAND }}>★</span> {["Best seller", "Fan favourite", "Must try"][slot] ?? "Best seller"} · {hero.name.trim()}
             </motion.p>
+            </AnimatePresence>
+            </div>
+            </motion.div>
+          )}
+          {spin.length > 1 && (
+            <motion.div
+              className="absolute -bottom-6 left-1/2 z-10 flex -translate-x-1/2 items-center md:-bottom-4"
+              initial={reduce ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.4, duration: 0.5 }}
+            >
+              {spin.map((d, i) => (
+                <button key={d.id} type="button" onClick={() => pick(i)} aria-label={`Show ${d.name.trim()}`} aria-current={i === slot} className="p-1.5">
+                  <motion.span
+                    className="block h-1.5 rounded-full"
+                    animate={{ width: i === slot ? 22 : 6 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    style={{ background: i === slot ? BRAND : "color-mix(in srgb, var(--pop-fg) 22%, transparent)" }}
+                  />
+                </button>
+              ))}
             </motion.div>
           )}
         </div>
