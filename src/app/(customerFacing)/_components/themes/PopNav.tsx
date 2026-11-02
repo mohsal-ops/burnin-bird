@@ -18,17 +18,6 @@ import { shouldShowCart, useNavCart } from "./useNavCart";
 // pill on the right. Only the first few links sit in the bar (3 on lg, 4 on
 // xl) - the rest live in a "More" dropdown so a long restaurant name never
 // squeezes the links onto two lines.
-const EMOJI: Record<string, string> = {
-  "/": "🏠",
-  "/menu": "🍽️",
-  "/catering": "🎉",
-  "/giftcard": "🎁",
-  "/rewards": "⭐",
-  "/kidszone": "🎈",
-  "/blog": "📰",
-  "/story": "📖",
-};
-
 export function PopNav({ initialCartId, logoUrl }: { initialCartId: string | null; logoUrl?: string }) {
   const pathname = usePathname();
   const { cartId, cartItems } = useNavCart(initialCartId);
@@ -191,7 +180,7 @@ function MoreMenu({
             transition={{ type: "spring", stiffness: 520, damping: 32 }}
             className="absolute right-0 top-full z-50 origin-top-right pt-3"
           >
-            <div className="w-64 overflow-hidden rounded-[1.75rem] bg-[var(--pop-card)] p-2 text-[var(--pop-fg)] shadow-[0_24px_60px_rgba(0,0,0,0.18)] ring-1 ring-black/5 dark:ring-white/10">
+            <div className="w-56 overflow-hidden rounded-[1.75rem] bg-[var(--pop-card)] p-2 text-[var(--pop-fg)] shadow-[0_24px_60px_rgba(0,0,0,0.18)] ring-1 ring-black/5 dark:ring-white/10">
               {items.map((l, i) => {
                 const on = active(l.href);
                 return (
@@ -205,17 +194,10 @@ function MoreMenu({
                     <Link
                       href={l.href}
                       role="menuitem"
-                      className={`group flex items-center gap-3 rounded-2xl px-2.5 py-2 text-[15px] font-semibold transition-colors ${
+                      className={`group flex items-center gap-3 rounded-2xl px-4 py-2.5 text-[15px] font-semibold transition-colors ${
                         on ? "bg-[var(--brand)] text-[var(--brand-foreground)]" : "hover:bg-[var(--pop-soft)]"
                       }`}
                     >
-                      <span
-                        className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl text-lg transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110 ${
-                          on ? "bg-black/10" : "bg-[var(--pop-soft)] group-hover:bg-[var(--pop-card)]"
-                        }`}
-                      >
-                        {EMOJI[l.href.toLowerCase()] ?? "✨"}
-                      </span>
                       <span className="flex-1">{l.label}</span>
                       <ArrowRight
                         className={`h-4 w-4 transition-all duration-300 ${on ? "opacity-100" : "-translate-x-1 opacity-0 group-hover:translate-x-0 group-hover:opacity-100"}`}
