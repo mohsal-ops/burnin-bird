@@ -85,9 +85,13 @@ export default function AppSideBar({ variant = "classic-starvega" }: { variant?:
         onClick={toggle}
         aria-label={open ? "Close menu" : "Open menu"}
         aria-expanded={open}
-        className="relative flex h-20 w-16 items-center justify-center"
+        className={
+          variant === "pop-bento"
+            ? "relative ml-1 grid h-11 w-11 place-items-center rounded-full bg-[var(--brand)] text-[var(--brand-foreground)] shadow-[var(--pop-pill-shadow)] transition-transform active:scale-90"
+            : "relative flex h-20 w-16 items-center justify-center"
+        }
       >
-        <TextAlignJustify />
+        <TextAlignJustify className={variant === "pop-bento" ? "h-5 w-5" : undefined} />
       </button>
       {mounted &&
         createPortal(

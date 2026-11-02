@@ -62,6 +62,17 @@ export default function MainPageMenu({
   const [choice, setChoice] = useState<"delivery" | "pickup" | null>("pickup");
   const [query, setQuery] = useState("");
   const placeholderRef = useRef<HTMLDivElement | null>(null);
+  const railRef = useRef<HTMLDivElement | null>(null);
+  const chipRowRef = useRef<HTMLDivElement | null>(null);
+  const [railFade, setRailFade] = useState({ top: false, bottom: false });
+  const updateRailFades = () => {
+    const el = railRef.current;
+    if (!el) return;
+    setRailFade({
+      top: el.scrollTop > 4,
+      bottom: el.scrollTop + el.clientHeight < el.scrollHeight - 4,
+    });
+  };
   const [isPinned, setIsPinned] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   // const [cartItems, setcartItems] = useState<CartItem[] | undefined>([])
@@ -154,6 +165,30 @@ export default function MainPageMenu({
     return () => observer.disconnect();
   }, [gategories]);
 
+  // Follow the page: keep the active category visible inside the desktop rail
+  // and the phone chip row (scrolls only those boxes, never the page).
+  useEffect(() => {
+    if (!activeCategory) return;
+    const rail = railRef.current;
+    const chip = rail?.querySelector<HTMLElement>(`[data-cat="${activeCategory}"]`);
+    if (rail && chip) {
+      const top = chip.offsetTop - rail.clientHeight / 2 + chip.clientHeight / 2;
+      rail.scrollTo({ top, behavior: "smooth" });
+    }
+    const row = chipRowRef.current;
+    const pill = row?.querySelector<HTMLElement>(`[data-cat="${activeCategory}"]`);
+    if (row && pill) {
+      const left = pill.offsetLeft - row.clientWidth / 2 + pill.clientWidth / 2;
+      row.scrollTo({ left, behavior: "smooth" });
+    }
+  }, [activeCategory]);
+
+  useEffect(() => {
+    updateRailFades();
+    window.addEventListener("resize", updateRailFades);
+    return () => window.removeEventListener("resize", updateRailFades);
+  }, [gategories]);
+
   // search filter function
   useEffect(() => {
     const filterFunction = () => {
@@ -205,8 +240,14 @@ export default function MainPageMenu({
       className="flex flex-col md:flex-row gap-16 w-full lg:w-[80%] pt-20 "
     >
       <div className="relative hidden md:block w-2/12 py-5  ">
-        <div id="desktop-search-categories" className="flex w-60 flex-col sticky top-24">
-          <div className="flex  w-full justify-start items-center  border border-border rounded-xl outline-none focus-within:border-2 focus-within:border-ring">
+        {/* Sticky rail that never grows past the screen: search stays put and
+            the category list scrolls on its own (with soft fades), so a long
+            menu doesn't make you scroll the whole page to reach the last ones. */}
+        <div
+          id="desktop-search-categories"
+          className="sv-cat-rail flex w-60 flex-col sticky top-24 max-h-[calc(100dvh-7.5rem)]"
+        >
+          <div className="flex shrink-0 w-full justify-start items-center  border border-border rounded-xl outline-none focus-within:border-2 focus-within:border-ring">
             {/* Search Input */}
             <PiMagnifyingGlass fontSize={21} className="mx-2" />
 
@@ -218,26 +259,66 @@ export default function MainPageMenu({
               className="w-full md:rounded-lg rounded-full py-2 outline-none "
             />
           </div>
-          <div className="flex flex-col py-2 font-bold gap-1  w-full ">
-            {grouped &&
-              grouped.map(({ category: cat }) => (
-                <Button
-                  key={cat.id}
-                  onClick={() =>
-                    document
-                      .getElementById(`cat-${cat.id}`)
-                      ?.scrollIntoView({ behavior: "smooth" })
-                  }
-                  className={`justify-start font-medium text-sm ${
-                    activeCategory === cat.id
-                      ? "bg-foreground text-background"
-                      : "bg-transparent text-muted-foreground"
-                  }`}
-                  variant="ghost"
-                >
-                  {cat.name}
-                </Button>
-              ))}
+          <div className="sv-cat-rail-head flex shrink-0 items-center justify-between px-3 pt-4 pb-1 text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+            <span>Categories</span>
+            <span className="tabular-nums">{grouped.length}</span>
+          </div>
+          <div className="relative flex min-h-0 flex-1 flex-col">
+            <div
+              ref={railRef}
+              onScroll={updateRailFades}
+              className="sv-cat-rail-list min-h-0 flex-1 overflow-y-auto overscroll-contain flex flex-col py-2 pr-1 font-bold gap-1 w-full"
+            >
+              {grouped &&
+                grouped.map(({ category: cat, products: items }) => (
+                  <Button
+                    key={cat.id}
+                    data-cat={cat.id}
+                    data-active={activeCategory === cat.id ? "1" : undefined}
+                    onClick={() =>
+                      document
+                        .getElementById(`cat-${cat.id}`)
+                        ?.scrollIntoView({ behavior: "smooth" })
+                    }
+                    className={`sv-rail-chip group shrink-0 justify-between gap-2 font-medium text-sm transition-all duration-200 ${
+                      activeCategory === cat.id
+                        ? "bg-foreground text-background hover:bg-foreground hover:text-background"
+                        : "bg-transparent text-muted-foreground hover:translate-x-0.5"
+                    }`}
+                    variant="ghost"
+                  >
+                    <span className="truncate">{cat.name}</span>
+                    <span
+                      className={`sv-rail-count rounded-full px-2 py-0.5 text-[11px] tabular-nums transition-colors ${
+                        activeCategory === cat.id
+                          ? "bg-background/15 text-background"
+                          : "bg-muted text-muted-foreground group-hover:text-foreground"
+                      }`}
+                    >
+                      {items.length}
+                    </span>
+                  </Button>
+                ))}
+            </div>
+            <div
+              aria-hidden
+              style={{ background: "linear-gradient(to bottom, var(--rail-bg), transparent)" }}
+              className={`pointer-events-none absolute inset-x-0 top-0 h-8 transition-opacity duration-300 ${railFade.top ? "opacity-100" : "opacity-0"}`}
+            />
+            <div
+              aria-hidden
+              style={{ background: "linear-gradient(to top, var(--rail-bg) 35%, transparent)" }}
+              className={`pointer-events-none absolute inset-x-0 bottom-0 flex h-12 items-end justify-center transition-opacity duration-300 ${railFade.bottom ? "opacity-100" : "opacity-0"}`}
+            >
+              <button
+                type="button"
+                onClick={() => railRef.current?.scrollBy({ top: 160, behavior: "smooth" })}
+                className="pointer-events-auto mb-1 grid h-7 w-7 animate-bounce place-items-center rounded-full bg-foreground text-background shadow-md"
+                aria-label="More categories"
+              >
+                <MdKeyboardArrowRight className="rotate-90" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -359,11 +440,12 @@ export default function MainPageMenu({
               className="w-full md:rounded-lg rounded-full p-2 outline-none "
             />
           </div>
-          <div className="flex items-center gap-2 overflow-auto">
+          <div ref={chipRowRef} className="relative flex items-center gap-2 overflow-auto no-scrollbar scroll-smooth">
             {grouped &&
               grouped.map(({ category: cat }) => (
                 <Button
                   key={cat.id}
+                  data-cat={cat.id}
                   onClick={() =>
                     document
                       .getElementById(`cat-${cat.id}`)
