@@ -41,6 +41,10 @@ export default async function Success(props: any) {
   );
 
   const isSuccess = paymentIntent.status === "succeeded";
+  // Offer v3: the owner's Google "write a review" link (Admin -> Loyalty).
+  const reviewUrl = isSuccess
+    ? (await db.siteSetting.findUnique({ where: { key: "google_review_url" } }).catch(() => null))?.value?.trim() ?? ""
+    : "";
   const pushOn = isSuccess && (await isEnabled("web_push"));
   // Offer "Save your info?" to guests who paid with an email (accounts on).
   const clientSecret = typeof searchParams?.payment_intent_client_secret === "string" ? searchParams.payment_intent_client_secret : "";
@@ -82,6 +86,16 @@ export default async function Success(props: any) {
                 </a>
               )}
             </div>
+          )}
+          {reviewUrl && (
+            <a
+              href={reviewUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="mx-auto mt-2 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-stone-900 shadow-sm"
+            >
+              <span aria-hidden>★</span> Loved it? Leave us a Google review
+            </a>
           )}
           <Button variant="link" className="mt-4 w-full" asChild>
             {isSuccess ? (

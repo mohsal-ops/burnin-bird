@@ -1,7 +1,7 @@
 import "server-only";
 import db from "@/db/db";
 import { deriveOrderType } from "@/lib/orderType";
-import { REDEMPTION_WINDOW_DAYS } from "@/lib/loyaltyPromo";
+import { redeemableNow } from "@/lib/loyaltyPromo";
 
 type CartForTotal = {
   promoCampaignId: string | null;
@@ -18,9 +18,8 @@ export async function cartTotalCents(cart: CartForTotal): Promise<{ total: numbe
   let discount = 0;
   let code: string | null = null;
   if (cart.promoCampaignId) {
-    const since = new Date(Date.now() - REDEMPTION_WINDOW_DAYS * 86400_000);
     const camp = await db.loyaltyCampaign.findFirst({
-      where: { id: cart.promoCampaignId, sentAt: { gte: since } },
+      where: { id: cart.promoCampaignId, ...redeemableNow() },
       select: { discountPercent: true, redemptionCode: true },
     });
     if (camp) {

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { deriveOrderType } from "@/lib/orderType"
 import { getLoyaltySettings, loyaltyIncentive } from "@/lib/loyalty"
-import { REDEMPTION_WINDOW_DAYS } from "@/lib/loyaltyPromo"
+import { redeemableNow } from "@/lib/loyaltyPromo"
 import { PromoField } from "../../../_components/PromoField"
 
 interface PageProps {
@@ -51,9 +51,8 @@ export default async function Page({ params }: PageProps) {
   let discountInCents = 0
   let appliedPromoCode: string | null = null
   if (cart.promoCampaignId) {
-    const since = new Date(Date.now() - REDEMPTION_WINDOW_DAYS * 86400_000)
     const camp = await db.loyaltyCampaign.findFirst({
-      where: { id: cart.promoCampaignId, sentAt: { gte: since } },
+      where: { id: cart.promoCampaignId, ...redeemableNow() },
       select: { discountPercent: true, redemptionCode: true },
     })
     if (camp) {

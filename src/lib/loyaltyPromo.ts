@@ -23,6 +23,24 @@ export const DEFAULT_DISCOUNT_PERCENT = 10;
 // A campaign code is redeemable for this many days after it was sent.
 export const REDEMPTION_WINDOW_DAYS = 30;
 
+// The bag-card code (offer v3): one standing code the owner sets in
+// Admin -> Loyalty, printed on the cards that go in delivery/takeout bags. It
+// never expires while it's on (type "bag_card"); turning it off flips the type
+// to "bag_card_off" so it stops working but keeps its redemption count.
+export const BAG_CARD_TYPE = "bag_card";
+export const BAG_CARD_OFF_TYPE = "bag_card_off";
+
+/** Prisma where-clause for a campaign code that can be redeemed right now:
+ *  sent inside the redemption window, or the standing bag-card code. */
+export function redeemableNow() {
+  return {
+    OR: [
+      { sentAt: { gte: new Date(Date.now() - REDEMPTION_WINDOW_DAYS * 86400_000) } },
+      { type: BAG_CARD_TYPE },
+    ],
+  };
+}
+
 // Unambiguous alphabet (no O/0, I/1) so a code read off a phone can't be mistyped.
 const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 

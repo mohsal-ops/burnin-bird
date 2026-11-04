@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import db from "@/db/db";
 import { LOYALTY_PROJECT_ID } from "@/lib/loyalty";
-import { normalizeCode, REDEMPTION_WINDOW_DAYS } from "@/lib/loyaltyPromo";
+import { normalizeCode, redeemableNow } from "@/lib/loyaltyPromo";
 import { allowDb, getClientIp } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
@@ -30,9 +30,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ valid: false, error: "Too many tries. Please wait a bit." }, { status: 429 });
   }
   const code = normalizeCode(raw);
-  const since = new Date(Date.now() - REDEMPTION_WINDOW_DAYS * 86400_000);
   const campaign = await db.loyaltyCampaign.findFirst({
-    where: { projectId: LOYALTY_PROJECT_ID, redemptionCode: code, sentAt: { gte: since } },
+    where: { projectId: LOYALTY_PROJECT_ID, redemptionCode: code, ...redeemableNow() },
     select: { id: true, discountPercent: true, sentAt: true },
   });
 

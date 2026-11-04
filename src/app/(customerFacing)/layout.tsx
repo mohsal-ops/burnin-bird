@@ -16,6 +16,7 @@ import LoadingScreen from "@/components/LoadingScreen";
 import TrialPopup from "./_components/TrialPopup";
 import DashboardBubble from "./_components/DashboardBubble";
 import LoyaltyPopup from "@/components/LoyaltyPopup";
+import BagCardWelcome from "./_components/BagCardWelcome";
 import PwaBoot from "@/components/pwa/PwaBoot";
 import { getIconVersion } from "@/lib/pwa/iconUrl";
 import { isEnabled } from "@/lib/flags";
@@ -54,6 +55,7 @@ export default async function Customerlayout({
       {pwaOn && <PwaBoot name={SITE_CONFIG.name} iconV={await getIconVersion()} />}
       {pwaOn && <AppShell logoUrl="/logo.png" />}
       <TrialPopup />
+      <BagCardWelcome name={SITE_CONFIG.name} />
       <DashboardBubble />
       <LoyaltyPopup
         loyaltyEnabled={loyalty.enabled}

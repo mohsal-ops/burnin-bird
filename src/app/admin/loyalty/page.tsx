@@ -4,6 +4,8 @@ import { getLoyaltySettings, LOYALTY_PROJECT_ID } from "@/lib/loyalty";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import PageHeader from "../_components/pageHeader";
 import { LoyaltyDashboard } from "./_components/LoyaltyDashboard";
+import { BagCardPanel } from "./_components/BagCardPanel";
+import { BAG_CARD_TYPE, BAG_CARD_OFF_TYPE } from "@/lib/loyaltyPromo";
 
 export const dynamic = "force-dynamic";
 
@@ -42,6 +44,20 @@ export default async function LoyaltyPage() {
     }),
   ]);
 
+  // Bag card (offer v3): the standing code lives in the campaign table but isn't a
+  // sent campaign, so it's pulled out of the history and shown on its own.
+  const isCard = (t: string) => t === BAG_CARD_TYPE || t === BAG_CARD_OFF_TYPE;
+  const card = await db.loyaltyCampaign.findFirst({
+    where: { projectId: LOYALTY_PROJECT_ID, type: { in: [BAG_CARD_TYPE, BAG_CARD_OFF_TYPE] } },
+    orderBy: { sentAt: "desc" },
+  });
+  const sentCampaigns = campaigns.filter((c) => !isCard(c.type));
+  const cardLink = card?.redemptionCode
+    ? `${SITE_CONFIG.siteUrl.replace(/\/$/, "")}/?ref=bag&code=${encodeURIComponent(card.redemptionCode)}`
+    : null;
+  const cardQr = cardLink ? await QRCode.toDataURL(cardLink, { width: 400, margin: 1 }) : null;
+  const reviewSetting = await db.siteSetting.findUnique({ where: { key: "google_review_url" } });
+
   // New subscribers per day for the last 14 days (simple growth view).
   const days: { label: string; count: number }[] = [];
   for (let i = 13; i >= 0; i--) {
@@ -72,6 +88,15 @@ export default async function LoyaltyPage() {
         <p className="text-sm text-stone-500 px-4 md:px-0">
           Grow your rewards list, see exactly who&apos;s on it, and send text or email specials.
         </p>
+        <BagCardPanel
+          code={card?.redemptionCode ?? null}
+          discountPercent={card?.discountPercent ?? 10}
+          active={card?.type === BAG_CARD_TYPE}
+          redemptions={card?.redemptionCount ?? 0}
+          siteUrl={SITE_CONFIG.siteUrl}
+          qrDataUrl={cardQr}
+          googleReviewUrl={reviewSetting?.value ?? ""}
+        />
         <LoyaltyDashboard
           settings={settings}
           smsSubscribed={smsSubscribed}
@@ -81,7 +106,7 @@ export default async function LoyaltyPage() {
           subscribers={subscribers}
           qrDataUrl={qrDataUrl}
           rewardsUrl={rewardsUrl}
-          campaigns={campaigns.map((c) => ({
+          campaigns={sentCampaigns.map((c) => ({
             id: c.id,
             channel: c.channel,
             message: c.message,

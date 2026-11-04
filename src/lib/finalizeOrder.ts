@@ -9,7 +9,7 @@ import { createDelivery } from "@/lib/uber";
 import { deriveOrderType } from "@/lib/orderType";
 import { NEW_ORDER, PAID_STATUSES, isPaid } from "@/lib/orderStatus";
 import { pushOrderToPos } from "@/lib/pos/pipeline";
-import { REDEMPTION_WINDOW_DAYS } from "@/lib/loyaltyPromo";
+import { redeemableNow } from "@/lib/loyaltyPromo";
 import { cartTotalCents } from "@/lib/cartTotal";
 import { dispatchRoutedDelivery } from "@/lib/delivery/dispatch";
 import { pushToOwners } from "@/lib/push/send";
@@ -217,7 +217,7 @@ export async function finalizeCart(
     ? (await db.loyaltyCampaign
         .findFirst({
           // Same rule as checkout: the code only counts inside its redemption window.
-          where: { id: cart.promoCampaignId, sentAt: { gte: new Date(Date.now() - REDEMPTION_WINDOW_DAYS * 86400_000) } },
+          where: { id: cart.promoCampaignId, ...redeemableNow() },
           select: { discountPercent: true },
         })
         .catch(() => null))?.discountPercent ?? 0

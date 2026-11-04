@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Tag, X, Loader2 } from "lucide-react";
 
 // Checkout promo-code field. Validates a loyalty campaign code against the
@@ -17,6 +17,19 @@ export function PromoField({
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  // Bag card (offer v3): a code saved when they scanned the card fills itself in.
+  const [fromCard, setFromCard] = useState(false);
+  useEffect(() => {
+    try {
+      const saved = sessionStorage.getItem("bag_code") || localStorage.getItem("bag_code");
+      if (saved && !appliedCode) {
+        setCode(saved);
+        setFromCard(true);
+      }
+    } catch {
+      /* storage blocked */
+    }
+  }, [appliedCode]);
 
   const apply = async (value: string) => {
     setBusy(true);
@@ -83,6 +96,7 @@ export function PromoField({
           {busy ? <Loader2 className="size-4 animate-spin" /> : "Apply"}
         </button>
       </div>
+      {fromCard && !error && <p className="mt-1.5 text-xs text-stone-500">Your code from the bag card. Tap Apply.</p>}
       {error && <p className="mt-1.5 text-xs text-red-600">{error}</p>}
     </div>
   );
