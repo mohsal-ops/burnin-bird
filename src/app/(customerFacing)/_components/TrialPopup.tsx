@@ -1,14 +1,15 @@
 "use client";
 
-// Trial pitch popup shown ~7s after the customer site loads. Honest by design:
-// no countdown, no fake spot-counter, no expiry/takedown copy, no pricing. It's
-// built specifically for the restaurant, real scarcity (I take on a handful at a
-// time). Primary CTA opens the read-only dashboard preview; a single low-friction
-// interest checkbox is the next step - a signal I follow up on personally.
+// "Built for you" popup shown ~7s after a prospect's demo site loads (only when
+// SITE_CONFIG.outreach.enabled). It sells the current offer (the Regulars
+// Engine): what they get, the founding-partner terms and the guarantee, all
+// true and from config. Honest by design: no countdown, no fake spot counter,
+// no takedown threats. Primary CTA opens the read-only dashboard preview; the
+// one-click interest checkbox is the next step, which Ben follows up on.
 import { useEffect, useState } from "react";
-import { X } from "lucide-react";
+import { Check, X } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/siteConfig";
-import { getOutreach } from "@/lib/outreach";
+import { getOutreach, formatUsd } from "@/lib/outreach";
 import { isTrialDismissed, markTrialDismissed, markTrialSeen } from "@/lib/trialPopupSession";
 import PreviewInterestCheckbox from "@/app/admin/_components/PreviewInterestCheckbox";
 
@@ -36,6 +37,12 @@ export default function TrialPopup() {
     markTrialDismissed();
   };
 
+  const points = [
+    "Orders come straight to you, and you keep every customer's number.",
+    "A card in every delivery bag brings app customers back to order here.",
+    "I write and send your text offers for slow nights, every month.",
+  ];
+
   return (
     <div
       className="fixed inset-0 z-[200] flex items-end justify-center bg-black/50 p-3 backdrop-blur-sm sm:items-center sm:p-4"
@@ -45,7 +52,7 @@ export default function TrialPopup() {
       onClick={dismiss}
     >
       <div
-        className="relative w-full max-w-md overflow-hidden rounded-3xl bg-card text-card-foreground shadow-2xl"
+        className="relative max-h-[92vh] w-full max-w-md overflow-y-auto rounded-3xl bg-card text-card-foreground shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -58,25 +65,29 @@ export default function TrialPopup() {
         </button>
 
         <div className="p-6 sm:p-7">
-          <p className="text-xs font-semibold uppercase tracking-widest text-[#c85a1e]">
-            Built for you
-          </p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-[#c85a1e]">Built for {SITE_CONFIG.name}</p>
           <h2 className="mt-2 text-xl font-extrabold leading-snug text-foreground sm:text-2xl">
-            This site and dashboard were built specifically for {SITE_CONFIG.name}.
+            Your own ordering site, ready to go live.
           </h2>
 
-          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-            It&apos;s a live trial, yours to explore for free, for as long as you
-            like. I&apos;m offering it at a discount right now since I&apos;m still
-            building reviews for my own business, so I&apos;d rather get it into a
-            few real restaurants&apos; hands than charge full price.
-          </p>
+          <ul className="mt-4 space-y-2">
+            {points.map((p) => (
+              <li key={p} className="flex gap-2 text-sm leading-relaxed text-foreground">
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#c85a1e]" />
+                <span>{p}</span>
+              </li>
+            ))}
+          </ul>
 
-          {/* Real scarcity, no fake counter */}
-          <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
-            I build and manage each of these personally, so I only take on a handful
-            of restaurants at a time.
-          </p>
+          <div className="mt-4 rounded-2xl bg-muted/60 p-3 text-sm leading-relaxed">
+            <p className="font-semibold text-foreground">
+              Founding partner: $0 setup, {formatUsd(o.founding.monthly)}/month, month to month.
+            </p>
+            <p className="mt-1 text-muted-foreground">
+              For my first {o.founding.spots} restaurants, in return for a short video review. {o.guarantee.orders} direct orders in your first{" "}
+              {o.guarantee.days} days, or I keep working for free until you get there.
+            </p>
+          </div>
 
           <a
             href="/api/preview/enter"

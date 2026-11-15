@@ -24,7 +24,10 @@ export type OutreachConfig = {
     estimatedOrdersPerDay: number;
     avgOrderValue: number;
     commissionPct: number;
-  };
+  };  // Offer v3 (the Regulars Engine), shown in the "built for you" popup.
+  // Defaults match the builder panel's src/lib/offer.ts REGULARS.
+  founding: { monthly: number; spots: number };
+  guarantee: { orders: number; days: number };
 };
 
 const DEFAULTS: OutreachConfig = {
@@ -39,6 +42,8 @@ const DEFAULTS: OutreachConfig = {
   signalEndpoint: "https://restaurant-websites-builder.vercel.app/api/interest",
   signalKey: "",
   savings: { estimatedOrdersPerDay: 20, avgOrderValue: 25, commissionPct: 30 },
+  founding: { monthly: 97, spots: 5 },
+  guarantee: { orders: 100, days: 90 },
 };
 
 export function getOutreach(): OutreachConfig {
@@ -48,6 +53,8 @@ export function getOutreach(): OutreachConfig {
     ...DEFAULTS,
     ...raw,
     savings: { ...DEFAULTS.savings, ...(raw.savings ?? {}) },
+    founding: { ...DEFAULTS.founding, ...(raw.founding ?? {}) },
+    guarantee: { ...DEFAULTS.guarantee, ...(raw.guarantee ?? {}) },
   };
 }
 
