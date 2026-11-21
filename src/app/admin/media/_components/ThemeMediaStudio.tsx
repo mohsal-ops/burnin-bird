@@ -4,9 +4,10 @@ import { useMemo, useRef, useState, useTransition, type ChangeEvent } from "reac
 import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
-import { Check, ExternalLink, ImagePlus, Sparkles, Upload, Wand2 } from "lucide-react";
+import { Check, ExternalLink, ImagePlus, Loader2, Sparkles, Trash2, Upload, Video, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { setSiteImagePreset, updateSiteImage, updateThemeWords } from "@/app/admin/images/_actions/imageActions";
+import { setSiteImagePreset, setSiteVideo, updateSiteImage, updateThemeWords } from "@/app/admin/images/_actions/imageActions";
+import { uploadVideoDirect } from "@/lib/clientUpload";
 import { MASCOT_PRESETS, THEME_MEDIA, type MediaSlot, type ThemeWord } from "@/lib/themes/mediaSlots";
 import type { ThemeSlug } from "@/lib/themes/registry";
 import { ThemeMap } from "./ThemeMap";
@@ -117,6 +118,83 @@ function SlotCard({ slot, n, url, fallbackUrl, fallbackLabel, active, onHover, o
                 <Button variant="mainButton" size="sm" disabled={u.pending} onClick={u.save}>{u.pending ? "Saving..." : "Save"}</Button>
                 <Button variant="ghost" size="sm" disabled={u.pending} onClick={u.cancel}>Cancel</Button>
               </>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Optional homepage kitchen video: uploaded straight from the browser to storage,
+// then saved. Empty = the hero plate only turns through dishes.
+function VideoCard({ slot, n, url, active, onHover, onSaved }: {
+  slot: MediaSlot; n: number; url: string | null; active: boolean; onHover: (k: string | null) => void; onSaved: (url: string | null) => void;
+}) {
+  const [busy, setBusy] = useState<"up" | "rm" | null>(null);
+  const input = useRef<HTMLInputElement>(null);
+  const pick = async (e: ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (input.current) input.current.value = "";
+    if (!f) return;
+    setBusy("up");
+    try {
+      const u = await uploadVideoDirect(f);
+      const res = await setSiteVideo(slot.key, u);
+      if (res.ok) {
+        toast.success("Video saved. It's now the last turn of your hero plate.");
+        onSaved(u);
+      } else toast.error(res.error ?? "Couldn't save the video");
+    } catch (err) {
+      toast.error((err as Error).message);
+    }
+    setBusy(null);
+  };
+  const remove = async () => {
+    setBusy("rm");
+    const res = await setSiteVideo(slot.key, null);
+    setBusy(null);
+    if (res.ok) {
+      toast.success("Video removed");
+      onSaved(null);
+    } else toast.error(res.error ?? "Couldn't remove it");
+  };
+  return (
+    <div
+      id={`slot-${slot.key}`}
+      onMouseEnter={() => onHover(slot.key)}
+      onMouseLeave={() => onHover(null)}
+      className={`scroll-mt-24 overflow-hidden rounded-2xl border bg-white shadow-sm transition-all duration-300 ${active ? "border-[#c85a1e] shadow-[0_12px_30px_-12px_rgba(200,90,30,0.45)]" : "border-stone-200"}`}
+    >
+      <div className="grid gap-0 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+        <div className="relative aspect-[16/10] bg-stone-900 sm:aspect-auto sm:min-h-[180px]">
+          {url ? (
+            <video src={url} muted loop playsInline autoPlay className="absolute inset-0 h-full w-full object-cover" />
+          ) : (
+            <div className="grid h-full place-items-center text-xs text-stone-400"><span className="flex items-center gap-1.5"><Video size={14} /> No video, the plate shows dishes only</span></div>
+          )}
+          <span className={`absolute left-3 top-3 grid size-8 place-items-center rounded-full text-sm font-bold shadow ring-2 ring-white transition-transform ${active ? "scale-110 bg-[#c85a1e] text-white" : "bg-white text-stone-800"}`}>{n}</span>
+        </div>
+        <div className="flex flex-col gap-3 p-4">
+          <div>
+            <p className="font-semibold text-stone-800">{slot.label}</p>
+            <p className="mt-1 text-xs leading-relaxed text-stone-500">{slot.where}</p>
+          </div>
+          {slot.tip && (
+            <p className="flex gap-2 rounded-lg bg-stone-50 p-2.5 text-xs leading-snug text-stone-600">
+              <Sparkles size={14} className="mt-0.5 shrink-0 text-[#c85a1e]" />
+              {slot.tip}
+            </p>
+          )}
+          <input ref={input} type="file" accept="video/mp4,video/quicktime,video/webm" className="hidden" onChange={pick} />
+          <div className="mt-auto flex flex-wrap gap-2">
+            <Button variant="outline" size="sm" type="button" disabled={!!busy} onClick={() => input.current?.click()}>
+              {busy === "up" ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />} {busy === "up" ? "Uploading..." : url ? "Change video" : "Add video"}
+            </Button>
+            {url && (
+              <Button variant="ghost" size="sm" type="button" disabled={!!busy} onClick={remove}>
+                {busy === "rm" ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />} Remove
+              </Button>
             )}
           </div>
         </div>
@@ -366,7 +444,9 @@ export default function ThemeMediaStudio({
       {/* slots */}
       <div className="space-y-4">
         {spec.slots.map((s) =>
-          s.kind === "mascot" ? (
+          s.kind === "video" ? (
+            <VideoCard key={s.key} slot={s} n={num(s.key)} url={urls[s.key] || null} active={active === s.key} onHover={setActive} onSaved={(url) => setUrls((u) => ({ ...u, [s.key]: url ?? "" }))} />
+          ) : s.kind === "mascot" ? (
             <MascotCard key={s.key} slot={s} n={num(s.key)} value={urls[s.key] ?? null} autoSrc={autoMascot} sub={(words.theme_subbrand || defaults.sub).toUpperCase()} brand={brand} active={active === s.key} onHover={setActive} onSaved={(url) => setUrls((u) => ({ ...u, [s.key]: url }))} />
           ) : (
             <SlotCard

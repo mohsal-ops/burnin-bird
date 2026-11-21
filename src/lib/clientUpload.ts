@@ -38,3 +38,24 @@ export async function uploadPhotoDirect(input: File, folder: "gallery" | "site-i
   if (!put.ok) throw new Error(`Storage upload failed (${put.status})`);
   return j.publicUrl as string;
 }
+
+/** Upload a short video (homepage kitchen clip): R2 when set up, else Vercel Blob. Returns its public URL. */
+export async function uploadVideoDirect(file: File): Promise<string> {
+  if (file.size > 60 * 1024 * 1024) throw new Error("That video is over 60 MB. Trim it to 10-20 seconds and try again.");
+  const res = await fetch("/api/storage/presign", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ folder: "videos", filename: file.name, contentType: file.type }),
+  });
+  if (res.status !== 501) {
+    const j = await res.json().catch(() => ({}));
+    if (!res.ok || !j.uploadUrl) throw new Error(j.error || `Upload not allowed (${res.status})`);
+    const put = await fetch(j.uploadUrl, { method: "PUT", body: file });
+    if (!put.ok) throw new Error(`Storage upload failed (${put.status})`);
+    return j.publicUrl as string;
+  }
+  // Older sites without R2: straight to Vercel Blob.
+  const { upload } = await import("@vercel/blob/client");
+  const blob = await upload(`videos/${file.name}`, file, { access: "public", handleUploadUrl: "/api/media/video-upload" });
+  return blob.url;
+}

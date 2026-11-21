@@ -13,7 +13,7 @@ export type MediaSlot = {
   where: string;
   fallback?: string; // SiteImage key used until this slot is set
   tip?: string;
-  kind?: "photo" | "mascot";
+  kind?: "photo" | "mascot" | "video";
 };
 
 export type ThemeWord = { key: string; label: string; hint: string; max: number; font: string; upper?: boolean };
@@ -63,6 +63,13 @@ export const THEME_MEDIA: Record<ThemeSlug, { slots: MediaSlot[]; words: ThemeWo
         fallback: "home_hero",
       },
       { key: "home_feature_1", label: "Story photo", where: "The big photo card next to 'Our story'." },
+      {
+        key: "pop_video",
+        label: "Kitchen video (optional)",
+        where: "Becomes the last turn of the hero plate: it plays in the plate, and a tap opens it full screen with an Order button. Leave empty and the plate just turns through your dishes.",
+        tip: "10-20 seconds, filmed upright on your phone, close-up of food on the grill or being made. A clip from your Instagram reels works great. Under 50 MB.",
+        kind: "video",
+      },
     ],
     words: [
       { key: "pop_headline", label: "Big headline", hint: "The giant words on the brand-colour hero card. Short and punchy, like 'Smash. Sauce. Repeat.'", max: 40, font: "var(--font-bricolage), system-ui" },

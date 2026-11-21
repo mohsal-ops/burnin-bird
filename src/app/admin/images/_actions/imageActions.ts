@@ -88,3 +88,37 @@ export async function updateThemeWords(values: Record<string, string>) {
     return { error: "Couldn't save. Try again." };
   }
 }
+
+// The homepage kitchen video (Pop Bento). The browser uploads the file itself
+// (R2 / Blob, see clientUpload.uploadVideoDirect); this only saves or clears the
+// URL. Only our own storage hosts are accepted.
+const VIDEO_KEYS = new Set(["pop_video"]);
+function ourStorage(url: string) {
+  try {
+    const u = new URL(url);
+    if (u.protocol !== "https:") return false;
+    const r2 = process.env.R2_PUBLIC_URL?.trim();
+    return (!!r2 && url.startsWith(r2)) || u.hostname.endsWith(".blob.vercel-storage.com");
+  } catch {
+    return false;
+  }
+}
+export async function setSiteVideo(key: string, url: string | null) {
+  await assertWritable();
+  if (!VIDEO_KEYS.has(key)) return { error: "Not allowed" };
+  try {
+    const old = await db.siteImage.findUnique({ where: { key } });
+    if (url === null) {
+      await db.siteImage.deleteMany({ where: { key } });
+    } else {
+      if (!ourStorage(url)) return { error: "Upload the video from this page." };
+      await db.siteImage.upsert({ where: { key }, update: { url }, create: { key, url, label: "Kitchen video" } });
+    }
+    if (old?.url && old.url !== url) await removeStoredFile(old.url);
+    revalidatePath("/");
+    revalidatePath("/admin/media");
+    return { ok: true };
+  } catch (e) {
+    return { error: `Couldn't save the video: ${(e as Error).message}` };
+  }
+}
