@@ -316,7 +316,7 @@ export default async function Page() {
               <SEOTip done={daysSincePost !== null && daysSincePost <= 7} text="Posted within the last 7 days (freshness signal)" action="Write now" href="/admin/Blog" />
               <SEOTip done={data.activeItems >= 10} text="10+ active menu items visible on site" action="Add items" href="/admin/menuItems/new" />
               <SEOTip done={data.featuredItems >= 3} text="3+ featured items on home page" action="Set featured" href="/admin/menuItems" />
-              <SEOTip done={data.totalLocations >= 1} text="Location added (helps local SEO in Eagle Pass)" action="Add location" href="/admin/places" />
+              <SEOTip done={data.totalLocations >= 1} text={`Location added (helps local SEO in ${SITE_CONFIG.city})`} action="Add location" href="/admin/places" />
               <div className="mt-4 bg-stone-50 rounded-xl p-3 flex gap-2">
                 <Zap size={14} className="text-[#c85a1e] shrink-0 mt-0.5" />
                 <p className="text-xs text-stone-500 leading-relaxed">

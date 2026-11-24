@@ -1,4 +1,5 @@
 "use client";
+import { SITE_CONFIG } from "@/lib/siteConfig";
 
 // src/app/admin/analytics/_components/AnalyticsDashboard.tsx
 // Run: npm install framer-motion  (if not already installed)
@@ -169,7 +170,7 @@ export function AnalyticsDashboard({
       >
         <div>
           <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground mb-1">
-            The Wagon Wheel
+            {SITE_CONFIG.name}
           </p>
           <h1 className="text-2xl font-semibold tracking-tight">Website Analytics</h1>
         </div>

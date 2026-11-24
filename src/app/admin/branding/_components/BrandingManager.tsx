@@ -1,4 +1,5 @@
 "use client";
+import { SITE_CONFIG } from "@/lib/siteConfig";
 
 import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -144,7 +145,7 @@ export default function BrandingManager({
               type="text"
               value={headline}
               onChange={(e) => setHeadline(e.target.value)}
-              placeholder="e.g. Eagle Pass' viral Texas BBQ"
+              placeholder={`e.g. ${SITE_CONFIG.city}'s favourite ${SITE_CONFIG.primaryDish}`}
               className="w-full rounded-lg border border-stone-200 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-stone-300"
             />
           </div>

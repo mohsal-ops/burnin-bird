@@ -1,3 +1,4 @@
+import { SITE_CONFIG } from "@/lib/siteConfig";
 import PageHeader from "@/app/admin/_components/pageHeader";
 import AddPostForm from "./_components/AddPostForm";
 import PostsTable from "./_components/PostsTable";
@@ -30,7 +31,7 @@ export default async function BlogPage() {
             <p className="text-xs text-stone-500 mt-1 leading-relaxed">
               Every post you write here gets indexed by Google as a new page on your website - this is what keeps your site alive in search results and helps you rank higher over time.
               The Instagram feed on your blog page is for your visitors to see your latest content, but it does <span className="font-semibold text-stone-700">not</span> help your Google ranking.
-              Only these manual blog posts do. Aim for <span className="font-semibold text-stone-700">2-3 posts per week</span> about your food, events, recipes, or anything related to The Wagon Wheel.
+              Only these manual blog posts do. Aim for <span className="font-semibold text-stone-700">2-3 posts per week</span> about your food, events, recipes, or anything related to {SITE_CONFIG.name}.
             </p>
           </div>
         </div>
@@ -59,7 +60,7 @@ function BlogTips() {
     <div className="rounded-xl border bg-white p-5 shadow-sm">
       <h3 className="font-semibold mb-3">Writing Tips</h3>
       <ul className="space-y-2 text-sm text-muted-foreground">
-        <li>• Use catchy titles with keywords like &quot;Eagle Pass Texas BBQ&quot;</li>
+        <li>• Use catchy titles with keywords like your city + your best dish (e.g. &quot;{SITE_CONFIG.city} {SITE_CONFIG.primaryDish}&quot;)</li>
         <li>• Add eye-catching food photos</li>
         <li>• Keep paragraphs short and readable</li>
         <li>• Post about events, specials, new menu items</li>

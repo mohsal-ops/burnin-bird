@@ -75,7 +75,7 @@ type Product = {
 //             </div>
 
 //       <p className="text-center text-sm text-muted-foreground">
-//         📍 The Wagon Wheel | Texas BBQ in Eagle Pass
+//         📍 {restaurant name and address}
 //       </p>
 //     </div>
 //   );

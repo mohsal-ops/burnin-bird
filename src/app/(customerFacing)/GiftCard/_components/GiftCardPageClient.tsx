@@ -112,7 +112,7 @@ export default function GiftCardPageClient({ logoUrl, publishableKey }: { logoUr
 
           <p className="mt-6 max-w-2xl mx-auto text-lg">
             Premium food. Bold flavors. One unforgettable experience. Send a
-            The Wagon Wheel gift card instantly.
+            {SITE_CONFIG.name} gift card instantly.
           </p>
         </div>
       </section>
@@ -123,7 +123,7 @@ export default function GiftCardPageClient({ logoUrl, publishableKey }: { logoUr
           <div className="rounded-2xl bg-linear-to-br from-brand to-brand-dark p-8 shadow-2xl -rotate-3">
             <div className="flex justify-between items-center mb-10">
               <span className="font-bold text-brand-foreground text-xl">
-                The Wagon Wheel
+                {SITE_CONFIG.name}
               </span>
               <span className="text-brand-foreground/70">Gift Card</span>
             </div>

@@ -2,12 +2,13 @@
 
 import Image from "next/image";
 import logo from "public/logo.png";
+import { SITE_CONFIG } from "@/lib/siteConfig";
 
 export default function Loading() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6">
       <div className="animate-pulse">
-        <Image src={logo} alt="The Wagon Wheel" className="h-20 w-20 rounded-full object-cover" />
+        <Image src={logo} alt={SITE_CONFIG.name} className="h-20 w-20 rounded-full object-cover" />
       </div>
 
       <p className="text-muted-foreground text-lg animate-pulse">Loading gift card payment…</p>

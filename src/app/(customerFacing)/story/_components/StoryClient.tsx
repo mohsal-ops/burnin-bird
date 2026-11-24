@@ -4,6 +4,47 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 import { Partner } from "generated/prisma";
+import { cfg } from "@/lib/configOpt";
+
+// Every word on this page comes from THIS site's config - never a template
+// restaurant. Optional per-site `story` block in siteConfig overrides any of it:
+//   story: { headline, intro, originTitle, origin: [..], quote, values: [{ title, text }], closingTitle, closing }
+type StoryCopy = {
+  headline?: string;
+  intro?: string;
+  originTitle?: string;
+  origin?: string[];
+  quote?: string;
+  values?: { title: string; text: string }[];
+  closingTitle?: string;
+  closing?: string;
+};
+
+function storyCopy() {
+  const c = SITE_CONFIG;
+  const o = cfg<StoryCopy>("story") ?? {};
+  const home = (c as unknown as { home?: { heroHeadline?: string; heroSubHeadline?: string; distinctiveFeatures?: { title: string; description: string }[] } }).home ?? {};
+  const feats = (home.distinctiveFeatures ?? []).filter((f) => f?.title && f?.description);
+  const city = (cfg<string>("city") || "").trim();
+  const where = city ? ` in ${city}` : "";
+  const defaults = [
+    { title: "Made fresh", text: "Cooked to order in our own kitchen, the way we'd serve it at home." },
+    { title: "Made for sharing", text: "Bring the family and friends. Good food is better at a full table." },
+    { title: `Part of ${city || "the neighbourhood"}`, text: "We cook for our neighbours every day, and we're proud to." },
+  ];
+  return {
+    name: c.name,
+    headline: o.headline || home.heroHeadline || c.name,
+    intro: o.intro || home.heroSubHeadline || c.tagline || "",
+    originTitle: o.originTitle || feats[0]?.title || `The story of ${c.name}`,
+    origin: o.origin?.length ? o.origin : feats.slice(0, 2).map((f) => f.description),
+    quote: o.quote || `${c.name}${where}.`,
+    quoteSub: c.tagline && c.tagline !== c.name ? c.tagline : "",
+    values: o.values?.length ? o.values : feats.length >= 2 ? [...feats.map((f) => ({ title: f.title, text: f.description })), ...defaults].slice(0, 3) : defaults,
+    closingTitle: o.closingTitle || "Come hungry",
+    closing: o.closing || `Order online for pickup${(cfg<string>("street") || "").trim() ? `, or visit us at ${cfg<string>("street")}${where}` : ""}.`,
+  };
+}
 
 type StoryImages = {
   story_hero: string;
@@ -18,6 +59,7 @@ export default function StoryClient({
   partners: Partner[];
   images: StoryImages;
 }) {
+  const t = storyCopy();
   return (
     <main className="flex flex-col items-center pt-24 overflow-hidden">
 
@@ -25,7 +67,7 @@ export default function StoryClient({
       <section className="relative w-full h-[90vh] flex items-end justify-start">
         <Image
           src={images.story_hero}
-          alt="The Wagon Wheel story hero"
+          alt={`${t.name} - our story`}
           fill
           priority
           className="object-cover brightness-[0.45]"
@@ -51,8 +93,7 @@ export default function StoryClient({
             transition={{ duration: 0.7, ease: "easeOut", delay: 0.2 }}
             className="text-5xl md:text-7xl font-bold leading-tight mb-6"
           >
-            Homemade with<br />
-            <span className="text-brand">Love</span>, Every Day
+            {t.headline}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -60,8 +101,7 @@ export default function StoryClient({
             transition={{ duration: 0.7, ease: "easeOut", delay: 0.35 }}
             className="text-lg md:text-xl text-gray-300 max-w-2xl leading-relaxed"
           >
-            Good food brings people together. At Pam&apos;s Kitchen, every plate
-            is made from scratch and served like family.
+            {t.intro}
           </motion.p>
         </motion.div>
       </section>
@@ -79,19 +119,13 @@ export default function StoryClient({
             How It Started
           </p>
           <h2 className="text-3xl md:text-4xl font-bold leading-snug">
-            Born from a love of home cooking
+            {t.originTitle}
           </h2>
-          <p className="text-muted-foreground text-lg leading-relaxed">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pam&apos;s
-            Kitchen began with a simple idea: serve fresh, homemade meals that
-            taste like they came straight from a family table.
-          </p>
-          <p className="text-muted-foreground text-lg leading-relaxed">
-            Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            From all-day breakfast to hand-pressed burgers and daily specials,
-            everything is made from scratch with care - the way comfort food is
-            meant to be.
-          </p>
+          {t.origin.map((para, i) => (
+            <p key={i} className="text-muted-foreground text-lg leading-relaxed">
+              {para}
+            </p>
+          ))}
         </motion.div>
 
         <motion.div
@@ -103,7 +137,7 @@ export default function StoryClient({
         >
           <Image
             src={images.story_origin}
-            alt="The Wagon Wheel experience"
+            alt={`Inside ${t.name}`}
             width={800}
             height={600}
             className="rounded-3xl object-top object-cover w-full h-full aspect-4/3"
@@ -194,14 +228,9 @@ export default function StoryClient({
           className="max-w-3xl mx-auto"
         >
           <p className="text-2xl md:text-4xl font-bold leading-snug">
-            &quot;Pam&apos;s Kitchen is more than a restaurant
-            <span className="text-brand"> it&apos;s home.&quot;</span>
+            {t.quote}
           </p>
-          <p className="mt-6 text-gray-400 text-lg leading-relaxed">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore. Homemade comfort food, served
-            fresh every day in Eagle Pass, Texas.
-          </p>
+          {t.quoteSub && <p className="mt-6 text-gray-400 text-lg leading-relaxed">{t.quoteSub}</p>}
         </motion.blockquote>
       </section>
 
@@ -223,23 +252,7 @@ export default function StoryClient({
         </motion.div>
 
         <div className="grid sm:grid-cols-3 gap-6">
-          {[
-            {
-              icon: "🏡",
-              title: "Family First",
-              text: "Lorem ipsum dolor sit amet. Every recipe is made the way home tastes - with love, care, and nothing to hide.",
-            },
-            {
-              icon: "🍳",
-              title: "Fresh Every Day",
-              text: "No shortcuts. Breakfast, burgers, and daily specials made from scratch, fresh every single day.",
-            },
-            {
-              icon: "🤝",
-              title: "Community Rooted",
-              text: "We're not just serving food. We're building a space where culture, community, and connection share the same table.",
-            },
-          ].map((v, i) => (
+          {t.values.map((v, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 28 }}
@@ -266,7 +279,7 @@ export default function StoryClient({
         >
           <Image
             src={images.story_closing}
-            alt="The Wagon Wheel dining experience"
+            alt={`${t.name} dining`}
             width={1600}
             height={700}
             className="w-full object-cover max-h-125"
@@ -274,12 +287,10 @@ export default function StoryClient({
           <div className="absolute inset-0 bg-linear-to-t from-black/70 via-transparent to-transparent" />
           <div className="absolute bottom-0 left-0 p-10 md:p-16 text-white max-w-2xl">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              This Is Just the Beginning
+              {t.closingTitle}
             </h2>
             <p className="text-gray-300 text-lg leading-relaxed mb-8">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eagle Pass&apos;s
-              appetite for fresh homemade food is wide open - and Pam&apos;s Kitchen
-              is here to fill it, one plate at a time.
+              {t.closing}
             </p>
             <a
               href="/Menu"
