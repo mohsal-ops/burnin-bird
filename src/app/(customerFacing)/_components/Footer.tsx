@@ -8,6 +8,10 @@ import { FaFacebook } from "react-icons/fa";
 import Logo from "@/../public/general/logo/logo.png";
 import { SITE_CONFIG } from "@/lib/siteConfig";
 
+// Only link sections this site actually has (they follow the navbar's
+// feature + package-tier rules in siteConfig).
+const has = (href: string) => SITE_CONFIG.navLinks.some((l) => l.href === href);
+
 export function Footer({ logoUrl }: { logoUrl?: string }) {
   return (
     <div className="flex w-[92%] mx-auto text-sm gap-6 items-center py-6 md:py-10 justify-center flex-col sm:space-x-10  sm:pr-10  md:w-[98%] bg-muted text-foreground rounded-4xl">
@@ -31,17 +35,23 @@ export function Footer({ logoUrl }: { logoUrl?: string }) {
             <Button variant="link">
               <Link href="/Menu">Menu</Link>
             </Button>
-            <Button variant="link">
-              <Link href="/Blog">Press</Link>
-            </Button>
+            {has("/Blog") && (
+              <Button variant="link">
+                <Link href="/Blog">Press</Link>
+              </Button>
+            )}
           </div>
           <div className="flex flex-col gap-2">
-            <Button variant="link">
-              <Link href="/catering">Catering</Link>
-            </Button>
-            <Button variant="link">
-              <Link href="/GiftCard">Gift Card</Link>
-            </Button>
+            {has("/catering") && (
+              <Button variant="link">
+                <Link href="/catering">Catering</Link>
+              </Button>
+            )}
+            {has("/GiftCard") && (
+              <Button variant="link">
+                <Link href="/GiftCard">Gift Card</Link>
+              </Button>
+            )}
           </div>
           <div className="flex flex-col gap-2">
             <Button variant="link">
