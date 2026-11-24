@@ -1,6 +1,6 @@
 "use client";
+import { BrandLogo } from "@/components/BrandLogo";
 import { useNavCart } from "./themes/useNavCart";
-import Image from "next/image";
 import Link from "next/link";
 import Logo from "@/../public/general/logo/logo.png";
 import AppSideBar from "./sideBar";
@@ -25,13 +25,13 @@ export function SideBar({
     <div className="flex w-full  justify-between h-20 items-center ">
       <div className="flex items-center justify-center pl-7">
         <Link href="/">
-          <Image
+          <BrandLogo
             alt={`${SITE_CONFIG.name} logo`}
             priority
-            className={`h-12 w-12 ${logoUrl ? "rounded-full object-cover" : "object-contain"}`}
+            className="h-12 w-12"
             src={logoUrl || Logo}
-            height={50}
-            width={50}
+            height={100}
+            width={100}
           />
         </Link>
       </div>
@@ -84,12 +84,12 @@ export function TopNavBar({
       <div className="hidden md:flex justify-between h-16 md:h-20 md:w-[80%]  items-center ">
         <div className="flex items-center justify-center w-auto ">
           <Link href="/" aria-label={`${SITE_CONFIG.name} home`}>
-            <Image
+            <BrandLogo
               alt={`${SITE_CONFIG.name} logo`}
-              className={`h-14 w-14 ${logoUrl ? "rounded-full object-cover" : "object-contain"}`}
+              className="h-14 w-14"
               src={logoUrl || Logo}
-              height={60}
-              width={60}
+              height={112}
+              width={112}
             />
           </Link>
         </div>

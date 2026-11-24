@@ -1,4 +1,5 @@
 "use client";
+import { BrandLogo } from "@/components/BrandLogo";
 
 import { useEffect, useState, FormEvent } from "react";
 import { loadStripe } from "@stripe/stripe-js";
@@ -18,7 +19,6 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 
 // Publishable key comes from the server (admin → Payments, else the env var).
 let stripePromise: ReturnType<typeof loadStripe> | null = null;
@@ -102,7 +102,7 @@ export default function GiftCardPageClient({ logoUrl, publishableKey }: { logoUr
         <div className="relative z-10">
           <div className="flex justify-center mb-6">
             <div className="rounded-2xl bg-brand p-3 shadow-xl">
-              <Image src={logoUrl || logo} alt={`${SITE_CONFIG.name}`} className="h-20 w-20 rounded-full object-cover" />
+              <BrandLogo src={logoUrl || logo} alt={`${SITE_CONFIG.name}`} width={160} height={160} className="h-20 w-20" />
             </div>
           </div>
 

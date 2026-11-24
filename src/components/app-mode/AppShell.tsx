@@ -1,7 +1,7 @@
 "use client";
+import { BrandLogo } from "@/components/BrandLogo";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
@@ -96,7 +96,7 @@ function Chrome({ logoUrl }: { logoUrl?: string | null }) {
           {isTopLevel ? (
             <Link href="/" className="flex items-center gap-2.5 min-w-0" onClick={tap}>
               {logoUrl ? (
-                <Image src={logoUrl} alt="" width={34} height={34} className="h-[34px] w-[34px] rounded-full object-cover shrink-0" />
+                <BrandLogo src={logoUrl} alt="" width={68} height={68} className="h-[34px] w-[34px]" />
               ) : null}
               <span className="truncate font-semibold text-[17px]">{title}</span>
             </Link>

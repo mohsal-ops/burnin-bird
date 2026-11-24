@@ -1,6 +1,6 @@
 "use client";
+import { BrandLogo } from "@/components/BrandLogo";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -43,12 +43,12 @@ export function PopNav({ initialCartId, logoUrl }: { initialCartId: string | nul
         }`}
       >
         <Link href="/" className="flex min-w-0 shrink items-center gap-2.5 pl-1">
-          <Image
+          <BrandLogo
             src={logoUrl || "/logo.png"}
             alt={`${c.name} logo`}
-            width={44}
-            height={44}
-            className={`shrink-0 rounded-full object-cover ${scrolled ? "h-9 w-9" : "h-11 w-11"} transition-all`}
+            width={88}
+            height={88}
+            className={`${scrolled ? "h-9 w-9" : "h-11 w-11"} transition-all`}
           />
           <span className="hidden max-w-[11rem] truncate font-display text-lg font-semibold tracking-tight sm:block lg:max-w-[13rem] xl:max-w-[15rem]">
             {c.name}

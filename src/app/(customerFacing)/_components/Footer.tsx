@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { BrandLogo } from "@/components/BrandLogo";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { MdKeyboardArrowRight } from "react-icons/md";
@@ -14,12 +14,12 @@ export function Footer({ logoUrl }: { logoUrl?: string }) {
       <div className=" flex flex-col md:flex-row  md:justify-center w-full">
         <div className="flex  items-start justify-center w-full md:w-32">
           <Link href="/">
-            <Image
+            <BrandLogo
               alt={`${SITE_CONFIG.name} logo`}
-              className={`h-16 w-16 ${logoUrl ? "rounded-full object-cover" : "object-contain"}`}
+              className="h-16 w-16"
               src={logoUrl || Logo}
-              height={70}
-              width={70}
+              height={128}
+              width={128}
             />
           </Link>
         </div>
