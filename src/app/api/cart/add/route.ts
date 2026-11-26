@@ -44,9 +44,13 @@ export async function POST(req: Request) {
     if ("error" in priced) return NextResponse.json({ ok: false, message: priced.error }, { status: 400 });
 
     const cart = await getOrCreateCart();
-    // Same product already in the cart → bump qty and refresh its modifiers +
-    // price to the latest selection so a re-add never silently drops them.
-    const existing = await db.cartItem.findFirst({ where: { cartId: cart.id, productId } });
+    // Same product with the SAME choices already in the cart -> bump its qty.
+    // Different choices (2 lb vs 1 lb of a cut, a burger with/without cheese)
+    // stay separate lines, so one never silently overwrites the other.
+    const key = (ids: string[]) => [...ids].sort().join(",");
+    const want = key(priced.sides.map((x) => x.optionId));
+    const lines = await db.cartItem.findMany({ where: { cartId: cart.id, productId }, include: { sides: { select: { optionId: true } } } });
+    const existing = lines.find((l) => key(l.sides.map((x) => x.optionId)) === want);
     const writeSides = (cartItemId: string) =>
       priced.sides.length
         ? db.cartItemSide.createMany({ data: priced.sides.map((s) => ({ ...s, cartItemId })) })

@@ -20,6 +20,8 @@ const FEATURES = {
   giftCard: false,
   rewards: true,
   blog: false,
+  // Butcher counter (/market): raw cuts by the pound. On for meat markets.
+  market: false,
 };
 
 type FeatureKey = keyof typeof FEATURES;

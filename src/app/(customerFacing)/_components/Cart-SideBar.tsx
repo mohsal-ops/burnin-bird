@@ -200,7 +200,8 @@ export default function CartSideBar({ cartItems: initialItems, cartId }: { cartI
                                                 {item.sides.map((side) => (
                                                     <li key={side.id}>
                                                         • {side.label}
-                                                        {side.priceInCents ? ` (+${formatCurrency(side.priceInCents / 100)})` : ""}
+                                                        {/* a weight ("2 lb") already explains its price: no "+$" next to it */}
+                                                        {side.priceInCents && !/\d\s*lbs?/i.test(side.label ?? "") ? ` (+${formatCurrency(side.priceInCents / 100)})` : ""}
                                                     </li>
                                                 ))}
                                             </ul>
