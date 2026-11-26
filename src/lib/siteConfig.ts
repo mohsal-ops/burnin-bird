@@ -30,6 +30,7 @@ type NavLink = { label: string; href: string; feature?: FeatureKey; minTier?: Pa
 const ALL_NAV_LINKS: NavLink[] = [
   { label: "Home", href: "/" },
   { label: "Menu", href: "/Menu" },
+  { label: "Meat Market", href: "/market", feature: "market" },
   { label: "Catering", href: "/catering", feature: "catering", minTier: "STANDARD" },
   { label: "Gift Card", href: "/GiftCard", feature: "giftCard", minTier: "STANDARD" },
   { label: "Rewards", href: "/rewards", feature: "rewards", minTier: "PRO" },
