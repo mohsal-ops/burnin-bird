@@ -121,7 +121,8 @@ export type MascotVariant = "box" | "cup" | "pizza" | "bowl";
 export function mascotFor(loaderStyle?: string, cuisines?: readonly string[]): MascotVariant {
   const s = (loaderStyle || "").toLowerCase();
   const c = (cuisines || []).join(" ").toLowerCase();
-  if (s === "coffee" || /coffee|caf|espresso|matcha|latte|tea|bakery/.test(c)) return "cup";
+  // Whole words: "steak" contains "tea" and gave steak shops a coffee cup.
+  if (s === "coffee" || /\b(coffee|caf[eé]s?|espresso|matcha|lattes?|teas?|bakery)\b/.test(c)) return "cup";
   if (s === "pizza" || /pizz/.test(c)) return "pizza";
   if (s === "bowl" || /bowl|poke|ramen|salad|noodle|pho|rice/.test(c)) return "bowl";
   return "box"; // burgers, chicken, grill, anything handheld → takeout bag + meal box
