@@ -21,7 +21,8 @@ const SAMPLE_CLIPS = {
 };
 function sampleClip(text: string) {
   if (/pizz/i.test(text)) return SAMPLE_CLIPS.pizza;
-  if (/coffee|cafe|caf\u00e9|espresso|bakery|tea|dessert/i.test(text)) return SAMPLE_CLIPS.cafe;
+  // Whole words only: "Philly Steak" contains "tea" and got the coffee clip.
+  if (/\b(coffee|cafe|caf\u00e9|espresso|bakery|tea|teas|desserts?)\b/i.test(text)) return SAMPLE_CLIPS.cafe;
   return SAMPLE_CLIPS.grill;
 }
 
