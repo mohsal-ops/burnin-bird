@@ -2,6 +2,7 @@
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import { FaLocationPin } from "react-icons/fa6";
 import { SITE_CONFIG } from "@/lib/siteConfig";
+import { formatHour } from "@/lib/getHours";
 import { atLeast, tierOf } from "@/lib/packages";
 import { PiMagnifyingGlass } from "react-icons/pi";
 import { Button } from "@/components/ui/button";
@@ -95,19 +96,11 @@ export default function MainPageMenu({
       return { isOpen: false, label: "Closed today" };
 
     if (hour >= todayHours.open && hour < todayHours.close) {
-      const closeHour = todayHours.close;
-      const displayClose =
-        closeHour >= 12
-          ? `${closeHour > 12 ? closeHour - 12 : closeHour}:00 PM`
-          : `${closeHour}:00 AM`;
-      return { isOpen: true, label: `Open now · Closes ${displayClose}` };
+      // formatHour: 24 = midnight ("12:00 AM"), not noon.
+      return { isOpen: true, label: `Open now · Closes ${formatHour(todayHours.close)}` };
     }
 
-    const openHour = todayHours.open;
-    const displayOpen =
-      openHour >= 12
-        ? `${openHour > 12 ? openHour - 12 : openHour}:00 PM`
-        : `${openHour}:00 AM`;
+    const displayOpen = formatHour(todayHours.open);
     return { isOpen: false, label: `Closed · Opens ${displayOpen}` };
   }
 

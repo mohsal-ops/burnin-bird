@@ -31,8 +31,9 @@ export async function getBusinessHours() {
 }
 
 export function formatHour(hour: number): string {
-  const period = hour >= 12 ? "PM" : "AM";
-  const display = hour % 12 === 0 ? 12 : hour % 12;
+  const h = ((hour % 24) + 24) % 24; // 24 (closing at midnight) = 0 = "12:00 AM"
+  const period = h >= 12 ? "PM" : "AM";
+  const display = h % 12 === 0 ? 12 : h % 12;
   return `${display}:00 ${period}`;
 }
 
