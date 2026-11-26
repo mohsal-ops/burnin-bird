@@ -106,10 +106,13 @@ export function MarketClient({ cuts, name, halal, preview }: { cuts: MarketCut[]
               exit={{ y: "100%" }}
               transition={{ type: "spring", stiffness: 260, damping: 30 }}
             >
-              <div className="mx-auto mb-2 h-1.5 w-12 rounded-full bg-black/20" />
-              <button onClick={() => setSheet(false)} aria-label="Close" className="absolute right-4 top-3 grid h-9 w-9 place-items-center rounded-full bg-white shadow">
-                <X className="h-4 w-4" />
-              </button>
+              {/* its own row: the close button never sits on the card */}
+              <div className="relative mb-3 flex h-10 items-center justify-center">
+                <div className="h-1.5 w-12 rounded-full bg-black/20" />
+                <button onClick={() => setSheet(false)} aria-label="Close" className="absolute right-0 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white shadow-md ring-1 ring-black/10">
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
               <ScaleStation cut={cut} key={cut.id} onAdded={() => setTimeout(() => setSheet(false), 900)} />
             </motion.div>
           </motion.div>
