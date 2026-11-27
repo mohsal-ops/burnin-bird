@@ -19,11 +19,14 @@ const SAMPLE_CLIPS = {
   pizza: "https://assets.mixkit.co/videos/42480/42480-720.mp4",
   cafe: "https://assets.mixkit.co/videos/41858/41858-720.mp4",
 };
-function sampleClip(text: string) {
+// A sample only when one really fits: wrong footage (a coffee bar on a fried
+// fish shop) hurts more than none. No match = the hero just rotates dishes.
+function sampleClip(text: string): string | null {
   if (/pizz/i.test(text)) return SAMPLE_CLIPS.pizza;
   // Whole words only: "Philly Steak" contains "tea" and got the coffee clip.
   if (/\b(coffee|cafe|caf\u00e9|espresso|bakery|tea|teas|desserts?)\b/i.test(text)) return SAMPLE_CLIPS.cafe;
-  return SAMPLE_CLIPS.grill;
+  if (/\b(grill|grilled|bbq|barbecue|burgers?|smash|kebabs?|kabobs?|shawarma|steakhouse)\b/i.test(text)) return SAMPLE_CLIPS.grill;
+  return null;
 }
 
 // "Pop Bento" — the bright, playful 5th design. Everything sits in rounded
