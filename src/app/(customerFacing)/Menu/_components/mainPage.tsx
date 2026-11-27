@@ -2,7 +2,13 @@
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import { FaLocationPin } from "react-icons/fa6";
 import { SITE_CONFIG } from "@/lib/siteConfig";
-import { formatHour } from "@/lib/getHours";
+
+// Client-side copy of getHours' formatHour (that file loads the database, which
+// can't be bundled for the browser). 24 = midnight = "12:00 AM".
+function formatHour(hour: number): string {
+  const h = ((hour % 24) + 24) % 24;
+  return `${h % 12 === 0 ? 12 : h % 12}:00 ${h >= 12 ? "PM" : "AM"}`;
+}
 import { atLeast, tierOf } from "@/lib/packages";
 import { PiMagnifyingGlass } from "react-icons/pi";
 import { Button } from "@/components/ui/button";
