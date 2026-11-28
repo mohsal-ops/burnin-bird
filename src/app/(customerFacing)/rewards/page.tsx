@@ -76,12 +76,13 @@ export default async function RewardsPage() {
           </Card>
 
           <Card className="p-4 flex justify-between items-center">
-            <p>Free 5 Piece Combo</p>
+            {/* Generic on purpose: these used to name a chicken shop's "5/8 Piece Combo" on every client. */}
+            <p>Free Main Dish</p>
             <span className="font-bold">500 pts</span>
           </Card>
 
           <Card className="p-4 flex justify-between items-center">
-            <p>Free 8 Piece Combo</p>
+            <p>Free Meal for Two</p>
             <span className="font-bold">800 pts</span>
           </Card>
         </div>
